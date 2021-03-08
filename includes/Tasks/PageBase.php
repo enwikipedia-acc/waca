@@ -321,7 +321,7 @@ abstract class PageBase extends TaskBase implements IRoutedTask
      */
     final protected function addJs($path)
     {
-        if (in_array($path, $this->extraJs)){
+        if (in_array($path, $this->extraJs)) {
             // nothing to do
             return;
         }
