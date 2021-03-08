@@ -23,7 +23,7 @@ class JsUsersAction extends JsonApiPageBase implements IJsonApiAction
         $userSearchHelper = UserSearchHelper::get($this->getDatabase());
 
         if (WebRequest::getString('all') === null) {
-           $userSearchHelper->byStatus(User::STATUS_ACTIVE);
+            $userSearchHelper->byStatus(User::STATUS_ACTIVE);
 
         }
 
