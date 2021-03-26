@@ -8,6 +8,8 @@
 
 namespace Waca\Pages;
 
+use Waca\Background\Task\BotCreationTask;
+use Waca\Background\Task\UserCreationTask;
 use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Log;
@@ -178,6 +180,16 @@ class PageJobQueue extends PagedInternalPageBase
 
         $this->assign('canAcknowledge', $this->barrierTest('acknowledge', User::getCurrent($database)));
         $this->assign('canRequeue', $this->barrierTest('requeue', User::getCurrent($database)));
+
+        if ($job->getTask() === UserCreationTask::class || $job->getTask() === BotCreationTask::class) {
+            if ($job->getEmailTemplate() === null) {
+                $params = json_decode($job->getParameters());
+
+                if (isset($params->emailText)) {
+                    $this->assign("creationEmailText", $params->emailText);
+                }
+            }
+        }
 
         $this->setHtmlTitle('Job #{$job->getId()|escape}');
         $this->setTemplate('jobqueue/view.tpl');
