@@ -37,6 +37,10 @@
                 <td>{$entry.comment}</td>
             {/if}
         </tr>
+    {foreachelse}
+    <tr>
+        <td colspan="2"><span class="text-muted font-italic">No log entries</span></td>
+    </tr>
     {/foreach}
     </tbody>
 </table>

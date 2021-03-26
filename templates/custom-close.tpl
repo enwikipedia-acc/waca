@@ -36,14 +36,24 @@
             <div class="col-lg-3 col-xl-2">
                 <label for="inputAction">Action to take</label>
             </div>
-            <div class="col-md-5 col-lg-4">
+            <div class="col-md-8 col-lg-6">
                 <select class="form-control" id="inputAction" name="action" required="required">
                     <option value="" {if $defaultAction == ""}selected="selected"{/if}>(please select)</option>
                     <option value="mail">Only send the email</option>
                     <optgroup label="Send email and close request...">
-                        <option value="created" {if $defaultAction == "created"}selected="selected"{/if}>Close
-                            request as created
+                        <option value="created" {if $defaultAction == "created" && $currentUser->getCreationMode() == 0}selected="selected"{/if}>
+                            Close request as created
                         </option>
+                        {if $canOauthCreate}
+                            <option value="{Waca\Pages\RequestAction\PageCustomClose::CREATE_OAUTH}"  {if $defaultAction == "created" && $currentUser->getCreationMode() == 1}selected="selected"{/if}>
+                                Create account (Wikimedia account) & close request as created
+                            </option>
+                        {/if}
+                        {if $canBotCreate}
+                            <option value="{Waca\Pages\RequestAction\PageCustomClose::CREATE_BOT}"  {if $defaultAction == "created" && $currentUser->getCreationMode() == 2}selected="selected"{/if}>
+                                Create account (via bot) & close request as created
+                            </option>
+                        {/if}
                         <option value="not created" {if $defaultAction == "not created"}selected="selected"{/if}>
                             Close request as NOT created
                         </option>
@@ -70,10 +80,12 @@
         {if $confirmEmailAlreadySent}
         <div class="form-group row">
             <div class="offset-lg-3 offset-xl-2 col">
-                <p>This request has already had an email sent. Please acknowledge that your message is context-aware of the earlier message.</p>
-                <div class="custom-control custom-checkbox">
-                    <input class="custom-control-input" type="checkbox" id="confirmEmailAlreadySent" name="confirmEmailAlreadySent" required="required"/>
-                    <label class="custom-control-label" for="confirmEmailAlreadySent">Yes, this is an appropriate follow-up email</label>
+                <div class="alert alert-warning alert-block">
+                    <p>This request has already had an email sent. Please acknowledge that your message is context-aware of the earlier message.</p>
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input" type="checkbox" id="confirmEmailAlreadySent" name="confirmEmailAlreadySent" required="required"/>
+                        <label class="custom-control-label" for="confirmEmailAlreadySent">Yes, this is an appropriate follow-up email</label>
+                    </div>
                 </div>
             </div>
         </div>

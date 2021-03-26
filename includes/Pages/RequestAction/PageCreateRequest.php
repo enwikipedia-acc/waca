@@ -63,7 +63,7 @@ class PageCreateRequest extends RequestActionBase
         }
 
         if ($request->getEmailSent()) {
-            throw new ApplicationLogicException('This requester has already had an email sent to them. Please fall back to manual creation');
+            throw new ApplicationLogicException('This requester has already had an email sent to them. Please fall back to manual creation or a custom close');
         }
 
         $request->setStatus(RequestStatus::JOBQUEUE);

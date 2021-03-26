@@ -65,7 +65,7 @@ class PageCloseRequest extends RequestActionBase
 
         $request->save();
 
-        $this->processWelcome($template->getDefaultAction());
+        $this->processWelcome($template->getDefaultAction(), null);
 
         // Perform the notifications and stuff *after* we've successfully saved, since the save can throw an OLE and
         // be rolled back.
@@ -232,10 +232,11 @@ class PageCloseRequest extends RequestActionBase
 
     /**
      * @param string $action
+     * @param int|null   $parentTaskId
      *
      * @throws ApplicationLogicException
      */
-    final protected function processWelcome(string $action): void
+    final protected function processWelcome(string $action, ?int $parentTaskId): void
     {
         $database = $this->getDatabase();
         $currentUser = User::getCurrent($database);
@@ -257,6 +258,6 @@ class PageCloseRequest extends RequestActionBase
             return;
         }
 
-        $this->enqueueWelcomeTask($this->getRequest($database), null, $currentUser, $database);
+        $this->enqueueWelcomeTask($this->getRequest($database), $parentTaskId, $currentUser, $database);
     }
 }
