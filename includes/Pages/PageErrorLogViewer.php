@@ -72,6 +72,8 @@ class PageErrorLogViewer extends InternalPageBase
         $this->assign('get', $data['get']);
         $this->assign('post', $data['post']);
 
+        $this->assign('globalHandler', $data['globalHandler']);
+
         $exceptionList = [];
         $current = $data;
         do {

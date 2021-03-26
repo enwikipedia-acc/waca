@@ -52,11 +52,12 @@ class HttpHelper
      *                               Null lets you handle it yourself.
      *
      * @param array      $headers
+     * @param int        $timeout Timeout in ms
      *
      * @return string
      * @throws CurlException
      */
-    public function get($url, $parameters = null, $headers = array())
+    public function get($url, $parameters = null, $headers = array(), $timeout = 300000)
     {
         if ($parameters !== null && is_array($parameters)) {
             $getString = '?' . http_build_query($parameters);
@@ -69,6 +70,9 @@ class HttpHelper
         curl_setopt($this->curlHandle, CURLOPT_POST, false);
 
         curl_setopt($this->curlHandle, CURLOPT_HTTPHEADER, $headers);
+
+        curl_setopt($this->curlHandle, CURLOPT_CONNECTTIMEOUT_MS, $timeout);
+        curl_setopt($this->curlHandle, CURLOPT_TIMEOUT_MS, $timeout);
 
         $result = curl_exec($this->curlHandle);
 
