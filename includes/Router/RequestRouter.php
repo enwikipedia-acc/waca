@@ -194,7 +194,7 @@ class RequestRouter implements IRequestRouter
         'jobQueue'                    =>
             array(
                 'class'   => PageJobQueue::class,
-                'actions' => array('acknowledge', 'requeue', 'view', 'all'),
+                'actions' => array('acknowledge', 'requeue', 'view', 'all', 'cancel'),
             ),
 
         //////////////////////////////////////////////////////////////////////////////////////////////////

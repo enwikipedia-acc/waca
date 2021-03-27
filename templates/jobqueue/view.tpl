@@ -125,6 +125,20 @@
                         {/if}
                     </div>
                 {/if}
+                {if $job->getStatus() == Waca\DataObjects\JobQueue::STATUS_QUEUED
+                    || $job->getStatus() == Waca\DataObjects\JobQueue::STATUS_READY
+                || $job->getStatus() == Waca\DataObjects\JobQueue::STATUS_WAITING}
+                    <div class="col-md-6">
+                        {if $canCancel}
+                            <form method="post" action="{$baseurl}/internal.php/jobQueue/cancel" class="form-inline">
+                                <input type="hidden" name="updateVersion" value="{$job->getUpdateVersion()|escape}" />
+                                <input type="hidden" name="job" value="{$job->getId()|escape}" />
+                                {include file="security/csrf.tpl"}
+                                <button type="submit" class="btn btn-danger btn-block"><i class="fas fa-stop-circle"></i>&nbsp;Cancel</button>
+                            </form>
+                        {/if}
+                    </div>
+                {/if}
             </div>
         </div>
         <div class="col-lg-8 pt-4 pt-lg-0">

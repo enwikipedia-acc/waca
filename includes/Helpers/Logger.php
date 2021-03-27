@@ -374,6 +374,11 @@ class Logger
         self::createLogEntry($database, $job, 'JobIssue', serialize($data), User::getCommunity());
     }
 
+    public static function backgroundJobCancelled(PdoDatabase $database, JobQueue $job)
+    {
+        self::createLogEntry($database, $job, 'JobCancelled', $job->getError());
+    }
+
     public static function backgroundJobRequeued(PdoDatabase $database, JobQueue $job)
     {
         self::createLogEntry($database, $job, 'JobRequeued');

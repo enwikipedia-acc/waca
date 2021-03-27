@@ -250,6 +250,7 @@ class RoleConfiguration
             PageJobQueue::class                  => array(
                 'acknowledge' => self::ACCESS_ALLOW,
                 'requeue'     => self::ACCESS_ALLOW,
+                'cancel'      => self::ACCESS_ALLOW,
             ),
             'RequestData'               => array(
                 'reopenClearedRequest'  => self::ACCESS_ALLOW,
@@ -315,6 +316,7 @@ class RoleConfiguration
             ),
             PageJobQueue::class                  => array(
                 'acknowledge' => self::ACCESS_ALLOW,
+                'cancel'      => self::ACCESS_ALLOW
             ),
         ),
 

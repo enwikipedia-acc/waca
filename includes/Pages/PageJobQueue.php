@@ -180,6 +180,7 @@ class PageJobQueue extends PagedInternalPageBase
 
         $this->assign('canAcknowledge', $this->barrierTest('acknowledge', User::getCurrent($database)));
         $this->assign('canRequeue', $this->barrierTest('requeue', User::getCurrent($database)));
+        $this->assign('canCancel', $this->barrierTest('cancel', User::getCurrent($database)));
 
         if ($job->getTask() === UserCreationTask::class || $job->getTask() === BotCreationTask::class) {
             if ($job->getEmailTemplate() === null) {
@@ -222,6 +223,45 @@ class PageJobQueue extends PagedInternalPageBase
         $job->save();
 
         Logger::backgroundJobAcknowledged($database, $job);
+
+        $this->redirect('jobQueue', 'view', array('id' => $jobId));
+    }
+
+    protected function cancel()
+    {
+        if (!WebRequest::wasPosted()) {
+            throw new ApplicationLogicException('This page does not support GET methods.');
+        }
+
+        $this->validateCSRFToken();
+
+        $jobId = WebRequest::postInt('job');
+        $database = $this->getDatabase();
+
+        if ($jobId === null) {
+            throw new ApplicationLogicException('No job specified');
+        }
+
+        /** @var JobQueue $job */
+        $job = JobQueue::getById($jobId, $database);
+
+        if ($job === false) {
+            throw new ApplicationLogicException('Could not find requested job');
+        }
+
+        if ($job->getStatus() !== JobQueue::STATUS_READY
+            && $job->getStatus() !== JobQueue::STATUS_QUEUED
+            && $job->getStatus() === JobQueue::STATUS_WAITING) {
+            throw new ApplicationLogicException('Cannot cancel job not queued for execution');
+        }
+
+        $job->setUpdateVersion(WebRequest::postInt('updateVersion'));
+        $job->setStatus(JobQueue::STATUS_CANCELLED);
+        $job->setError("Manually cancelled");
+        $job->setAcknowledged(null);
+        $job->save();
+
+        Logger::backgroundJobCancelled($this->getDatabase(), $job);
 
         $this->redirect('jobQueue', 'view', array('id' => $jobId));
     }

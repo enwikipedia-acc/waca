@@ -165,6 +165,7 @@ class LogHelper
             'JobCompleted'        => 'completed a background job',
             'JobAcknowledged'     => 'acknowledged a job failure',
             'JobRequeued'         => 'requeued a job for re-execution',
+            'JobCancelled'        => 'cancelled execution of a job',
             'EnqueuedJobQueue'    => 'scheduled for creation',
             'Hospitalised'        => 'sent to the hospital',
         );
@@ -231,6 +232,7 @@ class LogHelper
                 'JobCompleted'        => 'completed a background job',
                 'JobAcknowledged'     => 'acknowledged a job failure',
                 'JobRequeued'         => 'requeued a job for re-execution',
+                'JobCancelled'        => 'cancelled execution of a job',
                 'EnqueuedJobQueue'    => 'scheduled for creation',
                 'Hospitalised'        => 'sent to the hospital',
             ],
