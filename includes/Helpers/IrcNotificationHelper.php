@@ -367,6 +367,15 @@ class IrcNotificationHelper
     }
 
     /**
+     * @param Request $request
+     * @param User    $triggerUser
+     */
+    public function requestWelcomeFailed(Request $request, User $triggerUser)
+    {
+        $this->send("Request {$request->getId()} ({$request->getName()}) failed welcome for {$triggerUser->getUsername()}.");
+    }
+
+    /**
      * Summary of sentMail
      *
      * @param Request $request
