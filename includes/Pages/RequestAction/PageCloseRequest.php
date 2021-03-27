@@ -151,7 +151,7 @@ class PageCloseRequest extends RequestActionBase
      */
     protected function confirmAccountCreated(Request $request, EmailTemplate $template)
     {
-        if ($this->checkAccountCreated($request, $template)) {
+        if ($template->getDefaultAction() === EmailTemplate::CREATED && $this->checkAccountCreated($request)) {
             $this->showConfirmation($request, $template, 'close-confirmations/account-created.tpl');
 
             return true;
@@ -160,9 +160,9 @@ class PageCloseRequest extends RequestActionBase
         return false;
     }
 
-    protected function checkAccountCreated(Request $request, EmailTemplate $template)
+    protected function checkAccountCreated(Request $request)
     {
-        if ($template->getDefaultAction() === EmailTemplate::CREATED && !WebRequest::postBoolean('createOverride')) {
+        if (!WebRequest::postBoolean('createOverride')) {
             $parameters = array(
                 'action'  => 'query',
                 'list'    => 'users',

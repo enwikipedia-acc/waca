@@ -47,9 +47,11 @@ class PageCustomClose extends PageCloseRequest
         // Dual-mode page
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
-            $this->doCustomClose($currentUser, $request, $database);
+            $success = $this->doCustomClose($currentUser, $request, $database);
 
-            $this->redirect();
+            if ($success) {
+                $this->redirect();
+            }
         }
         else {
             $this->assignCSRFToken();
@@ -187,7 +189,7 @@ class PageCustomClose extends PageCloseRequest
      *
      * @throws ApplicationLogicException
      */
-    protected function doCustomClose(User $currentUser, Request $request, PdoDatabase $database)
+    protected function doCustomClose(User $currentUser, Request $request, PdoDatabase $database) : bool
     {
         $messageBody = WebRequest::postString('msgbody');
         if ($messageBody === null || trim($messageBody) === '') {
@@ -212,6 +214,22 @@ class PageCustomClose extends PageCloseRequest
         $availableRequestStates = $this->getSiteConfiguration()->getRequestStates();
 
         if ($action === EmailTemplate::CREATED || $action === EmailTemplate::NOT_CREATED) {
+
+            if ($action === EmailTemplate::CREATED) {
+                if ($this->checkAccountCreated($request)) {
+                    $this->assignCSRFToken();
+                    $this->showCustomCloseForm($database, $request);
+
+                    $this->assign("preloadText", $messageBody);
+                    $this->assign('preloadAction', $action);
+                    $this->assign('ccMailingList', $ccMailingList);
+                    $this->assign('showNonExistentAccountWarning', true);
+                    $this->assign('skipAutoWelcome', WebRequest::postBoolean('skipAutoWelcome'));
+
+                    return false;
+                }
+            }
+
             // Close request
             $this->closeRequest($request, $database, $action, $messageBody);
 
@@ -220,13 +238,13 @@ class PageCustomClose extends PageCloseRequest
             // Send the mail after the save, since save can be rolled back
             $this->sendMail($request, $messageBody, $currentUser, $ccMailingList);
 
-            return;
+            return true;
         }
 
         if ($action === self::CREATE_OAUTH || $action === self::CREATE_BOT) {
             $this->processAutoCreation($currentUser, $action, $request, $messageBody, $ccMailingList);
 
-            return;
+            return true;
         }
 
         // If action is a state key, defer to other state
@@ -236,7 +254,7 @@ class PageCustomClose extends PageCloseRequest
             // Send the mail after the save, since save can be rolled back
             $this->sendMail($request, $messageBody, $currentUser, $ccMailingList);
 
-            return;
+            return true;
         }
 
         // Any other scenario, just send the email.
@@ -257,6 +275,7 @@ class PageCustomClose extends PageCloseRequest
         $this->getNotificationHelper()->sentMail($request);
         SessionAlert::success("Sent mail to Request {$request->getId()}");
 
+        return true;
     }
 
     /**
