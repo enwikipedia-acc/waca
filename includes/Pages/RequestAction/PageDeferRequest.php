@@ -75,6 +75,8 @@ class PageDeferRequest extends RequestActionBase
                 $job->setStatus(JobQueue::STATUS_CANCELLED);
                 $job->setError('Cancelled by request deferral');
                 $job->save();
+
+                Logger::backgroundJobCancelled($database, $job);
             }
         }
 
