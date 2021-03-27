@@ -245,11 +245,11 @@ abstract class BackgroundTaskBase
         Logger::backgroundJobIssue($this->getDatabase(), $this->getJob());
     }
 
-    protected function markFailed($reason = null)
+    protected function markFailed($reason = null, bool $acknowledged = false)
     {
         $this->job->setStatus(JobQueue::STATUS_FAILED);
         $this->job->setError($reason);
-        $this->job->setAcknowledged(0);
+        $this->job->setAcknowledged($acknowledged ? 1 : 0);
         $this->job->save();
 
         Logger::backgroundJobIssue($this->getDatabase(), $this->getJob());

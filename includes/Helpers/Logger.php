@@ -379,9 +379,9 @@ class Logger
         self::createLogEntry($database, $job, 'JobRequeued');
     }
 
-    public static function backgroundJobAcknowledged(PdoDatabase $database, JobQueue $job)
+    public static function backgroundJobAcknowledged(PdoDatabase $database, JobQueue $job, $comment = null)
     {
-        self::createLogEntry($database, $job, 'JobAcknowledged');
+        self::createLogEntry($database, $job, 'JobAcknowledged', $comment);
     }
     #endregion
 }

@@ -112,6 +112,7 @@ abstract class CreationTaskBase extends BackgroundTaskBase
         return $this->mwHelper;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function getCreationReason(Request $request, User $user)
     {
         return 'Requested account at [[WP:ACC]], request #' . $request->getId();
@@ -127,7 +128,7 @@ abstract class CreationTaskBase extends BackgroundTaskBase
         return $this->getMediaWikiHelper()->checkAccountExists($name);
     }
 
-    protected function markFailed($reason = null)
+    protected function markFailed($reason = null, bool $acknowledged = false)
     {
         $this->request->setStatus(RequestStatus::HOSPITAL);
         $this->request->save();
@@ -136,7 +137,9 @@ abstract class CreationTaskBase extends BackgroundTaskBase
 
         Logger::hospitalised($this->getDatabase(), $this->request);
 
-        parent::markFailed($reason);
+        // auto-acknowledge failed creation tasks, as these land in the hospital queue anyway.
+        parent::markFailed($reason, true);
+        Logger::backgroundJobAcknowledged($this->getDatabase(), $this->getJob(), "Auto-acknowledged due to request deferral to hospital queue");
     }
 
     /**
