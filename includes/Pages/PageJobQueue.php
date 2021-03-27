@@ -42,7 +42,7 @@ class PageJobQueue extends PagedInternalPageBase
 
         /** @var JobQueue[] $jobList */
         $jobList = JobQueueSearchHelper::get($database)
-            ->statusIn(array('ready', 'waiting', 'running', 'failed'))
+            ->statusIn(array('queued', 'ready', 'waiting', 'running', 'failed'))
             ->notAcknowledged()
             ->fetch();
 
@@ -273,6 +273,7 @@ class PageJobQueue extends PagedInternalPageBase
             JobQueue::STATUS_CANCELLED => 'The job was cancelled',
             JobQueue::STATUS_COMPLETE  => 'The job completed successfully',
             JobQueue::STATUS_FAILED    => 'The job encountered an error',
+            JobQueue::STATUS_QUEUED    => 'The job is in the queue',
             JobQueue::STATUS_READY     => 'The job is ready to be picked up by the next job runner execution',
             JobQueue::STATUS_RUNNING   => 'The job is being run right now by the job runner',
             JobQueue::STATUS_WAITING   => 'The job has been picked up by a job runner',

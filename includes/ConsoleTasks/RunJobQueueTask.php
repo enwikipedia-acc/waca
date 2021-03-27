@@ -15,8 +15,10 @@ use Waca\Background\Task\BotCreationTask;
 use Waca\Background\Task\UserCreationTask;
 use Waca\Background\Task\WelcomeUserTask;
 use Waca\DataObjects\JobQueue;
+use Waca\ExceptionHandler;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
+use Waca\PdoDatabase;
 use Waca\Tasks\ConsoleTaskBase;
 
 class RunJobQueueTask extends ConsoleTaskBase
@@ -115,6 +117,8 @@ class RunJobQueueTask extends ConsoleTaskBase
                 $database->commit();
             }
         }
+
+        $this->stageQueuedTasks($database);
     }
 
     /**
@@ -132,8 +136,48 @@ class RunJobQueueTask extends ConsoleTaskBase
         $task->setNotificationHelper($this->getNotificationHelper());
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     public static function errorHandler($errno, $errstr, $errfile, $errline)
     {
         throw new Exception($errfile . "@" . $errline . ": " . $errstr);
+    }
+
+    /**
+     * Stages tasks for execution during the *next* jobqueue run.
+     *
+     * This is to build in some delay between enqueue and execution to allow for accidentally-triggered tasks to be
+     * cancelled.
+     *
+     * @param PdoDatabase $database
+     */
+    protected function stageQueuedTasks(PdoDatabase $database): void
+    {
+        try {
+            $database->beginTransaction();
+
+            $sql = 'SELECT * FROM jobqueue WHERE status = :status ORDER BY enqueue LIMIT :lim';
+            $statement = $database->prepare($sql);
+
+            // use a larger batch size than the main runner, but still keep it limited in case things go crazy.
+            $statement->execute(array(
+                ':status' => JobQueue::STATUS_QUEUED,
+                ':lim' => $this->getSiteConfiguration()->getJobQueueBatchSize() * 2
+            ));
+
+            /** @var JobQueue[] $queuedJobs */
+            $queuedJobs = $statement->fetchAll(PDO::FETCH_CLASS, JobQueue::class);
+
+            foreach ($queuedJobs as $job) {
+                $job->setDatabase($database);
+                $job->setStatus(JobQueue::STATUS_READY);
+                $job->save();
+            }
+
+            $database->commit();
+        }
+        catch (Exception $ex) {
+            $database->rollBack();
+            ExceptionHandler::logExceptionToDisk($ex, $this->getSiteConfiguration());
+        }
     }
 }
