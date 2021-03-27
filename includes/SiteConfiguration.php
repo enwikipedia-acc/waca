@@ -96,6 +96,7 @@ class SiteConfiguration
     private $commonEmailDomains = [];
     private $banMaxIpBlockRange = [4 => 20, 6 => 48];
     private $banMaxIpRange = [4 => 16, 6 => 32];
+    private $jobQueueBatchSize = 10;
 
     /**
      * Gets the base URL of the tool
@@ -1137,4 +1138,24 @@ class SiteConfiguration
     {
         return $this->oauthLegacyConsumerTokens;
     }
+
+    /**
+     * @return int
+     */
+    public function getJobQueueBatchSize(): int
+    {
+        return $this->jobQueueBatchSize;
+    }
+
+    /**
+     * @param int $jobQueueBatchSize
+     *
+     * @return SiteConfiguration
+     */
+    public function setJobQueueBatchSize(int $jobQueueBatchSize): SiteConfiguration
+    {
+        $this->jobQueueBatchSize = $jobQueueBatchSize;
+
+        return $this;
+}
 }

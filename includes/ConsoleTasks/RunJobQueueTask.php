@@ -40,7 +40,11 @@ class RunJobQueueTask extends ConsoleTaskBase
 
         $sql = 'SELECT * FROM jobqueue WHERE status = :status ORDER BY enqueue LIMIT :lim';
         $statement = $database->prepare($sql);
-        $statement->execute(array(':status' => JobQueue::STATUS_READY, ':lim' => 10));
+        $statement->execute(array(
+            ':status' => JobQueue::STATUS_READY,
+            ':lim' => $this->getSiteConfiguration()->getJobQueueBatchSize()
+        ));
+
         /** @var JobQueue[] $queuedJobs */
         $queuedJobs = $statement->fetchAll(PDO::FETCH_CLASS, JobQueue::class);
 
