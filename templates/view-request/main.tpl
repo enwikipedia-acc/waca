@@ -57,7 +57,11 @@
                                         </div>
                                     {/if}
                                     {if $canOauthCreate}
-                                        {if $oauthProblem}
+                                        {if $requestEmailSent}
+                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                                <div class="alert alert-warning mb-0">This request has already had an email sent to the requester. Please do a custom close or fall back to manual creation.</div>
+                                            </div>
+                                        {elseif $oauthProblem}
                                             <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
                                                 <div class="alert alert-warning mb-0">There's an issue with your account setup. Please check your OAuth configuration and ensure you've allowed the necessary grants.</div>
                                             </div>
@@ -68,7 +72,11 @@
                                         {/if}
                                     {/if}
                                     {if $canBotCreate}
-                                        {if $botProblem}
+                                        {if $requestEmailSent}
+                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                                <div class="alert alert-warning mb-0">This request has already had an email sent to the requester. Please do a custom close or fall back to manual creation.</div>
+                                            </div>
+                                        {elseif $botProblem}
                                             <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
                                                 <div class="alert alert-warning mb-0">There's an issue with the tool configuration. Please choose a different creation type above.</div>
                                             </div>
