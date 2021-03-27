@@ -281,7 +281,7 @@ class PageJobQueue extends PagedInternalPageBase
             throw new ApplicationLogicException('No job specified');
         }
 
-        /** @var JobQueue $job */
+        /** @var JobQueue|false $job */
         $job = JobQueue::getById($jobId, $database);
 
         if ($job === false) {
