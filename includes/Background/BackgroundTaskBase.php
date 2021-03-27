@@ -210,6 +210,7 @@ abstract class BackgroundTaskBase
                     return;
                 case JobQueue::STATUS_WAITING:
                 case JobQueue::STATUS_READY:
+                case JobQueue::STATUS_QUEUED:
                 case JobQueue::STATUS_RUNNING:
                 case JobQueue::STATUS_HELD:
                     // Defer to next execution

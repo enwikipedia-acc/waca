@@ -66,6 +66,7 @@ class PageDeferRequest extends RequestActionBase
         if ($request->getStatus() === RequestStatus::JOBQUEUE) {
             /** @var JobQueue[] $pendingJobs */
             $pendingJobs = JobQueueSearchHelper::get($database)->byRequest($request->getId())->statusIn([
+                JobQueue::STATUS_QUEUED,
                 JobQueue::STATUS_READY,
                 JobQueue::STATUS_WAITING,
             ])->fetch();

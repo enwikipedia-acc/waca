@@ -288,7 +288,7 @@ class PageJobQueue extends PagedInternalPageBase
             throw new ApplicationLogicException('Could not find requested job');
         }
 
-        $job->setStatus(JobQueue::STATUS_READY);
+        $job->setStatus(JobQueue::STATUS_QUEUED);
         $job->setUpdateVersion(WebRequest::postInt('updateVersion'));
         $job->setAcknowledged(null);
         $job->setError(null);

@@ -27,7 +27,11 @@
                             <input type="hidden" name="request" value="{$requestId}"/>
                             <input type="hidden" name="updateversion" value="{$updateVersion}"/>
                             <input type="hidden" name="target" value="{$defaultRequestState}"/>
-                            <button class="btn btn-block btn-outline-danger" type="submit">Reset request</button>
+                            {if $requestStatus === Waca\RequestStatus::JOBQUEUE}
+                                <button class="btn btn-block btn-outline-danger" type="submit">Reset request and cancel auto-creation</button>
+                            {else}
+                                <button class="btn btn-block btn-outline-danger" type="submit">Reset request</button>
+                            {/if}
                         </form>
                     </div>
                 {/if}
