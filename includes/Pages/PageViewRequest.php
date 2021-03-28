@@ -99,7 +99,9 @@ class PageViewRequest extends InternalPageBase
         }
         $this->assign('canResetOldRequest', $this->barrierTest('reopenOldRequest', $currentUser, 'RequestData'));
         $this->assign('canResetPurgedRequest', $this->barrierTest('reopenClearedRequest', $currentUser, 'RequestData'));
-            
+
+        $this->assign('requestEmailSent', $request->getEmailSent());
+
         if ($allowedPrivateData) {
             $this->setTemplate('view-request/main-with-data.tpl');
             $this->setupPrivateData($request, $config);

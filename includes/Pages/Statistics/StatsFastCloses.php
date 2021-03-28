@@ -18,21 +18,26 @@ class StatsFastCloses extends InternalPageBase
         $this->setHtmlTitle('Fast Closes :: Statistics');
 
         $query = <<<SQL
+WITH closedescs AS (
+    SELECT closes, mail_desc FROM closes
+    UNION ALL
+    SELECT 'EnqueuedJobQueue', 'Queued for creation'
+)
 SELECT
   log_closed.objectid AS request,
   user.username AS user,
   user.id AS userid,
   TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) AS timetaken,
-  closes.mail_desc AS closetype,
+  closedescs.mail_desc AS closetype,
   log_closed.timestamp AS date
 
 FROM log log_closed
 INNER JOIN log log_reserved ON log_closed.objectid = log_reserved.objectid 
 	AND log_closed.objecttype = log_reserved.objecttype
-INNER JOIN closes ON closes.`closes` = log_closed.action
+LEFT JOIN closedescs ON closedescs.`closes` = log_closed.action
 LEFT JOIN user ON log_closed.user = user.id
 
-WHERE log_closed.action LIKE 'Closed%'
+WHERE ( log_closed.action LIKE 'Closed%' OR log_closed.action = 'EnqueuedJobQueue' )
   AND log_reserved.action = 'Reserved'
   AND TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) < '00:00:30'
   AND log_closed.user = log_reserved.user

@@ -261,6 +261,8 @@ $banMaxIpBlockRange = [4 => 20, 6 => 48];
 // limit for *all* ban actions, including block/drop.
 $banMaxIpRange = [4 => 16, 6 => 32];
 
+$jobQueueBatchSize = 10;
+
 /**************************************************************************
  **********                   IMPORTANT NOTICE                    **********
  ***************************************************************************
@@ -379,4 +381,5 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setLocationProviderApiKey($locationProviderApiKey)
     ->setCommonEmailDomains($commonEmailDomains)
     ->setBanMaxIpRange($banMaxIpRange)
-    ->setBanMaxIpBlockRange($banMaxIpBlockRange);
+    ->setBanMaxIpBlockRange($banMaxIpBlockRange)
+    ->setJobQueueBatchSize($jobQueueBatchSize);
