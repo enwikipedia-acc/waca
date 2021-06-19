@@ -6,8 +6,8 @@
             <th>Request state</th>
         {/if}
         {if $list->showPrivateData}
-            <th>Email address</th>
-            <th>IP address</th>
+            <th><span class="d-none d-lg-table-cell">Email address</span></th>
+            <th><span class="d-none d-lg-table-cell">IP address</span></th>
         {/if}
         <th>Username</th>
         <th><span class="d-none d-md-block">Request time</span></th>
@@ -18,7 +18,7 @@
     </thead>
     <tbody>
     {foreach from=$list->requests item="r"}
-        <tr>
+        <tr {if $r->getEmailConfirm() !== 'Confirmed'}class="table-warning"{/if}>
             <td data-value="{$r->getId()}">
                 <a class="btn btn-sm{if $r->hasComments() == true} btn-info{else} btn-secondary{/if}"
                    {if $r->hasComments() == true}data-title="This request has comments" data-toggle="tooltip"{/if}
@@ -26,40 +26,20 @@
             </td>
 
             {if $showStatus}
-                <td>{$r->getStatus()}</td>
+                <td>{$r->getStatus()}{if $r->getEmailConfirm() !== 'Confirmed'} <br class="d-lg-none"><span class="badge badge-warning">Not email-confirmed</span>{/if}</td>
             {/if}
 
             {if $list->showPrivateData}
                 <td>
-                    {if $r->getEmail() === $list->dataClearEmail}
-                        <span class="text-muted font-italic">Email address purged</span>
-                    {else}
-                        {$r->getEmail()|escape}
-                        {if $list->relatedEmailRequests[$r->getId()] > 0}
-                            <span class="badge badge-pill badge-danger"
-                                data-toggle="tooltip" data-original-title="{$list->relatedEmailRequests[$r->getId()]} other request(s) from this email address"
-                            >
-                                <i class="fas fa-clone"></i>&nbsp;{$list->relatedEmailRequests[$r->getId()]}
-                            </span>
-                        {/if}
-                        {if !$list->commonEmail[$r->getId()]}<span class="badge badge-warning badge-pill" data-toggle="tooltip" title="Uncommon email domain"><i class="fas fa-gem"></i></span>{/if}
-                    {/if}
+                    <span class="d-none d-lg-table-cell">
+                        {include file="mainpage/table-sections/email-section.tpl"}
+                    </span>
                 </td>
 
-
                 <td data-value="{$list->requestTrustedIp[$r->getId()]|escape|iphex}">
-                    {if $list->requestTrustedIp[$r->getId()] === $list->dataClearIp}
-                        <span class="text-muted font-italic">IP address purged</span>
-                    {else}
-                        <a href="https://en.wikipedia.org/wiki/User_talk:{$list->requestTrustedIp[$r->getId()]|escape}" target="_blank">{$list->requestTrustedIp[$r->getId()]|escape}</a>
-                        {if $list->relatedIpRequests[$r->getId()] > 0}
-                            <span class="badge badge-pill badge-danger"
-                                  data-toggle="tooltip" data-original-title="{$list->relatedIpRequests[$r->getId()]} other request(s) from this IP address"
-                            >
-                                <i class="fas fa-clone"></i>&nbsp;{$list->relatedIpRequests[$r->getId()]}
-                            </span>
-                        {/if}
-                    {/if}
+                    <span class="d-none d-lg-table-cell">
+                        {include file="mainpage/table-sections/ip-section.tpl"}
+                    </span>
                 </td>
             {/if}
 
@@ -67,6 +47,16 @@
             <td data-value="{$r->getName()|escape}">
                 <a href="https://en.wikipedia.org/wiki/User:{$r->getName()|escape:'url'}"
                    target="_blank">{$r->getName()|escape}</a>
+                {if $list->showPrivateData}
+                    <span class="d-inline d-lg-none">
+                        <br  />
+                        {include file="mainpage/table-sections/email-section.tpl"}
+                    </span>
+                    <span class="d-inline d-lg-none">
+                        <br />
+                        {include file="mainpage/table-sections/ip-section.tpl"}
+                    </span>
+                {/if}
             </td>
 
             {* Request Time *}
@@ -77,9 +67,9 @@
             {* Bans *}
             <td>
                 {if $list->canBan}
-                    <div class="dropdown">
+                    <div class="dropdown d-none d-sm-block">
                         <button class="btn btn-danger btn-sm dropdown-toggle" type="button" id="banDropdown{$r->getId()}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ban"></i>&nbsp;Ban&nbsp;<span class="caret"></span>
+                            <i class="fas fa-ban"></i><span class="d-none d-md-inline">&nbsp;Ban&nbsp;</span><span class="caret"></span>
                         </button>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="{$baseurl}/internal.php/bans/set?type=IP&amp;request={$r->getId()}">IP</a>
@@ -93,7 +83,7 @@
             {* Reserve status *}
             <td>
                 {if $r->getReserved() !== null && $r->getReserved() != $currentUser->getId()}
-                    <span class="d-none d-md-block">Being handled by {$list->userList[$r->getReserved()]|escape}</span>
+                    <span class="d-none d-lg-block">Being handled by {$list->userList[$r->getReserved()]|escape}</span>
                 {/if}
             </td>
 
@@ -128,9 +118,11 @@
                                 <input class="form-control" type="hidden" name="request" value="{$r->getId()}"/>
                                 <input class="form-control" type="hidden" name="updateversion" value="{$r->getUpdateVersion()}"/>
                                 <button class="btn btn-sm btn-warning" type="submit">
-                                    <i class="fas fa-hand-paper"></i>&nbsp;Force break
+                                    <i class="fas fa-hand-paper"></i> <span class="d-none d-lg-inline">Force break</span><span class="d-inline d-lg-none">{$list->userList[$r->getReserved()]|escape}</span>
                                 </button>
                             </form>
+                        {else}
+                            <span class="d-inline d-lg-none">{$list->userList[$r->getReserved()]|escape}</span>
                         {/if}
                     {/if}
                 {/if}

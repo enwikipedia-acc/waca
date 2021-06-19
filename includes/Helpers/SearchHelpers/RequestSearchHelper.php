@@ -86,6 +86,37 @@ class RequestSearchHelper extends SearchHelperBase
     }
 
     /**
+     * Filters the results by comment
+     *
+     * @param string $comment
+     *
+     * @return $this
+     */
+    public function byComment($comment)
+    {
+        $this->modifiersClause = 'DISTINCT';
+        $this->joinClause .= ' INNER JOIN comment c ON origin.id = c.request';
+        $this->whereClause .= ' AND c.comment LIKE ?';
+        $this->parameterList[] = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Filters the results by comment security
+     *
+     * @param array $security List of allowed values for the security clause
+     *
+     * @return $this
+     */
+    public function byCommentSecurity(array $security)
+    {
+        $this->inClause('c.visibility', $security);
+
+        return $this;
+    }
+
+    /**
      * Filters the requests to those with a defined status
      *
      * @param $status

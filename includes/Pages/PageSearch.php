@@ -9,14 +9,16 @@
 namespace Waca\Pages;
 
 use Waca\DataObjects\Request;
+use Waca\DataObjects\User;
+use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\RequestListData;
 use Waca\Helpers\SearchHelpers\RequestSearchHelper;
 use Waca\SessionAlert;
-use Waca\Tasks\InternalPageBase;
+use Waca\Tasks\PagedInternalPageBase;
 use Waca\WebRequest;
 
-class PageSearch extends InternalPageBase
+class PageSearch extends PagedInternalPageBase
 {
     use RequestListData;
 
@@ -27,76 +29,142 @@ class PageSearch extends InternalPageBase
     {
         $this->setHtmlTitle('Search');
 
+        $database = $this->getDatabase();
+        $currentUser = User::getCurrent($database);
+
+        $this->assign('canSearchByComment', $this->barrierTest('byComment', $currentUser));
+        $this->assign('canSearchByEmail', $this->barrierTest('byEmail', $currentUser));
+        $this->assign('canSearchByIp', $this->barrierTest('byIp', $currentUser));
+        $this->assign('canSearchByName', $this->barrierTest('byName', $currentUser));
+        $this->assign('canSeeNonConfirmed', $this->barrierTest('allowNonConfirmed', $currentUser));
+
+        $this->setTemplate('search/main.tpl');
+
         // Dual-mode page
-        if (WebRequest::wasPosted()) {
-            $searchType = WebRequest::postString('type');
-            $searchTerm = WebRequest::postString('term');
+        if (WebRequest::getString('type') !== null) {
+            $searchType = WebRequest::getString('type');
+            $searchTerm = WebRequest::getString('term');
+
+            $excludeNonConfirmed = true;
+            if ($this->barrierTest('allowNonConfirmed', $currentUser)) {
+                $excludeNonConfirmed = WebRequest::getBoolean('excludeNonConfirmed');
+            }
 
             $validationError = "";
             if (!$this->validateSearchParameters($searchType, $searchTerm, $validationError)) {
                 SessionAlert::error($validationError, "Search error");
-                $this->redirect("search");
+
+                $this->assign('term', $searchTerm);
+                $this->assign('target', $searchType);
+                $this->assign('excludeNonConfirmed', $excludeNonConfirmed);
+                $this->assign('hasResultset', false);
 
                 return;
             }
 
-            $results = array();
+            // searchType known to be sane from the validate step above
+            if (!$this->barrierTest('by' . ucfirst($searchType), User::getCurrent($this->getDatabase()))) {
+                // only accessible by url munging, don't care about the UX
+                throw new AccessDeniedException($this->getSecurityManager());
+            }
+
+            $requestSearch = RequestSearchHelper::get($database);
+
+            $this->setSearchHelper($requestSearch);
+            $this->setupLimits();
+
+            if ($excludeNonConfirmed) {
+                $requestSearch->withConfirmedEmail();
+            }
 
             switch ($searchType) {
                 case 'name':
-                    $results = $this->getNameSearchResults($searchTerm);
+                    $this->getNameSearchResults($requestSearch, $searchTerm);
                     break;
                 case 'email':
-                    $results = $this->getEmailSearchResults($searchTerm);
+                    $this->getEmailSearchResults($requestSearch, $searchTerm);
                     break;
                 case 'ip':
-                    $results = $this->getIpSearchResults($searchTerm);
+                    $this->getIpSearchResults($requestSearch, $searchTerm);
+                    break;
+                case 'comment':
+                    $this->getCommentSearchResults($requestSearch, $searchTerm);
                     break;
             }
+
+            /** @var Request[] $results */
+            $results = $requestSearch->getRecordCount($count)->fetch();
+
+            $formParameters = [
+                'term' => $searchTerm,
+                'type' => $searchType,
+            ];
+
+            if ($excludeNonConfirmed) {
+                $formParameters['excludeNonConfirmed'] = true;
+            }
+
+            $this->setupPageData($count, $formParameters);
 
             // deal with results
             $this->assign('requests', $this->prepareRequestData($results));
             $this->assign('resultCount', count($results));
-            $this->assign('term', $searchTerm);
-            $this->assign('target', $searchType);
-
-            $this->assignCSRFToken();
-            $this->setTemplate('search/searchResult.tpl');
+            $this->assign('hasResultset', true);
         }
         else {
-            $this->assignCSRFToken();
-            $this->setTemplate('search/searchForm.tpl');
+            $this->assign('target', 'name');
+            $this->assign('hasResultset', false);
+            $this->assign('limit', 50);
+            $this->assign('excludeNonConfirmed', true);
         }
     }
 
     /**
      * Gets search results by name
      *
-     * @param string $searchTerm
-     *
-     * @return Request[]
+     * @param RequestSearchHelper $searchHelper
+     * @param string              $searchTerm
      */
-    private function getNameSearchResults($searchTerm)
+    private function getNameSearchResults(RequestSearchHelper $searchHelper, string $searchTerm)
     {
         $padded = '%' . $searchTerm . '%';
+        $searchHelper->byName($padded);
+    }
 
-        /** @var Request[] $requests */
-        $requests = RequestSearchHelper::get($this->getDatabase())
-            ->byName($padded)
-            ->fetch();
+    /**
+     * Gets search results by comment
+     *
+     * @param RequestSearchHelper $searchHelper
+     * @param string              $searchTerm
+     */
+    private function getCommentSearchResults(RequestSearchHelper $searchHelper, string $searchTerm)
+    {
+        $padded = '%' . $searchTerm . '%';
+        $searchHelper->byComment($padded);
 
-        return $requests;
+        $currentUser = User::getCurrent($this->getDatabase());
+        $commentSecurity = ['requester', 'user'];
+
+        if ($this->barrierTest('seeRestrictedComments', $currentUser, 'RequestData')) {
+            $commentSecurity[] = 'admin';
+        }
+
+        if ($this->barrierTest('seeCheckuserComments', $currentUser, 'RequestData')) {
+            $commentSecurity[] = 'checkuser';
+        }
+
+        $searchHelper->byCommentSecurity($commentSecurity);
     }
 
     /**
      * Gets search results by email
      *
-     * @param string $searchTerm
+     * @param RequestSearchHelper $searchHelper
+     * @param string              $searchTerm
      *
-     * @return Request[]
      * @throws ApplicationLogicException
      */
-    private function getEmailSearchResults($searchTerm)
+    private function getEmailSearchResults(RequestSearchHelper $searchHelper, string $searchTerm)
     {
         if ($searchTerm === "@") {
             throw new ApplicationLogicException('The search term "@" is not valid for email address searches!');
@@ -104,31 +172,20 @@ class PageSearch extends InternalPageBase
 
         $padded = '%' . $searchTerm . '%';
 
-        /** @var Request[] $requests */
-        $requests = RequestSearchHelper::get($this->getDatabase())
-            ->byEmailAddress($padded)
-            ->excludingPurgedData($this->getSiteConfiguration())
-            ->fetch();
-
-        return $requests;
+        $searchHelper->byEmailAddress($padded)->excludingPurgedData($this->getSiteConfiguration());
     }
 
     /**
      * Gets search results by IP address or XFF IP address
      *
-     * @param string $searchTerm
-     *
-     * @return Request[]
+     * @param RequestSearchHelper $searchHelper
+     * @param string              $searchTerm
      */
-    private function getIpSearchResults($searchTerm)
+    private function getIpSearchResults(RequestSearchHelper $searchHelper, string $searchTerm)
     {
-        /** @var Request[] $requests */
-        $requests = RequestSearchHelper::get($this->getDatabase())
+        $searchHelper
             ->byIp($searchTerm)
-            ->excludingPurgedData($this->getSiteConfiguration())
-            ->fetch();
-
-        return $requests;
+            ->excludingPurgedData($this->getSiteConfiguration());
     }
 
     /**
@@ -141,7 +198,7 @@ class PageSearch extends InternalPageBase
      */
     protected function validateSearchParameters($searchType, $searchTerm, &$errorMessage)
     {
-        if (!in_array($searchType, array('name', 'email', 'ip'))) {
+        if (!in_array($searchType, array('name', 'email', 'ip', 'comment'))) {
             $errorMessage = 'Unknown search type';
 
             return false;
