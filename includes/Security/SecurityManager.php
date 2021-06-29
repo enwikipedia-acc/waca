@@ -24,6 +24,8 @@ final class SecurityManager
      */
     private $roleConfiguration;
 
+    private $cache = [];
+
     /**
      * SecurityManager constructor.
      *
@@ -54,7 +56,7 @@ final class SecurityManager
      */
     public function allows($page, $route, User $user)
     {
-        $this->getActiveRoles($user, $activeRoles, $inactiveRoles);
+        $this->getCachedActiveRoles($user, $activeRoles, $inactiveRoles);
 
         $availableRights = $this->flattenRoles($activeRoles);
         $testResult = $this->findResult($availableRights, $page, $route);
@@ -204,6 +206,22 @@ final class SecurityManager
                 $activeRoles[] = $v;
             }
         }
+    }
+
+    /**
+     * @param User  $user
+     * @param array $activeRoles
+     * @param array $inactiveRoles
+     */
+    public function getCachedActiveRoles(User $user, &$activeRoles, &$inactiveRoles)
+    {
+        if (!array_key_exists($user->getId(), $this->cache)) {
+            $this->getActiveRoles($user, $retrievedActiveRoles, $retrievedInactiveRoles);
+            $this->cache[$user->getId()] = ['active' => $retrievedActiveRoles, 'inactive' => $retrievedInactiveRoles];
+        }
+
+        $activeRoles = $this->cache[$user->getId()]['active'];
+        $inactiveRoles = $this->cache[$user->getId()]['inactive'];
     }
 
     public function getRoleConfiguration()
