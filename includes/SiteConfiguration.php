@@ -19,7 +19,7 @@ class SiteConfiguration
 {
     private $baseUrl;
     private $filePath;
-    private $schemaVersion = 35;
+    private $schemaVersion = 37;
     private $debuggingTraceEnabled;
     private $dataClearIp = '127.0.0.1';
     private $dataClearEmail = 'acc@toolserver.org';
@@ -33,6 +33,7 @@ class SiteConfiguration
     private $emailConfirmationEnabled = true;
     private $emailConfirmationExpiryDays = 7;
     private $miserModeLimit = 25;
+    /** @deprecated */
     private $requestStates = array(
         'Open'          => array(
             'defertolog' => 'users', // don't change or you'll break old logs
@@ -54,8 +55,11 @@ class SiteConfiguration
         ),
     );
     private $squidList = array();
+    /** @deprecated */
     private $defaultCreatedTemplateId = 1;
+    /** @deprecated */
     private $defaultRequestStateKey = 'Open';
+    /** @deprecated */
     private $defaultRequestDeferredStateKey = 'Flagged users';
     private $useStrictTransportSecurity = false;
     private $userAgent = 'Wikipedia-ACC Tool/0.1 (+https://accounts.wmflabs.org/internal.php/team)';
@@ -385,6 +389,7 @@ class SiteConfiguration
 
     /**
      * @return array
+     * @deprecated To be removed after dynamic queues hit production. This will need to be major point release.
      */
     public function getRequestStates()
     {
@@ -395,6 +400,7 @@ class SiteConfiguration
      * @param array $requestStates
      *
      * @return SiteConfiguration
+     * @deprecated To be removed after dynamic queues hit production. This will need to be major point release.
      */
     public function setRequestStates($requestStates)
     {
@@ -425,6 +431,7 @@ class SiteConfiguration
 
     /**
      * @return int
+     * @deprecated
      */
     public function getDefaultCreatedTemplateId()
     {
@@ -433,7 +440,7 @@ class SiteConfiguration
 
     /**
      * @param int $defaultCreatedTemplateId
-     *
+     * @deprecated
      * @return SiteConfiguration
      */
     public function setDefaultCreatedTemplateId($defaultCreatedTemplateId)
@@ -445,6 +452,7 @@ class SiteConfiguration
 
     /**
      * @return string
+     * @deprecated
      */
     public function getDefaultRequestStateKey()
     {
@@ -455,6 +463,7 @@ class SiteConfiguration
      * @param string $defaultRequestStateKey
      *
      * @return SiteConfiguration
+     * @deprecated
      */
     public function setDefaultRequestStateKey($defaultRequestStateKey)
     {
@@ -465,6 +474,7 @@ class SiteConfiguration
 
     /**
      * @return string
+     * @deprecated
      */
     public function getDefaultRequestDeferredStateKey()
     {
@@ -475,6 +485,7 @@ class SiteConfiguration
      * @param string $defaultRequestDeferredStateKey
      *
      * @return SiteConfiguration
+     * @deprecated
      */
     public function setDefaultRequestDeferredStateKey($defaultRequestDeferredStateKey)
     {
