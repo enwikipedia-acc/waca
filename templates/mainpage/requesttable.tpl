@@ -11,6 +11,7 @@
         {/if}
         <th>Username</th>
         <th><span class="d-none d-md-block">Request time</span></th>
+        <th><span class="d-none d-md-block">Last updated</span></th>
         <th data-defaultsort="disabled"><!-- ban --></th>
         <th data-defaultsort="disabled"><!-- reserve status --></th>
         <th data-defaultsort="disabled"><!--reserve button--></th>
@@ -72,6 +73,11 @@
             {* Request Time *}
             <td data-value="{$r->getDate()|date}" data-dateformat="YYYY-MM-DD hh:mm:ss">
                 <span class="d-none d-md-block"><span title="{$r->getDate()|date}" data-toggle="tooltip" data-placement="top" id="#rqtime{$r->getId()}">{$r->getDate()|relativedate}</span></span>
+            </td>
+
+            {* Last updated *}
+            <td data-value="{$r->getLastUpdated()|date}" data-dateformat="YYYY-MM-DD hh:mm:ss">
+                <span class="d-none d-md-block"><span title="{$r->getLastUpdated()|date}" data-toggle="tooltip" data-placement="top" id="#rqupdatetime{$r->getId()}">{$r->getLastUpdated()|relativedate}</span></span>
             </td>
 
             {* Bans *}
