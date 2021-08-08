@@ -19,13 +19,15 @@
                 <thead>
                     <tr>
                         <th>Queue header</th>
-                        <td></td>
+                        <th></th>
                         <th>Target display name</th>
                         <th>API name</th>
                         <th>Help text</th>
                         <th class="text-muted">Legacy status</th>
                         <th class="text-muted">Legacy log name</th>
-                        <td></td>
+                        {if $canEdit}
+                            <th></th>
+                        {/if}
                     </tr>
                 </thead>
                 <tbody>
@@ -63,9 +65,11 @@
                             <td class="text-nowrap text-muted">
                                 {$queue->getLogName()|escape}
                             </td>
-                            <td class="table-button-cell">
-                                <a class="btn btn-warning btn-sm" href="{$baseurl}/internal.php/queueManagement/edit?queue={$queue->getId()|escape}"><i class="fas fa-pencil-alt"></i>&nbsp;Edit</a>
-                            </td>
+                            {if $canEdit}
+                                <td class="table-button-cell">
+                                    <a class="btn btn-warning btn-sm" href="{$baseurl}/internal.php/queueManagement/edit?queue={$queue->getId()|escape}"><i class="fas fa-pencil-alt"></i>&nbsp;Edit</a>
+                                </td>
+                            {/if}
                         </tr>
                     {/foreach}
                 </tbody>
