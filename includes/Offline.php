@@ -28,15 +28,15 @@ class Offline
         return (bool)$dontUseDb;
     }
 
-	/**
-	 * Gets the offline message
-	 *
-	 * @param bool        $external
-	 * @param null|string $message
-	 *
-	 * @return string
-	 * @throws SmartyException
-	 */
+    /**
+     * Gets the offline message
+     *
+     * @param bool        $external
+     * @param null|string $message
+     *
+     * @return string
+     * @throws SmartyException
+     */
     public static function getOfflineMessage($external, $message = null)
     {
         global $dontUseDbCulprit, $dontUseDbReason, $baseurl;

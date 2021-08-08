@@ -1,0 +1,52 @@
+//******************************************************************************
+// Wikipedia Account Creation Assistance tool                                  *
+//                                                                             *
+// All code in this file is released into the public domain by the ACC         *
+// Development Team. Please see team.json for a list of contributors.          *
+//******************************************************************************
+
+td.numeric, td.numeric-delta{
+  text-align: right;
+  font-family: monospace;
+  font-size: 1rem;
+}
+
+td.numeric-delta {
+  @extend .text-success;
+
+  &::before {
+    content: "+"
+  }
+
+  &.delta-inverse {
+    @extend .text-danger;
+
+    &::before {
+      content: "+"
+    }
+
+    &[data-value^="-"] {
+      @extend .text-success;
+
+      &::before {
+        content: "-"
+      }
+    }
+
+  }
+
+  &[data-value^="-"] {
+    @extend .text-danger;
+
+    &::before {
+      content: ""
+    }
+  }
+
+  &[data-value="0"], &:empty {
+    @extend .text-body;
+    &::before {
+      content: ""
+    }
+  }
+}

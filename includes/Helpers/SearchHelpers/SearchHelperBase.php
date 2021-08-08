@@ -24,7 +24,7 @@ abstract class SearchHelperBase
     private $limit = null;
     /** @var null|int */
     private $offset = null;
-    private $orderBy;
+    protected $orderBy;
     /**
      * @var string The where clause.
      *

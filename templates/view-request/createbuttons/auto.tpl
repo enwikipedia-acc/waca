@@ -2,7 +2,10 @@
 <form method="post" action="{$baseurl}/internal.php/viewRequest/create">
     {if !empty($createReasons)}
         <div class="dropright btn-group btn-block">
-            <button class="btn btn-success col" type="submit" name="template" value="{$createdId}">
+            <button class="btn btn-success col jsconfirm" type="submit" name="template" value="{$createdId}"
+                    {if !$currentUser->getAbortPref() && $createdHasJsQuestion}
+                data-template="{$createdId}"
+                    {/if}>
                 Create and close as {$createdName|escape}
             </button>
 
@@ -24,7 +27,10 @@
             </ul>
         </div>
     {else}
-        <button class="btn btn-success btn-block" type="submit" name="template" value="{$createdId}">
+        <button class="btn btn-success btn-block jsconfirm" type="submit" name="template" value="{$createdId}"
+                {if !$currentUser->getAbortPref() && $createdHasJsQuestion}
+            data-template="{$createdId}"
+                {/if}>
             {$createdName|escape}
         </button>
     {/if}

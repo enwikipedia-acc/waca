@@ -57,11 +57,11 @@
         "Cloak": "*!*@wikipedia/FunPika",
         "Other": null
     },
-    "DeltaQuad": {
-        "IRC": "DeltaQuad",
+    "AmandaNP": {
+        "IRC": "AmandaNP",
         "ToolID": "662",
-        "wiki": "DeltaQuad",
-        "Name": "DeltaQuad",
+        "wiki": "AmandaNP",
+        "Name": "AmandaNP",
         "Role": [
             "Project Lead",
             "WMF Liaison",
@@ -414,6 +414,15 @@
         "Cloak": "*!*@wikipedia/mdaniels5757",
         "ToolID": "2059",
         "wiki": "Mdaniels5757",
+        "Role": ["Developer"],
+        "Retired": [],
+        "Access": []
+    },
+    "Rich Smith": {
+        "IRC": "RichSmith",
+        "Cloak": "*!*@wikipedia/RichSmith",
+        "ToolID": "786",
+        "wiki": "Rich Smith",
         "Role": ["Developer"],
         "Retired": [],
         "Access": []

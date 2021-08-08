@@ -12,6 +12,7 @@ use Waca\DataObjects\User;
 use Waca\Pages\PageBan;
 use Waca\Pages\PageEditComment;
 use Waca\Pages\PageEmailManagement;
+use Waca\Pages\PageErrorLogViewer;
 use Waca\Pages\PageExpandedRequestList;
 use Waca\Pages\PageJobQueue;
 use Waca\Pages\PageLog;
@@ -249,6 +250,7 @@ class RoleConfiguration
             PageJobQueue::class                  => array(
                 'acknowledge' => self::ACCESS_ALLOW,
                 'requeue'     => self::ACCESS_ALLOW,
+                'cancel'      => self::ACCESS_ALLOW,
             ),
             'RequestData'               => array(
                 'reopenClearedRequest'  => self::ACCESS_ALLOW,
@@ -269,6 +271,7 @@ class RoleConfiguration
             'RequestData'             => array(
                 'seeUserAgentData'      => self::ACCESS_ALLOW,
                 'seeCheckuserComments'  => self::ACCESS_ALLOW,
+                'createLocalAccount'    => self::ACCESS_ALLOW,
             ),
             'BanType'                   => array(
                 'useragent' => self::ACCESS_ALLOW,
@@ -289,7 +292,12 @@ class RoleConfiguration
             PageMultiFactor::class => array(
                 'enableU2F'         => self::ACCESS_ALLOW,
                 'disableU2F'        => self::ACCESS_ALLOW,
-            )
+            ),
+            PageErrorLogViewer::class => array(
+                self::MAIN      => self::ACCESS_ALLOW,
+                'view'          => self::ACCESS_ALLOW,
+                'remove'        => self::ACCESS_ALLOW,
+            ),
         ),
         'botCreation'       => array(
             '_description'    => 'A user allowed to use the bot to perform account creations',
@@ -306,6 +314,10 @@ class RoleConfiguration
             'RequestCreation'                    => array(
                 User::CREATION_OAUTH  => self::ACCESS_ALLOW,
             ),
+            PageJobQueue::class                  => array(
+                'acknowledge' => self::ACCESS_ALLOW,
+                'cancel'      => self::ACCESS_ALLOW
+            ),
         ),
 
 
@@ -319,6 +331,9 @@ class RoleConfiguration
             StatsTopCreators::class => array(
                 self::MAIN => self::ACCESS_ALLOW,
             ),
+            StatsMonthlyStats::class     => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
         ),
         'internalStats'     => array(
             '_hidden'                    => true,
@@ -329,9 +344,6 @@ class RoleConfiguration
                 self::MAIN => self::ACCESS_ALLOW,
             ),
             StatsInactiveUsers::class    => array(
-                self::MAIN => self::ACCESS_ALLOW,
-            ),
-            StatsMonthlyStats::class     => array(
                 self::MAIN => self::ACCESS_ALLOW,
             ),
             StatsReservedRequests::class => array(

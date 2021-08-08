@@ -16,6 +16,7 @@ use Waca\DataObjects\Notification;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\DataObjects\WelcomeTemplate;
+use Waca\ExceptionHandler;
 use Waca\IrcColourCode;
 use Waca\PdoDatabase;
 use Waca\SiteConfiguration;
@@ -42,20 +43,23 @@ class IrcNotificationHelper
     private $baseUrl;
     /** @var array */
     private $requestStates;
+    /** @var SiteConfiguration */
+    private $siteConfiguration;
 
     /**
      * IrcNotificationHelper constructor.
      *
      * @param SiteConfiguration $siteConfiguration
      * @param PdoDatabase       $primaryDatabase
-     * @param PdoDatabase       $notificationsDatabase
+     * @param PdoDatabase|null  $notificationsDatabase
      */
     public function __construct(
         SiteConfiguration $siteConfiguration,
         PdoDatabase $primaryDatabase,
-        PdoDatabase $notificationsDatabase = null
+        ?PdoDatabase $notificationsDatabase = null
     ) {
         $this->primaryDatabase = $primaryDatabase;
+        $this->siteConfiguration = $siteConfiguration;
 
         if ($notificationsDatabase !== null) {
             $this->notificationsDatabase = $notificationsDatabase;
@@ -102,6 +106,7 @@ class IrcNotificationHelper
         catch (Exception $ex) {
             // OK, so we failed to send the notification - that db might be down?
             // This is non-critical, so silently fail.
+            ExceptionHandler::logExceptionToDisk($ex, $this->siteConfiguration);
 
             // Disable notifications for remainder of request.
             $this->notificationsEnabled = false;
@@ -246,7 +251,12 @@ class IrcNotificationHelper
 
         $username = $this->currentUser->getUsername();
 
-        $this->send("Ban {$ban->getId()} set by {$username} for '{$ban->getReason()}' {$duration}");
+        if ($ban->getVisibility() == 'user') {
+            $this->send("Ban {$ban->getId()} set by {$username} for '{$ban->getReason()}' {$duration}");
+        }
+        else {
+            $this->send("Ban {$ban->getId()} set by {$username} {$duration}");
+        }
     }
 
     /**
@@ -349,10 +359,20 @@ class IrcNotificationHelper
      * Summary of requestClosed
      *
      * @param Request $request
+     * @param User    $triggerUser
      */
-    public function requestCreationFailed(Request $request)
+    public function requestCreationFailed(Request $request, User $triggerUser)
     {
-        $this->send("Request {$request->getId()} ({$request->getName()}) failed auto-creation, and was sent to the hospital queue.");
+        $this->send("Request {$request->getId()} ({$request->getName()}) failed auto-creation for {$triggerUser->getUsername()}, and was sent to the hospital queue.");
+    }
+
+    /**
+     * @param Request $request
+     * @param User    $triggerUser
+     */
+    public function requestWelcomeFailed(Request $request, User $triggerUser)
+    {
+        $this->send("Request {$request->getId()} ({$request->getName()}) failed welcome for {$triggerUser->getUsername()}.");
     }
 
     /**

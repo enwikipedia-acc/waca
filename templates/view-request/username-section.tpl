@@ -23,7 +23,11 @@
     </a>
     <a id="UsernameUsernameList" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
        href="https://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username={$requestName|escape:'url'}&amp;group=&amp;limit=25">
-        Username list
+        Local Username list
+    </a>
+    <a id="UsernameGlobalUsernameList" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+       href="https://en.wikipedia.org/w/index.php?title=Special%3AGlobalUsers&amp;username={$requestName|escape:'url'}&amp;group=&amp;limit=25">
+        Global username list
     </a>
     <a id="UsernameMainspaceSearch" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
        href="https://en.wikipedia.org/w/index.php?title=Special%3ASearch&amp;profile=advanced&amp;search={$requestName|escape:'url'}&amp;fulltext=Search&amp;ns0=1&amp;redirs=1&amp;profile=advanced">
@@ -33,6 +37,14 @@
        href="{$baseurl}/redir.php?tool=google&amp;data={$requestName|escape:'url'}">
         Google search
     </a>
+
 </div>
 
 {include file="view-request/antispoof-results.tpl"}
+{if $requestIsReservedByMe && !$requestIsClosed && $canCreateLocalAccount}
+<h5>CentralAuth</h5>
+<a id="UsernameCreateLocal" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+   href="{$mediawikiScriptPath}?title=Special:CreateLocalAccount&amp;target={$requestName|escape:'url'}&amp;wpreason={$createAccountReason|escape:'url'}{$requestId}">
+    Force-create local account
+</a>
+{/if}

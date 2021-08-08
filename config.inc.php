@@ -133,6 +133,9 @@ $defaultReserver = 0;
 $oauthConsumerToken = "";
 $oauthSecretToken = "";
 
+// Formerly-used OAuth tokens to permit reading identities from
+$oauthLegacyTokens = [];
+
 // path to Special:OAuth on target wiki.
 // don't use pretty urls, see [[bugzilla:57500]]
 $oauthBaseUrl = "https://en.wikipedia.org/w/index.php?title=Special:OAuth";
@@ -258,6 +261,8 @@ $banMaxIpBlockRange = [4 => 20, 6 => 48];
 // limit for *all* ban actions, including block/drop.
 $banMaxIpRange = [4 => 16, 6 => 32];
 
+$jobQueueBatchSize = 10;
+
 /**************************************************************************
  **********                   IMPORTANT NOTICE                    **********
  ***************************************************************************
@@ -273,7 +278,7 @@ $cDatabaseConfig = array(
         "dsrcname" => "mysql:host=" . $toolserver_host . ";dbname=" . $toolserver_database,
         "username" => $toolserver_username,
         "password" => $toolserver_password,
-		"options"  => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4'),
+        "options"  => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4'),
     ),
     "wikipedia"     => array(
         "dsrcname" => "mysql:host=" . $antispoof_host . ";dbname=" . $antispoof_db,
@@ -354,6 +359,7 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setUseOAuthSignup($useOauthSignup)
     ->setOAuthBaseUrl($oauthBaseUrl)//
     ->setOAuthConsumerToken($oauthConsumerToken)
+    ->setOAuthLegacyConsumerTokens($oauthLegacyTokens)
     ->setOAuthConsumerSecret($oauthSecretToken)
     ->setOauthMediaWikiCanonicalServer($oauthMediaWikiCanonicalServer)
     ->setDataClearInterval($dataclear_interval)
@@ -375,4 +381,5 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setLocationProviderApiKey($locationProviderApiKey)
     ->setCommonEmailDomains($commonEmailDomains)
     ->setBanMaxIpRange($banMaxIpRange)
-    ->setBanMaxIpBlockRange($banMaxIpBlockRange);
+    ->setBanMaxIpBlockRange($banMaxIpBlockRange)
+    ->setJobQueueBatchSize($jobQueueBatchSize);

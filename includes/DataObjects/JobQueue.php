@@ -20,18 +20,25 @@ class JobQueue extends DataObject
     /*
      * Status workflow is this:
      *
-     * 1) Ready. The job has been added to the queue
-     * 1) Waiting. The job has been picked up by the worker
-     * 2) Running. The job is actively being processed.
-     * 3) Complete / Failed. The job has been processed
+     * 1) Queued. The job has been added to the queue.
+     * 2) Ready. The job is ready to be run in the next queue run.
+     * 3) Waiting. The job has been picked up by the worker
+     * 4) Running. The job is actively being processed.
+     * 5) Complete / Failed. The job has been processed
+     *
+     * A job can move to Cancelled at any point, and will be cancelled automatically.
+     *
+     * 'held' is not used by the system, and is intended for manual pauses.
      *
      */
+
+    const STATUS_QUEUED = 'queued';
     const STATUS_READY = 'ready';
     const STATUS_WAITING = 'waiting';
     const STATUS_RUNNING = 'running';
     const STATUS_COMPLETE = 'complete';
-    const STATUS_CANCELLED = 'cancelled';
     const STATUS_FAILED = 'failed';
+    const STATUS_CANCELLED = 'cancelled';
     const STATUS_HELD = 'held';
 
     /** @var string */
@@ -58,7 +65,8 @@ class JobQueue extends DataObject
     /**
      * This feels like the least bad place to put this method.
      */
-    public static function getTaskDescriptions() {
+    public static function getTaskDescriptions()
+    {
         return array(
             BotCreationTask::class  => 'Create account (via bot)',
             UserCreationTask::class => 'Create account (via OAuth)',
@@ -77,8 +85,8 @@ class JobQueue extends DataObject
         if ($this->isNew()) {
             // insert
             $statement = $this->dbObject->prepare(<<<SQL
-                INSERT INTO jobqueue (task, user, request, emailtemplate, parameters, parent) 
-                VALUES (:task, :user, :request, :emailtemplate, :parameters, :parent)
+                INSERT INTO jobqueue (task, user, request, emailtemplate, parameters, parent, status) 
+                VALUES (:task, :user, :request, :emailtemplate, :parameters, :parent, 'queued')
 SQL
             );
             $statement->bindValue(":task", $this->task);

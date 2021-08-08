@@ -48,16 +48,7 @@ $2$
 </div></body></html>
 HTML;
 
-        $errorData = self::getExceptionData($exception);
-        $errorData['server'] = $_SERVER;
-        $errorData['get'] = $_GET;
-        $errorData['post'] = $_POST;
-
-        $state = serialize($errorData);
-        $errorId = sha1($state);
-
-        // Save the error for later analysis
-        file_put_contents($siteConfiguration->getErrorLog() . '/' . $errorId . '.log', $state);
+        list($errorData, $errorId) = self::logExceptionToDisk($exception, $siteConfiguration, true);
 
         // clear and discard any content that's been saved to the output buffer
         if (ob_get_level() > 0) {
@@ -123,5 +114,38 @@ HTML;
         $array['previous'] = self::getExceptionData($exception->getPrevious());
 
         return $array;
+    }
+
+    /**
+     * @param Throwable         $exception
+     * @param SiteConfiguration $siteConfiguration
+     * @param bool              $fromGlobalHandler
+     *
+     * @return array
+     */
+    public static function logExceptionToDisk(
+        Throwable $exception,
+        SiteConfiguration $siteConfiguration,
+        bool $fromGlobalHandler = false
+    ): array {
+        $errorData = self::getExceptionData($exception);
+        $errorData['server'] = $_SERVER;
+        $errorData['get'] = $_GET;
+        $errorData['post'] = $_POST;
+
+        if ($fromGlobalHandler) {
+            $errorData['globalHandler'] = true;
+        }
+        else {
+            $errorData['globalHandler'] = false;
+        }
+
+        $state = serialize($errorData);
+        $errorId = sha1($state);
+
+        // Save the error for later analysis
+        file_put_contents($siteConfiguration->getErrorLog() . '/' . $errorId . '.log', $state);
+
+        return array($errorData, $errorId);
     }
 }

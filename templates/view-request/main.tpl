@@ -47,39 +47,49 @@
                                 </div>
                             </div>
                         {/if}
-                        <h5>Create account</h5>
-                        <div class="row">
-                            {if $requestIsReservedByMe && !$requestIsClosed}
-                                {if $canManualCreate}
-                                    <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 0}d-none{/if}" id="createManual">
-                                        {block name="manualcreationbutton"}{/block}
-                                    </div>
-                                {/if}
-                                {if $canOauthCreate}
-                                    {if $oauthProblem}
-                                        <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
-                                            <div class="alert alert-warning mb-0">There's an issue with your account setup. Please check your OAuth configuration and ensure you've allowed the necessary grants.</div>
-                                        </div>
-                                    {else}
-                                        <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
-                                            {include file="view-request/createbuttons/auto.tpl" creationMode="oauth" }
+                        {if !$requestIsClosed}
+                            <h5>Create account</h5>
+                            <div class="row">
+                                {if $requestIsReservedByMe && !$requestIsClosed}
+                                    {if $canManualCreate}
+                                        <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 0}d-none{/if}" id="createManual">
+                                            {block name="manualcreationbutton"}{/block}
                                         </div>
                                     {/if}
-                                {/if}
-                                {if $canBotCreate}
-                                    {if $botProblem}
-                                        <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
-                                            <div class="alert alert-warning mb-0">There's an issue with the tool configuration. Please choose a different creation type above.</div>
-                                        </div>
-                                    {else}
-                                        <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createBot">
-                                            {include file="view-request/createbuttons/auto.tpl" creationMode="bot"}
-                                        </div>
+                                    {if $canOauthCreate}
+                                        {if $requestEmailSent}
+                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                                <div class="alert alert-warning mb-0">This request has already had an email sent to the requester. Please do a custom close or fall back to manual creation.</div>
+                                            </div>
+                                        {elseif $oauthProblem}
+                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                                <div class="alert alert-warning mb-0">There's an issue with your account setup. Please check your OAuth configuration and ensure you've allowed the necessary grants.</div>
+                                            </div>
+                                        {else}
+                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                                {include file="view-request/createbuttons/auto.tpl" creationMode="oauth" }
+                                            </div>
+                                        {/if}
+                                    {/if}
+                                    {if $canBotCreate}
+                                        {if $requestEmailSent}
+                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                                <div class="alert alert-warning mb-0">This request has already had an email sent to the requester. Please do a custom close or fall back to manual creation.</div>
+                                            </div>
+                                        {elseif $botProblem}
+                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                                <div class="alert alert-warning mb-0">There's an issue with the tool configuration. Please choose a different creation type above.</div>
+                                            </div>
+                                        {else}
+                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createBot">
+                                                {include file="view-request/createbuttons/auto.tpl" creationMode="bot"}
+                                            </div>
+                                        {/if}
                                     {/if}
                                 {/if}
-                            {/if}
-                        </div>
-                        <hr />
+                            </div>
+                            <hr />
+                        {/if}
                     {/block}
 
                     {block name="requestStatusButtons"}

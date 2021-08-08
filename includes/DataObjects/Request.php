@@ -223,19 +223,18 @@ SQL
      */
     public function setForwardedIp($forwardedip)
     {
-		// Verify that the XFF chain only contains valid IP addresses, and silently discard anything that isn't.
-
-		$xff = explode(',', $forwardedip);
-		$valid = array();
-
-		foreach ($xff as $ip) {
-			$ip = trim($ip);
-			if (filter_var($ip, FILTER_VALIDATE_IP)) {
-				$valid[] = $ip;
-			}
-		}
-
-		$this->forwardedip = implode(", ", $valid);
+        // Verify that the XFF chain only contains valid IP addresses, and silently discard anything that isn't.
+        
+        $xff = explode(',', $forwardedip);
+        $valid = array();
+        
+        foreach ($xff as $ip) {
+            $ip = trim($ip);
+            if (filter_var($ip, FILTER_VALIDATE_IP)) {
+                $valid[] = $ip;
+            }
+        }
+        $this->forwardedip = implode(", ", $valid);
     }
 
     /**
@@ -395,7 +394,7 @@ SQL
             . '|' . $this->forwardedip  // } private data not known to those without access
             . '|' . $this->useragent    // }
             . '|' . $this->email        // }
-            . '|' . $this->status;      // to rudimentarily invalidate the token on status change
+            . '|' . $this->status; // to rudimentarily invalidate the token on status change
 
         return hash('sha256', $data);
     }

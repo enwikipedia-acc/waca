@@ -122,7 +122,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
         // <https://accounts.wmflabs.org/wiki/Help:Introduction>
         // The code currently assumes that the template was parsed for enwiki, and will need to be
         // updated once other wikis are supported.
-        $templateHtml = preg_replace( '/(<a href=")(\/wiki\/)/', '$1//en.wikipedia.org$2', $templateHtml );
+        $templateHtml = preg_replace('/(<a href=")(\/wiki\/)/', '$1//en.wikipedia.org$2', $templateHtml);
 
         $this->assign('templateHtml', $templateHtml);
         $this->assign('template', $template);

@@ -69,7 +69,7 @@ class PagePreferences extends InternalPageBase
 
             $identity = null;
             if ($oauth->isFullyLinked()) {
-                $identity = $oauth->getIdentity();
+                $identity = $oauth->getIdentity(true);
             }
 
             $this->assign('identity', $identity);
@@ -88,6 +88,15 @@ class PagePreferences extends InternalPageBase
         $database = $this->getDatabase();
         $oauth = new OAuthUserHelper(User::getCurrent($database), $database, $this->getOAuthProtocolHelper(),
             $this->getSiteConfiguration());
+
+        // token is for old consumer, run through the approval workflow again
+        if ($oauth->getIdentity(true)->getAudience() !== $this->getSiteConfiguration()->getOAuthConsumerToken()) {
+            $authoriseUrl = $oauth->getRequestToken();
+            $this->redirectUrl($authoriseUrl);
+
+            return;
+        }
+
         if ($oauth->isFullyLinked()) {
             $oauth->refreshIdentity();
         }

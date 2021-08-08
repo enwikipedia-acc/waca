@@ -45,6 +45,10 @@
                     {if $nav__canJobQueue}
                         <a class="dropdown-item" href="{$baseurl}/internal.php/jobQueue"><i class="fas fa-tools"></i> Job Queue</a>
                     {/if}
+
+                    {if $nav__canErrorLog}
+                        <a class="dropdown-item" href="{$baseurl}/internal.php/errorLog"><i class="fas fa-bug"></i> Exception Log</a>
+                    {/if}
                 </div>
             </li>
         {/if}
@@ -79,6 +83,9 @@
                     <a class="dropdown-item" href="{$baseurl}/internal.php/multiFactor">
                         <i class="fas fa-qrcode"></i> Configure multi-factor credentials
                     </a>
+                    <a class="dropdown-item {if $siteNoticeState !== 'd-none'}d-none{/if} sitenotice-show" href="">
+                        <i class="far fa-eye-slash"></i> Un-hide site notice
+                    </a>
                     <div class="dropdown-divider"></div>
 
                     <h6 class="dropdown-header">Help</h6>
@@ -92,7 +99,7 @@
                     <a class="dropdown-item" href="#modalFlowchart" role="button" data-toggle="modal">
                         <i class="fas fa-check"></i>&nbsp;Similar account flowchart
                     </a>
-                    <a class="dropdown-item" href="https://webchat.freenode.net/?channels=wikipedia-en-accounts" target="_blank">
+                    <a class="dropdown-item" href="https://kiwiirc.com/nextclient/irc.libera.chat/wikipedia-en-accounts" target="_blank">
                         <i class="fas fa-comment"></i>&nbsp;Chat
                     </a>
                     <a class="dropdown-item" href="https://lists.wikimedia.org/mailman/listinfo/accounts-enwiki-l" target="_blank">

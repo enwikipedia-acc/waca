@@ -24,6 +24,9 @@ use Waca\WebRequest;
 
 trait RequestData
 {
+    /** @return SiteConfiguration */
+    protected abstract function getSiteConfiguration();
+
     /**
      * @var array Array of IP address classed as 'private' by RFC1918.
      */
@@ -180,7 +183,8 @@ trait RequestData
         $this->assign('requestEmail', $request->getEmail());
         $emailDomain = explode("@", $request->getEmail())[1];
         $this->assign("emailurl", $emailDomain);
-        $this->assign('commonEmailDomain', in_array(strtolower($emailDomain), $configuration->getCommonEmailDomains()));
+        $this->assign('commonEmailDomain', in_array(strtolower($emailDomain), $configuration->getCommonEmailDomains())
+            || $request->getEmail() === $this->getSiteConfiguration()->getDataClearEmail());
 
         $trustedIp = $xffProvider->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
         $this->assign('requestTrustedIp', $trustedIp);

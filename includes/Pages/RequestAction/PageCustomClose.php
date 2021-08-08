@@ -9,7 +9,10 @@
 namespace Waca\Pages\RequestAction;
 
 use Exception;
+use Waca\Background\Task\BotCreationTask;
+use Waca\Background\Task\UserCreationTask;
 use Waca\DataObjects\EmailTemplate;
+use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
@@ -19,12 +22,16 @@ use Waca\Fragments\RequestData;
 use Waca\Helpers\Logger;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\PdoDatabase;
+use Waca\RequestStatus;
 use Waca\SessionAlert;
 use Waca\WebRequest;
 
 class PageCustomClose extends PageCloseRequest
 {
     use RequestData;
+
+    public const CREATE_OAUTH = 'created-oauth';
+    public const CREATE_BOT = 'created-bot';
 
     protected function main()
     {
@@ -40,9 +47,11 @@ class PageCustomClose extends PageCloseRequest
         // Dual-mode page
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
-            $this->doCustomClose($currentUser, $request, $database);
+            $success = $this->doCustomClose($currentUser, $request, $database);
 
-            $this->redirect();
+            if ($success) {
+                $this->redirect();
+            }
         }
         else {
             $this->assignCSRFToken();
@@ -149,6 +158,9 @@ class PageCustomClose extends PageCloseRequest
         $this->assign('allowWelcomeSkip', false);
         $this->assign('forceWelcomeSkip', false);
 
+        $canOauthCreate = $this->barrierTest(User::CREATION_OAUTH, $currentUser, 'RequestCreation');
+        $canBotCreate = $this->barrierTest(User::CREATION_BOT, $currentUser, 'RequestCreation');
+
         $oauth = new OAuthUserHelper($currentUser, $this->getDatabase(), $this->getOAuthProtocolHelper(), $config);
 
         if ($currentUser->getWelcomeTemplate() != 0) {
@@ -159,6 +171,12 @@ class PageCustomClose extends PageCloseRequest
             }
         }
 
+        // disable options if there's a misconfiguration.
+        $canOauthCreate &= $oauth->canCreateAccount();
+        $canBotCreate &= $this->getSiteConfiguration()->getCreationBotPassword() !== null;
+
+        $this->assign('canOauthCreate', $canOauthCreate);
+        $this->assign('canBotCreate', $canBotCreate);
 
         // template
         $this->setTemplate('custom-close.tpl');
@@ -171,7 +189,7 @@ class PageCustomClose extends PageCloseRequest
      *
      * @throws ApplicationLogicException
      */
-    protected function doCustomClose(User $currentUser, Request $request, PdoDatabase $database)
+    protected function doCustomClose(User $currentUser, Request $request, PdoDatabase $database) : bool
     {
         $messageBody = WebRequest::postString('msgbody');
         if ($messageBody === null || trim($messageBody) === '') {
@@ -196,40 +214,68 @@ class PageCustomClose extends PageCloseRequest
         $availableRequestStates = $this->getSiteConfiguration()->getRequestStates();
 
         if ($action === EmailTemplate::CREATED || $action === EmailTemplate::NOT_CREATED) {
+
+            if ($action === EmailTemplate::CREATED) {
+                if ($this->checkAccountCreated($request)) {
+                    $this->assignCSRFToken();
+                    $this->showCustomCloseForm($database, $request);
+
+                    $this->assign("preloadText", $messageBody);
+                    $this->assign('preloadAction', $action);
+                    $this->assign('ccMailingList', $ccMailingList);
+                    $this->assign('showNonExistentAccountWarning', true);
+                    $this->assign('skipAutoWelcome', WebRequest::postBoolean('skipAutoWelcome'));
+
+                    return false;
+                }
+            }
+
             // Close request
             $this->closeRequest($request, $database, $action, $messageBody);
 
-            $this->processWelcome($action);
+            $this->processWelcome($action, null);
 
             // Send the mail after the save, since save can be rolled back
             $this->sendMail($request, $messageBody, $currentUser, $ccMailingList);
+
+            return true;
         }
-        else {
-            if (array_key_exists($action, $availableRequestStates)) {
-                // Defer to other state
-                $this->deferRequest($request, $database, $action, $availableRequestStates, $messageBody);
 
-                // Send the mail after the save, since save can be rolled back
-                $this->sendMail($request, $messageBody, $currentUser, $ccMailingList);
-            }
-            else {
-                $request->setReserved(null);
-                $request->setUpdateVersion(WebRequest::postInt('updateversion'));
-                $request->save();
+        if ($action === self::CREATE_OAUTH || $action === self::CREATE_BOT) {
+            $this->processAutoCreation($currentUser, $action, $request, $messageBody, $ccMailingList);
 
-                // Perform the notifications and stuff *after* we've successfully saved, since the save can throw an OLE
-                // and be rolled back.
-
-                // Send mail
-                $this->sendMail($request, $messageBody, $currentUser, $ccMailingList);
-
-                Logger::sentMail($database, $request, $messageBody);
-                Logger::unreserve($database, $request);
-
-                $this->getNotificationHelper()->sentMail($request);
-                SessionAlert::success("Sent mail to Request {$request->getId()}");
-            }
+            return true;
         }
+
+        // If action is a state key, defer to other state
+        if (array_key_exists($action, $availableRequestStates)) {
+            $this->deferRequest($request, $database, $action, $availableRequestStates, $messageBody);
+
+            // Send the mail after the save, since save can be rolled back
+            $this->sendMail($request, $messageBody, $currentUser, $ccMailingList);
+
+            return true;
+        }
+
+        // Any other scenario, just send the email.
+
+        $request->setReserved(null);
+        $request->setUpdateVersion(WebRequest::postInt('updateversion'));
+        $request->save();
+
+        // Perform the notifications and stuff *after* we've successfully saved, since the save can throw an OLE
+        // and be rolled back.
+
+        // Send mail
+        $this->sendMail($request, $messageBody, $currentUser, $ccMailingList);
+
+        Logger::sentMail($database, $request, $messageBody);
+        Logger::unreserve($database, $request);
+
+        $this->getNotificationHelper()->sentMail($request);
+        SessionAlert::success("Sent mail to Request {$request->getId()}");
+
+        return true;
     }
 
     /**
@@ -300,5 +346,75 @@ class PageCustomClose extends PageCloseRequest
 
         $deferTo = $availableRequestStates[$action]['deferto'];
         SessionAlert::success("Request {$request->getId()} deferred to $deferTo, sending an email.");
+    }
+
+    /**
+     * @param User    $currentUser
+     * @param string  $action
+     * @param Request $request
+     * @param string  $messageBody
+     * @param bool    $ccMailingList
+     *
+     * @throws AccessDeniedException
+     * @throws ApplicationLogicException
+     * @throws OptimisticLockFailedException
+     */
+    protected function processAutoCreation(User $currentUser, string $action, Request $request, string $messageBody, bool $ccMailingList): void
+    {
+        $db = $this->getDatabase();
+        $oauth = new OAuthUserHelper($currentUser, $db, $this->getOAuthProtocolHelper(), $this->getSiteConfiguration());
+        $canOauthCreate = $this->barrierTest(User::CREATION_OAUTH, $currentUser, 'RequestCreation');
+        $canBotCreate = $this->barrierTest(User::CREATION_BOT, $currentUser, 'RequestCreation');
+        $canOauthCreate &= $oauth->canCreateAccount();
+        $canBotCreate &= $this->getSiteConfiguration()->getCreationBotPassword() !== null;
+
+        $creationTaskClass = null;
+
+        if ($action === self::CREATE_OAUTH) {
+            if(!$canOauthCreate) {
+                throw new AccessDeniedException($this->getSecurityManager());
+            }
+
+            $creationTaskClass = UserCreationTask::class;
+        }
+
+        if ($action === self::CREATE_BOT) {
+            if (!$canBotCreate) {
+                throw new AccessDeniedException($this->getSecurityManager());
+            }
+
+            $creationTaskClass = BotCreationTask::class;
+        }
+
+        if ($creationTaskClass === null) {
+            throw new ApplicationLogicException('Cannot determine creation mode');
+        }
+
+        $request->setStatus(RequestStatus::JOBQUEUE);
+        $request->setReserved(null);
+        $request->save();
+
+        $parameters = [
+            'emailText' => $messageBody,
+            'ccMailingList' => $ccMailingList
+        ];
+
+        $creationTask = new JobQueue();
+        $creationTask->setTask($creationTaskClass);
+        $creationTask->setRequest($request->getId());
+        $creationTask->setTriggerUserId($currentUser->getId());
+        $creationTask->setParameters(json_encode($parameters));
+        $creationTask->setDatabase($db);
+        $creationTask->save();
+
+        $creationTaskId = $creationTask->getId();
+
+        Logger::enqueuedJobQueue($db, $request);
+        $this->getNotificationHelper()->requestCloseQueued($request, 'Custom, Created');
+
+        SessionAlert::success("Request {$request->getId()} has been queued for autocreation");
+
+        // forge this since it is actually a creation.
+        $this->processWelcome(EmailTemplate::CREATED, $creationTaskId);
     }
 }

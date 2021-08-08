@@ -32,6 +32,7 @@ abstract class CreationTaskBase extends BackgroundTaskBase
     {
         $this->request = $this->getRequest();
         $user = $this->getTriggerUser();
+        $parameters = $this->getParameters();
 
         if ($this->request->getStatus() !== RequestStatus::JOBQUEUE) {
             $this->markCancelled('Request is not deferred to the job queue');
@@ -39,14 +40,36 @@ abstract class CreationTaskBase extends BackgroundTaskBase
             return;
         }
 
-        if ($this->request->getEmailSent() != 0) {
-            $this->markFailed('Request has already been sent an email');
+        if ($this->request->getEmailSent() != 0 && !isset($parameters->emailText)) {
+            $this->markFailed('Request has already been sent a templated email');
 
             return;
         }
 
-        if ($this->getEmailTemplate() === null) {
-            $this->markFailed('No email template specified');
+        if ($this->request->getEmail() === $this->getSiteConfiguration()->getDataClearEmail()) {
+            $this->markFailed('Private data of request has been purged.');
+
+            return;
+        }
+
+        $emailText = null;
+        $ccMailingList = null;
+        $logTarget = null;
+
+        if (isset($parameters->emailText) && isset($parameters->ccMailingList)) {
+            $emailText = $parameters->emailText;
+            $ccMailingList = $parameters->ccMailingList;
+            $logTarget = "custom-y";
+        }
+
+        if ($this->getEmailTemplate() !== null) {
+            $emailText = $this->getEmailTemplate()->getText();
+            $ccMailingList = false;
+            $logTarget = $this->getEmailTemplate()->getId();
+        }
+
+        if ($emailText === null || $ccMailingList === null) {
+            $this->markFailed('Unable to get closure email text');
 
             return;
         }
@@ -56,17 +79,15 @@ abstract class CreationTaskBase extends BackgroundTaskBase
 
             $this->request->setStatus(RequestStatus::CLOSED);
             $this->request->setReserved(null);
+            $this->request->setEmailSent(true);
             $this->request->save();
 
             // Log the closure as the user
-            Logger::closeRequest($this->getDatabase(), $this->request, $this->getEmailTemplate()->getId(), null,
-                $this->getTriggerUser());
+            $logComment = $this->getEmailTemplate() === null ? $emailText : null;
+            Logger::closeRequest($this->getDatabase(), $this->request, $logTarget, $logComment, $this->getTriggerUser());
 
             $requestEmailHelper = new RequestEmailHelper($this->getEmailHelper());
-            $requestEmailHelper->sendMail($this->request, $this->getEmailTemplate()->getText(), $this->getTriggerUser(),
-                false);
-
-            $this->getNotificationHelper()->requestClosed($this->request, $this->getEmailTemplate()->getName());
+            $requestEmailHelper->sendMail($this->request, $emailText, $this->getTriggerUser(), $ccMailingList);
         }
         catch (Exception $ex) {
             $this->markFailed($ex->getMessage());
@@ -82,14 +103,16 @@ abstract class CreationTaskBase extends BackgroundTaskBase
      */
     protected abstract function getMediaWikiClient();
 
-    protected function getMediaWikiHelper(){
-        if($this->mwHelper === null) {
+    protected function getMediaWikiHelper()
+    {
+        if ($this->mwHelper === null) {
             $this->mwHelper = new MediaWikiHelper($this->getMediaWikiClient(), $this->getSiteConfiguration());
         }
 
         return $this->mwHelper;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     protected function getCreationReason(Request $request, User $user)
     {
         return 'Requested account at [[WP:ACC]], request #' . $request->getId();
@@ -105,16 +128,18 @@ abstract class CreationTaskBase extends BackgroundTaskBase
         return $this->getMediaWikiHelper()->checkAccountExists($name);
     }
 
-    protected function markFailed($reason = null)
+    protected function markFailed($reason = null, bool $acknowledged = false)
     {
         $this->request->setStatus(RequestStatus::HOSPITAL);
         $this->request->save();
 
-        $this->getNotificationHelper()->requestCreationFailed($this->request);
+        $this->getNotificationHelper()->requestCreationFailed($this->request, $this->getTriggerUser());
 
         Logger::hospitalised($this->getDatabase(), $this->request);
 
-        parent::markFailed($reason);
+        // auto-acknowledge failed creation tasks, as these land in the hospital queue anyway.
+        parent::markFailed($reason, true);
+        Logger::backgroundJobAcknowledged($this->getDatabase(), $this->getJob(), "Auto-acknowledged due to request deferral to hospital queue");
     }
 
     /**

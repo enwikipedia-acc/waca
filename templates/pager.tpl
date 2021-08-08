@@ -1,8 +1,6 @@
 <!-- tpl:pager.tpl -->
 <nav aria-label="Page navigation" class="my-3">
     <ul class="pagination">
-        {assign searchParamsUrl "limit={$limit|escape}&amp;filterUser={$filterUser|escape}&amp;filterAction={$filterAction|escape}&amp;filterObjectType={$filterObjectType|escape}&amp;filterObjectId={$filterObjectId|escape}"}
-
         <li class="page-item {if $pagedata.canprev}{else}disabled{/if}">
             <a class="page-link" href="{if $pagedata.canprev}?page=1&amp;{$searchParamsUrl}{else}#{/if}">&laquo;&nbsp;First</a>
         </li>

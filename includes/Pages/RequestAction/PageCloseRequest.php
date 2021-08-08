@@ -14,6 +14,7 @@ use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
+use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\RequestEmailHelper;
 use Waca\PdoDatabase;
 use Waca\SessionAlert;
@@ -64,7 +65,7 @@ class PageCloseRequest extends RequestActionBase
 
         $request->save();
 
-        $this->processWelcome($template->getDefaultAction());
+        $this->processWelcome($template->getDefaultAction(), null);
 
         // Perform the notifications and stuff *after* we've successfully saved, since the save can throw an OLE and
         // be rolled back.
@@ -133,7 +134,7 @@ class PageCloseRequest extends RequestActionBase
         if ($reservationId !== 0 && $reservationId !== null) {
             if ($currentUser->getId() !== $reservationId) {
                 SessionAlert::error("Request is reserved by someone else.");
-                $this->redirect('/viewRequest', null, ['id' => $request->getId()] );
+                $this->redirect('/viewRequest', null, ['id' => $request->getId()]);
                 return true;
             }
         }
@@ -150,7 +151,7 @@ class PageCloseRequest extends RequestActionBase
      */
     protected function confirmAccountCreated(Request $request, EmailTemplate $template)
     {
-        if ($this->checkAccountCreated($request, $template)) {
+        if ($template->getDefaultAction() === EmailTemplate::CREATED && $this->checkAccountCreated($request)) {
             $this->showConfirmation($request, $template, 'close-confirmations/account-created.tpl');
 
             return true;
@@ -159,9 +160,9 @@ class PageCloseRequest extends RequestActionBase
         return false;
     }
 
-    protected function checkAccountCreated(Request $request, EmailTemplate $template)
+    protected function checkAccountCreated(Request $request)
     {
-        if ($template->getDefaultAction() === EmailTemplate::CREATED && !WebRequest::postBoolean('createOverride')) {
+        if (!WebRequest::postBoolean('createOverride')) {
             $parameters = array(
                 'action'  => 'query',
                 'list'    => 'users',
@@ -191,11 +192,16 @@ class PageCloseRequest extends RequestActionBase
      */
     protected function sendMail(Request $request, $mailText, User $currentUser, $ccMailingList)
     {
-        $requestEmailHelper = new RequestEmailHelper($this->getEmailHelper());
-        $requestEmailHelper->sendMail($request, $mailText, $currentUser, $ccMailingList);
-
-        $request->setEmailSent(true);
-        $request->save();
+        if (
+        ($request->getEmail() != $this->getSiteConfiguration()->getDataClearEmail()) && 
+        ($request->getIp() != $this->getSiteConfiguration()->getDataClearIp())
+        ) {
+            $requestEmailHelper = new RequestEmailHelper($this->getEmailHelper());
+            $requestEmailHelper->sendMail($request, $mailText, $currentUser, $ccMailingList);
+            
+            $request->setEmailSent(true);
+            $request->save();
+        }
     }
 
     /**
@@ -226,10 +232,11 @@ class PageCloseRequest extends RequestActionBase
 
     /**
      * @param string $action
+     * @param int|null   $parentTaskId
      *
      * @throws ApplicationLogicException
      */
-    final protected function processWelcome(string $action): void
+    final protected function processWelcome(string $action, ?int $parentTaskId): void
     {
         $database = $this->getDatabase();
         $currentUser = User::getCurrent($database);
@@ -242,10 +249,15 @@ class PageCloseRequest extends RequestActionBase
             return;
         }
 
+        $oauth = new OAuthUserHelper($currentUser, $database, $this->getOAuthProtocolHelper(), $this->getSiteConfiguration());
+        if (!$oauth->canWelcome()) {
+            return;
+        }
+
         if (WebRequest::postBoolean('skipAutoWelcome')) {
             return;
         }
 
-        $this->enqueueWelcomeTask($this->getRequest($database), null, $currentUser, $database);
+        $this->enqueueWelcomeTask($this->getRequest($database), $parentTaskId, $currentUser, $database);
     }
 }

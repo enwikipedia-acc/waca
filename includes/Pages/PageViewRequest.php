@@ -9,6 +9,7 @@
 namespace Waca\Pages;
 
 use Exception;
+use DateTime;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\JobQueue;
@@ -88,10 +89,22 @@ class PageViewRequest extends InternalPageBase
             $this->setupRelatedRequests($request, $config, $database);
         }
 
+        $this->assign('canCreateLocalAccount', $this->barrierTest('createLocalAccount', $currentUser, 'RequestData'));
+            
+        $closureDate = $request->getClosureDate();
+        $date = new DateTime();
+        $date->modify("-7 days");
+        if ($request->getStatus() == "Closed" && $closureDate < $date) {
+                $this->assign('isOldRequest', true);
+        }
+        $this->assign('canResetOldRequest', $this->barrierTest('reopenOldRequest', $currentUser, 'RequestData'));
+        $this->assign('canResetPurgedRequest', $this->barrierTest('reopenClearedRequest', $currentUser, 'RequestData'));
+
+        $this->assign('requestEmailSent', $request->getEmailSent());
+
         if ($allowedPrivateData) {
             $this->setTemplate('view-request/main-with-data.tpl');
             $this->setupPrivateData($request, $config);
-
             $this->assign('canSetBan', $this->barrierTest('set', $currentUser, PageBan::class));
             $this->assign('canSeeCheckuserData', $this->barrierTest('seeUserAgentData', $currentUser, 'RequestData'));
 
@@ -214,7 +227,8 @@ class PageViewRequest extends InternalPageBase
                         'jobId'    => $job->getId(),
                         'jobDesc'  => JobQueue::getTaskDescriptions()[$job->getTask()],
                     );
-                } else {
+                }
+                else {
                     $requestLogs[] = array(
                         'type'     => 'log',
                         'security' => 'user',

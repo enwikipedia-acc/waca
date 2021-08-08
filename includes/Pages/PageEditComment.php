@@ -70,6 +70,10 @@ class PageEditComment extends InternalPageBase
             $newComment = WebRequest::postString('newcomment');
             $visibility = WebRequest::postString('visibility');
 
+            if ($newComment === null || $newComment === "") {
+                throw new ApplicationLogicException("Comment cannot be empty!");
+            }
+
             if ($newComment === $comment->getComment() && ($comment->getVisibility() === 'requester' || $comment->getVisibility() === $visibility)) {
                 // Only save and log if the comment changed
                 $this->redirect('viewRequest', null, array('id' => $comment->getRequest()));

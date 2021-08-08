@@ -115,14 +115,14 @@ QUERY;
         // Each entry is in the form [ database string, attribute name ]
         // and it happens to be that the attribute is just the lower case form of the database value
         $actions = [
-            [ 'Suspended', 'suspended' ],
-            [ 'Promoted', 'promoted' ],
-            [ 'Approved', 'approved' ],
-            [ 'Demoted', 'demoted' ],
-            [ 'Declined', 'declined' ],
-            [ 'Renamed', 'renamed' ],
-            [ 'Edited', 'edited' ],
-            [ 'Prefchange', 'prefchange' ],
+            ['Suspended', 'suspended'],
+            ['Promoted', 'promoted'],
+            ['Approved', 'approved'],
+            ['Demoted', 'demoted'],
+            ['Declined', 'declined'],
+            ['Renamed', 'renamed'],
+            ['Edited', 'edited'],
+            ['Prefchange', 'prefchange'],
         ];
         foreach ($actions as $action) {
             $dbValue = $action[0];

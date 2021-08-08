@@ -20,6 +20,9 @@ use Waca\RequestStatus;
 
 class WelcomeUserTask extends BackgroundTaskBase
 {
+    /** @var Request */
+    private $request;
+
     public static function enqueue(User $triggerUser, Request $request, PdoDatabase $database)
     {
         $job = new JobQueue();
@@ -33,7 +36,7 @@ class WelcomeUserTask extends BackgroundTaskBase
     public function execute()
     {
         $database = $this->getDatabase();
-        $request = $this->getRequest();
+        $this->request = $this->getRequest();
         $user = $this->getTriggerUser();
 
         if ($user->getWelcomeTemplate() === null) {
@@ -55,19 +58,19 @@ class WelcomeUserTask extends BackgroundTaskBase
             $this->getSiteConfiguration());
         $mediaWikiHelper = new MediaWikiHelper($oauth, $this->getSiteConfiguration());
 
-        if ($request->getStatus() !== RequestStatus::CLOSED) {
+        if ($this->request->getStatus() !== RequestStatus::CLOSED) {
             $this->markFailed('Request is currently open');
 
             return;
         }
 
-        if (!$mediaWikiHelper->checkAccountExists($request->getName())){
+        if (!$mediaWikiHelper->checkAccountExists($this->request->getName())) {
             $this->markFailed('Account does not exist!');
 
             return;
         }
 
-        $this->performWelcome($template, $request, $user, $mediaWikiHelper);
+        $this->performWelcome($template, $this->request, $user, $mediaWikiHelper);
         $this->markComplete();
     }
 
@@ -88,5 +91,12 @@ class WelcomeUserTask extends BackgroundTaskBase
         $templateText = $template->getBotCodeForWikiSave($request->getName(), $user->getOnWikiName());
 
         $mediaWikiHelper->addTalkPageMessage($request->getName(), $template->getSectionHeader(), 'Welcoming user created through [[WP:ACC]]', $templateText);
+    }
+
+    protected function markFailed($reason = null, bool $acknowledged = false)
+    {
+        $this->getNotificationHelper()->requestWelcomeFailed($this->request, $this->getTriggerUser());
+
+        parent::markFailed($reason, $acknowledged);
     }
 }

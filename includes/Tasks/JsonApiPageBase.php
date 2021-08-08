@@ -72,7 +72,8 @@ abstract class JsonApiPageBase extends ApiPageBase implements IJsonApiAction
         if ($targetVar !== null && preg_match('/^[a-z]+$/', $targetVar)) {
             $data = $targetVar . ' = ' . $data . ';';
             header("Content-Type: text/javascript");
-        } else {
+        }
+        else {
             header("Content-Type: application/json");
         }
 

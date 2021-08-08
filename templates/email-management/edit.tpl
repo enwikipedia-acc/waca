@@ -39,7 +39,7 @@
                         <label for="inputQuestion" class="col-form-label">JavaScript question</label>
                     </div>
                     <div class="col-md-9 col-xl-10">
-                        <input type="text" class="form-control" id="inputQuestion" name="jsquestion" value="{$emailTemplate->getJsquestion()|escape}" aria-describedby="templateJsQuestion"/>
+                        <input type="text" class="form-control" id="inputQuestion" name="jsquestion" required="required" value="{$emailTemplate->getJsquestion()|escape}" aria-describedby="templateJsQuestion"/>
                         <small class="form-text text-muted" id="templateJsQuestion">Text to appear in a JavaScript popup (if enabled by the user) when they attempt to use this Email template.</small>
                     </div>
                 </div>
@@ -55,24 +55,22 @@
 
                         <select class="form-control" id="inputDefaultAction" aria-describedby="templateDefaultActionHelp"
                                 name="defaultaction" {if $id == $createdid} disabled{/if}>
-                            <option value="" {if $emailTemplate->getDefaultAction() == ""}selected="selected"{/if}>No
-                                default
+                            <option value="" {if $emailTemplate->getDefaultAction() == ""}selected="selected"{/if}>
+                                No default
                             </option>
                             <optgroup label="Close request...">
-                                <option value="created"
-                                        {if $emailTemplate->getDefaultAction() == "created"}selected="selected"{/if}>
-                                    Close request as created
+                                <option value="created" {if $emailTemplate->getDefaultAction() == "created"}selected="selected"{/if}>
+                                    Close request as created (with autocreate if allowed)
                                 </option>
-                                <option value="not created"
-                                        {if $emailTemplate->getDefaultAction() == "not created"}selected="selected"{/if}>
+                                <option value="not created" {if $emailTemplate->getDefaultAction() == "not created"}selected="selected"{/if}>
                                     Close request as NOT created
                                 </option>
                             </optgroup>
                             <optgroup label="Defer to...">
                                 {foreach $requeststates as $state}
-                                    <option value="{$state@key}"
-                                            {if $emailTemplate->getDefaultAction() == $state@key}selected="selected"{/if}>
-                                        Defer to {$state.deferto|capitalize}</option>
+                                    <option value="{$state@key}" {if $emailTemplate->getDefaultAction() == $state@key}selected="selected"{/if}>
+                                        Defer to {$state.deferto|capitalize}
+                                    </option>
                                 {/foreach}
                             </optgroup>
                         </select>

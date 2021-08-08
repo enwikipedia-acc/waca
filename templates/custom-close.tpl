@@ -36,21 +36,31 @@
             <div class="col-lg-3 col-xl-2">
                 <label for="inputAction">Action to take</label>
             </div>
-            <div class="col-md-5 col-lg-4">
+            <div class="col-md-8 col-lg-6">
                 <select class="form-control" id="inputAction" name="action" required="required">
                     <option value="" {if $defaultAction == ""}selected="selected"{/if}>(please select)</option>
-                    <option value="mail">Only send the email</option>
+                    <option value="mail" {if $preloadAction == "mail"}selected="selected"{/if}>Only send the email</option>
                     <optgroup label="Send email and close request...">
-                        <option value="created" {if $defaultAction == "created"}selected="selected"{/if}>Close
-                            request as created
+                        <option value="created" {if $preloadAction == "created" || ($preloadAction === null && $defaultAction == "created" && $currentUser->getCreationMode() == 0)}selected="selected"{/if}>
+                            Close request as created
                         </option>
-                        <option value="not created" {if $defaultAction == "not created"}selected="selected"{/if}>
+                        {if $canOauthCreate}
+                            <option value="{Waca\Pages\RequestAction\PageCustomClose::CREATE_OAUTH}"  {if $preloadAction == Waca\Pages\RequestAction\PageCustomClose::CREATE_OAUTH || ($preloadAction === null && $defaultAction == "created" && $currentUser->getCreationMode() == 1)}selected="selected"{/if}>
+                                Create account (Wikimedia account) & close request as created
+                            </option>
+                        {/if}
+                        {if $canBotCreate}
+                            <option value="{Waca\Pages\RequestAction\PageCustomClose::CREATE_BOT}"  {if $preloadAction == Waca\Pages\RequestAction\PageCustomClose::CREATE_BOT || ($preloadAction === null && $defaultAction == "created" && $currentUser->getCreationMode() == 2)}selected="selected"{/if}>
+                                Create account (via bot) & close request as created
+                            </option>
+                        {/if}
+                        <option value="not created" {if $preloadAction == "not created" || ($preloadAction === null && $defaultAction == "not created") }selected="selected"{/if}>
                             Close request as NOT created
                         </option>
                     </optgroup>
                     <optgroup label="Send email and defer to...">
                         {foreach $requeststates as $state}
-                            <option value="{$state@key}" {if $defaultAction == $state@key}selected="selected"{/if}>
+                            <option value="{$state@key}" {if $preloadAction == $state@key || ($preloadAction === null && $defaultAction == $state@key )}selected="selected"{/if}>
                                 Defer to {$state.deferto|capitalize}</option>
                         {/foreach}
                     </optgroup>
@@ -61,7 +71,7 @@
         <div class="form-group row">
             <div class="offset-lg-3 offset-xl-2 col">
                 <div class="custom-control custom-checkbox">
-                    <input class="custom-control-input" type="checkbox" id="ccMailingList" name="ccMailingList" checked="checked" {if !$canSkipCcMailingList}disabled="disabled"{/if}/>
+                    <input class="custom-control-input" type="checkbox" id="ccMailingList" name="ccMailingList" {if $ccMailingList === null || $ccMailingList}checked="checked"{/if} {if !$canSkipCcMailingList}disabled="disabled"{/if}/>
                     <label class="custom-control-label" for="ccMailingList">CC to mailing list</label>
                 </div>
             </div>
@@ -70,10 +80,12 @@
         {if $confirmEmailAlreadySent}
         <div class="form-group row">
             <div class="offset-lg-3 offset-xl-2 col">
-                <p>This request has already had an email sent. Please acknowledge that your message is context-aware of the earlier message.</p>
-                <div class="custom-control custom-checkbox">
-                    <input class="custom-control-input" type="checkbox" id="confirmEmailAlreadySent" name="confirmEmailAlreadySent" required="required"/>
-                    <label class="custom-control-label" for="confirmEmailAlreadySent">Yes, this is an appropriate follow-up email</label>
+                <div class="alert alert-warning alert-block mb-0">
+                    <p>This request has already had an email sent. Please acknowledge that your message is context-aware of the earlier message.</p>
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input" type="checkbox" id="confirmEmailAlreadySent" name="confirmEmailAlreadySent" required="required"/>
+                        <label class="custom-control-label" for="confirmEmailAlreadySent">Yes, this is an appropriate follow-up email</label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -85,11 +97,26 @@
             <div class="form-group row">
                 <div class="offset-lg-3 offset-xl-2 col">
                     <div class="custom-control custom-checkbox">
-                        <input type="checkbox" name="skipAutoWelcome" id="skipAutoWelcome" class="custom-control-input" {if $forceWelcomeSkip}disabled="disabled" checked="checked"{/if} />
+                        <input type="checkbox" name="skipAutoWelcome" id="skipAutoWelcome" class="custom-control-input" {if $forceWelcomeSkip}disabled="disabled" checked="checked"{else}{if $skipAutoWelcome}checked="checked"{/if}{/if} />
                         <label for="skipAutoWelcome" class="custom-control-label">Skip automatic welcome on account creation</label>
                         {if $forceWelcomeSkip}
                             <input type="hidden" name="skipAutoWelcome" value="true" />
                         {/if}
+                    </div>
+                </div>
+            </div>
+        {/if}
+
+        {if $showNonExistentAccountWarning}
+            <div class="form-group row">
+                <div class="offset-lg-3 offset-xl-2 col">
+                    <div class="alert alert-warning alert-block mb-0">
+                        <p>You have chosen to mark this request as "created", but the account does not exist on the English
+                            Wikipedia and you have not selected an auto-creation option. Do you wish to proceed?</p>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" name="createOverride" id="createOverride" class="custom-control-input" required />
+                            <label for="createOverride" class="custom-control-label">Yes, proceed with marking this request as created</label>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -319,8 +319,9 @@ abstract class PageBase extends TaskBase implements IRoutedTask
      *
      * @param string $path The path (relative to the application root) of the file
      */
-    final protected function addJs($path){
-        if(in_array($path, $this->extraJs)){
+    final protected function addJs($path)
+    {
+        if (in_array($path, $this->extraJs)) {
             // nothing to do
             return;
         }

@@ -12,6 +12,8 @@ use Exception;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\Request;
+use Waca\ExceptionHandler;
+use Waca\Exceptions\CurlException;
 use Waca\Helpers\HttpHelper;
 use Waca\Helpers\Interfaces\IBanHelper;
 use Waca\Helpers\Logger;
@@ -50,6 +52,8 @@ class RequestValidationHelper
      * @var SiteConfiguration
      */
     private $siteConfiguration;
+
+    private $validationRemoteTimeout = 5000;
 
     /**
      * Summary of __construct
@@ -118,6 +122,11 @@ class RequestValidationHelper
         // username can't contain #@/<>[]|{}
         if (preg_match("/[" . preg_quote("#@/<>[]|{}", "/") . "]/", $request->getName()) === 1) {
             $errorList[ValidationError::NAME_INVALIDCHAR] = new ValidationError(ValidationError::NAME_INVALIDCHAR);
+        }
+        
+        // username is an IP
+        if (filter_var($request->getName(), FILTER_VALIDATE_IP)) {
+            $errorList[ValidationError::NAME_IP] = new ValidationError(ValidationError::NAME_IP);
         }
 
         // existing non-closed request for this name
@@ -239,27 +248,37 @@ class RequestValidationHelper
             }
         }
         catch (Exception $ex) {
-            // logme
+            ExceptionHandler::logExceptionToDisk($ex, $this->siteConfiguration);
         }
     }
 
     private function checkTitleBlacklist(Request $request)
     {
         if ($this->titleBlacklistEnabled == 1) {
-            $apiResult = $this->httpHelper->get(
-                $this->mediawikiApiEndpoint,
-                array(
-                    'action'       => 'titleblacklist',
-                    'tbtitle'      => $request->getName(),
-                    'tbaction'     => 'new-account',
-                    'tbnooverride' => true,
-                    'format'       => 'php',
-                )
-            );
+            try {
+                $apiResult = $this->httpHelper->get(
+                    $this->mediawikiApiEndpoint,
+                    array(
+                        'action'       => 'titleblacklist',
+                        'tbtitle'      => $request->getName(),
+                        'tbaction'     => 'new-account',
+                        'tbnooverride' => true,
+                        'format'       => 'php',
+                    ),
+                    [],
+                    $this->validationRemoteTimeout
+                );
 
-            $data = unserialize($apiResult);
+                $data = unserialize($apiResult);
 
-            $requestIsOk = $data['titleblacklist']['result'] == "ok";
+                $requestIsOk = $data['titleblacklist']['result'] == "ok";
+            }
+            catch (CurlException $ex) {
+                ExceptionHandler::logExceptionToDisk($ex, $this->siteConfiguration);
+
+                // Don't kill the request, just assume it's fine. Humans can deal with it later.
+                return;
+            }
 
             if (!$requestIsOk) {
                 $this->deferRequest($request, 'Flagged users',
@@ -270,19 +289,29 @@ class RequestValidationHelper
 
     private function userExists(Request $request)
     {
-        $userExists = $this->httpHelper->get(
-            $this->mediawikiApiEndpoint,
-            array(
-                'action'  => 'query',
-                'list'    => 'users',
-                'ususers' => $request->getName(),
-                'format'  => 'php',
-            )
-        );
+        try {
+            $userExists = $this->httpHelper->get(
+                $this->mediawikiApiEndpoint,
+                array(
+                    'action'  => 'query',
+                    'list'    => 'users',
+                    'ususers' => $request->getName(),
+                    'format'  => 'php',
+                ),
+                [],
+                $this->validationRemoteTimeout
+            );
 
-        $ue = unserialize($userExists);
-        if (!isset ($ue['query']['users']['0']['missing']) && isset ($ue['query']['users']['0']['userid'])) {
-            return true;
+            $ue = unserialize($userExists);
+            if (!isset ($ue['query']['users']['0']['missing']) && isset ($ue['query']['users']['0']['userid'])) {
+                return true;
+            }
+        }
+        catch (CurlException $ex) {
+            ExceptionHandler::logExceptionToDisk($ex, $this->siteConfiguration);
+
+            // Don't kill the request, just assume it's fine. Humans can deal with it later.
+            return false;
         }
 
         return false;
@@ -292,19 +321,29 @@ class RequestValidationHelper
     {
         $requestName = $request->getName();
 
-        $userExists = $this->httpHelper->get(
-            $this->mediawikiApiEndpoint,
-            array(
-                'action'  => 'query',
-                'meta'    => 'globaluserinfo',
-                'guiuser' => $requestName,
-                'format'  => 'php',
-            )
-        );
+        try {
+            $userExists = $this->httpHelper->get(
+                $this->mediawikiApiEndpoint,
+                array(
+                    'action'  => 'query',
+                    'meta'    => 'globaluserinfo',
+                    'guiuser' => $requestName,
+                    'format'  => 'php',
+                ),
+                [],
+                $this->validationRemoteTimeout
+            );
 
-        $ue = unserialize($userExists);
-        if (isset ($ue['query']['globaluserinfo']['id'])) {
-            return true;
+            $ue = unserialize($userExists);
+            if (isset ($ue['query']['globaluserinfo']['id'])) {
+                return true;
+            }
+        }
+        catch (CurlException $ex) {
+            ExceptionHandler::logExceptionToDisk($ex, $this->siteConfiguration);
+
+            // Don't kill the request, just assume it's fine. Humans can deal with it later.
+            return false;
         }
 
         return false;

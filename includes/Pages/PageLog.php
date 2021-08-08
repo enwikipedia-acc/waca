@@ -43,7 +43,8 @@ class PageLog extends PagedInternalPageBase
             $userObj = User::getByUsername($filterUser, $database);
             if ($userObj !== false) {
                 $logSearch->byUser($userObj->getId());
-            } else {
+            }
+            else {
                 $logSearch->byUser(-1);
             }
         }

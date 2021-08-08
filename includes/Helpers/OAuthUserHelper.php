@@ -65,7 +65,10 @@ class OAuthUserHelper implements IMediaWikiClient
      */
     private $siteConfiguration;
 
+    private $legacyTokens;
+
     #region Static methods
+
     public static function findUserByRequestToken($requestToken, PdoDatabase $database)
     {
         $statement = $database->prepare(<<<'SQL'
@@ -166,6 +169,8 @@ SQL
 
         self::prepareTokenCountStatement($database);
         $this->getTokenStatement = $this->database->prepare('SELECT * FROM oauthtoken WHERE user = :user AND type = :type');
+
+        $this->legacyTokens = $this->siteConfiguration->getOauthLegacyConsumerTokens();
     }
 
     /**
@@ -196,14 +201,16 @@ SQL
         return $this->partiallyLinked;
     }
 
-    public function canCreateAccount() {
+    public function canCreateAccount()
+    {
         return $this->isFullyLinked()
             && $this->getIdentity(true)->getGrantBasic()
             && $this->getIdentity(true)->getGrantHighVolume()
             && $this->getIdentity(true)->getGrantCreateAccount();
     }
 
-    public function canWelcome() {
+    public function canWelcome()
+    {
         return $this->isFullyLinked()
             && $this->getIdentity(true)->getGrantBasic()
             && $this->getIdentity(true)->getGrantHighVolume()
@@ -394,7 +401,11 @@ SQL
 
         if ($this->identity->getAudience() !== $this->siteConfiguration->getOAuthConsumerToken()) {
             // token not issued for us
-            return false;
+
+            // we allow cases where the cache is expired and the cache is for a legacy token
+            if (!($expiredOk && in_array($this->identity->getAudience(), $this->legacyTokens))) {
+                return false;
+            }
         }
 
         if ($this->identity->getIssuer() !== $this->siteConfiguration->getOauthMediaWikiCanonicalServer()) {
