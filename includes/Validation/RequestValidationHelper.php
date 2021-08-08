@@ -253,7 +253,25 @@ class RequestValidationHelper
             }
         }
         catch (Exception $ex) {
-            ExceptionHandler::logExceptionToDisk($ex, $this->siteConfiguration);
+            $skippable = [
+                'Encountered error while getting result: Contains unassigned character',
+                'Encountered error while getting result: Contains incompatible mixed scripts',
+                'Encountered error while getting result: Does not contain any letters'
+            ];
+
+            $skip = false;
+
+            foreach ($skippable as $s) {
+                if (strpos($ex->getMessage(), $s) !== false) {
+                    $skip = true;
+                    break;
+                }
+            }
+
+            // Only log to disk if this *isn't* a "skippable" error.
+            if (!$skip) {
+                ExceptionHandler::logExceptionToDisk($ex, $this->siteConfiguration);
+            }
         }
     }
 
