@@ -99,7 +99,7 @@
                     <a class="dropdown-item" href="#modalFlowchart" role="button" data-toggle="modal">
                         <i class="fas fa-check"></i>&nbsp;Similar account flowchart
                     </a>
-                    <a class="dropdown-item" href="https://webchat.freenode.net/?channels=wikipedia-en-accounts" target="_blank">
+                    <a class="dropdown-item" href="https://kiwiirc.com/nextclient/irc.libera.chat/wikipedia-en-accounts" target="_blank">
                         <i class="fas fa-comment"></i>&nbsp;Chat
                     </a>
                     <a class="dropdown-item" href="https://lists.wikimedia.org/mailman/listinfo/accounts-enwiki-l" target="_blank">
