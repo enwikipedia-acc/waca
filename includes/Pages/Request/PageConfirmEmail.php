@@ -13,6 +13,7 @@ use Waca\DataObjects\Request;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Helpers\Logger;
+use Waca\RequestStatus;
 use Waca\Tasks\PublicInterfacePageBase;
 use Waca\WebRequest;
 
@@ -77,7 +78,10 @@ class PageConfirmEmail extends PublicInterfacePageBase
         }
 
         Logger::emailConfirmed($this->getDatabase(), $request);
-        $this->getNotificationHelper()->requestReceived($request);
+
+        if ($request->getStatus() != RequestStatus::CLOSED) {
+            $this->getNotificationHelper()->requestReceived($request);
+        }
 
         $this->redirect('requestSubmitted');
     }
