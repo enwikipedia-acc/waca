@@ -52,6 +52,29 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
     -- Developers - put your upgrade statements here!
     -- -------------------------------------------------------------------------
 
+    -- collation fixes
+    alter table requestqueue
+        modify column apiname varchar(20) COLLATE utf8mb4_unicode_520_ci not null,
+        modify column displayname varchar(100) COLLATE utf8mb4_unicode_520_ci not null,
+        modify column header varchar(100) COLLATE utf8mb4_unicode_520_ci not null,
+        modify column help text COLLATE utf8mb4_unicode_520_ci null,
+        modify column logname varchar(50) COLLATE utf8mb4_unicode_520_ci not null,
+        modify column legacystatus varchar(40) COLLATE utf8mb4_unicode_520_ci not null;
+
+    alter table domain
+        modify column shortname varchar(20) COLLATE utf8mb4_unicode_520_ci not null,
+        modify column longname varchar(255) COLLATE utf8mb4_unicode_520_ci not null,
+        modify column wikiarticlepath varchar(255) COLLATE utf8mb4_unicode_520_ci not null,
+        modify column wikiapipath varchar(255) COLLATE utf8mb4_unicode_520_ci not null,
+        modify column defaultlanguage varchar(10) COLLATE utf8mb4_unicode_520_ci not null default 'en',
+        modify column emailsender varchar(255) COLLATE utf8mb4_unicode_520_ci not null,
+        modify column notificationtarget varchar(255) COLLATE utf8mb4_unicode_520_ci null;
+
+    alter table requestform
+        modify column name varchar(255) COLLATE utf8mb4_unicode_520_ci not null,
+        modify column publicendpoint varchar(64) COLLATE utf8mb4_unicode_520_ci not null,
+        modify column formcontent longtext COLLATE utf8mb4_unicode_520_ci not null;
+
     -- request table - queue/status columns
     alter table request
         add queue int unsigned null after status,
