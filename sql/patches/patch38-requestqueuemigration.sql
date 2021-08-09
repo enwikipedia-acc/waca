@@ -98,6 +98,9 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
 
     alter table requestqueue drop column legacystatus;
 
+    -- -------------------------------------------------------------------------
+    -- finally, update the schema version to indicate success
+    UPDATE schemaversion SET version = patchversion;
 END;;
 DELIMITER ';'
 CALL SCHEMA_UPGRADE_SCRIPT();
