@@ -1,17 +1,17 @@
 <table class="table table-striped table-sm sortable mb-0">
     <thead>
     <tr>
-        <th data-defaultsort="asc"><span class="d-none-xs">#</span></th>
+        <th data-defaultsort="asc"><span class="d-none d-sm-inline">#</span></th>
         {if $showStatus}
-            <th>Request state</th>
+            <th><span class="d-none d-sm-inline">Request state</span></th>
         {/if}
         {if $list->showPrivateData}
-            <th>Email address</th>
+            <th><span class="d-none d-md-inline">Email address</span></th>
             <th>IP address</th>
         {/if}
         <th>Username</th>
-        <th><span class="d-none d-md-block">Request time</span></th>
-        <th><span class="d-none d-md-block">Last updated</span></th>
+        <th><span class="d-none d-md-inline">Request time</span></th>
+        <th><span class="d-none {if $list->showPrivateData}d-lg-inline{else}d-md-inline{/if}">Last updated</span></th>
         <th data-defaultsort="disabled"><!-- ban --></th>
         <th data-defaultsort="disabled"><!-- reserve status --></th>
         <th data-defaultsort="disabled"><!--reserve button--></th>
@@ -27,23 +27,25 @@
             </td>
 
             {if $showStatus}
-                <td>{$r->getStatus()}</td>
+                <td><span class="d-none d-sm-inline">{$r->getStatus()}</span></td>
             {/if}
 
             {if $list->showPrivateData}
                 <td>
                     {if $r->getEmail() === $list->dataClearEmail}
-                        <span class="text-muted font-italic">Email address purged</span>
+                        <span class="text-muted font-italic d-none d-md-inline">Email address purged</span>
                     {else}
-                        {$r->getEmail()|escape}
-                        {if $list->relatedEmailRequests[$r->getId()] > 0}
-                            <span class="badge badge-pill badge-danger"
-                                data-toggle="tooltip" data-original-title="{$list->relatedEmailRequests[$r->getId()]} other request(s) from this email address"
-                            >
-                                <i class="fas fa-clone"></i>&nbsp;{$list->relatedEmailRequests[$r->getId()]}
-                            </span>
-                        {/if}
-                        {if !$list->commonEmail[$r->getId()]}<span class="badge badge-warning badge-pill" data-toggle="tooltip" title="Uncommon email domain"><i class="fas fa-gem"></i></span>{/if}
+                        <span class="d-none d-md-inline">
+                            {$r->getEmail()|escape}
+                            {if $list->relatedEmailRequests[$r->getId()] > 0}
+                                <span class="badge badge-pill badge-danger"
+                                    data-toggle="tooltip" data-original-title="{$list->relatedEmailRequests[$r->getId()]} other request(s) from this email address"
+                                >
+                                    <i class="fas fa-clone"></i>&nbsp;{$list->relatedEmailRequests[$r->getId()]}
+                                </span>
+                            {/if}
+                            {if !$list->commonEmail[$r->getId()]}<span class="badge badge-warning badge-pill" data-toggle="tooltip" title="Uncommon email domain"><i class="fas fa-gem"></i></span>{/if}
+                        </span>
                     {/if}
                 </td>
 
@@ -72,20 +74,20 @@
 
             {* Request Time *}
             <td data-value="{$r->getDate()|date}" data-dateformat="YYYY-MM-DD hh:mm:ss">
-                <span class="d-none d-md-block"><span title="{$r->getDate()|date}" data-toggle="tooltip" data-placement="top" id="#rqtime{$r->getId()}">{$r->getDate()|relativedate}</span></span>
+                <span class="d-none d-md-inline"><span title="{$r->getDate()|date}" data-toggle="tooltip" data-placement="top" id="#rqtime{$r->getId()}">{$r->getDate()|relativedate}</span></span>
             </td>
 
             {* Last updated *}
             <td data-value="{$r->getLastUpdated()|date}" data-dateformat="YYYY-MM-DD hh:mm:ss">
-                <span class="d-none d-md-block"><span title="{$r->getLastUpdated()|date}" data-toggle="tooltip" data-placement="top" id="#rqupdatetime{$r->getId()}">{$r->getLastUpdated()|relativedate}</span></span>
+                <span class="d-none {if $list->showPrivateData}d-lg-inline{else}d-md-inline{/if}"><span title="{$r->getLastUpdated()|date}" data-toggle="tooltip" data-placement="top" id="#rqupdatetime{$r->getId()}">{$r->getLastUpdated()|relativedate}</span></span>
             </td>
 
             {* Bans *}
             <td>
                 {if $list->canBan}
-                    <div class="dropdown">
+                    <div class="dropdown d-none d-md-block">
                         <button class="btn btn-danger btn-sm dropdown-toggle" type="button" id="banDropdown{$r->getId()}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ban"></i>&nbsp;Ban&nbsp;<span class="caret"></span>
+                            <i class="fas fa-ban"></i><span class="d-none d-lg-inline">&nbsp;Ban&nbsp;<span class="caret"></span></span>
                         </button>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="{$baseurl}/internal.php/bans/set?type=IP&amp;request={$r->getId()}">IP</a>
