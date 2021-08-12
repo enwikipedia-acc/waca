@@ -91,6 +91,9 @@ trait TemplateOutput
         $this->assign('nav__canJobQueue', false);
         $this->assign('nav__canErrorLog', false);
 
+        // debug helpers
+        $this->assign('showDebugCssBreakpoints', $this->getSiteConfiguration()->getDebuggingCssBreakpointsEnabled());
+
         $this->assign('page', $this);
     }
 
