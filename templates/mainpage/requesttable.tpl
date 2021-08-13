@@ -1,17 +1,17 @@
-<table class="table table-striped table-sm sortable mb-0">
+<table class="table table-striped table-sm sortable mb-0 request-table">
     <thead>
     <tr>
-        <th data-defaultsort="asc"><span class="d-none d-sm-inline">#</span></th>
+        <th {defaultsort id="id" req=$sort dir=$dir}><span class="d-none d-sm-inline">#</span></th>
         {if $showStatus}
-            <th><span class="d-none d-sm-inline">Request state</span></th>
+            <th {defaultsort id="status" req=$sort dir=$dir}><span class="d-none d-sm-inline">Request state</span></th>
         {/if}
         {if $list->showPrivateData}
-            <th><span class="d-none d-md-inline">Email address</span></th>
-            <th>IP address</th>
+            <th {defaultsort id="email" req=$sort dir=$dir}><span class="d-none d-md-inline">Email address</span></th>
+            <th {defaultsort id="ip" req=$sort dir=$dir}>IP address</th>
         {/if}
-        <th>Username</th>
-        <th><span class="d-none d-md-inline">Request time</span></th>
-        <th><span class="d-none {if $list->showPrivateData}d-lg-inline{else}d-md-inline{/if}">Last updated</span></th>
+        <th {defaultsort id="username" req=$sort dir=$dir}>Username</th>
+        <th {defaultsort id="date" req=$sort dir=$dir}><span class="d-none d-md-inline">Request time</span></th>
+        <th {defaultsort id="updated" req=$sort dir=$dir}><span class="d-none {if $list->showPrivateData}d-lg-inline{else}d-md-inline{/if}">Last updated</span></th>
         <th data-defaultsort="disabled"><!-- ban --></th>
         <th data-defaultsort="disabled"><!-- reserve status --></th>
         <th data-defaultsort="disabled"><!--reserve button--></th>

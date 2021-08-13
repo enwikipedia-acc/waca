@@ -22,7 +22,7 @@
     <div class="row">
         <div class="col-12">
         {if count($totalRequests) > 0}
-            {include file="mainpage/requesttable.tpl" showStatus=false list=$requests}
+            {include file="mainpage/requesttable.tpl" showStatus=false list=$requests sort=$defaultSort dir=$defaultSortDirection}
         {else}
             <span class="font-italic text-muted">No requests at this time</span>
         {/if}

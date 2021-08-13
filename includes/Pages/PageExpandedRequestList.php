@@ -39,6 +39,10 @@ class PageExpandedRequestList extends InternalPageBase
             $help = $requestStates[$requestedStatus]['queuehelp'];
             $this->assign('queuehelp', $help);
 
+            list($defaultSort, $defaultSortDirection) = WebRequest::requestListDefaultSort();
+            $this->assign('defaultSort', $defaultSort);
+            $this->assign('defaultSortDirection', $defaultSortDirection);
+
             if ($config->getEmailConfirmationEnabled()) {
                 $query = "SELECT * FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
                 $totalQuery = "SELECT COUNT(id) FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";

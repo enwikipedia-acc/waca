@@ -9,7 +9,7 @@
     </div>
 {/if}
 {if $section.total > 0}
-    {include file="mainpage/requesttable.tpl" list=$section.requests}
+    {include file="mainpage/requesttable.tpl" list=$section.requests sort=$defaultSort dir=$defaultSortDirection}
 {else}
     <span class="font-italic text-muted">No requests at this time</span>
 {/if}
