@@ -11,6 +11,7 @@ namespace Waca\Background;
 use Exception;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
+use Waca\ExceptionHandler;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Interfaces\IMediaWikiClient;
 use Waca\Helpers\Logger;
@@ -90,7 +91,11 @@ abstract class CreationTaskBase extends BackgroundTaskBase
             $requestEmailHelper->sendMail($this->request, $emailText, $this->getTriggerUser(), $ccMailingList);
         }
         catch (Exception $ex) {
-            $this->markFailed($ex->getMessage());
+            if (mb_strlen($ex->getMessage()) > 255) {
+                ExceptionHandler::logExceptionToDisk($ex, $this->getSiteConfiguration());
+            }
+
+            $this->markFailed(substr($ex->getMessage(), 0, 255));
 
             return;
         }
