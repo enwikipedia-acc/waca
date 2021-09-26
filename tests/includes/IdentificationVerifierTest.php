@@ -92,7 +92,7 @@ class IdentificationVerifierTest extends PHPUnit_Framework_TestCase
         // Some non-standard or non-Latin names to try out
         $this->assertTrue($method->invoke($this->identificationVerifier, "-revi"));
         $this->assertTrue($method->invoke($this->identificationVerifier, "Стефанко1982"));
-        $this->assertTrue($method->invoke($this->identificationVerifier, "ظهیری"));
+        $this->assertTrue($method->invoke($this->identificationVerifier, "علاء"));
         $this->assertTrue($method->invoke($this->identificationVerifier, "이강철"));
         $this->assertFalse($method->invoke($this->identificationVerifier, "-rei"));
         $this->assertFalse($method->invoke($this->identificationVerifier, "Стефанко198"));

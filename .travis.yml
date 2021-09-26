@@ -37,7 +37,7 @@ after_script:
 notifications:
   irc:
     channels:
-      - "chat.freenode.net#wikipedia-en-accounts-devs"
+      - "irc.libera.chat#wikipedia-en-accounts-devs"
     on_success: change
     on_failure: always
     template:
