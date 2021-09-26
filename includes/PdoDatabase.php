@@ -15,6 +15,10 @@ use Waca\Exceptions\EnvironmentException;
 
 class PdoDatabase extends PDO
 {
+    public const ISOLATION_SERIALIZABLE = 'SERIALIZABLE';
+    public const ISOLATION_READ_COMMITTED = 'READ COMMITTED';
+    public const ISOLATION_READ_ONLY = 'READ ONLY';
+
     /**
      * @var PdoDatabase[]
      */
@@ -63,6 +67,9 @@ class PdoDatabase extends PDO
             // -- stw 2014-02-11
             $databaseObject->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
+            // Set the default transaction mode
+            $databaseObject->exec("SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;");
+
             self::$connections[$connectionName] = $databaseObject;
         }
 
@@ -82,7 +89,7 @@ class PdoDatabase extends PDO
      * Summary of beginTransaction
      * @return bool
      */
-    public function beginTransaction()
+    public function beginTransaction(string $isolationLevel = self::ISOLATION_READ_COMMITTED)
     {
         // Override the pre-existing method, which doesn't stop you from
         // starting transactions within transactions - which doesn't work and
@@ -92,11 +99,25 @@ class PdoDatabase extends PDO
             return false;
         }
         else {
-            // set the transaction isolation level for every transaction.
-            $this->exec("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;");
+            $accessMode = 'READ WRITE';
 
-            // start a new transaction, and return whether or not the start was
-            // successful
+            switch ($isolationLevel) {
+                case self::ISOLATION_SERIALIZABLE:
+                case self::ISOLATION_READ_COMMITTED:
+                    break;
+                case self::ISOLATION_READ_ONLY:
+                    $isolationLevel = self::ISOLATION_READ_COMMITTED;
+                    $accessMode = 'READ ONLY';
+                    break;
+                default:
+                    throw new Exception("Invalid transaction isolation level");
+            }
+
+            // set the transaction isolation level for every transaction.
+            // string substitution is safe here; values can only be one of the above constants
+            parent::exec("SET TRANSACTION ISOLATION LEVEL ${isolationLevel}, ${accessMode};");
+
+            // start a new transaction, and return whether the start was successful
             $this->hasActiveTransaction = parent::beginTransaction();
 
             return $this->hasActiveTransaction;
