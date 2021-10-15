@@ -17,6 +17,7 @@ use Waca\PdoDatabase;
 use Waca\RequestStatus;
 use Waca\SiteConfiguration;
 use Waca\Tasks\InternalPageBase;
+use Waca\WebRequest;
 
 class PageMain extends InternalPageBase
 {
@@ -38,6 +39,10 @@ class PageMain extends InternalPageBase
         $this->assign('requestLimitShowOnly', $config->getMiserModeLimit());
 
         $seeAllRequests = $this->barrierTest('seeAllRequests', $currentUser, PageViewRequest::class);
+
+        list($defaultSort, $defaultSortDirection) = WebRequest::requestListDefaultSort();
+        $this->assign('defaultSort', $defaultSort);
+        $this->assign('defaultSortDirection', $defaultSortDirection);
 
         // Fetch request data
         $requestSectionData = array();

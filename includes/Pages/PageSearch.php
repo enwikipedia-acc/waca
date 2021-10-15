@@ -60,6 +60,10 @@ class PageSearch extends InternalPageBase
             $this->assign('term', $searchTerm);
             $this->assign('target', $searchType);
 
+            list($defaultSort, $defaultSortDirection) = WebRequest::requestListDefaultSort();
+            $this->assign('defaultSort', $defaultSort);
+            $this->assign('defaultSortDirection', $defaultSortDirection);
+
             $this->assignCSRFToken();
             $this->setTemplate('search/searchResult.tpl');
         }
