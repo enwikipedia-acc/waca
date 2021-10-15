@@ -8,9 +8,10 @@
 
 namespace Waca\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Waca\SiteConfiguration;
 
-class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
+class SiteConfigurationTest extends TestCase
 {
     /** @var SiteConfiguration */
     private $si;

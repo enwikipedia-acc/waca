@@ -17,6 +17,7 @@ use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
 use Waca\DataObjects\WelcomeTemplate;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
@@ -168,6 +169,8 @@ class LogHelper
             'JobCancelled'        => 'cancelled execution of a job',
             'EnqueuedJobQueue'    => 'scheduled for creation',
             'Hospitalised'        => 'sent to the hospital',
+            'QueueCreated'        => 'created a request queue',
+            'QueueEdited'         => 'edited a request queue',
         );
 
         if (array_key_exists($entry->getAction(), $lookup)) {
@@ -236,14 +239,19 @@ class LogHelper
                 'EnqueuedJobQueue'    => 'scheduled for creation',
                 'Hospitalised'        => 'sent to the hospital',
             ],
+            "Request queues" => [
+                'QueueCreated'        => 'created a request queue',
+                'QueueEdited'         => 'edited a request queue',
+            ],
         );
 
-        $statement = $database->query(<<<SQL
-SELECT CONCAT('Closed ', id) AS k, CONCAT('closed (',name,')') AS v
-FROM emailtemplate;
+        $databaseDrivenLogKeys = $database->query(<<<SQL
+SELECT CONCAT('Closed ', id) AS k, CONCAT('closed (',name,')') AS v FROM emailtemplate
+UNION ALL
+SELECT CONCAT('Deferred to ', logname) AS k, CONCAT('deferred to ', displayname) AS v FROM requestqueue;
 SQL
         );
-        foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        foreach ($databaseDrivenLogKeys->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $lookup["Requests"][$row['k']] = $row['v'];
         }
 
@@ -261,6 +269,7 @@ SQL
             'SiteNotice'      => 'Site notice',
             'User'            => 'User',
             'WelcomeTemplate' => 'Welcome template',
+            'RequestQueue'    => 'Request queue'
         );
     }
 
@@ -371,6 +380,17 @@ HTML;
                 }
 
                 return "<a href=\"{$baseurl}/internal.php/jobQueue/view?id={$objectId}\">Job #{$job->getId()} ({$description})</a>";
+            case 'RequestQueue':
+                /** @var RequestQueue $queue */
+                $queue = RequestQueue::getById($objectId, $database);
+
+                if ($queue === false) {
+                    return "Request Queue #{$objectId}";
+                }
+
+                $queueHeader = htmlentities($queue->getHeader(), ENT_COMPAT, 'UTF-8');
+
+                return "<a href=\"{$baseurl}/internal.php/queueManagement/edit?queue={$objectId}\">{$queueHeader}</a>";
             default:
                 return '[' . $objectType . " " . $objectId . ']';
         }

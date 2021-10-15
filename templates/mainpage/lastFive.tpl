@@ -28,7 +28,7 @@
                             <input class="form-control" type="hidden" name="request" value="{$req.id}"/>
                             <input class="form-control" type="hidden" name="updateversion"
                                    value="{$req.updateversion}"/>
-                            <input class="form-control" type="hidden" name="target" value="{$defaultRequestState}"/>
+                            <input class="form-control" type="hidden" name="target" value="{$defaultRequestState|escape}"/>
                             <button class="btn btn-warning btn-sm" type="submit">
                                 <i class="fas fa-sync"></i>&nbsp;Reset
                             </button>

@@ -9,11 +9,18 @@
 namespace Waca\DataObjects;
 
 use Exception;
+use PDO;
 use Waca\DataObject;
+use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\OptimisticLockFailedException;
+use Waca\PdoDatabase;
 
 class RequestQueue extends DataObject
 {
+    const DEFAULT_DEFAULT = 'default';
+    const DEFAULT_ANTISPOOF = 'antispoof';
+    const DEFAULT_TITLEBLACKLIST = 'titleblacklist';
+
     /** @var int */
     private $enabled = 0;
     /** @var int */
@@ -38,21 +45,202 @@ class RequestQueue extends DataObject
      */
     private $logname;
     /**
-     * @var string
-     * @deprecated Removal due as part of #602
+     * @param PdoDatabase $database
+     *
+     * @return RequestQueue[]
      */
-    private $legacystatus;
+    public static function getAllQueues(PdoDatabase $database)
+    {
+        $statement = $database->prepare(<<<SQL
+            SELECT * FROM requestqueue;
+SQL
+        );
+        $statement->execute();
 
+        $resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
+
+        /** @var RequestQueue $t */
+        foreach ($resultObject as $t) {
+            $t->setDatabase($database);
+        }
+
+        return $resultObject;
+    }
+
+    /**
+     * @param PdoDatabase $database
+     *
+     * @return RequestQueue[]
+     */
+    public static function getEnabledQueues(PdoDatabase $database)
+    {
+        $statement = $database->prepare(<<<SQL
+            SELECT * FROM requestqueue WHERE enabled = 1;
+SQL
+        );
+        $statement->execute();
+
+        $resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
+
+        /** @var RequestQueue $t */
+        foreach ($resultObject as $t) {
+            $t->setDatabase($database);
+        }
+
+        return $resultObject;
+    }
+
+    /**
+     * @param PdoDatabase $database
+     * @param string      $apiName
+     * @param int         $domain
+     *
+     * @return false|RequestQueue
+     */
+    public static function getByApiName(PdoDatabase $database, string $apiName, int $domain)
+    {
+        $statement = $database->prepare(<<<SQL
+            SELECT * FROM requestqueue WHERE apiname = :apiName AND domain = :domain;
+SQL
+        );
+
+        $statement->execute([
+            ':apiName' => $apiName,
+            ':domain'  => $domain,
+        ]);
+
+        /** @var RequestQueue|false $result */
+        $result = $statement->fetchObject(get_called_class());
+
+        if ($result !== false) {
+            $result->setDatabase($database);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param PdoDatabase $database
+     * @param string      $displayName
+     * @param int         $domain
+     *
+     * @return false|RequestQueue
+     */
+    public static function getByDisplayName(PdoDatabase $database, string $displayName, int $domain)
+    {
+        $statement = $database->prepare(<<<SQL
+            SELECT * FROM requestqueue WHERE displayname = :displayName AND domain = :domain;
+SQL
+        );
+
+        $statement->execute([
+            ':displayName' => $displayName,
+            ':domain'      => $domain,
+        ]);
+
+        /** @var RequestQueue|false $result */
+        $result = $statement->fetchObject(get_called_class());
+
+        if ($result !== false) {
+            $result->setDatabase($database);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param PdoDatabase $database
+     * @param string      $header
+     * @param int         $domain
+     *
+     * @return false|RequestQueue
+     */
+    public static function getByHeader(PdoDatabase $database, string $header, int $domain)
+    {
+        $statement = $database->prepare(<<<SQL
+            SELECT * FROM requestqueue WHERE header = :header AND domain = :domain;
+SQL
+        );
+
+        $statement->execute([
+            ':header' => $header,
+            ':domain' => $domain,
+        ]);
+
+        /** @var RequestQueue|false $result */
+        $result = $statement->fetchObject(get_called_class());
+
+        if ($result !== false) {
+            $result->setDatabase($database);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param PdoDatabase $database
+     * @param int         $domain
+     *
+     * @param string      $defaultType The type of default queue to get.
+     *
+     * @return false|RequestQueue
+     * @throws ApplicationLogicException
+     */
+    public static function getDefaultQueue(PdoDatabase $database, int $domain, string $defaultType = 'default')
+    {
+        switch ($defaultType) {
+            case self::DEFAULT_DEFAULT:
+                $sql = 'SELECT * FROM requestqueue WHERE isdefault = 1 AND domain = :domain;';
+                break;
+            case self::DEFAULT_ANTISPOOF:
+                $sql = 'SELECT * FROM requestqueue WHERE defaultantispoof = 1 AND domain = :domain;';
+                break;
+            case self::DEFAULT_TITLEBLACKLIST:
+                $sql = 'SELECT * FROM requestqueue WHERE defaulttitleblacklist = 1 AND domain = :domain;';
+                break;
+            default:
+                throw new ApplicationLogicException('Unknown request for default queue');
+        }
+
+        $statement = $database->prepare($sql);
+
+        $statement->execute([':domain' => $domain]);
+
+        /** @var RequestQueue|false $result */
+        $result = $statement->fetchObject(get_called_class());
+
+        if ($result !== false) {
+            $result->setDatabase($database);
+        }
+
+        return $result;
+    }
 
     public function save()
     {
+        // find and squish existing defaults
+        if ($this->isDefault()) {
+            $squishStatement = $this->dbObject->prepare('UPDATE requestqueue SET isdefault = 0 WHERE isdefault = 1 AND domain = :domain;');
+            $squishStatement->execute([':domain' => $this->domain]);
+        }
+
+        if ($this->isDefaultAntispoof()) {
+            $squishStatement = $this->dbObject->prepare('UPDATE requestqueue SET defaultantispoof = 0 WHERE defaultantispoof = 1 AND domain = :domain;');
+            $squishStatement->execute([':domain' => $this->domain]);
+        }
+
+        if ($this->isDefaultTitleBlacklist()) {
+            $squishStatement = $this->dbObject->prepare('UPDATE requestqueue SET defaulttitleblacklist = 0 WHERE defaulttitleblacklist = 1 AND domain = :domain;');
+            $squishStatement->execute([':domain' => $this->domain]);
+        }
+
         if ($this->isNew()) {
             // insert
             $statement = $this->dbObject->prepare(<<<SQL
                 INSERT INTO requestqueue (
-                    enabled, isdefault, defaultantispoof, defaulttitleblacklist, domain, apiname, displayname, header, help, logname, legacystatus
+                    enabled, isdefault, defaultantispoof, defaulttitleblacklist, domain, apiname, displayname, header, help, logname
                 ) VALUES (
-                    :enabled, :isdefault, :defaultantispoof, :defaulttitleblacklist, :domain, :apiname, :displayname, :header, :help, :logname, :legacystatus
+                    :enabled, :isdefault, :defaultantispoof, :defaulttitleblacklist, :domain, :apiname, :displayname, :header, :help, :logname
                 );
 SQL
             );
@@ -67,7 +255,6 @@ SQL
             $statement->bindValue(":header", $this->header);
             $statement->bindValue(":help", $this->help);
             $statement->bindValue(":logname", $this->logname);
-            $statement->bindValue(":legacystatus", $this->legacystatus);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -89,7 +276,6 @@ SQL
                     header = :header,
                     help = :help,
                     logname = :logname,
-                    legacystatus = :legacystatus,
                 
                     updateversion = updateversion + 1
 				WHERE id = :id AND updateversion = :updateversion;
@@ -106,7 +292,6 @@ SQL
             $statement->bindValue(":header", $this->header);
             $statement->bindValue(":help", $this->help);
             $statement->bindValue(":logname", $this->logname);
-            $statement->bindValue(":legacystatus", $this->legacystatus);
 
             $statement->bindValue(':id', $this->id);
             $statement->bindValue(':updateversion', $this->updateversion);
@@ -284,24 +469,5 @@ SQL
     public function setLogName(string $logName): void
     {
         $this->logname = $logName;
-    }
-
-    /**
-     * @return string
-     * @deprecated
-     */
-    public function getLegacyStatus(): string
-    {
-        return $this->legacystatus;
-    }
-
-    /**
-     * @param string $legacyStatus
-     *
-     * @deprecated
-     */
-    public function setLegacyStatus(string $legacyStatus): void
-    {
-        $this->legacystatus = $legacyStatus;
     }
 }

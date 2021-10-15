@@ -9,7 +9,7 @@
 namespace Waca\Tests\Fragments;
 
 use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use Waca\DataObjects\Request;
 use Waca\Fragments\RequestData;
@@ -18,7 +18,7 @@ use Waca\Providers\Interfaces\IRDnsProvider;
 use Waca\Providers\Interfaces\IXffTrustProvider;
 use Waca\Providers\XffTrustProvider;
 
-class RequestDataForwardedIpDataTest extends PHPUnit_Framework_TestCase
+class RequestDataForwardedIpDataTest extends TestCase
 {
     /** @var PHPUnit_Framework_MockObject_MockObject|RequestData */
     private $requestDataMock;

@@ -8,10 +8,10 @@
 
 namespace Waca\Tests\Helpers;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Waca\Helpers\FakeBlacklistHelper;
 
-class FakeBlacklistHelperTest extends PHPUnit_Framework_TestCase
+class FakeBlacklistHelperTest extends TestCase
 {
     /** @var FakeBlacklistHelper */
     private $blacklistHelper;

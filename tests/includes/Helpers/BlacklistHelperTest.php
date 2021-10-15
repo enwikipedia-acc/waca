@@ -9,11 +9,11 @@
 namespace Waca\Tests\Helpers;
 
 use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Waca\Helpers\BlacklistHelper;
 use Waca\Helpers\HttpHelper;
 
-class BlacklistHelperTest extends PHPUnit_Framework_TestCase
+class BlacklistHelperTest extends TestCase
 {
     public function setUp()
     {

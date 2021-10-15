@@ -8,13 +8,13 @@
 
 namespace Waca\Tests;
 
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase;
 use Waca\Providers\GlobalState\GlobalStateProvider;
 use Waca\Session;
 use Waca\WebRequest;
 
-class SessionTests extends PHPUnit_Framework_TestCase
+class SessionTests extends TestCase
 {
     /**
      * @var GlobalStateProvider|PHPUnit_Framework_MockObject_MockObject

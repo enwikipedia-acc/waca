@@ -73,7 +73,7 @@ class CountAction extends XmlApiPageBase implements IXmlApiAction
 QUERY;
 
         $statement = $this->getDatabase()->prepare($query);
-        $statement->execute(array(":username" => $this->user->getUsername(), ":created" => EmailTemplate::CREATED));
+        $statement->execute(array(":username" => $this->user->getUsername(), ":created" => EmailTemplate::ACTION_CREATED));
         $result = $statement->fetchColumn();
         $statement->closeCursor();
 
@@ -97,7 +97,7 @@ QUERY;
         $statement = $this->getDatabase()->prepare($query);
         $statement->bindValue(":username", $this->user->getUsername());
         $statement->bindValue(":date", date('Y-m-d') . "%");
-        $statement->bindValue(":created", EmailTemplate::CREATED);
+        $statement->bindValue(":created", EmailTemplate::ACTION_CREATED);
         $statement->execute();
         $today = $statement->fetchColumn();
         $statement->closeCursor();

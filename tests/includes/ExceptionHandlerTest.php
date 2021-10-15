@@ -12,12 +12,13 @@ use Waca\ExceptionHandler;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\SiteConfiguration;
 use PHPUnit_Extensions_MockFunction;
+use PHPUnit\Framework\TestCase;
 use \ErrorException;
 
 /**
  * @requires extension runkit
  */
-class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
+class ExceptionHandlerTest extends TestCase
 {
     private $ex;
     private $eh;

@@ -8,11 +8,12 @@
 
 namespace Waca\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Waca\SiteConfiguration;
 use Waca\WebStart;
 use Waca\Router\RequestRouter;
 
-class WebStartTest extends \PHPUnit_Framework_TestCase
+class WebStartTest extends TestCase
 {
     /** @var  SiteConfiguration */
     private $sc;

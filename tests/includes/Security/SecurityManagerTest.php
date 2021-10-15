@@ -9,7 +9,7 @@
 namespace Waca\Tests\Security;
 
 use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Waca\DataObjects\User;
 use Waca\IdentificationVerifier;
 use Waca\Security\RoleConfiguration;
@@ -20,7 +20,7 @@ use Waca\Security\SecurityManager;
  * @package  Waca\Tests
  * @category Security-Critical
  */
-class SecurityManagerTest extends PHPUnit_Framework_TestCase
+class SecurityManagerTest extends TestCase
 {
     /** @var User|PHPUnit_Framework_MockObject_MockObject */
     private $user;

@@ -12,6 +12,7 @@ use DateTime;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
+use Waca\RequestStatus;
 use Waca\SessionAlert;
 use Waca\WebRequest;
 
@@ -34,7 +35,7 @@ class PageReservation extends RequestActionBase
         $oneweek = $date->format("Y-m-d H:i:s");
 
         $currentUser = User::getCurrent($database);
-        if ($request->getStatus() == "Closed" && $closureDate < $oneweek) {
+        if ($request->getStatus() == RequestStatus::CLOSED && $closureDate < $oneweek) {
             if (!$this->barrierTest('reopenOldRequest', $currentUser, 'RequestData')) {
                 throw new ApplicationLogicException(
                     "You are not allowed to reserve a request that has been closed for over a week.");

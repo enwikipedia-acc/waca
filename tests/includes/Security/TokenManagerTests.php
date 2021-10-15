@@ -8,12 +8,12 @@
 
 namespace Waca\Tests\Security;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Waca\Security\TokenManager;
 use Waca\Providers\GlobalState\FakeGlobalStateProvider;
 use Waca\WebRequest;
 
-class TokenManagerTests extends PHPUnit_Framework_TestCase
+class TokenManagerTests extends TestCase
 {
     /** @var TokenManager */
     private $tokenManager;
