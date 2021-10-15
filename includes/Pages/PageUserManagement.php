@@ -482,6 +482,10 @@ class PageUserManagement extends InternalPageBase
                 throw new ApplicationLogicException('Invalid email address');
             }
 
+            if ($this->validateUnusedEmail($newEmail, $userId)) {
+                throw new ApplicationLogicException('The specified email address is already in use.');
+            }
+
             if (!($oauth->isFullyLinked() || $oauth->isPartiallyLinked())) {
                 if (trim($newOnWikiName) == "") {
                     throw new ApplicationLogicException('New on-wiki username cannot be blank');
@@ -524,6 +528,16 @@ class PageUserManagement extends InternalPageBase
     }
 
     #endregion
+
+    private function validateUnusedEmail(string $email, int $userId) : bool {
+        $query = 'SELECT COUNT(id) FROM user WHERE email = :email AND id <> :uid';
+        $statement = $this->getDatabase()->prepare($query);
+        $statement->execute(array(':email' => $email, ':uid' => $userId));
+        $inUse = $statement->fetchColumn() > 0;
+        $statement->closeCursor();
+
+        return $inUse;
+    }
 
     /**
      * Sends a status change email to the user.

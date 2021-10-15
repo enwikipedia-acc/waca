@@ -21,6 +21,7 @@ class SiteConfiguration
     private $filePath;
     private $schemaVersion = 35;
     private $debuggingTraceEnabled;
+    private $debuggingCssBreakpointsEnabled;
     private $dataClearIp = '127.0.0.1';
     private $dataClearEmail = 'acc@toolserver.org';
     private $dataClearInterval = '15 DAY';
@@ -179,6 +180,18 @@ class SiteConfiguration
     public function setDebuggingTraceEnabled($debuggingTraceEnabled)
     {
         $this->debuggingTraceEnabled = $debuggingTraceEnabled;
+
+        return $this;
+    }
+
+    public function getDebuggingCssBreakpointsEnabled() : bool
+    {
+        return $this->debuggingCssBreakpointsEnabled;
+    }
+
+    public function setDebuggingCssBreakpointsEnabled(bool $debuggingCssBreakpointsEnabled) : SiteConfiguration
+    {
+        $this->debuggingCssBreakpointsEnabled = $debuggingCssBreakpointsEnabled;
 
         return $this;
     }

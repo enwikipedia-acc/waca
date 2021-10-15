@@ -103,6 +103,11 @@ class RequestValidationHelper
             $errorList[ValidationError::NAME_EMPTY] = new ValidationError(ValidationError::NAME_EMPTY);
         }
 
+        // name is too long
+        if (mb_strlen(trim($request->getName())) > 500 ) {
+            $errorList[ValidationError::NAME_EMPTY] = new ValidationError(ValidationError::NAME_TOO_LONG);
+        }
+
         // username already exists
         if ($this->userExists($request)) {
             $errorList[ValidationError::NAME_EXISTS] = new ValidationError(ValidationError::NAME_EXISTS);
@@ -248,7 +253,25 @@ class RequestValidationHelper
             }
         }
         catch (Exception $ex) {
-            ExceptionHandler::logExceptionToDisk($ex, $this->siteConfiguration);
+            $skippable = [
+                'Encountered error while getting result: Contains unassigned character',
+                'Encountered error while getting result: Contains incompatible mixed scripts',
+                'Encountered error while getting result: Does not contain any letters'
+            ];
+
+            $skip = false;
+
+            foreach ($skippable as $s) {
+                if (strpos($ex->getMessage(), $s) !== false) {
+                    $skip = true;
+                    break;
+                }
+            }
+
+            // Only log to disk if this *isn't* a "skippable" error.
+            if (!$skip) {
+                ExceptionHandler::logExceptionToDisk($ex, $this->siteConfiguration);
+            }
         }
     }
 
