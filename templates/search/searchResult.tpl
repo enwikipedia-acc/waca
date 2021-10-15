@@ -14,7 +14,7 @@
             {if $resultCount == 0}
                 {include file="alert.tpl" alertblock=false alerttype="alert-info" alertclosable=false alertheader='' alertmessage='No requests found!'}
             {else}
-                {include file="mainpage/requesttable.tpl" showStatus=true list=$requests}
+                {include file="mainpage/requesttable.tpl" showStatus=true list=$requests sort=$defaultSort dir=$defaultSortDirection}
             {/if}
         </div>
     </div>

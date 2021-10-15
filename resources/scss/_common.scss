@@ -18,10 +18,11 @@ $font-size-base: 0.9rem;
 
 $overflows: auto, hidden, visible;
 
-$sortabletable-marker: #ccc !default;
-$sortabletable-hover: #efefef !default;
-
 @import "../../vendor/twbs/bootstrap/scss/bootstrap";
+
+$sortabletable-marker: $gray-600 !default;
+$sortabletable-hover: $gray-200 !default;
+
 @import "_viewRequest.scss";
 @import "_login.scss";
 @import "_mainPage.scss";

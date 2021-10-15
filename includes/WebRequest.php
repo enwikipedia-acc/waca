@@ -598,4 +598,16 @@ class WebRequest
 
         return false;
     }
+
+    public static function requestListDefaultSort()
+    {
+        $cookie = &self::$globalStateProvider->getCookieSuperGlobal();
+
+        if (isset($cookie['request_table_sort'])) {
+            return explode('/', $cookie['request_table_sort'], 2);
+        }
+        else {
+            return ['id', 'asc'];
+        }
+    }
 }

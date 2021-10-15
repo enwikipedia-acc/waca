@@ -208,12 +208,15 @@ class RoleConfiguration
                 self::MAIN => self::ACCESS_ALLOW,
             ),
             PageJobQueue::class                  => array(
-                self::MAIN => self::ACCESS_ALLOW,
-                'view'     => self::ACCESS_ALLOW,
-                'all'      => self::ACCESS_ALLOW,
+                self::MAIN    => self::ACCESS_ALLOW,
+                'view'        => self::ACCESS_ALLOW,
+                'all'         => self::ACCESS_ALLOW,
+                'acknowledge' => self::ACCESS_ALLOW,
+                'cancel'      => self::ACCESS_ALLOW
             ),
             'RequestCreation'                    => array(
                 User::CREATION_MANUAL => self::ACCESS_ALLOW,
+                User::CREATION_OAUTH  => self::ACCESS_ALLOW,
             ),
             'GlobalInfo'                         => array(
                 'viewSiteNotice' => self::ACCESS_ALLOW,
@@ -313,19 +316,6 @@ class RoleConfiguration
                 User::CREATION_BOT => self::ACCESS_ALLOW,
             ),
         ),
-        'oauthCreation'       => array(
-            '_description'    => 'A user allowed to use the OAuth to perform account creations',
-            '_editableBy'     => array('admin', 'toolRoot'),
-            '_childRoles'     => array(),
-            'RequestCreation'                    => array(
-                User::CREATION_OAUTH  => self::ACCESS_ALLOW,
-            ),
-            PageJobQueue::class                  => array(
-                'acknowledge' => self::ACCESS_ALLOW,
-                'cancel'      => self::ACCESS_ALLOW
-            ),
-        ),
-
 
         // Child roles go below this point
         'publicStats'       => array(

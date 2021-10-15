@@ -97,7 +97,7 @@ class IrcNotificationHelper
             $notification = new Notification();
             $notification->setDatabase($this->notificationsDatabase);
             $notification->setType($this->notificationType);
-            $notification->setText($msg);
+            $notification->setText(substr($msg, 0, 512));
 
             $notification->save();
         }

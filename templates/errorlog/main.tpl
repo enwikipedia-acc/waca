@@ -38,7 +38,7 @@
                             <td class="text-nowrap">No</td>
                         {/if}
                         <td class="text-nowrap">{$exception.data.exception}</td>
-                        <td>{$exception.data.message}</td>
+                        <td>{$exception.data.message|escape}</td>
 
                         {if $canRemove || $canView}
                             <td class="table-button-cell">

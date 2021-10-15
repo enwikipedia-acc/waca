@@ -383,6 +383,28 @@ SQL
         return new DateTime($logTime);
     }
 
+    public function getLastUpdated() {
+        $logQuery = $this->dbObject->prepare(<<<SQL
+SELECT max(d.ts) FROM (
+    SELECT r.date AS ts FROM request r WHERE r.id = :requestr
+    UNION ALL
+    SELECT l.timestamp AS ts FROM log l WHERE l.objectid = :requestl AND l.objecttype = 'Request'
+    UNION ALL
+    SELECT c.time AS ts FROM comment c WHERE c.request = :requestc
+) d
+SQL
+        );
+
+        $logQuery->bindValue(":requestr", $this->getId());
+        $logQuery->bindValue(":requestl", $this->getId());
+        $logQuery->bindValue(":requestc", $this->getId());
+        $logQuery->execute();
+        $logTime = $logQuery->fetchColumn();
+        $logQuery->closeCursor();
+
+        return new DateTime($logTime);
+    }
+
     /**
      * Returns a hash based on data within this request which can be generated easily from the data to be used to reveal
      * data to unauthorised* users.
