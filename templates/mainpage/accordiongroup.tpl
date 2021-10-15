@@ -9,7 +9,7 @@
             </div>
             {if $section.total > 0 && $section.showAll}
                 <div class="col-auto">
-                    <a href="{$baseurl}/internal.php/requestList?status={$section.type|escape:'url'}" class="btn text-muted">Show all</a>
+                    <a href="{$baseurl}/internal.php/requestList?queue={$section.api|escape:'url'}" class="btn text-muted">Show all</a>
                 </div>
             {/if}
         </div>
@@ -17,9 +17,7 @@
     <div id="collapse{$section.api|escape}" class="collapse" data-parent="#requestListAccordion">
         <div class="card-body">
             {if $section.help !== null}
-                <div class="alert alert-info alert-accordion">
-                    {$section.help}{* this data is either hard-coded, or set to a html string in config. No user data here. *}
-                </div>
+                <div class="alert alert-info alert-accordion prewrap">{$section.help|escape}</div>
             {/if}
             {include file="mainpage/requestlist.tpl" showStatus={$section.special !== null}}
         </div>

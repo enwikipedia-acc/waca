@@ -21,12 +21,11 @@ use Waca\PdoDatabase;
  */
 class EmailTemplate extends DataObject
 {
-    /** Note, also used in template-table.tpl */
-    const CREATED = "created";
-    /** Note, also used in template-table.tpl */
-    const NOT_CREATED = "not created";
-    /** Note, also used in template-table.tpl */
-    const NONE = null;
+    const ACTION_CREATED = 'created';
+    const ACTION_NOT_CREATED = 'not created';
+    const ACTION_NONE = 'none';
+    const ACTION_DEFER = 'defer';
+
     /** @var string the name of the template */
     private $name;
     private $text;
@@ -34,12 +33,13 @@ class EmailTemplate extends DataObject
     private $jsquestion;
     private $active = 1;
     private $preloadonly = 0;
-    private $defaultaction = self::NOT_CREATED;
+    private $defaultaction = self::ACTION_NOT_CREATED;
+    private $queue;
 
     /**
      * Gets active non-preload templates
      *
-     * @param string      $defaultAction Default action to take (EmailTemplate::CREATED or EmailTemplate::NOT_CREATED)
+     * @param string      $defaultAction Default action to take (EmailTemplate::ACTION_CREATED or EmailTemplate::ACTION_NOT_CREATED)
      * @param PdoDatabase $database
      *
      * @return array|false
@@ -71,8 +71,8 @@ SQL
     /**
      * Gets active non-preload and preload templates, optionally filtered by the default action.
      *
-     * @param null|bool|string $defaultAction Default action to take (EmailTemplate::CREATED,
-     *                                        EmailTemplate::NOT_CREATED, or EmailTemplate::NONE), or optionally null to
+     * @param null|bool|string $defaultAction Default action to take (EmailTemplate::ACTION_CREATED,
+     *                                        EmailTemplate::ACTION_NOT_CREATED, or EmailTemplate::ACTION_NONE), or optionally null to
      *                                        just get everything.
      * @param PdoDatabase      $database
      *
@@ -157,6 +157,7 @@ SQL
         $t = new EmailTemplate();
         $t->id = 0;
         $t->active = 1;
+        $t->defaultaction = self::ACTION_NONE;
         $t->name = 'Dropped';
 
         return $t;
@@ -170,8 +171,8 @@ SQL
         if ($this->isNew()) {
             // insert
             $statement = $this->dbObject->prepare(<<<SQL
-INSERT INTO `emailtemplate` (name, text, jsquestion, defaultaction, active, preloadonly)
-VALUES (:name, :text, :jsquestion, :defaultaction, :active, :preloadonly);
+INSERT INTO `emailtemplate` (name, text, jsquestion, defaultaction, active, preloadonly, queue)
+VALUES (:name, :text, :jsquestion, :defaultaction, :active, :preloadonly, :queue);
 SQL
             );
             $statement->bindValue(":name", $this->name);
@@ -180,6 +181,7 @@ SQL
             $statement->bindValue(":defaultaction", $this->defaultaction);
             $statement->bindValue(":active", $this->active);
             $statement->bindValue(":preloadonly", $this->preloadonly);
+            $statement->bindValue(":queue", $this->queue);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -198,6 +200,7 @@ SET name = :name,
 	defaultaction = :defaultaction,
 	active = :active,
 	preloadonly = :preloadonly,
+    queue = :queue,
 	updateversion = updateversion + 1
 WHERE id = :id AND updateversion = :updateversion;
 SQL
@@ -211,6 +214,7 @@ SQL
             $statement->bindValue(":defaultaction", $this->defaultaction);
             $statement->bindValue(":active", $this->active);
             $statement->bindValue(":preloadonly", $this->preloadonly);
+            $statement->bindValue(":queue", $this->queue);
 
             if (!$statement->execute()) {
                 throw new Exception($statement->errorInfo());
@@ -326,5 +330,40 @@ SQL
     public function setPreloadOnly($preloadonly)
     {
         $this->preloadonly = $preloadonly ? 1 : 0;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getQueue(): ?int
+    {
+        return $this->queue;
+    }
+
+    /**
+     * @return RequestQueue|null
+     */
+    public function getQueueObject(): ?RequestQueue
+    {
+        if ($this->queue === null) {
+            return null;
+        }
+
+        /** @var $dataObject RequestQueue|false */
+        $dataObject = RequestQueue::getById($this->queue, $this->getDatabase());
+
+        if ($dataObject === false) {
+            return null;
+        }
+
+        return $dataObject;
+    }
+
+    /**
+     * @param int|null $queue
+     */
+    public function setQueue(?int $queue): void
+    {
+        $this->queue = $queue;
     }
 }

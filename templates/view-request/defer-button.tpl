@@ -8,10 +8,12 @@
         <input type="hidden" name="updateversion" value="{$updateVersion}"/>
 
         <div class="dropdown-menu">
-            {foreach $requestStates as $state}
-                <button class="btn-link dropdown-item" name="target" value="{$state@key}" type="submit">
-                    {$state.deferto|capitalize}
-                </button>
+            {foreach $activeRequestQueues as $queue}
+                {if $queue->getApiName() !== $requestQueueApiName}
+                    <button class="btn-link dropdown-item" name="target" value="{$queue->getApiName()|escape}" type="submit">
+                        Defer to {$queue->getDisplayName()|escape}
+                    </button>
+                {/if}
             {/foreach}
         </div>
     </div>

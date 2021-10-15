@@ -11,6 +11,7 @@ namespace Waca\Pages\Request;
 use Exception;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\RequestQueue;
 use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Helpers\BanHelper;
 use Waca\SessionAlert;
@@ -90,8 +91,12 @@ class PageRequestAccount extends PublicInterfacePageBase
      */
     protected function createNewRequest()
     {
+        $database = $this->getDatabase();
+
         $request = new Request();
-        $request->setDatabase($this->getDatabase());
+        // FIXME: domains!
+        $request->setQueue(RequestQueue::getDefaultQueue($database, 1)->getId());
+        $request->setDatabase($database);
 
         $request->setName(trim(WebRequest::postString('name')));
         $request->setEmail(WebRequest::postEmail('email'));

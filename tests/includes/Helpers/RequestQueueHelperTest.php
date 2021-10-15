@@ -41,7 +41,7 @@ class RequestQueueHelperTest extends TestCase
         $helper = new RequestQueueHelper();
 
         // act
-        $helper->configureDefaults($queue, $newEnabled, $newDefault, $newDefaultAntispoof, $newDefaultTitleBlacklist);
+        $helper->configureDefaults($queue, $newEnabled, $newDefault, $newDefaultAntispoof, $newDefaultTitleBlacklist, false);
 
         // assert
         $this->assertEquals($expectedEnabled, $queue->isEnabled());

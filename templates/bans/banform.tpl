@@ -132,8 +132,8 @@
                                 </div>
                                 <div class="col-sm-8 col-md-5 col-lg-8 col-xl-6">
                                     <select class="form-control" name="banActionTarget" required="required" id="banActionTarget">
-                                        {foreach $requestStates as $key => $state}
-                                            <option value="{$key}">{$state.deferto|capitalize}</option>
+                                        {foreach $requestQueues as $queue}
+                                            <option value="{$queue->getApiName()|escape}">{$queue->getHeader()|escape}</option>
                                         {/foreach}
                                     </select>
                                 </div>

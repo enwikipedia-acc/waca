@@ -38,30 +38,33 @@
             </div>
             <div class="col-md-8 col-lg-6">
                 <select class="form-control" id="inputAction" name="action" required="required">
-                    <option value="" {if $defaultAction == ""}selected="selected"{/if}>(please select)</option>
+                    <option value="" {if $defaultAction == Waca\DataObjects\EmailTemplate::ACTION_NONE}selected="selected"{/if}>(please select)</option>
                     <option value="mail" {if $preloadAction == "mail"}selected="selected"{/if}>Only send the email</option>
                     <optgroup label="Send email and close request...">
-                        <option value="created" {if $preloadAction == "created" || ($preloadAction === null && $defaultAction == "created" && $currentUser->getCreationMode() == 0)}selected="selected"{/if}>
+                        <option value="created" {if $preloadAction == Waca\DataObjects\EmailTemplate::ACTION_CREATED || ($preloadAction === null && $defaultAction == Waca\DataObjects\EmailTemplate::ACTION_CREATED && $currentUser->getCreationMode() == 0)}selected="selected"{/if}>
                             Close request as created
                         </option>
                         {if $canOauthCreate}
-                            <option value="{Waca\Pages\RequestAction\PageCustomClose::CREATE_OAUTH}"  {if $preloadAction == Waca\Pages\RequestAction\PageCustomClose::CREATE_OAUTH || ($preloadAction === null && $defaultAction == "created" && $currentUser->getCreationMode() == 1)}selected="selected"{/if}>
+                            <option value="{Waca\Pages\RequestAction\PageCustomClose::CREATE_OAUTH}"  {if $preloadAction == Waca\Pages\RequestAction\PageCustomClose::CREATE_OAUTH || ($preloadAction === null && $defaultAction == Waca\DataObjects\EmailTemplate::ACTION_CREATED && $currentUser->getCreationMode() == 1)}selected="selected"{/if}>
                                 Create account (Wikimedia account) & close request as created
                             </option>
                         {/if}
                         {if $canBotCreate}
-                            <option value="{Waca\Pages\RequestAction\PageCustomClose::CREATE_BOT}"  {if $preloadAction == Waca\Pages\RequestAction\PageCustomClose::CREATE_BOT || ($preloadAction === null && $defaultAction == "created" && $currentUser->getCreationMode() == 2)}selected="selected"{/if}>
+                            <option value="{Waca\Pages\RequestAction\PageCustomClose::CREATE_BOT}"  {if $preloadAction == Waca\Pages\RequestAction\PageCustomClose::CREATE_BOT || ($preloadAction === null && $defaultAction == Waca\DataObjects\EmailTemplate::ACTION_CREATED && $currentUser->getCreationMode() == 2)}selected="selected"{/if}>
                                 Create account (via bot) & close request as created
                             </option>
                         {/if}
-                        <option value="not created" {if $preloadAction == "not created" || ($preloadAction === null && $defaultAction == "not created") }selected="selected"{/if}>
+                        <option value="not created" {if $preloadAction == Waca\DataObjects\EmailTemplate::ACTION_NOT_CREATED || ($preloadAction === null && $defaultAction == Waca\DataObjects\EmailTemplate::ACTION_NOT_CREATED) }selected="selected"{/if}>
                             Close request as NOT created
                         </option>
                     </optgroup>
                     <optgroup label="Send email and defer to...">
-                        {foreach $requeststates as $state}
-                            <option value="{$state@key}" {if $preloadAction == $state@key || ($preloadAction === null && $defaultAction == $state@key )}selected="selected"{/if}>
-                                Defer to {$state.deferto|capitalize}</option>
+                        {foreach $requestQueues as $queue}
+                            {assign "queueSelected" "{$defaultAction == Waca\DataObjects\EmailTemplate::ACTION_DEFER && $defaultQueue == $queue->getId()}" }
+                            {if $queue->getApiName() !== $requestQueueApiName || {$queueSelected} }
+                                <option value="{$queue->getApiName()|escape}" {if $queueSelected}selected="selected"{/if}>
+                                    Defer to {$queue->getDisplayName()|escape}</option>
+                            {/if}
                         {/foreach}
                     </optgroup>
                 </select>

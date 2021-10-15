@@ -14,6 +14,7 @@ use Waca\Background\Task\UserCreationTask;
 use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
@@ -40,7 +41,7 @@ class PageCustomClose extends PageCloseRequest
         $request = $this->getRequest($database);
         $currentUser = User::getCurrent($this->getDatabase());
 
-        if ($request->getStatus() === 'Closed') {
+        if ($request->getStatus() === RequestStatus::CLOSED) {
             throw new ApplicationLogicException('Request is already closed');
         }
 
@@ -126,17 +127,19 @@ class PageCustomClose extends PageCloseRequest
 
         // Preload data
         $this->assign('defaultAction', '');
+        $this->assign('defaultQueue', null);
         $this->assign('preloadText', '');
         $this->assign('preloadTitle', '');
 
         if ($template !== null) {
             $this->assign('defaultAction', $template->getDefaultAction());
+            $this->assign('defaultQueue', $template->getQueue());
             $this->assign('preloadText', $template->getText());
             $this->assign('preloadTitle', $template->getName());
         }
 
         // Static data
-        $this->assign('requeststates', $config->getRequestStates());
+        $this->assign('requestQueues', $requestQueues = RequestQueue::getEnabledQueues($database));
 
         // request data
         $this->assign('requestId', $request->getIp());
@@ -201,7 +204,7 @@ class PageCustomClose extends PageCloseRequest
             $ccMailingList = WebRequest::postBoolean('ccMailingList');
         }
 
-        if ($request->getStatus() === 'Closed') {
+        if ($request->getStatus() === RequestStatus::CLOSED) {
             throw new ApplicationLogicException('Request is already closed');
         }
 
@@ -211,11 +214,10 @@ class PageCustomClose extends PageCloseRequest
         }
 
         $action = WebRequest::postString('action');
-        $availableRequestStates = $this->getSiteConfiguration()->getRequestStates();
 
-        if ($action === EmailTemplate::CREATED || $action === EmailTemplate::NOT_CREATED) {
+        if ($action === EmailTemplate::ACTION_CREATED || $action === EmailTemplate::ACTION_NOT_CREATED) {
 
-            if ($action === EmailTemplate::CREATED) {
+            if ($action === EmailTemplate::ACTION_CREATED) {
                 if ($this->checkAccountCreated($request)) {
                     $this->assignCSRFToken();
                     $this->showCustomCloseForm($database, $request);
@@ -247,9 +249,30 @@ class PageCustomClose extends PageCloseRequest
             return true;
         }
 
-        // If action is a state key, defer to other state
-        if (array_key_exists($action, $availableRequestStates)) {
-            $this->deferRequest($request, $database, $action, $availableRequestStates, $messageBody);
+        if ($action === 'mail') {
+            $request->setReserved(null);
+            $request->setUpdateVersion(WebRequest::postInt('updateversion'));
+            $request->save();
+
+            // Perform the notifications and stuff *after* we've successfully saved, since the save can throw an OLE
+            // and be rolled back.
+
+            // Send mail
+            $this->sendMail($request, $messageBody, $currentUser, $ccMailingList);
+
+            Logger::sentMail($database, $request, $messageBody);
+            Logger::unreserve($database, $request);
+
+            $this->getNotificationHelper()->sentMail($request);
+            SessionAlert::success("Sent mail to Request {$request->getId()}");
+
+            return true;
+        }
+
+        $targetQueue = RequestQueue::getByApiName($database, $action, 1);
+        if ($targetQueue !== false) {
+            // Defer to other state
+            $this->deferRequest($request, $database, $targetQueue, $messageBody);
 
             // Send the mail after the save, since save can be rolled back
             $this->sendMail($request, $messageBody, $currentUser, $ccMailingList);
@@ -257,25 +280,7 @@ class PageCustomClose extends PageCloseRequest
             return true;
         }
 
-        // Any other scenario, just send the email.
-
-        $request->setReserved(null);
-        $request->setUpdateVersion(WebRequest::postInt('updateversion'));
-        $request->save();
-
-        // Perform the notifications and stuff *after* we've successfully saved, since the save can throw an OLE
-        // and be rolled back.
-
-        // Send mail
-        $this->sendMail($request, $messageBody, $currentUser, $ccMailingList);
-
-        Logger::sentMail($database, $request, $messageBody);
-        Logger::unreserve($database, $request);
-
-        $this->getNotificationHelper()->sentMail($request);
-        SessionAlert::success("Sent mail to Request {$request->getId()}");
-
-        return true;
+        throw new ApplicationLogicException('Unknown action for custom close.');
     }
 
     /**
@@ -289,7 +294,8 @@ class PageCustomClose extends PageCloseRequest
      */
     protected function closeRequest(Request $request, PdoDatabase $database, $action, $messageBody)
     {
-        $request->setStatus('Closed');
+        $request->setStatus(RequestStatus::CLOSED);
+        $request->setQueue(null);
         $request->setReserved(null);
         $request->setUpdateVersion(WebRequest::postInt('updateversion'));
         $request->save();
@@ -297,7 +303,7 @@ class PageCustomClose extends PageCloseRequest
         // Perform the notifications and stuff *after* we've successfully saved, since the save can throw an OLE and
         // be rolled back.
 
-        if ($action == EmailTemplate::CREATED) {
+        if ($action == EmailTemplate::ACTION_CREATED) {
             $logCloseType = 'custom-y';
             $notificationCloseType = "Custom, Created";
         }
@@ -314,23 +320,21 @@ class PageCustomClose extends PageCloseRequest
     }
 
     /**
-     * @param Request     $request
-     * @param PdoDatabase $database
-     * @param string      $action
-     * @param             $availableRequestStates
-     * @param string      $messageBody
+     * @param Request      $request
+     * @param PdoDatabase  $database
+     * @param RequestQueue $targetQueue
+     * @param string       $messageBody
      *
-     * @throws Exception
      * @throws OptimisticLockFailedException
      */
     protected function deferRequest(
         Request $request,
         PdoDatabase $database,
-        $action,
-        $availableRequestStates,
+        RequestQueue $targetQueue,
         $messageBody
     ) {
-        $request->setStatus($action);
+        $request->setStatus(RequestStatus::OPEN);
+        $request->setQueue($targetQueue->getId());
         $request->setReserved(null);
         $request->setUpdateVersion(WebRequest::postInt('updateversion'));
         $request->save();
@@ -338,13 +342,13 @@ class PageCustomClose extends PageCloseRequest
         // Perform the notifications and stuff *after* we've successfully saved, since the save can throw an OLE
         // and be rolled back.
 
-        $deferToLog = $availableRequestStates[$action]['defertolog'];
+        $deferToLog = $targetQueue->getLogName();
         Logger::sentMail($database, $request, $messageBody);
         Logger::deferRequest($database, $request, $deferToLog);
 
         $this->getNotificationHelper()->requestDeferredWithMail($request);
 
-        $deferTo = $availableRequestStates[$action]['deferto'];
+        $deferTo = htmlentities($targetQueue->getDisplayName(), ENT_COMPAT, 'UTF-8');
         SessionAlert::success("Request {$request->getId()} deferred to $deferTo, sending an email.");
     }
 
@@ -415,6 +419,6 @@ class PageCustomClose extends PageCloseRequest
         SessionAlert::success("Request {$request->getId()} has been queued for autocreation");
 
         // forge this since it is actually a creation.
-        $this->processWelcome(EmailTemplate::CREATED, $creationTaskId);
+        $this->processWelcome(EmailTemplate::ACTION_CREATED, $creationTaskId);
     }
 }

@@ -245,12 +245,13 @@ class LogHelper
             ],
         );
 
-        $statement = $database->query(<<<SQL
-SELECT CONCAT('Closed ', id) AS k, CONCAT('closed (',name,')') AS v
-FROM emailtemplate;
+        $databaseDrivenLogKeys = $database->query(<<<SQL
+SELECT CONCAT('Closed ', id) AS k, CONCAT('closed (',name,')') AS v FROM emailtemplate
+UNION ALL
+SELECT CONCAT('Deferred to ', logname) AS k, CONCAT('deferred to ', displayname) AS v FROM requestqueue;
 SQL
         );
-        foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        foreach ($databaseDrivenLogKeys->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $lookup["Requests"][$row['k']] = $row['v'];
         }
 

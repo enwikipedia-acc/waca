@@ -10,6 +10,8 @@ namespace Waca\API\Actions;
 
 use DOMElement;
 use Waca\API\IXmlApiAction;
+use Waca\DataObjects\RequestQueue;
+use Waca\RequestStatus;
 use Waca\Tasks\XmlApiPageBase;
 
 /**
@@ -27,17 +29,19 @@ class StatusAction extends XmlApiPageBase implements IXmlApiAction
             FROM request
             WHERE
                 status = :pstatus
+                AND queue = :queue
                 AND emailconfirm = 'Confirmed';
 SQL
         );
 
-        $availableRequestStates = $this->getSiteConfiguration()->getRequestStates();
+        $allQueues = RequestQueue::getAllQueues($this->getDatabase());
 
-        foreach ($availableRequestStates as $key => $value) {
-            $query->bindValue(":pstatus", $key);
+        foreach ($allQueues as $value) {
+            $query->bindValue(":pstatus", RequestStatus::OPEN);
+            $query->bindValue(":queue", $value->getId());
             $query->execute();
             $sus = $query->fetchColumn();
-            $statusElement->setAttribute($value['api'], $sus);
+            $statusElement->setAttribute($value->getApiName(), $sus);
             $query->closeCursor();
         }
 

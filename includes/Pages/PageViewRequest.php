@@ -11,16 +11,19 @@ namespace Waca\Pages;
 use Exception;
 use DateTime;
 use Waca\DataObjects\Comment;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\RequestData;
 use Waca\Helpers\LogHelper;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\PdoDatabase;
+use Waca\RequestStatus;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
@@ -124,7 +127,7 @@ class PageViewRequest extends InternalPageBase
     protected function setupTitle(Request $request)
     {
         $statusSymbol = self::STATUS_SYMBOL_OPEN;
-        if ($request->getStatus() === 'Closed') {
+        if ($request->getStatus() === RequestStatus::CLOSED) {
             if ($request->getWasCreated()) {
                 $statusSymbol = self::STATUS_SYMBOL_ACCEPTED;
             }
@@ -143,29 +146,29 @@ class PageViewRequest extends InternalPageBase
      */
     protected function setupGeneralData(PdoDatabase $database)
     {
-        $config = $this->getSiteConfiguration();
-
         $this->assign('createAccountReason', 'Requested account at [[WP:ACC]], request #');
 
-        $this->assign('defaultRequestState', $config->getDefaultRequestStateKey());
-
-        $this->assign('requestStates', $config->getRequestStates());
+        // FIXME: domains
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $database);
+        $this->assign('defaultRequestState', RequestQueue::getDefaultQueue($database, 1)->getApiName());
+        $this->assign('activeRequestQueues', RequestQueue::getEnabledQueues($database));
 
         /** @var EmailTemplate $createdTemplate */
-        $createdTemplate = EmailTemplate::getById($config->getDefaultCreatedTemplateId(), $database);
+        $createdTemplate = EmailTemplate::getById($domain->getDefaultClose(), $database);
 
         $this->assign('createdHasJsQuestion', $createdTemplate->getJsquestion() != '');
         $this->assign('createdId', $createdTemplate->getId());
         $this->assign('createdName', $createdTemplate->getName());
 
-        $createReasons = EmailTemplate::getActiveTemplates(EmailTemplate::CREATED, $database);
+        $createReasons = EmailTemplate::getActiveTemplates(EmailTemplate::ACTION_CREATED, $database);
         $this->assign("createReasons", $createReasons);
-        $declineReasons = EmailTemplate::getActiveTemplates(EmailTemplate::NOT_CREATED, $database);
+        $declineReasons = EmailTemplate::getActiveTemplates(EmailTemplate::ACTION_NOT_CREATED, $database);
         $this->assign("declineReasons", $declineReasons);
 
-        $allCreateReasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::CREATED, $database);
+        $allCreateReasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::ACTION_CREATED, $database);
         $this->assign("allCreateReasons", $allCreateReasons);
-        $allDeclineReasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::NOT_CREATED, $database);
+        $allDeclineReasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::ACTION_NOT_CREATED, $database);
         $this->assign("allDeclineReasons", $allDeclineReasons);
         $allOtherReasons = EmailTemplate::getAllActiveTemplates(false, $database);
         $this->assign("allOtherReasons", $allOtherReasons);

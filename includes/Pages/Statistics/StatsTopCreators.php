@@ -135,7 +135,7 @@ SQL;
         $database = $this->getDatabase();
         foreach ($queries as $name => $sql) {
             $statement = $database->prepare($sql);
-            $statement->execute([":created" => EmailTemplate::CREATED]);
+            $statement->execute([":created" => EmailTemplate::ACTION_CREATED]);
             $data = $statement->fetchAll(PDO::FETCH_ASSOC);
             $this->assign($name, $data);
         }

@@ -18,6 +18,14 @@ use Waca\WebRequest;
 
 class PageQueueManagement extends InternalPageBase
 {
+    /** @var RequestQueueHelper */
+    private $helper;
+
+    public function __construct()
+    {
+        $this->helper = new RequestQueueHelper();
+    }
+
     protected function main()
     {
         $this->setHtmlTitle('Request Queue Management');
@@ -47,20 +55,23 @@ class PageQueueManagement extends InternalPageBase
 
             $queue->setHeader(WebRequest::postString('header'));
             $queue->setDisplayName(WebRequest::postString('displayName'));
-            $queue->setApiName(WebRequest::postString('apiName'));
             $queue->setEnabled(WebRequest::postBoolean('enabled'));
             $queue->setDefault(WebRequest::postBoolean('default') && WebRequest::postBoolean('enabled'));
             $queue->setDefaultAntispoof(WebRequest::postBoolean('antispoof') && WebRequest::postBoolean('enabled'));
             $queue->setDefaultTitleBlacklist(WebRequest::postBoolean('titleblacklist') && WebRequest::postBoolean('enabled'));
             $queue->setHelp(WebRequest::postString('help'));
             $queue->setLogName(WebRequest::postString('logName'));
-            $queue->setLegacyStatus(WebRequest::postString('legacyStatus'));
 
             $proceed = true;
 
             if (RequestQueue::getByApiName($database, $queue->getApiName(), 1) !== false) {
                 // FIXME: domain
                 SessionAlert::error("The chosen API name is already in use. Please choose another.");
+                $proceed = false;
+            }
+
+            if (preg_match('^[A-Za-z][a-zA-Z0-9_-]*$', $queue->getApiName()) !== 1) {
+                SessionAlert::error("The chosen API name contains invalid characters");
                 $proceed = false;
             }
 
@@ -94,11 +105,11 @@ class PageQueueManagement extends InternalPageBase
             $this->assign('apiName', null);
             $this->assign('enabled', false);
             $this->assign('antispoof', false);
+            $this->assign('isTarget', false);
             $this->assign('titleblacklist', false);
             $this->assign('default', false);
             $this->assign('help', null);
             $this->assign('logName', null);
-            $this->assign('legacyStatus', null);
 
             $this->assignCSRFToken();
             $this->assign('createMode', true);
@@ -116,14 +127,13 @@ class PageQueueManagement extends InternalPageBase
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
 
-            $helper = new RequestQueueHelper();
-
-            $helper->configureDefaults(
+            $this->helper->configureDefaults(
                 $queue,
                 WebRequest::postBoolean('enabled'),
                 WebRequest::postBoolean('default'),
                 WebRequest::postBoolean('antispoof'),
-                WebRequest::postBoolean('titleblacklist'));
+                WebRequest::postBoolean('titleblacklist'),
+                $this->helper->isEmailTemplateTarget($queue, $this->getDatabase()));
 
             $queue->setHeader(WebRequest::postString('header'));
             $queue->setDisplayName(WebRequest::postString('displayName'));
@@ -181,6 +191,8 @@ class PageQueueManagement extends InternalPageBase
         $this->assign('titleblacklist', $queue->isDefaultTitleBlacklist());
         $this->assign('help', $queue->getHelp());
         $this->assign('logName', $queue->getLogName());
-        $this->assign('legacyStatus', $queue->getLegacyStatus());
+
+        $isTarget = $this->helper->isEmailTemplateTarget($queue, $this->getDatabase());
+        $this->assign('isTarget', $isTarget);
     }
 }

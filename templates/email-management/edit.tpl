@@ -55,22 +55,23 @@
 
                         <select class="form-control" id="inputDefaultAction" aria-describedby="templateDefaultActionHelp"
                                 name="defaultaction" {if $id == $createdid} disabled{/if}>
-                            <option value="" {if $emailTemplate->getDefaultAction() == ""}selected="selected"{/if}>
+                            <option value="{Waca\DataObjects\EmailTemplate::ACTION_NONE}" {if $emailTemplate->getDefaultAction() == Waca\DataObjects\EmailTemplate::ACTION_NONE}selected="selected"{/if}>
                                 No default
                             </option>
                             <optgroup label="Close request...">
-                                <option value="created" {if $emailTemplate->getDefaultAction() == "created"}selected="selected"{/if}>
+                                <option value="{Waca\DataObjects\EmailTemplate::ACTION_CREATED}"
+                                        {if $emailTemplate->getDefaultAction() == Waca\DataObjects\EmailTemplate::ACTION_CREATED}selected="selected"{/if}>
                                     Close request as created (with autocreate if allowed)
                                 </option>
-                                <option value="not created" {if $emailTemplate->getDefaultAction() == "not created"}selected="selected"{/if}>
+                                <option value="{Waca\DataObjects\EmailTemplate::ACTION_NOT_CREATED}"
+                                        {if $emailTemplate->getDefaultAction() == Waca\DataObjects\EmailTemplate::ACTION_NOT_CREATED}selected="selected"{/if}>
                                     Close request as NOT created
                                 </option>
                             </optgroup>
                             <optgroup label="Defer to...">
-                                {foreach $requeststates as $state}
-                                    <option value="{$state@key}" {if $emailTemplate->getDefaultAction() == $state@key}selected="selected"{/if}>
-                                        Defer to {$state.deferto|capitalize}
-                                    </option>
+                                {foreach $requestQueues as $queue}
+                                    <option value="{$queue->getApiName()|escape}" {if $emailTemplate->getQueue() == $queue->getId() && $emailTemplate->getDefaultAction() == 'defer'}selected="selected"{/if}>
+                                        Defer to {$queue->getDisplayName()|escape}</option>
                                 {/foreach}
                             </optgroup>
                         </select>
