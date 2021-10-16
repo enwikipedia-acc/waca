@@ -40,7 +40,7 @@ Note that runkit is a pain[1] to get working on Windows, and is only used by som
 * MariaDB 10.1.37
 * PHP 7.3.14
 * Apache 2.4.38 (Debian)
-* Debian Buster (Wikimedia Labs)
+* Debian Buster (Wikimedia Cloud VPS)
 
 # Basic information
 

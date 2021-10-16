@@ -48,7 +48,7 @@
 <div class="row">
     <div class="col-md-12">
         <p>
-            ACC is kindly hosted by <a href="https://wikitech.wikimedia.org/">Wikimedia Labs</a>.
+            ACC is kindly hosted on <a href="https://wikitech.wikimedia.org/wiki/Portal:Cloud_VPS">Wikimedia Cloud VPS</a>.
             Our code repository is hosted by GitHub and can be found <a href="https://github.com/enwikipedia-acc/waca/">here</a>.
             Thanks to all those who have submitted patches who are not mentioned above!
         </p>
