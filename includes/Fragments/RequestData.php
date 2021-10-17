@@ -9,6 +9,7 @@
 namespace Waca\Fragments;
 
 use Waca\DataObjects\Request;
+use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\SearchHelpers\RequestSearchHelper;
@@ -259,8 +260,15 @@ trait RequestData
         $this->assign('requestDate', $request->getDate());
         $this->assign('requestStatus', $request->getStatus());
 
-        $isClosed = !array_key_exists($request->getStatus(), $config->getRequestStates())
-            && $request->getStatus() !== RequestStatus::HOSPITAL;
+        $this->assign('requestQueue', null);
+        if ($request->getQueue() !== null) {
+            /** @var RequestQueue $queue */
+            $queue = RequestQueue::getById($request->getQueue(), $this->getDatabase());
+            $this->assign('requestQueue', $queue->getHeader());
+            $this->assign('requestQueueApiName', $queue->getApiName());
+        }
+
+        $isClosed = $request->getStatus() === RequestStatus::CLOSED || $request->getStatus() === RequestStatus::JOBQUEUE;
         $this->assign('requestIsClosed', $isClosed);
     }
 

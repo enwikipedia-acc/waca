@@ -17,6 +17,7 @@ use Waca\Pages\PageExpandedRequestList;
 use Waca\Pages\PageJobQueue;
 use Waca\Pages\PageLog;
 use Waca\Pages\PageMain;
+use Waca\Pages\PageQueueManagement;
 use Waca\Pages\PageXffDemo;
 use Waca\Pages\RequestAction\PageCreateRequest;
 use Waca\Pages\UserAuth\PageChangePassword;
@@ -257,6 +258,11 @@ class RoleConfiguration
             ),
             'RequestData'               => array(
                 'reopenClearedRequest'  => self::ACCESS_ALLOW,
+            ),
+            PageQueueManagement::class           => array(
+                self::MAIN => self::ACCESS_ALLOW,
+                'edit'     => self::ACCESS_ALLOW,
+                'create'   => self::ACCESS_ALLOW,
             ),
         ),
         'checkuser'         => array(

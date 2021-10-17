@@ -6,7 +6,10 @@
  * All code in this file is released into the public domain by the ACC        *
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
-class EnvironmentTest extends PHPUnit_Framework_TestCase
+
+use PHPUnit\Framework\TestCase;
+
+class EnvironmentTest extends TestCase
 {
     private $toolVersion;
     private $environment;

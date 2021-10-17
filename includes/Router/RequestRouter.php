@@ -16,6 +16,7 @@ use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageErrorLogViewer;
 use Waca\Pages\PageExpandedRequestList;
 use Waca\Pages\PageJobQueue;
+use Waca\Pages\PageQueueManagement;
 use Waca\Pages\PageXffDemo;
 use Waca\Pages\RequestAction\PageCreateRequest;
 use Waca\Pages\UserAuth\Login\PageOtpLogin;
@@ -190,6 +191,11 @@ class RequestRouter implements IRequestRouter
             array(
                 'class'   => PageEmailManagement::class,
                 'actions' => array('create', 'edit', 'view'),
+            ),
+        'queueManagement'             =>
+            array(
+                'class'   => PageQueueManagement::class,
+                'actions' => array('create', 'edit'),
             ),
         'jobQueue'                    =>
             array(

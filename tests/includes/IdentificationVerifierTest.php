@@ -8,9 +8,8 @@
 
 namespace Waca\Tests;
 
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase;
-
 use Waca\Exceptions\CurlException;
 use Waca\Helpers\HttpHelper;
 use Waca\IdentificationVerifier;
@@ -25,7 +24,7 @@ use Waca\SiteConfiguration;
  *
  * @package Waca\Tests
  */
-class IdentificationVerifierTest extends PHPUnit_Framework_TestCase
+class IdentificationVerifierTest extends TestCase
 {
     /** @var IdentificationVerifier */
     private $identificationVerifier;

@@ -8,10 +8,10 @@
 
 namespace Waca\Tests\Security;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Waca\Security\RoleConfiguration;
 
-class RoleConfigurationTest extends PHPUnit_Framework_TestCase
+class RoleConfigurationTest extends TestCase
 {
     public function testReturnsOnlyApplicableRoles()
     {

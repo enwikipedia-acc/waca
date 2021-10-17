@@ -10,6 +10,7 @@ namespace Waca\Pages;
 
 use PDO;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
 use Waca\Fragments\RequestListData;
 use Waca\Helpers\SearchHelpers\RequestSearchHelper;
@@ -35,7 +36,9 @@ class PageMain extends InternalPageBase
         $currentUser = User::getCurrent($database);
 
         // general template configuration
-        $this->assign('defaultRequestState', $config->getDefaultRequestStateKey());
+        // FIXME: domains!
+        $defaultQueue = RequestQueue::getDefaultQueue($database, 1);
+        $this->assign('defaultRequestState', $defaultQueue->getApiName());
         $this->assign('requestLimitShowOnly', $config->getMiserModeLimit());
 
         $seeAllRequests = $this->barrierTest('seeAllRequests', $currentUser, PageViewRequest::class);
@@ -168,26 +171,34 @@ SQL;
         SiteConfiguration $config,
         &$requestSectionData
     ) {
-        $search = RequestSearchHelper::get($database)->limit($config->getMiserModeLimit())->notHospitalised();
+        $search = RequestSearchHelper::get($database)->limit($config->getMiserModeLimit());
+        $search->byStatus(RequestStatus::OPEN);
 
         if ($config->getEmailConfirmationEnabled()) {
             $search->withConfirmedEmail();
         }
 
-        $allRequestStates = $config->getRequestStates();
-        $requestsByStatus = $search->fetchByStatus(array_keys($allRequestStates));
+        // FIXME: domains!
+        $requestQueues = RequestQueue::getAllQueues($database);
+        $queuesById = array_reduce($requestQueues, function($result, RequestQueue $item) {
+            $result[$item->getId()] = $item;
+            return $result;
+        }, array());
 
-        foreach ($allRequestStates as $requestState => $requestStateConfig) {
+        $requestsByQueue = $search->fetchByQueue(array_keys($queuesById));
 
-            $requestSectionData[$requestStateConfig['header']] = array(
-                'requests' => $this->prepareRequestData($requestsByStatus[$requestState]['data']),
-                'total'    => $requestsByStatus[$requestState]['count'],
-                'api'      => $requestStateConfig['api'],
-                'type'     => $requestState,
-                'special'  => null,
-                'help'     => $requestStateConfig['queuehelp'],
-                'showAll'  => true
-            );
+        foreach ($requestsByQueue as $queueId => $queueData) {
+            if($queueData['count'] > 0 || $queuesById[$queueId]->isEnabled()) {
+                $requestSectionData[$queuesById[$queueId]->getHeader()] = array(
+                    'requests' => $this->prepareRequestData($queueData['data']),
+                    'total'    => $queueData['count'],
+                    'api'      => $queuesById[$queueId]->getApiName(),
+                    'type'     => $queueId,
+                    'special'  => null,
+                    'help'     => $queuesById[$queueId]->getHelp(),
+                    'showAll'  => true
+                );
+            }
         }
     }
 }

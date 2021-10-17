@@ -8,9 +8,10 @@
 
 namespace Waca\Tests\Api;
 
-use \Waca\API\ApiException;
+use PHPUnit\Framework\TestCase;
+use Waca\API\ApiException;
 
-class ApiExceptionTest extends \PHPUnit_Framework_TestCase
+class ApiExceptionTest extends TestCase
 {
     /** @var  string */
     private $message;

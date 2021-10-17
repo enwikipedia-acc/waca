@@ -16,6 +16,7 @@ use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\SiteNotice;
 use Waca\DataObjects\User;
 use Waca\DataObjects\WelcomeTemplate;
@@ -387,6 +388,18 @@ class Logger
     public static function backgroundJobAcknowledged(PdoDatabase $database, JobQueue $job, $comment = null)
     {
         self::createLogEntry($database, $job, 'JobAcknowledged', $comment);
+    }
+    #endregion
+
+    #region Request Queues
+    public static function requestQueueCreated(PdoDatabase $database, RequestQueue $queue)
+    {
+        self::createLogEntry($database, $queue, 'QueueCreated');
+    }
+
+    public static function requestQueueEdited(PdoDatabase $database, RequestQueue $queue)
+    {
+        self::createLogEntry($database, $queue, 'QueueEdited');
     }
     #endregion
 }

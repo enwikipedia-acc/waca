@@ -185,8 +185,8 @@ class RequestSearchHelper extends SearchHelperBase
         return $this;
     }
 
-    public function fetchByStatus($statuses)
+    public function fetchByQueue($queues)
     {
-        return $this->fetchByParameter(' AND status = ?', $statuses);
+        return $this->fetchByParameter(' AND queue = ?', $queues);
     }
 }

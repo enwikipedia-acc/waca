@@ -12,6 +12,7 @@ use Exception;
 use SmartyException;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
@@ -221,7 +222,17 @@ class PageBan extends InternalPageBase
 
         $ban->setAction($action);
         if ($ban->getAction() === Ban::ACTION_DEFER) {
-            $ban->setActionTarget(WebRequest::postString('banActionTarget'));
+            //FIXME: domains
+            $queue = RequestQueue::getByApiName($database, WebRequest::postString('banActionTarget'), 1);
+            if ($queue === false) {
+                throw new ApplicationLogicException("Unknown target queue");
+            }
+
+            if (!$queue->isEnabled()) {
+                throw new ApplicationLogicException("Target queue is not enabled");
+            }
+
+            $ban->setTargetQueue($queue->getId());
         }
 
         $ban->save();
@@ -251,7 +262,9 @@ class PageBan extends InternalPageBase
         $user = User::getCurrent($database);
         $this->setupSecurity($user);
 
-        $this->assign('requestStates', $this->getSiteConfiguration()->getRequestStates());
+        $queues = RequestQueue::getEnabledQueues($database);
+
+        $this->assign('requestQueues', $queues);
 
         $banType = WebRequest::getString('type');
         $banRequest = WebRequest::getInt('request');
