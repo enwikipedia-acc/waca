@@ -8,12 +8,11 @@
 
 namespace Waca\Tests;
 
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Extensions_MockFunction;
-use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase;
 use \Waca\Offline;
 
-class OfflineTest extends PHPUnit_Framework_TestCase
+class OfflineTest extends TestCase
 {
     private $offline;
     private $offMock;

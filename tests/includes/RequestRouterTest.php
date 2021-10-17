@@ -8,8 +8,8 @@
 
 namespace Waca\Tests;
 
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ReflectionProperty;
 use Waca\Pages\Page404;
@@ -20,7 +20,7 @@ use Waca\Providers\GlobalState\GlobalStateProvider;
 use Waca\Router\RequestRouter;
 use Waca\WebRequest;
 
-class RequestRouterTest extends PHPUnit_Framework_TestCase
+class RequestRouterTest extends TestCase
 {
     /**
      * @var GlobalStateProvider|PHPUnit_Framework_MockObject_MockObject

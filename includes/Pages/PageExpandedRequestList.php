@@ -8,9 +8,11 @@
 
 namespace Waca\Pages;
 
-use PDO;
-use Waca\DataObjects\Request;
+use Waca\DataObjects\RequestQueue;
 use Waca\Fragments\RequestListData;
+use Waca\Helpers\SearchHelpers\RequestSearchHelper;
+use Waca\RequestStatus;
+use Waca\SiteConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
@@ -25,60 +27,49 @@ class PageExpandedRequestList extends InternalPageBase
      */
     protected function main()
     {
+        if(WebRequest::getString('queue') === null) {
+            $this->redirect('');
+            return;
+        }
+
+        $database = $this->getDatabase();
+
+        // FIXME: domains
+        $queue = RequestQueue::getByApiName($database, WebRequest::getString('queue'), 1);
+
+        if ($queue === false) {
+            $this->redirect('');
+            return;
+        }
+
+        /** @var SiteConfiguration $config */
         $config = $this->getSiteConfiguration();
 
-        $requestedStatus = WebRequest::getString('status');
-        $requestStates = $config->getRequestStates();
+        $this->assignCSRFToken();
 
-        if ($requestedStatus !== null && isset($requestStates[$requestedStatus])) {
+        $this->assign('queuehelp', $queue->getHelp());
 
-            $this->assignCSRFToken();
+        $search = RequestSearchHelper::get($database);
+        $search->byStatus(RequestStatus::OPEN);
 
-            $database = $this->getDatabase();
+        list($defaultSort, $defaultSortDirection) = WebRequest::requestListDefaultSort();
+        $this->assign('defaultSort', $defaultSort);
+        $this->assign('defaultSortDirection', $defaultSortDirection);
 
-            $help = $requestStates[$requestedStatus]['queuehelp'];
-            $this->assign('queuehelp', $help);
-
-            list($defaultSort, $defaultSortDirection) = WebRequest::requestListDefaultSort();
-            $this->assign('defaultSort', $defaultSort);
-            $this->assign('defaultSortDirection', $defaultSortDirection);
-
-            if ($config->getEmailConfirmationEnabled()) {
-                $query = "SELECT * FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
-                $totalQuery = "SELECT COUNT(id) FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
-            }
-            else {
-                $query = "SELECT * FROM request WHERE status = :type;";
-                $totalQuery = "SELECT COUNT(id) FROM request WHERE status = :type;";
-            }
-
-            $statement = $database->prepare($query);
-            $totalRequestsStatement = $database->prepare($totalQuery);
-
-            $statement->bindValue(":type", $requestedStatus);
-            $statement->execute();
-
-            $requests = $statement->fetchAll(PDO::FETCH_CLASS, Request::class);
-
-            /** @var Request $req */
-            foreach ($requests as $req) {
-                $req->setDatabase($database);
-            }
-
-            $this->assign('requests', $this->prepareRequestData($requests));
-            $this->assign('header', $requestedStatus);
-            $this->assign('requestLimitShowOnly', $config->getMiserModeLimit());
-            $this->assign('defaultRequestState', $config->getDefaultRequestStateKey());
-
-            $totalRequestsStatement->bindValue(':type', $requestedStatus);
-            $totalRequestsStatement->execute();
-            $totalRequests = $totalRequestsStatement->fetchColumn();
-            $totalRequestsStatement->closeCursor();
-            $this->assign('totalRequests', $totalRequests);
-
-
-            $this->setHtmlTitle('{$header|escape}{if $totalRequests > 0} [{$totalRequests|escape}]{/if}');
-            $this->setTemplate('mainpage/expandedrequestlist.tpl');
+        if ($config->getEmailConfirmationEnabled()) {
+            $search->withConfirmedEmail();
         }
+
+        $queuesById = [$queue->getId() => $queue];
+        $requestsByQueue = $search->fetchByQueue(array_keys($queuesById));
+        $requestData = $requestsByQueue[$queue->getId()];
+
+        $this->assign('requests', $this->prepareRequestData($requestData['data']));
+        $this->assign('totalRequests', $requestData['count']);
+        $this->assign('header', $queue->getHeader());
+        $this->assign('requestLimitShowOnly', $config->getMiserModeLimit());
+
+        $this->setHtmlTitle('{$header|escape}{if $totalRequests > 0} [{$totalRequests|escape}]{/if}');
+        $this->setTemplate('mainpage/expandedrequestlist.tpl');
     }
 }

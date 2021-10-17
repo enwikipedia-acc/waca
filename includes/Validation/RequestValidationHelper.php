@@ -12,6 +12,7 @@ use Exception;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\RequestQueue;
 use Waca\ExceptionHandler;
 use Waca\Exceptions\CurlException;
 use Waca\Helpers\HttpHelper;
@@ -128,7 +129,7 @@ class RequestValidationHelper
         if (preg_match("/[" . preg_quote("#@/<>[]|{}", "/") . "]/", $request->getName()) === 1) {
             $errorList[ValidationError::NAME_INVALIDCHAR] = new ValidationError(ValidationError::NAME_INVALIDCHAR);
         }
-        
+
         // username is an IP
         if (filter_var($request->getName(), FILTER_VALIDATE_IP)) {
             $errorList[ValidationError::NAME_IP] = new ValidationError(ValidationError::NAME_IP);
@@ -238,7 +239,8 @@ class RequestValidationHelper
             }
 
             if ($ban->getAction() == Ban::ACTION_DEFER) {
-                $this->deferRequest($request, $ban->getActionTarget(), 'Request deferred automatically due to matching rule.');
+                $targetQueue = RequestQueue::getById($ban->getTargetQueue(), $this->database);
+                $this->deferRequest($request, $targetQueue, 'Request deferred automatically due to matching rule.');
             }
         }
     }
@@ -248,8 +250,10 @@ class RequestValidationHelper
         try {
             if (count($this->antiSpoofProvider->getSpoofs($request->getName())) > 0) {
                 // If there were spoofs an Admin should handle the request.
-                $this->deferRequest($request, 'Flagged users',
-                    'Request automatically deferred to flagged users due to AntiSpoof hit');
+                // FIXME: domains!
+                $defaultQueue = RequestQueue::getDefaultQueue($this->database, 1, RequestQueue::DEFAULT_ANTISPOOF);
+                $this->deferRequest($request, $defaultQueue,
+                    'Request automatically deferred due to AntiSpoof hit');
             }
         }
         catch (Exception $ex) {
@@ -304,8 +308,11 @@ class RequestValidationHelper
             }
 
             if (!$requestIsOk) {
-                $this->deferRequest($request, 'Flagged users',
-                    'Request automatically deferred to flagged users due to title blacklist hit');
+                // FIXME: domains!
+                $defaultQueue = RequestQueue::getDefaultQueue($this->database, 1, RequestQueue::DEFAULT_TITLEBLACKLIST);
+
+                $this->deferRequest($request, $defaultQueue,
+                    'Request automatically deferred due to title blacklist hit');
             }
         }
     }
@@ -392,12 +399,12 @@ class RequestValidationHelper
         return $statement->fetchColumn() > 0;
     }
 
-    private function deferRequest(Request $request, $targetQueue, $deferComment): void
+    private function deferRequest(Request $request, RequestQueue $targetQueue, $deferComment): void
     {
-        $request->setStatus($targetQueue);
+        $request->setQueue($targetQueue->getId());
         $request->save();
 
-        $logTarget = $this->siteConfiguration->getRequestStates()[$targetQueue]['defertolog'];
+        $logTarget = $targetQueue->getLogName();
 
         Logger::deferRequest($this->database, $request, $logTarget);
 

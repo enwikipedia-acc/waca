@@ -79,6 +79,7 @@ abstract class CreationTaskBase extends BackgroundTaskBase
             $this->performCreation($user);
 
             $this->request->setStatus(RequestStatus::CLOSED);
+            $this->request->setQueue(null);
             $this->request->setReserved(null);
             $this->request->setEmailSent(true);
             $this->request->save();
@@ -136,6 +137,7 @@ abstract class CreationTaskBase extends BackgroundTaskBase
     protected function markFailed($reason = null, bool $acknowledged = false)
     {
         $this->request->setStatus(RequestStatus::HOSPITAL);
+        $this->request->setQueue(null);
         $this->request->save();
 
         $this->getNotificationHelper()->requestCreationFailed($this->request, $this->getTriggerUser());

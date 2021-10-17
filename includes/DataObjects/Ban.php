@@ -41,7 +41,7 @@ class Ban extends DataObject
     private $duration;
     private $active;
     private $action = self::ACTION_BLOCK;
-    private $actiontarget;
+    private $targetqueue;
     private $visibility = 'user';
 
     /**
@@ -134,8 +134,8 @@ SQL
         if ($this->isNew()) {
             // insert
             $statement = $this->dbObject->prepare(<<<SQL
-INSERT INTO `ban` (name, email, ip, ipmask, useragent, user, reason, date, duration, active, action, actiontarget, visibility)
-VALUES (:name, :email, :ip, :ipmask, :useragent, :user, :reason, CURRENT_TIMESTAMP(), :duration, :active, :action, :actionTarget, :visibility);
+INSERT INTO `ban` (name, email, ip, ipmask, useragent, user, reason, date, duration, active, action, targetqueue, visibility)
+VALUES (:name, :email, :ip, :ipmask, :useragent, :user, :reason, CURRENT_TIMESTAMP(), :duration, :active, :action, :targetqueue, :visibility);
 SQL
             );
 
@@ -150,7 +150,7 @@ SQL
             $statement->bindValue(":duration", $this->duration);
             $statement->bindValue(":active", $this->active);
             $statement->bindValue(":action", $this->action);
-            $statement->bindValue(":actionTarget", $this->actiontarget);
+            $statement->bindValue(":targetqueue", $this->targetqueue);
             $statement->bindValue(":visibility", $this->visibility);
 
             if ($statement->execute()) {
@@ -164,8 +164,8 @@ SQL
             // update
             $statement = $this->dbObject->prepare(<<<SQL
 UPDATE `ban`
-SET duration = :duration, active = :active, user = :user, action = :action, actiontarget = :actionTarget, 
-    visibility = :visibility, updateversion = updateversion + 1
+SET duration = :duration, active = :active, user = :user, action = :action, visibility = :visibility, 
+    targetqueue = :targetqueue, updateversion = updateversion + 1
 WHERE id = :id AND updateversion = :updateversion;
 SQL
             );
@@ -176,7 +176,7 @@ SQL
             $statement->bindValue(':active', $this->active);
             $statement->bindValue(':user', $this->user);
             $statement->bindValue(":action", $this->action);
-            $statement->bindValue(":actionTarget", $this->actiontarget);
+            $statement->bindValue(":targetqueue", $this->targetqueue);
             $statement->bindValue(":visibility", $this->visibility);
 
             if (!$statement->execute()) {
@@ -280,22 +280,6 @@ SQL
     }
 
     /**
-     * @return string|null
-     */
-    public function getActionTarget()
-    {
-        return $this->actiontarget;
-    }
-
-    /**
-     * @param string|null $actionTarget
-     */
-    public function setActionTarget($actionTarget): void
-    {
-        $this->actiontarget = $actionTarget;
-    }
-
-    /**
      * @return string
      */
     public function getVisibility() : string
@@ -393,5 +377,31 @@ SQL
     public function setUseragent(?string $useragent): void
     {
         $this->useragent = $useragent;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getTargetQueue(): ?int
+    {
+        return $this->targetqueue;
+    }
+
+    /**
+     * @return RequestQueue|null
+     */
+    public function getTargetQueueObject(): ?RequestQueue
+    {
+        /** @var RequestQueue $queue */
+        $queue = RequestQueue::getById($this->targetqueue, $this->getDatabase());
+        return $queue === false ? null : $queue;
+    }
+
+    /**
+     * @param int|null $targetQueue
+     */
+    public function setTargetQueue(?int $targetQueue): void
+    {
+        $this->targetqueue = $targetQueue;
     }
 }

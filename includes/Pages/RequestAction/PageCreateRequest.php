@@ -114,7 +114,7 @@ class PageCreateRequest extends RequestActionBase
             throw new ApplicationLogicException('Invalid or inactive template specified');
         }
 
-        if ($template->getDefaultAction() !== EmailTemplate::CREATED) {
+        if ($template->getDefaultAction() !== EmailTemplate::ACTION_CREATED) {
             throw new ApplicationLogicException('Specified template is not a creation template!');
         }
 

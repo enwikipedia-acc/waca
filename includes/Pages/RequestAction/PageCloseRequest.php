@@ -17,6 +17,7 @@ use Waca\Helpers\Logger;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\RequestEmailHelper;
 use Waca\PdoDatabase;
+use Waca\RequestStatus;
 use Waca\SessionAlert;
 use Waca\WebRequest;
 
@@ -41,7 +42,7 @@ class PageCloseRequest extends RequestActionBase
         $request = $this->getRequest($database);
         $request->setUpdateVersion(WebRequest::postInt('updateversion'));
 
-        if ($request->getStatus() === 'Closed') {
+        if ($request->getStatus() === RequestStatus::CLOSED) {
             throw new ApplicationLogicException('Request is already closed');
         }
 
@@ -58,7 +59,8 @@ class PageCloseRequest extends RequestActionBase
         }
 
         // I think we're good here...
-        $request->setStatus('Closed');
+        $request->setStatus(RequestStatus::CLOSED);
+        $request->setQueue(null);
         $request->setReserved(null);
 
         Logger::closeRequest($database, $request, $template->getId(), null);
@@ -151,7 +153,7 @@ class PageCloseRequest extends RequestActionBase
      */
     protected function confirmAccountCreated(Request $request, EmailTemplate $template)
     {
-        if ($template->getDefaultAction() === EmailTemplate::CREATED && $this->checkAccountCreated($request)) {
+        if ($template->getDefaultAction() === EmailTemplate::ACTION_CREATED && $this->checkAccountCreated($request)) {
             $this->showConfirmation($request, $template, 'close-confirmations/account-created.tpl');
 
             return true;
@@ -193,12 +195,12 @@ class PageCloseRequest extends RequestActionBase
     protected function sendMail(Request $request, $mailText, User $currentUser, $ccMailingList)
     {
         if (
-        ($request->getEmail() != $this->getSiteConfiguration()->getDataClearEmail()) && 
+        ($request->getEmail() != $this->getSiteConfiguration()->getDataClearEmail()) &&
         ($request->getIp() != $this->getSiteConfiguration()->getDataClearIp())
         ) {
             $requestEmailHelper = new RequestEmailHelper($this->getEmailHelper());
             $requestEmailHelper->sendMail($request, $mailText, $currentUser, $ccMailingList);
-            
+
             $request->setEmailSent(true);
             $request->save();
         }
@@ -241,7 +243,7 @@ class PageCloseRequest extends RequestActionBase
         $database = $this->getDatabase();
         $currentUser = User::getCurrent($database);
 
-        if ($action !== EmailTemplate::CREATED) {
+        if ($action !== EmailTemplate::ACTION_CREATED) {
             return;
         }
 

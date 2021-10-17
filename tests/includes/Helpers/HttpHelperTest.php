@@ -8,10 +8,10 @@
 
 namespace Waca\Tests\Helpers;
 
-use \PHPUnit_Framework_TestCase;
-use \Waca\Helpers\HttpHelper;
+use PHPUnit\Framework\TestCase;
+use Waca\Helpers\HttpHelper;
 
-class HttpHelperTest extends PHPUnit_Framework_TestCase
+class HttpHelperTest extends TestCase
 {
     private $hh;
 

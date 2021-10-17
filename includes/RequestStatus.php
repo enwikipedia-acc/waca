@@ -13,4 +13,5 @@ class RequestStatus
     const HOSPITAL = 'Hospital';
     const JOBQUEUE = 'JobQueue';
     const CLOSED = 'Closed';
+    const OPEN = 'Open';
 }

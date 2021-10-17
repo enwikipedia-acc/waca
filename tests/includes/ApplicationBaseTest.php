@@ -9,11 +9,11 @@
 namespace Waca\Tests;
 
 use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Waca\ApplicationBase;
 use Waca\SiteConfiguration;
 
-class ApplicationBaseTest extends PHPUnit_Framework_TestCase
+class ApplicationBaseTest extends TestCase
 {
     private $si;
     /** @var PHPUnit_Framework_MockObject_MockObject */

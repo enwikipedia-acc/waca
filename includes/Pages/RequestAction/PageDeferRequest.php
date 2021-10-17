@@ -10,6 +10,7 @@ namespace Waca\Pages\RequestAction;
 
 use DateTime;
 use Waca\DataObjects\JobQueue;
+use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
@@ -32,13 +33,15 @@ class PageDeferRequest extends RequestActionBase
         $currentUser = User::getCurrent($database);
 
         $target = WebRequest::postString('target');
-        $requestStates = $this->getSiteConfiguration()->getRequestStates();
 
-        if (!array_key_exists($target, $requestStates)) {
+        // FIXME: domains!
+        $requestQueue = RequestQueue::getByApiName($database, $target, 1);
+
+        if ($requestQueue === false) {
             throw new ApplicationLogicException('Defer target not valid');
         }
 
-        if ($request->getStatus() == $target) {
+        if ($request->getQueue() == $requestQueue->getId() && $request->getStatus() == RequestStatus::OPEN) {
             SessionAlert::warning('This request is already in the specified queue.');
             $this->redirect('viewRequest', null, array('id' => $request->getId()));
 
@@ -49,7 +52,7 @@ class PageDeferRequest extends RequestActionBase
         $date = new DateTime();
         $date->modify("-7 days");
 
-        if ($request->getStatus() == "Closed" && $closureDate < $date) {
+        if ($request->getStatus() == RequestStatus::CLOSED && $closureDate < $date) {
             if (!$this->barrierTest('reopenOldRequest', $currentUser, 'RequestData')) {
                 throw new ApplicationLogicException(
                     "You are not allowed to re-open a request that has been closed for over a week.");
@@ -81,16 +84,16 @@ class PageDeferRequest extends RequestActionBase
         }
 
         $request->setReserved(null);
-        $request->setStatus($target);
+        $request->setStatus(RequestStatus::OPEN);
+        $request->setQueue($requestQueue->getId());
         $request->setUpdateVersion(WebRequest::postInt('updateversion'));
         $request->save();
 
-        $deto = $requestStates[$target]['deferto'];
-        $detolog = $requestStates[$target]['defertolog'];
-
-        Logger::deferRequest($database, $request, $detolog);
+        Logger::deferRequest($database, $request, $requestQueue->getLogName());
 
         $this->getNotificationHelper()->requestDeferred($request);
+
+        $deto = htmlentities($requestQueue->getDisplayName(), ENT_COMPAT, 'UTF-8');
         SessionAlert::success("Request {$request->getId()} deferred to {$deto}");
 
         $this->redirect();

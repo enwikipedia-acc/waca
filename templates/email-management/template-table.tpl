@@ -3,14 +3,14 @@
         <tr>
             <th>{$row->getName()|escape}</th>
             <td class="text-nowrap">
-                {if $row->getDefaultAction() === 'created'}
+                {if $row->getDefaultAction() === Waca\DataObjects\EmailTemplate::ACTION_CREATED}
                     <span class="badge badge-success">Create</span>
-                {elseif $row->getDefaultAction() === 'not created'}
+                {elseif $row->getDefaultAction() === Waca\DataObjects\EmailTemplate::ACTION_NOT_CREATED}
                     <span class="badge badge-danger">Decline</span>
-                {elseif $row->getDefaultAction() == null}
+                {elseif $row->getDefaultAction() === Waca\DataObjects\EmailTemplate::ACTION_NONE}
                     <span class="badge badge-secondary">No default</span>
-                {else}
-                    <span class="badge badge-info">Defer to {$row->getDefaultAction()|escape}</span>
+                {elseif $row->getDefaultAction() === Waca\DataObjects\EmailTemplate::ACTION_DEFER}
+                    <span class="badge badge-info">Defer to {$row->getQueueObject()->getDisplayName()|escape}</span>
                 {/if}
 
                 {if $row->getPreloadOnly()}<span class="d-md-none"><br /><span class="badge badge-info">Preload only</span></span>{/if}

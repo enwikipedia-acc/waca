@@ -8,6 +8,8 @@
 
 namespace Waca\Pages\Statistics;
 
+use Waca\DataObjects\RequestQueue;
+use Waca\RequestStatus;
 use Waca\Tasks\InternalPageBase;
 
 class StatsMain extends InternalPageBase
@@ -45,19 +47,20 @@ class StatsMain extends InternalPageBase
     {
         $database = $this->getDatabase();
         $requestsQuery = <<<'SQL'
-SELECT COUNT(*) FROM request WHERE status = :status AND emailconfirm = 'Confirmed';
+SELECT COUNT(*) FROM request WHERE status = :status AND queue = :queue AND emailconfirm = 'Confirmed';
 SQL;
         $requestsStatement = $database->prepare($requestsQuery);
 
-        $requestStates = $this->getSiteConfiguration()->getRequestStates();
-
         $requestStateData = array();
 
-        foreach ($requestStates as $statusName => $data) {
-            $requestsStatement->execute(array(':status' => $statusName));
+        foreach (RequestQueue::getEnabledQueues($database) as $queue) {
+            $requestsStatement->execute(array(
+                ':status' => RequestStatus::OPEN,
+                ':queue'  => $queue->getId(),
+            ));
             $requestCount = $requestsStatement->fetchColumn();
             $requestsStatement->closeCursor();
-            $headerText = $data['header'];
+            $headerText = $queue->getHeader();
             $requestStateData[$headerText] = $requestCount;
         }
 

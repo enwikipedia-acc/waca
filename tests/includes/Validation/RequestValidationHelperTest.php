@@ -18,6 +18,7 @@ use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\IAntiSpoofProvider;
 use Waca\Providers\Interfaces\IXffTrustProvider;
 use Waca\Providers\TorExitProvider;
+use Waca\SiteConfiguration;
 use Waca\Validation\RequestValidationHelper;
 
 /**
@@ -47,9 +48,6 @@ class RequestValidationHelperTest extends TestCase
 
         /** @var IBanHelper|PHPUnit_Framework_MockObject_MockObject $banHelperMock */
         $banHelperMock = $this->getMockBuilder(IBanHelper::class)->getMock();
-        $banHelperMock->expects($this->never())->method('emailIsBanned')->willReturn(false);
-        $banHelperMock->expects($this->once())->method('nameIsBanned')->willReturn(false);
-        $banHelperMock->expects($this->never())->method('ipIsBanned')->willReturn(false);
 
         /** @var IAntiSpoofProvider|PHPUnit_Framework_MockObject_MockObject $antispoofMock */
         $antispoofMock = $this->getMockBuilder(IAntiSpoofProvider::class)->getMock();
@@ -72,7 +70,7 @@ class RequestValidationHelperTest extends TestCase
             $xffTrustMock,
             $httpHelperMock,
             $torProviderMock,
-            null);
+            new SiteConfiguration());
 
         // act
         $result = $validationHelper->validateName($this->request);

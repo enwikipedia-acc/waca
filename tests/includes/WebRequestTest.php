@@ -8,13 +8,14 @@
 
 namespace Waca\Tests;
 
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 use Waca\DataObjects\User;
 use Waca\Providers\GlobalState\GlobalStateProvider;
 use Waca\Providers\GlobalState\FakeGlobalStateProvider;
 use Waca\WebRequest;
 
-class WebRequestTest extends \PHPUnit_Framework_TestCase
+class WebRequestTest extends TestCase
 {
     /**
      * @var GlobalStateProvider|PHPUnit_Framework_MockObject_MockObject

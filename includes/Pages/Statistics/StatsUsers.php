@@ -99,7 +99,7 @@ WHERE user.username = :username
 ORDER BY log.timestamp;
 SQL
         );
-        $usersCreatedQuery->execute(array(":username" => $user->getUsername(), ':created' => EmailTemplate::CREATED));
+        $usersCreatedQuery->execute(array(":username" => $user->getUsername(), ':created' => EmailTemplate::ACTION_CREATED));
         $usersCreated = $usersCreatedQuery->fetchAll(PDO::FETCH_ASSOC);
         $this->assign("created", $usersCreated);
 
@@ -115,7 +115,7 @@ WHERE user.username = :username
 ORDER BY log.timestamp;
 SQL
         );
-        $usersNotCreatedQuery->execute(array(":username" => $user->getUsername(), ':created' => EmailTemplate::NOT_CREATED));
+        $usersNotCreatedQuery->execute(array(":username" => $user->getUsername(), ':created' => EmailTemplate::ACTION_NOT_CREATED));
         $usersNotCreated = $usersNotCreatedQuery->fetchAll(PDO::FETCH_ASSOC);
         $this->assign("notcreated", $usersNotCreated);
 
