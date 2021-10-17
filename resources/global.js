@@ -144,6 +144,31 @@ $(".sitenotice-show").click(function() {
     document.cookie = 'sitenotice=invalid;expires=' + date.toUTCString() + ";path=/";
 })
 
+$(".request-table th").click(function() {
+    let expiryDate = new Date();
+    let sort = '';
+
+    let classes = $(this).attr('class').split(/\s+/);
+    if( $.inArray('sorted', classes )) {
+        // is sorted
+        expiryDate.setTime(expiryDate.getTime() + 365 * 24 * 60 * 60 * 1000);
+        sort = $(this).data('sortname');
+
+        if (classes.includes("up")) {
+            sort += "/asc";
+        } else if (classes.includes("down")) {
+            sort += "/desc";
+        } else {
+            sort += "/asc";
+        }
+    } else {
+        expiryDate.setTime(expiryDate.getTime() - 1);
+    }
+
+    document.cookie = 'request_table_sort=' + sort + ';expires=' + expiryDate.toUTCString() + ";path=/"
+})
+
+
 $("#banAction").change(function() {
     var selectedOption = $(this).children("option:selected").val();
 

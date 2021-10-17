@@ -13,6 +13,7 @@ use Exception;
 class ValidationError
 {
     const NAME_EMPTY = "name_empty";
+    const NAME_TOO_LONG = "name_too_long";
     const NAME_EXISTS = "name_exists";
     const NAME_EXISTS_SUL = "name_exists_sul";
     const NAME_NUMONLY = "name_numonly";
@@ -31,6 +32,7 @@ class ValidationError
      */
     private static $errorText = array(
         self::NAME_EMPTY        => 'You\'ve not chosen a username!',
+        self::NAME_TOO_LONG     => 'Your chosen username is too long. Please choose a shorter one.',
         self::NAME_EXISTS       => 'I\'m sorry, but the username you selected is already taken. Please try another. '
             . 'Please note that Wikipedia automatically capitalizes the first letter of any user name, therefore '
             . '[[User:example]] would become [[User:Example]].',

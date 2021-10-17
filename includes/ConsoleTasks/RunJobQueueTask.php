@@ -103,19 +103,25 @@ class RunJobQueueTask extends ConsoleTaskBase
             }
             catch (Exception $ex) {
                 $database->rollBack();
-                $database->beginTransaction();
+                try {
+                    $database->beginTransaction();
 
-                /** @var JobQueue $job */
-                $job = JobQueue::getById($job->getId(), $database);
-                $job->setDatabase($database);
-                $job->setStatus(JobQueue::STATUS_FAILED);
-                $job->setError($ex->getMessage());
-                $job->setAcknowledged(0);
-                $job->save();
+                    /** @var JobQueue $job */
+                    $job = JobQueue::getById($job->getId(), $database);
+                    $job->setDatabase($database);
+                    $job->setStatus(JobQueue::STATUS_FAILED);
+                    $job->setError($ex->getMessage());
+                    $job->setAcknowledged(0);
+                    $job->save();
 
-                Logger::backgroundJobIssue($this->getDatabase(), $job);
+                    Logger::backgroundJobIssue($this->getDatabase(), $job);
 
-                $database->commit();
+                    $database->commit();
+                } catch (Exception $ex) {
+                    // oops, something went horribly wrong trying to handle this in a nice way; let's just fall back to
+                    // logging this to disk for a tool root to investigate.
+                    ExceptionHandler::logExceptionToDisk($ex, $this->getSiteConfiguration());
+                }
             }
             finally {
                 $database->commit();

@@ -52,6 +52,10 @@ class PageExpandedRequestList extends InternalPageBase
         $search = RequestSearchHelper::get($database);
         $search->byStatus(RequestStatus::OPEN);
 
+        list($defaultSort, $defaultSortDirection) = WebRequest::requestListDefaultSort();
+        $this->assign('defaultSort', $defaultSort);
+        $this->assign('defaultSortDirection', $defaultSortDirection);
+
         if ($config->getEmailConfirmationEnabled()) {
             $search->withConfirmedEmail();
         }

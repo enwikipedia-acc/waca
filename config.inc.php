@@ -237,6 +237,7 @@ $cspReportUri = null;
 
 // Must be disabled in production.
 $enableErrorTrace = false;
+$enableCssBreakpoints = false;
 
 // Dangerous.
 // Don't set this.
@@ -340,6 +341,7 @@ $siteConfiguration = new \Waca\SiteConfiguration();
 $siteConfiguration->setBaseUrl($baseurl)
     ->setFilePath(__DIR__)
     ->setDebuggingTraceEnabled($enableErrorTrace)
+    ->setDebuggingCssBreakpointsEnabled($enableCssBreakpoints)
     ->setForceIdentification($forceIdentification)
     ->setIdentificationCacheExpiry($identificationCacheExpiry)
     ->setMediawikiScriptPath($mediawikiScriptPath)

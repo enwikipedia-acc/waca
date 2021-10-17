@@ -11,6 +11,7 @@ namespace Waca\API\Actions;
 use DOMElement;
 use Waca\API\IXmlApiAction;
 use Waca\DataObjects\RequestQueue;
+use Waca\Helpers\SearchHelpers\RequestSearchHelper;
 use Waca\RequestStatus;
 use Waca\Tasks\XmlApiPageBase;
 
@@ -45,6 +46,27 @@ SQL
             $query->closeCursor();
         }
 
+        // hospital queue
+        $search = RequestSearchHelper::get($this->getDatabase())->isHospitalised();
+
+        if ($this->getSiteConfiguration()->getEmailConfirmationEnabled()) {
+            $search->withConfirmedEmail();
+        }
+        $search->getRecordCount($hospitalCount);
+        $statusElement->setAttribute('x-hospital', $hospitalCount);
+
+        // job queue
+        $search = RequestSearchHelper::get($this->getDatabase())
+            ->byStatus(RequestStatus::JOBQUEUE);
+
+        if ($this->getSiteConfiguration()->getEmailConfirmationEnabled()) {
+            $search->withConfirmedEmail();
+        }
+
+        $search->getRecordCount($jobQueueRequestCount);
+        $statusElement->setAttribute('x-jobqueue', $jobQueueRequestCount);
+
+        // bans
         $query = $this->getDatabase()->prepare(<<<SQL
             SELECT /* Api/StatusAction */ COUNT(*) AS count
             FROM ban
