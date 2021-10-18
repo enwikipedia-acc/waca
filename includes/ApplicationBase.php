@@ -148,16 +148,13 @@ abstract class ApplicationBase
 
         $page->setRdnsProvider(new CachedRDnsLookupProvider($database));
 
-        $page->setAntiSpoofProvider(new CachedApiAntispoofProvider(
-            $database,
-            $this->getConfiguration()->getMediawikiWebServiceEndpoint(),
-            $httpHelper));
+        $page->setAntiSpoofProvider(new CachedApiAntispoofProvider($database, $httpHelper));
 
         $page->setOAuthProtocolHelper(new OAuthProtocolHelper(
             $siteConfiguration->getOAuthBaseUrl(),
             $siteConfiguration->getOAuthConsumerToken(),
             $siteConfiguration->getOAuthConsumerSecret(),
-            $siteConfiguration->getMediawikiWebServiceEndpoint(),
+            $database,
             $siteConfiguration->getUserAgent()
         ));
 

@@ -75,16 +75,14 @@ class WebStart extends ApplicationBase
             if ($page instanceof InternalPageBase) {
                 $page->setTypeAheadHelper(new TypeAheadHelper());
 
-                $identificationVerifier = new IdentificationVerifier($page->getHttpHelper(), $siteConfiguration,
-                    $database);
+                $identificationVerifier = new IdentificationVerifier($page->getHttpHelper(), $siteConfiguration, $database);
                 $page->setSecurityManager(new SecurityManager($identificationVerifier, new RoleConfiguration()));
 
                 if ($siteConfiguration->getTitleBlacklistEnabled()) {
                     $page->setBlacklistHelper(new FakeBlacklistHelper());
                 }
                 else {
-                    $page->setBlacklistHelper(new BlacklistHelper($page->getHttpHelper(),
-                        $siteConfiguration->getMediawikiWebServiceEndpoint()));
+                    $page->setBlacklistHelper(new BlacklistHelper($page->getHttpHelper(), $database));
                 }
             }
         }

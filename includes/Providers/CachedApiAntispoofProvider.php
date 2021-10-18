@@ -10,6 +10,7 @@ namespace Waca\Providers;
 
 use Exception;
 use Waca\DataObjects\AntiSpoofCache;
+use Waca\DataObjects\Domain;
 use Waca\Helpers\HttpHelper;
 use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\IAntiSpoofProvider;
@@ -26,29 +27,29 @@ class CachedApiAntispoofProvider implements IAntiSpoofProvider
      * @var PdoDatabase
      */
     private $database;
-    /**
-     * @var string
-     */
-    private $mediawikiWebServiceEndpoint;
+
     /**
      * @var HttpHelper
      */
     private $httpHelper;
 
-    public function __construct(PdoDatabase $database, $mediawikiWebServiceEndpoint, HttpHelper $httpHelper)
+    public function __construct(PdoDatabase $database, HttpHelper $httpHelper)
     {
         $this->database = $database;
-        $this->mediawikiWebServiceEndpoint = $mediawikiWebServiceEndpoint;
         $this->httpHelper = $httpHelper;
     }
 
     public function getSpoofs($username)
     {
+        // FIXME: domains!
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $this->database);
+
         /** @var AntiSpoofCache $cacheResult */
         $cacheResult = AntiSpoofCache::getByUsername($username, $this->database);
         if ($cacheResult == false) {
             // get the data from the API
-            $data = $this->httpHelper->get($this->mediawikiWebServiceEndpoint, array(
+            $data = $this->httpHelper->get($domain->getWikiApiPath(), array(
                 'action'   => 'antispoof',
                 'format'   => 'php',
                 'username' => $username,

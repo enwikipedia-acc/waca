@@ -8,31 +8,35 @@
 
 namespace Waca\Helpers;
 
+use Waca\DataObjects\Domain;
 use Waca\Exceptions\CurlException;
 use Waca\Helpers\Interfaces\IBlacklistHelper;
+use Waca\PdoDatabase;
 
 class BlacklistHelper implements IBlacklistHelper
 {
     /** @var HttpHelper */
     private $httpHelper;
+
     /**
      * Cache of previously requested usernames
      * @var array
      */
     private $cache = array();
-    /** @var string */
-    private $mediawikiWebServiceEndpoint;
+
+    /** @var PdoDatabase */
+    private $database;
 
     /**
      * BlacklistHelper constructor.
      *
-     * @param HttpHelper $httpHelper
-     * @param string     $mediawikiWebServiceEndpoint
+     * @param HttpHelper  $httpHelper
+     * @param PdoDatabase $database
      */
-    public function __construct(HttpHelper $httpHelper, $mediawikiWebServiceEndpoint)
+    public function __construct(HttpHelper $httpHelper, PdoDatabase $database)
     {
         $this->httpHelper = $httpHelper;
-        $this->mediawikiWebServiceEndpoint = $mediawikiWebServiceEndpoint;
+        $this->database = $database;
     }
 
     /**
@@ -84,7 +88,11 @@ class BlacklistHelper implements IBlacklistHelper
      */
     private function performWikiLookup($username)
     {
-        $endpoint = $this->mediawikiWebServiceEndpoint;
+        // FIXME: domains!
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $this->database);
+
+        $endpoint = $domain->getWikiApiPath();
 
         $parameters = array(
             'action'       => 'titleblacklist',
