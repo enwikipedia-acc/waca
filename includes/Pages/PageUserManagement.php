@@ -92,6 +92,11 @@ class PageUserManagement extends InternalPageBase
         $this->assign('canSuspend', $this->barrierTest('suspend', $currentUser));
         $this->assign('canEditRoles', $this->barrierTest('editRoles', $currentUser));
 
+        // FIXME: domains!
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $this->getDatabase());
+        $this->assign('mediawikiScriptPath', $domain->getWikiArticlePath());
+
         $this->setTemplate("usermanagement/main.tpl");
     }
 

@@ -8,6 +8,7 @@
 
 namespace Waca\Pages\UserAuth;
 
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\SessionAlert;
@@ -54,6 +55,12 @@ class PagePreferences extends InternalPageBase
         else {
             $this->assignCSRFToken();
             $this->setTemplate('preferences/prefs.tpl');
+
+            // FIXME: domains!
+            /** @var Domain $domain */
+            $domain = Domain::getById(1, $this->getDatabase());
+            $this->assign('mediawikiScriptPath', $domain->getWikiArticlePath());
+
             $this->assign("enforceOAuth", $enforceOAuth);
 
             $this->assign('canManualCreate',

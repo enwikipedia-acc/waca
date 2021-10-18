@@ -50,6 +50,11 @@ class PageViewRequest extends InternalPageBase
         $config = $this->getSiteConfiguration();
         $currentUser = User::getCurrent($database);
 
+        // FIXME: domains!
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $this->getDatabase());
+        $this->assign('mediawikiScriptPath', $domain->getWikiArticlePath());
+
         // Test we should be able to look at this request
         if ($config->getEmailConfirmationEnabled()) {
             if ($request->getEmailConfirm() !== 'Confirmed') {

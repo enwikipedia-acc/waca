@@ -27,7 +27,6 @@ $toolserver_database = "";
  * File paths etc
  */
 
-$mediawikiScriptPath = "https://en.wikipedia.org/w/index.php";
 $metaWikimediaWebServiceEndpoint = "https://meta.wikimedia.org/w/api.php";
 
 // URL of the current copy of the tool.
@@ -239,7 +238,6 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setDebuggingCssBreakpointsEnabled($enableCssBreakpoints)
     ->setForceIdentification($forceIdentification)
     ->setIdentificationCacheExpiry($identificationCacheExpiry)
-    ->setMediawikiScriptPath($mediawikiScriptPath)
     ->setMetaWikimediaWebServiceEndpoint($metaWikimediaWebServiceEndpoint)
     ->setEnforceOAuth($enforceOAuth)
     ->setEmailConfirmationEnabled($enableEmailConfirm == 1)
