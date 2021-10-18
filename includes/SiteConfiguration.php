@@ -52,7 +52,6 @@ class SiteConfiguration
         "http://meta.wikimedia.org",
         "https://meta.wikimedia.org",
     );
-    private $ircNotificationRoutingKey = 1;
     private $ircNotificationsEnabled = true;
     private $ircNotificationsInstance = 'Development';
     private $errorLog = 'errorlog';
@@ -596,26 +595,6 @@ class SiteConfiguration
     }
 
     /**
-     * @return int
-     */
-    public function getIrcNotificationRoutingKey()
-    {
-        return $this->ircNotificationRoutingKey;
-    }
-
-    /**
-     * @param int $ircNotificationRoutingKey
-     *
-     * @return SiteConfiguration
-     */
-    public function setIrcNotificationRoutingKey($ircNotificationRoutingKey)
-    {
-        $this->ircNotificationRoutingKey = $ircNotificationRoutingKey;
-
-        return $this;
-    }
-
-    /**
      * @param string $errorLog
      *
      * @return SiteConfiguration
@@ -1049,7 +1028,7 @@ class SiteConfiguration
         $this->jobQueueBatchSize = $jobQueueBatchSize;
 
         return $this;
-}
+    }
 
     /**
      * @return array

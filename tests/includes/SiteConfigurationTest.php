@@ -271,16 +271,6 @@ class SiteConfigurationTest extends TestCase
         $this->assertFalse($this->si->getIrcNotificationsEnabled());
     }
 
-    function testIrcNotificationType()
-    {
-        $newValue = 256;
-
-        $this->assertEquals($this->si->getIrcNotificationRoutingKey(), 1);
-
-        $this->assertInstanceOf(SiteConfiguration::class, $this->si->setIrcNotificationRoutingKey($newValue));
-        $this->assertEquals($this->si->getIrcNotificationRoutingKey(), $newValue);
-    }
-
     function testErrorLog()
     {
         $newValue = "elephantlog";

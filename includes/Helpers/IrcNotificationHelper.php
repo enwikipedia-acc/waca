@@ -14,6 +14,7 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Comment;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\RequestQueue;
@@ -32,8 +33,6 @@ class IrcNotificationHelper
 {
     /** @var bool $notificationsEnabled */
     private $notificationsEnabled;
-    /** @var string $routingKey */
-    private $routingKey;
     /** @var User $currentUser */
     private $currentUser;
     /** @var string $instanceName */
@@ -42,6 +41,8 @@ class IrcNotificationHelper
     private $baseUrl;
     /** @var SiteConfiguration */
     private $siteConfiguration;
+    /** @var PdoDatabase */
+    private $primaryDatabase;
 
     /**
      * IrcNotificationHelper constructor.
@@ -54,10 +55,9 @@ class IrcNotificationHelper
         PdoDatabase $primaryDatabase
     ) {
         $this->siteConfiguration = $siteConfiguration;
+        $this->primaryDatabase = $primaryDatabase;
 
         $this->notificationsEnabled = $siteConfiguration->getIrcNotificationsEnabled();
-
-        $this->routingKey = $siteConfiguration->getIrcNotificationRoutingKey();
         $this->instanceName = $siteConfiguration->getIrcNotificationsInstance();
         $this->baseUrl = $siteConfiguration->getBaseUrl();
 
@@ -93,6 +93,10 @@ class IrcNotificationHelper
             $msg = IrcColourCode::RESET . IrcColourCode::BOLD . "[$instanceName]" . IrcColourCode::RESET . ": $message";
         }
 
+        // FIXME: domains!
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $this->primaryDatabase);
+
         try {
             $amqpConfig = $this->siteConfiguration->getAmqpConfiguration();
             if ($amqpConfig['tls']) {
@@ -107,7 +111,7 @@ class IrcNotificationHelper
             $msg->set('user_id', $amqpConfig['user']);
             $msg->set('app_id', $this->siteConfiguration->getUserAgent());
             $msg->set('content_type', 'text/plain');
-            $channel->basic_publish($msg, $amqpConfig['exchange'], $this->routingKey);
+            $channel->basic_publish($msg, $amqpConfig['exchange'], $domain->getNotificationTarget());
             $channel->close();
         }
         catch (Exception $ex) {
