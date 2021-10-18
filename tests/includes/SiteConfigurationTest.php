@@ -196,16 +196,6 @@ class SiteConfigurationTest extends TestCase
         $this->assertFalse($this->si->getUseOAuthSignup());
     }
 
-    function testOAuthBaseUrl()
-    {
-        $newValue = "http://localhost/oauthAwesome/";
-
-        $this->assertEquals($this->si->getOAuthBaseUrl(), null);
-
-        $this->assertInstanceOf(SiteConfiguration::class, $this->si->setOAuthBaseUrl($newValue));
-        $this->assertEquals($this->si->getOAuthBaseUrl(), $newValue);
-    }
-
     function testOAuthConsumerToken()
     {
         $newValue = "ThisTokenIsNotSecretPleaseDontEverUseMe";

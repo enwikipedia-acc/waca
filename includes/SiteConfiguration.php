@@ -37,7 +37,6 @@ class SiteConfiguration
     private $userAgent = 'Wikipedia-ACC Tool/0.1 (+https://accounts.wmflabs.org/internal.php/team)';
     private $curlDisableVerifyPeer = false;
     private $useOAuthSignup = true;
-    private $oauthBaseUrl;
     private $oauthConsumerToken;
     /** @var array */
     private $oauthLegacyConsumerTokens;
@@ -427,26 +426,6 @@ class SiteConfiguration
     public function setUseOAuthSignup($useOAuthSignup)
     {
         $this->useOAuthSignup = $useOAuthSignup;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOAuthBaseUrl()
-    {
-        return $this->oauthBaseUrl;
-    }
-
-    /**
-     * @param string $oauthBaseUrl
-     *
-     * @return SiteConfiguration
-     */
-    public function setOAuthBaseUrl($oauthBaseUrl)
-    {
-        $this->oauthBaseUrl = $oauthBaseUrl;
 
         return $this;
     }
