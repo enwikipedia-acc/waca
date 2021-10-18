@@ -8,6 +8,7 @@
 
 namespace Waca\Helpers;
 
+use Waca\DataObjects\Domain;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\CurlException;
 use Waca\Exceptions\MediaWikiApiException;
@@ -32,11 +33,12 @@ class BotMediaWikiClient implements IMediaWikiClient
     /**
      * BotMediaWikiClient constructor.
      *
-     * @param SiteConfiguration $siteConfiguration
+     * @param SiteConfiguration        $siteConfiguration
+     * @param Domain $domain
      */
-    public function __construct(SiteConfiguration $siteConfiguration)
+    public function __construct(SiteConfiguration $siteConfiguration, Domain $domain)
     {
-        $this->mediawikiWebServiceEndpoint = $siteConfiguration->getMediawikiWebServiceEndpoint();
+        $this->mediawikiWebServiceEndpoint = $domain->getWikiApiPath();
 
         $this->creationBotUsername = $siteConfiguration->getCreationBotUsername();
         $this->creationBotPassword = $siteConfiguration->getCreationBotPassword();

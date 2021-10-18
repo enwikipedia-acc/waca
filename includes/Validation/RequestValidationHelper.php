@@ -11,6 +11,7 @@ namespace Waca\Validation;
 use Exception;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Comment;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\RequestQueue;
 use Waca\ExceptionHandler;
@@ -81,7 +82,12 @@ class RequestValidationHelper
         $this->antiSpoofProvider = $antiSpoofProvider;
         $this->xffTrustProvider = $xffTrustProvider;
         $this->httpHelper = $httpHelper;
-        $this->mediawikiApiEndpoint = $siteConfiguration->getMediawikiWebServiceEndpoint();
+
+        // FIXME: domains!
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $database);
+
+        $this->mediawikiApiEndpoint = $domain->getWikiApiPath();
         $this->titleBlacklistEnabled = $siteConfiguration->getTitleBlacklistEnabled();
         $this->torExitProvider = $torExitProvider;
         $this->siteConfiguration = $siteConfiguration;
@@ -239,8 +245,22 @@ class RequestValidationHelper
             }
 
             if ($ban->getAction() == Ban::ACTION_DEFER) {
+                /** @var RequestQueue|false $targetQueue */
                 $targetQueue = RequestQueue::getById($ban->getTargetQueue(), $this->database);
-                $this->deferRequest($request, $targetQueue, 'Request deferred automatically due to matching rule.');
+
+                if ($targetQueue === false ) {
+                    $comment = new Comment();
+                    $comment->setDatabase($this->database);
+                    $comment->setRequest($request->getId());
+                    $comment->setVisibility('user');
+                    $comment->setUser(null);
+
+                    $comment->setComment("This request would have been deferred automatically due to a matching rule, but the queue to defer to could not be found.");
+                    $comment->save();
+                }
+                else {
+                    $this->deferRequest($request, $targetQueue, 'Request deferred automatically due to matching rule.');
+                }
             }
         }
     }

@@ -9,6 +9,7 @@
 namespace Waca\Pages\RequestAction;
 
 use Exception;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
@@ -172,8 +173,11 @@ class PageCloseRequest extends RequestActionBase
                 'ususers' => $request->getName(),
             );
 
-            $content = $this->getHttpHelper()->get($this->getSiteConfiguration()->getMediawikiWebServiceEndpoint(),
-                $parameters);
+            // FIXME: domains!
+            /** @var Domain $domain */
+            $domain = Domain::getById(1, $this->getDatabase());
+
+            $content = $this->getHttpHelper()->get($domain->getWikiApiPath(), $parameters);
 
             $apiResult = unserialize($content);
             $exists = !isset($apiResult['query']['users']['0']['missing']);

@@ -27,7 +27,6 @@ $toolserver_database = "";
  * File paths etc
  */
 
-$mediawikiWebServiceEndpoint = "https://en.wikipedia.org/w/api.php";
 $mediawikiScriptPath = "https://en.wikipedia.org/w/index.php";
 $metaWikimediaWebServiceEndpoint = "https://meta.wikimedia.org/w/api.php";
 
@@ -242,7 +241,6 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setForceIdentification($forceIdentification)
     ->setIdentificationCacheExpiry($identificationCacheExpiry)
     ->setMediawikiScriptPath($mediawikiScriptPath)
-    ->setMediawikiWebServiceEndpoint($mediawikiWebServiceEndpoint)
     ->setMetaWikimediaWebServiceEndpoint($metaWikimediaWebServiceEndpoint)
     ->setEnforceOAuth($enforceOAuth)
     ->setEmailConfirmationEnabled($enableEmailConfirm == 1)

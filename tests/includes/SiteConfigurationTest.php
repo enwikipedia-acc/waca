@@ -110,26 +110,6 @@ class SiteConfigurationTest extends TestCase
         $this->assertEquals($this->si->getIdentificationCacheExpiry(), $newValue);
     }
 
-    function testMediawikiScriptPath()
-    {
-        $newValue = "https://de.wikipedia.org/w/index.php";
-
-        $this->assertEquals($this->si->getMediawikiScriptPath(), "https://en.wikipedia.org/w/index.php");
-
-        $this->assertInstanceOf(SiteConfiguration::class, $this->si->setMediawikiScriptPath($newValue));
-        $this->assertEquals($this->si->getMediawikiScriptPath(), $newValue);
-    }
-
-    function testMediawikiWebServiceEndpoint()
-    {
-        $newValue = "https://de.wikipedia.org/w/api.php";
-
-        $this->assertEquals($this->si->getMediawikiWebServiceEndpoint(), "https://en.wikipedia.org/w/api.php");
-
-        $this->assertInstanceOf(SiteConfiguration::class, $this->si->setMediawikiWebServiceEndpoint($newValue));
-        $this->assertEquals($this->si->getMediawikiWebServiceEndpoint(), $newValue);
-    }
-
     function testMetaWikimediaWebServiceEndpoint()
     {
         $newValue = "https://meta2.wikimedia.org/w/api.php";

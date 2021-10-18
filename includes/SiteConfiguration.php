@@ -28,7 +28,6 @@ class SiteConfiguration
     private $forceIdentification = true;
     private $identificationCacheExpiry = '1 DAY';
     private $mediawikiScriptPath = 'https://en.wikipedia.org/w/index.php';
-    private $mediawikiWebServiceEndpoint = 'https://en.wikipedia.org/w/api.php';
     private $metaWikimediaWebServiceEndpoint = 'https://meta.wikimedia.org/w/api.php';
     private $enforceOAuth = true;
     private $emailConfirmationEnabled = true;
@@ -256,6 +255,7 @@ class SiteConfiguration
 
     /**
      * @return string
+     * @deprecated
      */
     public function getMediawikiScriptPath()
     {
@@ -266,30 +266,11 @@ class SiteConfiguration
      * @param string $mediawikiScriptPath
      *
      * @return SiteConfiguration
+     * @deprecated
      */
     public function setMediawikiScriptPath($mediawikiScriptPath)
     {
         $this->mediawikiScriptPath = $mediawikiScriptPath;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMediawikiWebServiceEndpoint()
-    {
-        return $this->mediawikiWebServiceEndpoint;
-    }
-
-    /**
-     * @param string $mediawikiWebServiceEndpoint
-     *
-     * @return SiteConfiguration
-     */
-    public function setMediawikiWebServiceEndpoint($mediawikiWebServiceEndpoint)
-    {
-        $this->mediawikiWebServiceEndpoint = $mediawikiWebServiceEndpoint;
 
         return $this;
     }

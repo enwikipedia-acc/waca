@@ -12,39 +12,44 @@ use MediaWiki\OAuthClient\Client;
 use MediaWiki\OAuthClient\ClientConfig;
 use MediaWiki\OAuthClient\Consumer;
 use MediaWiki\OAuthClient\Token;
+use Waca\DataObjects\Domain;
 use Waca\Exceptions\CurlException;
+use Waca\PdoDatabase;
 
 class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
 {
     private $oauthClient;
 
-    private $mediawikiWebServiceEndpoint;
-
     private $authUrl;
+    /**
+     * @var PdoDatabase
+     */
+    private $database;
 
     /**
      * OAuthHelper constructor.
      *
-     * @param string     $oauthEndpoint
-     * @param string     $consumerKey
-     * @param string     $consumerSecret
-     * @param string     $mediawikiWebServiceEndpoint
-     * @param string     $userAgent
+     * @param string      $oauthEndpoint
+     * @param string      $consumerKey
+     * @param string      $consumerSecret
+     * @param string      $mediawikiWebServiceEndpoint
+     * @param PdoDatabase $database
+     * @param string      $userAgent
      */
     public function __construct(
         $oauthEndpoint,
         $consumerKey,
         $consumerSecret,
         $mediawikiWebServiceEndpoint,
+        PdoDatabase $database,
         $userAgent
     ) {
-        $this->mediawikiWebServiceEndpoint = $mediawikiWebServiceEndpoint;
-
         $oauthClientConfig = new ClientConfig($oauthEndpoint);
         $oauthClientConfig->setUserAgent($userAgent);
         $oauthClientConfig->setConsumer(new Consumer($consumerKey, $consumerSecret));
 
         $this->oauthClient = new Client($oauthClientConfig);
+        $this->database = $database;
     }
 
     /**
@@ -97,7 +102,11 @@ class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
             throw new CurlException("Invalid API call");
         }
 
-        $url = $this->mediawikiWebServiceEndpoint;
+        // FIXME: domains!
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $this->database);
+
+        $url = $domain->getWikiApiPath();
         $isPost = ($method === 'POST');
 
         if ($method === 'GET') {

@@ -40,6 +40,9 @@ class RequestValidationHelperTest extends TestCase
 
     public function testValidateGoodName()
     {
+        $this->markTestSkipped('To be fixed after domain migration is complete');
+        return;
+
         /** @var PdoDatabase|PHPUnit_Framework_MockObject_MockObject $dbMock */
         $dbMock = $this->getMockBuilder(PdoDatabase::class)->disableOriginalConstructor()->getMock();
         $statement = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();

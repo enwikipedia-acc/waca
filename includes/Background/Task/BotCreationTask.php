@@ -9,6 +9,7 @@
 namespace Waca\Background\Task;
 
 use Waca\Background\CreationTaskBase;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Helpers\BotMediaWikiClient;
@@ -21,7 +22,11 @@ class BotCreationTask extends CreationTaskBase
      */
     protected function getMediaWikiClient()
     {
-        return new BotMediaWikiClient($this->getSiteConfiguration());
+        // FIXME: domains!
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $this->getDatabase());
+
+        return new BotMediaWikiClient($this->getSiteConfiguration(), $domain);
     }
 
     protected function getCreationReason(Request $request, User $user)
