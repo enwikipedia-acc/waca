@@ -9,6 +9,7 @@
 namespace Waca\Pages\Statistics;
 
 use PDO;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\User;
@@ -161,6 +162,11 @@ SQL
         }
 
         $this->assign('statsPageTitle', 'Account Creation Tool users');
+
+        // FIXME: domains!
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $this->getDatabase());
+        $this->assign('mediawikiScriptPath', $domain->getWikiArticlePath());
 
         $this->setHtmlTitle('{$user->getUsername()|escape} :: Users :: Statistics');
         $this->setTemplate("statistics/userdetail.tpl");

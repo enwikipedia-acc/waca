@@ -27,7 +27,6 @@ class SiteConfiguration
     private $dataClearInterval = '15 DAY';
     private $forceIdentification = true;
     private $identificationCacheExpiry = '1 DAY';
-    private $mediawikiScriptPath = 'https://en.wikipedia.org/w/index.php';
     private $metaWikimediaWebServiceEndpoint = 'https://meta.wikimedia.org/w/api.php';
     private $enforceOAuth = true;
     private $emailConfirmationEnabled = true;
@@ -248,28 +247,6 @@ class SiteConfiguration
     public function setIdentificationCacheExpiry($identificationCacheExpiry)
     {
         $this->identificationCacheExpiry = $identificationCacheExpiry;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     * @deprecated
-     */
-    public function getMediawikiScriptPath()
-    {
-        return $this->mediawikiScriptPath;
-    }
-
-    /**
-     * @param string $mediawikiScriptPath
-     *
-     * @return SiteConfiguration
-     * @deprecated
-     */
-    public function setMediawikiScriptPath($mediawikiScriptPath)
-    {
-        $this->mediawikiScriptPath = $mediawikiScriptPath;
 
         return $this;
     }

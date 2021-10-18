@@ -63,7 +63,6 @@ trait TemplateOutput
         $this->assign('currentUser', User::getCommunity());
         $this->assign('loggedIn', false);
         $this->assign('baseurl', $this->getSiteConfiguration()->getBaseUrl());
-        $this->assign('mediawikiScriptPath', $this->getSiteConfiguration()->getMediawikiScriptPath());
         $this->assign('resourceCacheEpoch', $this->getSiteConfiguration()->getResourceCacheEpoch());
 
         $this->assign('siteNoticeText', '');
