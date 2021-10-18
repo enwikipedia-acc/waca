@@ -90,10 +90,6 @@ $oauthSecretToken = "";
 // Formerly-used OAuth tokens to permit reading identities from
 $oauthLegacyTokens = [];
 
-// path to Special:OAuth on target wiki.
-// don't use pretty urls, see [[bugzilla:57500]]
-$oauthBaseUrl = "https://en.wikipedia.org/w/index.php?title=Special:OAuth";
-
 $oauthMediaWikiCanonicalServer = "http://en.wikipedia.org";
 
 $useOauthSignup = true;
@@ -248,7 +244,6 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setUserAgent($toolUserAgent)
     ->setCurlDisableVerifyPeer($curlDisableSSLVerifyPeer)
     ->setUseOAuthSignup($useOauthSignup)
-    ->setOAuthBaseUrl($oauthBaseUrl)//
     ->setOAuthConsumerToken($oauthConsumerToken)
     ->setOAuthLegacyConsumerTokens($oauthLegacyTokens)
     ->setOAuthConsumerSecret($oauthSecretToken)

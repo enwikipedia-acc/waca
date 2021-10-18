@@ -18,37 +18,41 @@ use Waca\PdoDatabase;
 
 class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
 {
-    private $oauthClient;
-
     private $authUrl;
     /**
      * @var PdoDatabase
      */
     private $database;
+    /**
+     * @var string
+     */
+    private $consumerKey;
+    /**
+     * @var string
+     */
+    private $consumerSecret;
+    /**
+     * @var string
+     */
+    private $userAgent;
 
     /**
      * OAuthHelper constructor.
      *
-     * @param string      $oauthEndpoint
-     * @param string      $consumerKey
-     * @param string      $consumerSecret
-     * @param string      $mediawikiWebServiceEndpoint
+     * @param string     $consumerKey
+     * @param string     $consumerSecret
      * @param PdoDatabase $database
      * @param string      $userAgent
      */
     public function __construct(
-        $oauthEndpoint,
         $consumerKey,
         $consumerSecret,
-        $mediawikiWebServiceEndpoint,
         PdoDatabase $database,
         $userAgent
     ) {
-        $oauthClientConfig = new ClientConfig($oauthEndpoint);
-        $oauthClientConfig->setUserAgent($userAgent);
-        $oauthClientConfig->setConsumer(new Consumer($consumerKey, $consumerSecret));
-
-        $this->oauthClient = new Client($oauthClientConfig);
+        $this->consumerKey = $consumerKey;
+        $this->consumerSecret = $consumerSecret;
+        $this->userAgent = $userAgent;
         $this->database = $database;
     }
 
@@ -58,7 +62,12 @@ class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
     public function getRequestToken()
     {
         /** @var Token $requestToken */
-        list($authUrl, $requestToken) = $this->oauthClient->initiate();
+
+        // FIXME: domains!
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $this->database);
+
+        list($authUrl, $requestToken) = $this->getClient($domain)->initiate();
         $this->authUrl = $authUrl;
         return $requestToken;
     }
@@ -78,7 +87,11 @@ class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
     {
         $requestToken = new Token($oauthRequestToken, $oauthRequestSecret);
 
-        return $this->oauthClient->complete($requestToken, $oauthVerifier);
+        // FIXME: domains!
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $this->database);
+
+        return $this->getClient($domain)->complete($requestToken, $oauthVerifier);
     }
 
     /**
@@ -86,7 +99,11 @@ class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
      */
     public function getIdentityTicket($oauthAccessToken, $oauthAccessSecret)
     {
-        return $this->oauthClient->identify(new Token($oauthAccessToken, $oauthAccessSecret));
+        // FIXME: domains!
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $this->database);
+
+        return $this->getClient($domain)->identify(new Token($oauthAccessToken, $oauthAccessSecret));
     }
 
     /**
@@ -115,8 +132,21 @@ class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
             $apiParams = null;
         }
 
-        $data = $this->oauthClient->makeOAuthCall($userToken, $url, $isPost, $apiParams);
+        $data = $this->getClient($domain)->makeOAuthCall($userToken, $url, $isPost, $apiParams);
 
         return json_decode($data);
+    }
+
+    /**
+     * @param string $oauthEndpoint
+     *
+     * @return Client
+     */
+    protected function getClient(Domain $domain) : Client
+    {
+        $oauthClientConfig = new ClientConfig($domain->getWikiArticlePath() . "?title=Special:OAuth");
+        $oauthClientConfig->setConsumer(new Consumer($this->consumerKey, $this->consumerSecret));
+        $oauthClientConfig->setUserAgent($this->userAgent);
+        return new Client($oauthClientConfig);
     }
 }

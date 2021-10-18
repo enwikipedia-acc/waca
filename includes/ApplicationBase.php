@@ -151,7 +151,6 @@ abstract class ApplicationBase
         $page->setAntiSpoofProvider(new CachedApiAntispoofProvider($database, $httpHelper));
 
         $page->setOAuthProtocolHelper(new OAuthProtocolHelper(
-            $siteConfiguration->getOAuthBaseUrl(),
             $siteConfiguration->getOAuthConsumerToken(),
             $siteConfiguration->getOAuthConsumerSecret(),
             $database,
