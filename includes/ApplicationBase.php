@@ -159,7 +159,8 @@ abstract class ApplicationBase
             $siteConfiguration->getOAuthBaseUrl(),
             $siteConfiguration->getOAuthConsumerToken(),
             $siteConfiguration->getOAuthConsumerSecret(),
-            $siteConfiguration->getMediawikiWebServiceEndpoint()
+            $siteConfiguration->getMediawikiWebServiceEndpoint(),
+            $siteConfiguration->getUserAgent()
         ));
 
         $page->setNotificationHelper(new IrcNotificationHelper(
