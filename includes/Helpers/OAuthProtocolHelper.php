@@ -29,16 +29,19 @@ class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
      * @param string     $consumerKey
      * @param string     $consumerSecret
      * @param string     $mediawikiWebServiceEndpoint
+     * @param string     $userAgent
      */
     public function __construct(
         $oauthEndpoint,
         $consumerKey,
         $consumerSecret,
-        $mediawikiWebServiceEndpoint
+        $mediawikiWebServiceEndpoint,
+        $userAgent
     ) {
         $this->mediawikiWebServiceEndpoint = $mediawikiWebServiceEndpoint;
 
         $oauthClientConfig = new ClientConfig($oauthEndpoint);
+        $oauthClientConfig->setUserAgent($userAgent);
         $oauthClientConfig->setConsumer(new Consumer($consumerKey, $consumerSecret));
 
         $this->oauthClient = new Client($oauthClientConfig);
