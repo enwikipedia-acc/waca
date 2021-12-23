@@ -90,6 +90,7 @@ trait TemplateOutput
         $this->assign('nav__canViewRequest', false);
         $this->assign('nav__canJobQueue', false);
         $this->assign('nav__canFlaggedComments', false);
+        $this->assign('nav__canDomainMgmt', false);
         $this->assign('nav__canQueueMgmt', false);
         $this->assign('nav__canErrorLog', false);
 

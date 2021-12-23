@@ -10,6 +10,7 @@ namespace Waca\Security;
 
 use Waca\DataObjects\User;
 use Waca\Pages\PageBan;
+use Waca\Pages\PageDomainManagement;
 use Waca\Pages\PageEditComment;
 use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageErrorLogViewer;
@@ -219,6 +220,9 @@ class RoleConfiguration
                 'acknowledge' => self::ACCESS_ALLOW,
                 'cancel'      => self::ACCESS_ALLOW
             ),
+            PageDomainManagement::class          => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
             'RequestCreation'                    => array(
                 User::CREATION_MANUAL => self::ACCESS_ALLOW,
                 User::CREATION_OAUTH  => self::ACCESS_ALLOW,
@@ -269,6 +273,9 @@ class RoleConfiguration
                 'edit'     => self::ACCESS_ALLOW,
                 'create'   => self::ACCESS_ALLOW,
             ),
+            PageDomainManagement::class          => array(
+                'edit'     => self::ACCESS_ALLOW,
+            ),
         ),
         'checkuser'         => array(
             '_description'            => 'A user with CheckUser access',
@@ -306,6 +313,12 @@ class RoleConfiguration
             PageMultiFactor::class => array(
                 'enableU2F'         => self::ACCESS_ALLOW,
                 'disableU2F'        => self::ACCESS_ALLOW,
+            ),
+            PageDomainManagement::class => array(
+                self::MAIN => self::ACCESS_ALLOW,
+                'editAll'  => self::ACCESS_ALLOW,
+                'edit'     => self::ACCESS_ALLOW,
+                'create'   => self::ACCESS_ALLOW,
             ),
             PageErrorLogViewer::class => array(
                 self::MAIN      => self::ACCESS_ALLOW,

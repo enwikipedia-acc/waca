@@ -9,6 +9,7 @@
 namespace Waca\Fragments;
 
 use Waca\Pages\PageBan;
+use Waca\Pages\PageDomainManagement;
 use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageErrorLogViewer;
 use Waca\Pages\PageJobQueue;
@@ -67,6 +68,9 @@ trait NavigationMenuAccessControl
                     $currentUser) === SecurityManager::ALLOWED);
         $this->assign('nav__canJobQueue', $this->getSecurityManager()
                 ->allows(PageJobQueue::class, RoleConfiguration::MAIN,
+                    $currentUser) === SecurityManager::ALLOWED);
+        $this->assign('nav__canDomainMgmt', $this->getSecurityManager()
+                ->allows(PageDomainManagement::class, RoleConfiguration::MAIN,
                     $currentUser) === SecurityManager::ALLOWED);
         $this->assign('nav__canFlaggedComments', $this->getSecurityManager()
                 ->allows(PageListFlaggedComments::class, RoleConfiguration::MAIN,

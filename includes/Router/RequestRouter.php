@@ -11,6 +11,7 @@ namespace Waca\Router;
 use Exception;
 use Waca\Pages\Page404;
 use Waca\Pages\PageBan;
+use Waca\Pages\PageDomainManagement;
 use Waca\Pages\PageEditComment;
 use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageErrorLogViewer;
@@ -203,6 +204,11 @@ class RequestRouter implements IRequestRouter
             array(
                 'class'   => PageJobQueue::class,
                 'actions' => array('acknowledge', 'requeue', 'view', 'all', 'cancel'),
+            ),
+        'domainManagement'            =>
+            array(
+                'class'   => PageDomainManagement::class,
+                'actions' => array('create', 'edit'),
             ),
         'flaggedComments'             =>
             array(

@@ -13,6 +13,7 @@ use PDO;
 use Waca\DataObject;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Comment;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Log;
@@ -173,6 +174,8 @@ class LogHelper
             'Hospitalised'        => 'sent to the hospital',
             'QueueCreated'        => 'created a request queue',
             'QueueEdited'         => 'edited a request queue',
+            'DomainCreated'        => 'created a domain',
+            'DomainEdited'         => 'edited a domain',
         );
 
         if (array_key_exists($entry->getAction(), $lookup)) {
@@ -247,6 +250,10 @@ class LogHelper
                 'QueueCreated'        => 'created a request queue',
                 'QueueEdited'         => 'edited a request queue',
             ],
+            "Domains" => [
+                'DomainCreated'       => 'created a domain',
+                'DomainEdited'        => 'edited a domain',
+            ],
         );
 
         $databaseDrivenLogKeys = $database->query(<<<SQL
@@ -273,7 +280,8 @@ SQL
             'SiteNotice'      => 'Site notice',
             'User'            => 'User',
             'WelcomeTemplate' => 'Welcome template',
-            'RequestQueue'    => 'Request queue'
+            'RequestQueue'    => 'Request queue',
+            'Domain'          => 'Domain'
         );
     }
 
@@ -395,6 +403,16 @@ HTML;
                 $queueHeader = htmlentities($queue->getHeader(), ENT_COMPAT, 'UTF-8');
 
                 return "<a href=\"{$baseurl}/internal.php/queueManagement/edit?queue={$objectId}\">{$queueHeader}</a>";
+            case 'Domain':
+                /** @var Domain $domain */
+                $domain = Domain::getById($objectId, $database);
+
+                if($domain === false ){
+                    return "Domain #{$objectId}";
+                }
+
+                $domainName = htmlentities($domain->getShortName(), ENT_COMPAT, 'UTF-8');
+                return "<a href=\"{$baseurl}/internal.php/domainManagement/edit?domain={$objectId}\">{$domainName}</a>";
             default:
                 return '[' . $objectType . " " . $objectId . ']';
         }

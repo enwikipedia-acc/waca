@@ -12,6 +12,7 @@ use Exception;
 use Waca\DataObject;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Comment;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Log;
@@ -418,6 +419,17 @@ class Logger
     public static function requestQueueEdited(PdoDatabase $database, RequestQueue $queue)
     {
         self::createLogEntry($database, $queue, 'QueueEdited');
+    }
+    #endregion
+    #region Domains
+    public static function domainCreated(PdoDatabase $database, Domain $domain)
+    {
+        self::createLogEntry($database, $domain, 'DomainCreated');
+    }
+
+    public static function domainEdited(PdoDatabase $database, Domain $domain)
+    {
+        self::createLogEntry($database, $domain, 'DomainEdited');
     }
     #endregion
 }
