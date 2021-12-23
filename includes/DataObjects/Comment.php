@@ -25,6 +25,8 @@ class Comment extends DataObject
     private $comment;
     private $visibility = "user";
     private $request;
+    private $flagged = 0;
+    private $edited;
 
     /**
      * Retrieves all comments for a request, optionally filtered
@@ -71,6 +73,21 @@ SQL
         return $result;
     }
 
+    public static function getFlaggedComments(PdoDatabase $database)
+    {
+        $statement = $database->prepare('SELECT * FROM comment WHERE flagged = 1;');
+        $statement->execute();
+
+        $result = array();
+        /** @var Comment $v */
+        foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
+            $v->setDatabase($database);
+            $result[] = $v;
+        }
+
+        return $result;
+    }
+
     /**
      * @throws Exception
      */
@@ -79,14 +96,15 @@ SQL
         if ($this->isNew()) {
             // insert
             $statement = $this->dbObject->prepare(<<<SQL
-INSERT INTO comment ( time, user, comment, visibility, request )
-VALUES ( CURRENT_TIMESTAMP(), :user, :comment, :visibility, :request );
+INSERT INTO comment ( time, user, comment, visibility, request, flagged )
+VALUES ( CURRENT_TIMESTAMP(), :user, :comment, :visibility, :request, :flagged );
 SQL
             );
             $statement->bindValue(":user", $this->user);
             $statement->bindValue(":comment", $this->comment);
             $statement->bindValue(":visibility", $this->visibility);
             $statement->bindValue(":request", $this->request);
+            $statement->bindValue(":flagged", $this->flagged);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -99,7 +117,7 @@ SQL
             // update
             $statement = $this->dbObject->prepare(<<<SQL
 UPDATE comment
-SET comment = :comment, visibility = :visibility, updateversion = updateversion + 1
+SET comment = :comment, visibility = :visibility, flagged = :flagged, edited = :edited, updateversion = updateversion + 1
 WHERE id = :id AND updateversion = :updateversion;
 SQL
             );
@@ -109,6 +127,8 @@ SQL
 
             $statement->bindValue(':comment', $this->comment);
             $statement->bindValue(':visibility', $this->visibility);
+            $statement->bindValue(":flagged", $this->flagged);
+            $statement->bindValue(":edited", $this->edited);
 
             if (!$statement->execute()) {
                 throw new Exception($statement->errorInfo());
@@ -192,5 +212,36 @@ SQL
     public function setRequest($request)
     {
         $this->request = $request;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getFlagged() : bool
+    {
+        return $this->flagged == 1;
+    }
+
+    /**
+     * @param bool $flagged
+     */
+    public function setFlagged(bool $flagged): void
+    {
+        $this->flagged = $flagged ? 1 : 0;
+    }
+
+    public function touchEdited() : void
+    {
+        $dateTimeImmutable = new DateTimeImmutable("now");
+        $this->edited = $dateTimeImmutable->format('Y-m-d H:i:s');
+    }
+
+    public function getEdited() : ?DateTimeImmutable
+    {
+        if ($this->edited === null) {
+            return null;
+        }
+
+        return new DateTimeImmutable($this->edited);
     }
 }

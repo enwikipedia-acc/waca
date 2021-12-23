@@ -14,7 +14,9 @@ use Waca\Pages\PageEditComment;
 use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageErrorLogViewer;
 use Waca\Pages\PageExpandedRequestList;
+use Waca\Pages\PageFlagComment;
 use Waca\Pages\PageJobQueue;
+use Waca\Pages\PageListFlaggedComments;
 use Waca\Pages\PageLog;
 use Waca\Pages\PageMain;
 use Waca\Pages\PageQueueManagement;
@@ -184,6 +186,9 @@ class RoleConfiguration
                 self::MAIN => self::ACCESS_ALLOW,
             ),
             PageComment::class                   => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            PageFlagComment::class               => array(
                 self::MAIN => self::ACCESS_ALLOW,
             ),
             PageCloseRequest::class              => array(
@@ -373,6 +378,12 @@ class RoleConfiguration
             ),
             PageCustomClose::class      => array(
                 'skipCcMailingList' => self::ACCESS_ALLOW,
+            ),
+            PageFlagComment::class      => array(
+                'unflag'   => self::ACCESS_ALLOW,
+            ),
+            PageListFlaggedComments::class => array(
+                self::MAIN => self::ACCESS_ALLOW,
             ),
             'RequestData'               => array(
                 'reopenOldRequest'      => self::ACCESS_ALLOW,

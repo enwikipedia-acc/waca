@@ -23,6 +23,7 @@ use Waca\Fragments\RequestData;
 use Waca\Helpers\LogHelper;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\PdoDatabase;
+use Waca\Security\RoleConfiguration;
 use Waca\RequestStatus;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -186,6 +187,9 @@ class PageViewRequest extends InternalPageBase
 
         $editableComments = $this->barrierTest('editOthers', $currentUser, PageEditComment::class);
 
+        $canFlag = $this->barrierTest(RoleConfiguration::MAIN, $currentUser, PageFlagComment::class);
+        $canUnflag = $this->barrierTest('unflag', $currentUser, PageFlagComment::class);
+
         /** @var Log|Comment $entry */
         foreach ($logs as $entry) {
             // both log and comment have a 'user' field
@@ -196,15 +200,19 @@ class PageViewRequest extends InternalPageBase
 
             if ($entry instanceof Comment) {
                 $requestLogs[] = array(
-                    'type'     => 'comment',
-                    'security' => $entry->getVisibility(),
-                    'user'     => $entry->getVisibility() == 'requester' ? $request->getName() : $nameCache[$entry->getUser()]->getUsername(),
-                    'userid'   => $entry->getUser() == -1 ? null : $entry->getUser(),
-                    'entry'    => null,
-                    'time'     => $entry->getTime(),
-                    'canedit'  => ($editableComments || $entry->getUser() == $currentUser->getId()),
-                    'id'       => $entry->getId(),
-                    'comment'  => $entry->getComment(),
+                    'type'          => 'comment',
+                    'security'      => $entry->getVisibility(),
+                    'user'          => $entry->getVisibility() == 'requester' ? $request->getName() : $nameCache[$entry->getUser()]->getUsername(),
+                    'userid'        => $entry->getUser() == -1 ? null : $entry->getUser(),
+                    'entry'         => null,
+                    'time'          => $entry->getTime(),
+                    'canedit'       => ($editableComments || $entry->getUser() == $currentUser->getId()),
+                    'id'            => $entry->getId(),
+                    'comment'       => $entry->getComment(),
+                    'flagged'       => $entry->getFlagged(),
+                    'canflag'       => $canFlag && (!$entry->getFlagged() || ($entry->getFlagged() && $canUnflag)),
+                    'updateversion' => $entry->getUpdateVersion(),
+                    'edited'        => $entry->getEdited()
                 );
             }
 

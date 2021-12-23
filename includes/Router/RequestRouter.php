@@ -15,7 +15,9 @@ use Waca\Pages\PageEditComment;
 use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageErrorLogViewer;
 use Waca\Pages\PageExpandedRequestList;
+use Waca\Pages\PageFlagComment;
 use Waca\Pages\PageJobQueue;
+use Waca\Pages\PageListFlaggedComments;
 use Waca\Pages\PageQueueManagement;
 use Waca\Pages\PageXffDemo;
 use Waca\Pages\RequestAction\PageCreateRequest;
@@ -202,6 +204,11 @@ class RequestRouter implements IRequestRouter
                 'class'   => PageJobQueue::class,
                 'actions' => array('acknowledge', 'requeue', 'view', 'all', 'cancel'),
             ),
+        'flaggedComments'             =>
+            array(
+                'class'   => PageListFlaggedComments::class,
+                'actions' => array(),
+            ),
 
         //////////////////////////////////////////////////////////////////////////////////////////////////
         // Personal preferences
@@ -347,6 +354,11 @@ class RequestRouter implements IRequestRouter
         'editComment'                 =>
             array(
                 'class'   => PageEditComment::class,
+                'actions' => array(),
+            ),
+        'flagComment'                 =>
+            array(
+                'class'   => PageFlagComment::class,
                 'actions' => array(),
             ),
 

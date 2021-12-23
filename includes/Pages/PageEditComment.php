@@ -65,6 +65,8 @@ class PageEditComment extends InternalPageBase
             throw new ApplicationLogicException('Request was not found.');
         }
 
+        $canUnflag = $this->barrierTest('unflag', $currentUser, PageFlagComment::class);
+
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
             $newComment = WebRequest::postString('newcomment');
@@ -94,9 +96,17 @@ class PageEditComment extends InternalPageBase
 
             $comment->setComment($newComment);
 
+            if (WebRequest::postBoolean('unflag') && $canUnflag) {
+                $comment->setFlagged(false);
+            }
+
+            $comment->touchEdited();
             $comment->save();
 
             Logger::editComment($database, $comment, $request);
+            if (WebRequest::postBoolean('unflag') && $canUnflag) {
+                Logger::unflaggedComment($database, $comment);
+            }
             $this->getNotificationHelper()->commentEdited($comment, $request);
             SessionAlert::success("Comment has been saved successfully");
 
@@ -107,6 +117,7 @@ class PageEditComment extends InternalPageBase
             $this->assign('comment', $comment);
             $this->assign('request', $request);
             $this->assign('user', User::getById($comment->getUser(), $database));
+            $this->assign('canUnflag', $canUnflag);
             $this->setTemplate('edit-comment.tpl');
         }
     }

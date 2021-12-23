@@ -302,6 +302,24 @@ class Logger
 
     /**
      * @param PdoDatabase $database
+     * @param Comment     $object
+     */
+    public static function flaggedComment(PdoDatabase $database, Comment $object)
+    {
+        self::createLogEntry($database, $object, "FlaggedComment");
+    }
+
+    /**
+     * @param PdoDatabase $database
+     * @param Comment     $object
+     */
+    public static function unflaggedComment(PdoDatabase $database, Comment $object)
+    {
+        self::createLogEntry($database, $object, "UnflaggedComment");
+    }
+
+    /**
+     * @param PdoDatabase $database
      * @param Request     $object
      * @param User        $target
      */
