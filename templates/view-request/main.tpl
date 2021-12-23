@@ -66,7 +66,6 @@
                                                 <div class="alert alert-warning mb-0">There's an issue with your account setup. Please check your OAuth configuration and ensure you've allowed the necessary grants.</div>
                                             </div>
                                         {elseif is_array($spoofs) && count($spoofs) > 0}
-                                            {var_dump($spoofs)}
                                             <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
                                                 <div class="alert alert-warning mb-0">This request has antispoof hits and cannot be created automatically.</div>
                                             </div>
