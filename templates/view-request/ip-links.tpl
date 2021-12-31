@@ -61,6 +61,10 @@
        href="{$baseurl}/redir.php?tool=ipcheck&amp;data={$ipaddress}">
         IP Check
     </a>
+    <a id="Bullseye-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+       href="{$baseurl}/redir.php?tool=bullseye&amp;data={$ipaddress}">
+        Bullseye
+    </a>
     <a id="IPBGPView-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
        href="{$baseurl}/redir.php?tool=bgpview&amp;data={$ipaddress}">
         BGP Prefixes
