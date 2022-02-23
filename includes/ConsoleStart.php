@@ -55,15 +55,7 @@ class ConsoleStart extends ApplicationBase
     {
         $database = PdoDatabase::getDatabaseConnection('acc');
 
-        if ($this->getConfiguration()->getIrcNotificationsEnabled()) {
-            $notificationsDatabase = PdoDatabase::getDatabaseConnection('notifications');
-        }
-        else {
-            // pass through null
-            $notificationsDatabase = null;
-        }
-
-        $this->setupHelpers($this->consoleTask, $this->getConfiguration(), $database, $notificationsDatabase);
+        $this->setupHelpers($this->consoleTask, $this->getConfiguration(), $database);
 
         // initialise a database transaction
         if (!$database->beginTransaction()) {

@@ -102,6 +102,7 @@ class SiteConfiguration
     private $banMaxIpBlockRange = [4 => 20, 6 => 48];
     private $banMaxIpRange = [4 => 16, 6 => 32];
     private $jobQueueBatchSize = 10;
+    private $amqpConfiguration = ['host' => 'localhost', 'port' => 5672, 'user' => 'guest', 'password' => 'guest', 'exchange' => ''];
 
     /**
      * Gets the base URL of the tool
@@ -1182,4 +1183,24 @@ class SiteConfiguration
 
         return $this;
 }
+
+    /**
+     * @return array
+     */
+    public function getAmqpConfiguration(): array
+    {
+        return $this->amqpConfiguration;
+    }
+
+    /**
+     * @param array $amqpConfiguration
+     *
+     * @return SiteConfiguration
+     */
+    public function setAmqpConfiguration(array $amqpConfiguration): SiteConfiguration
+    {
+        $this->amqpConfiguration = $amqpConfiguration;
+
+        return $this;
+    }
 }

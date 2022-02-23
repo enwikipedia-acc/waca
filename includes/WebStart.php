@@ -58,17 +58,15 @@ class WebStart extends ApplicationBase
      * @param ITask             $page
      * @param SiteConfiguration $siteConfiguration
      * @param PdoDatabase       $database
-     * @param PdoDatabase       $notificationsDatabase
      *
      * @return void
      */
     protected function setupHelpers(
         ITask $page,
         SiteConfiguration $siteConfiguration,
-        PdoDatabase $database,
-        PdoDatabase $notificationsDatabase = null
+        PdoDatabase $database
     ) {
-        parent::setupHelpers($page, $siteConfiguration, $database, $notificationsDatabase);
+        parent::setupHelpers($page, $siteConfiguration, $database);
 
         if ($page instanceof PageBase) {
             $page->setTokenManager(new TokenManager());
@@ -177,15 +175,7 @@ class WebStart extends ApplicationBase
         $siteConfiguration = $this->getConfiguration();
         $database = PdoDatabase::getDatabaseConnection('acc');
 
-        if ($siteConfiguration->getIrcNotificationsEnabled()) {
-            $notificationsDatabase = PdoDatabase::getDatabaseConnection('notifications');
-        }
-        else {
-            // @todo federated table here?
-            $notificationsDatabase = $database;
-        }
-
-        $this->setupHelpers($page, $siteConfiguration, $database, $notificationsDatabase);
+        $this->setupHelpers($page, $siteConfiguration, $database);
 
         // run the route code for the request.
         $page->execute();

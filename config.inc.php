@@ -23,11 +23,6 @@ $toolserver_password = "";
 $toolserver_host = "";
 $toolserver_database = "";
 
-$toolserver_notification_database = "notifications";
-$toolserver_notification_dbhost = "dbmaster.srv.stwalkerster.net";
-$notifications_username = "";
-$notifications_password = "";
-
 // The antispoof configuration.
 $antispoof_equivset = "equivset.php";
 $antispoof_host = "sql-s1";
@@ -82,8 +77,11 @@ $ircBotCommandTrigger = '!'; // The ACCBot's command trigger.
 $ircBotNotificationType = 1; // Helpmebot's notification type ID.
 $ircBotNotificationsEnabled = 1; // Enable Helpmebot's notifications.
 // Name of this instance of the tool.
-// This name would be used by the bot as reference point.	
+// This name would be used by the bot as reference point.
 $whichami = 'Live';
+
+// AMQP configuration for notifications.
+$amqpConfiguration = ['host' => 'localhost', 'port' => 5672, 'user' => 'guest', 'password' => 'guest', 'exchange' => ''];
 
 /***************************************
  * Email confirmation
@@ -279,18 +277,6 @@ $cDatabaseConfig = array(
         "dsrcname" => "mysql:host=" . $toolserver_host . ";dbname=" . $toolserver_database,
         "username" => $toolserver_username,
         "password" => $toolserver_password,
-        "options"  => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4'),
-    ),
-    "wikipedia"     => array(
-        "dsrcname" => "mysql:host=" . $antispoof_host . ";dbname=" . $antispoof_db,
-        "username" => $toolserver_username,
-        "password" => $toolserver_password,
-        "options"  => array(),
-    ),
-    "notifications" => array(
-        "dsrcname" => "mysql:host=" . $toolserver_notification_dbhost . ";dbname=" . $toolserver_notification_database,
-        "username" => $notifications_username,
-        "password" => $notifications_password,
         "options"  => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4'),
     ),
 );
