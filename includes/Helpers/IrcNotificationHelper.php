@@ -9,10 +9,11 @@
 namespace Waca\Helpers;
 
 use Exception;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\EmailTemplate;
-use Waca\DataObjects\Notification;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
@@ -28,14 +29,10 @@ use Waca\SiteConfiguration;
  */
 class IrcNotificationHelper
 {
-    /** @var PdoDatabase $notificationsDatabase */
-    private $notificationsDatabase;
-    /** @var PdoDatabase $primaryDatabase */
-    private $primaryDatabase;
     /** @var bool $notificationsEnabled */
     private $notificationsEnabled;
-    /** @var int $notificationType */
-    private $notificationType;
+    /** @var string $routingKey */
+    private $routingKey;
     /** @var User $currentUser */
     private $currentUser;
     /** @var string $instanceName */
@@ -50,25 +47,16 @@ class IrcNotificationHelper
      *
      * @param SiteConfiguration $siteConfiguration
      * @param PdoDatabase       $primaryDatabase
-     * @param PdoDatabase|null  $notificationsDatabase
      */
     public function __construct(
         SiteConfiguration $siteConfiguration,
-        PdoDatabase $primaryDatabase,
-        ?PdoDatabase $notificationsDatabase = null
+        PdoDatabase $primaryDatabase
     ) {
-        $this->primaryDatabase = $primaryDatabase;
         $this->siteConfiguration = $siteConfiguration;
 
-        if ($notificationsDatabase !== null) {
-            $this->notificationsDatabase = $notificationsDatabase;
-            $this->notificationsEnabled = $siteConfiguration->getIrcNotificationsEnabled();
-        }
-        else {
-            $this->notificationsEnabled = false;
-        }
+        $this->notificationsEnabled = $siteConfiguration->getIrcNotificationsEnabled();
 
-        $this->notificationType = $siteConfiguration->getIrcNotificationType();
+        $this->routingKey = $siteConfiguration->getIrcNotificationType();
         $this->instanceName = $siteConfiguration->getIrcNotificationsInstance();
         $this->baseUrl = $siteConfiguration->getBaseUrl();
 
@@ -94,12 +82,13 @@ class IrcNotificationHelper
         $msg = IrcColourCode::RESET . IrcColourCode::BOLD . "[$instanceName]" . IrcColourCode::RESET . ": $message";
 
         try {
-            $notification = new Notification();
-            $notification->setDatabase($this->notificationsDatabase);
-            $notification->setType($this->notificationType);
-            $notification->setText(substr($msg, 0, 512));
+            $amqpConfig = $this->siteConfiguration->getAmqpConfiguration();
+            $connection = new AMQPStreamConnection($amqpConfig['host'], $amqpConfig['port'], $amqpConfig['user'], $amqpConfig['password']);
+            $channel = $connection->channel();
 
-            $notification->save();
+            $msg = new AMQPMessage(substr($msg, 0, 512));
+            $channel->basic_publish($msg, $amqpConfig['exchange'], $this->routingKey);
+            $channel->close();
         }
         catch (Exception $ex) {
             // OK, so we failed to send the notification - that db might be down?

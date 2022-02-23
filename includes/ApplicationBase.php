@@ -113,15 +113,13 @@ abstract class ApplicationBase
      * @param ITask             $page
      * @param SiteConfiguration $siteConfiguration
      * @param PdoDatabase       $database
-     * @param PdoDatabase       $notificationsDatabase
      *
      * @return void
      */
     protected function setupHelpers(
         ITask $page,
         SiteConfiguration $siteConfiguration,
-        PdoDatabase $database,
-        PdoDatabase $notificationsDatabase = null
+        PdoDatabase $database
     ) {
         $page->setSiteConfiguration($siteConfiguration);
 
@@ -165,8 +163,7 @@ abstract class ApplicationBase
 
         $page->setNotificationHelper(new IrcNotificationHelper(
             $siteConfiguration,
-            $database,
-            $notificationsDatabase));
+            $database));
 
         $page->setTorExitProvider(new TorExitProvider($database));
     }
