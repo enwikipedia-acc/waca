@@ -74,7 +74,7 @@ $ircBotChannel = "#wikipedia-en-accounts"; // The channel in which the discussio
 $ircBotNickname = "ACCBot"; // The nickname of the ACCBot.
 $ircBotCommandTrigger = '!'; // The ACCBot's command trigger.
 
-$ircBotNotificationType = 1; // Helpmebot's notification type ID.
+$ircBotNotificationRoutingKey = 1; // Helpmebot's notification type ID.
 $ircBotNotificationsEnabled = 1; // Enable Helpmebot's notifications.
 // Name of this instance of the tool.
 // This name would be used by the bot as reference point.
@@ -353,7 +353,7 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setDataClearInterval($dataclear_interval)
     ->setXffTrustedHostsFile($xff_trusted_hosts_file)
     ->setIrcNotificationsEnabled($ircBotNotificationsEnabled == 1)
-    ->setIrcNotificationType($ircBotNotificationType)
+    ->setIrcNotificationRoutingKey($ircBotNotificationRoutingKey)
     ->setIrcNotificationsInstance($whichami)
     ->setTitleBlacklistEnabled($enableTitleblacklist == 1)
     ->setTorExitPaths(array_merge(gethostbynamel('en.wikipedia.org'), gethostbynamel('accounts.wmflabs.org')))
