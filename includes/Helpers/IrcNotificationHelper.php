@@ -56,7 +56,7 @@ class IrcNotificationHelper
 
         $this->notificationsEnabled = $siteConfiguration->getIrcNotificationsEnabled();
 
-        $this->routingKey = $siteConfiguration->getIrcNotificationType();
+        $this->routingKey = $siteConfiguration->getIrcNotificationRoutingKey();
         $this->instanceName = $siteConfiguration->getIrcNotificationsInstance();
         $this->baseUrl = $siteConfiguration->getBaseUrl();
 

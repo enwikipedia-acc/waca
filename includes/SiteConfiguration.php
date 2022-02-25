@@ -80,7 +80,7 @@ class SiteConfiguration
         "http://meta.wikimedia.org",
         "https://meta.wikimedia.org",
     );
-    private $ircNotificationType = 1;
+    private $ircNotificationRoutingKey = 1;
     private $ircNotificationsEnabled = true;
     private $ircNotificationsInstance = 'Development';
     private $errorLog = 'errorlog';
@@ -731,19 +731,19 @@ class SiteConfiguration
     /**
      * @return int
      */
-    public function getIrcNotificationType()
+    public function getIrcNotificationRoutingKey()
     {
-        return $this->ircNotificationType;
+        return $this->ircNotificationRoutingKey;
     }
 
     /**
-     * @param int $ircNotificationType
+     * @param int $ircNotificationRoutingKey
      *
      * @return SiteConfiguration
      */
-    public function setIrcNotificationType($ircNotificationType)
+    public function setIrcNotificationRoutingKey($ircNotificationRoutingKey)
     {
-        $this->ircNotificationType = $ircNotificationType;
+        $this->ircNotificationRoutingKey = $ircNotificationRoutingKey;
 
         return $this;
     }
