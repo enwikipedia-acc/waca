@@ -66,6 +66,14 @@ class IrcNotificationHelper
     /**
      * Send a notification
      *
+     * This method does some *basic* filtering for IRC safety, and then delivers the message to an AMQP queue manager.
+     * It is the responsibility of the queue manager and consumer to handle message delivery to IRC, message routing to
+     * the correct channel, and message expiry.
+     *
+     * It's also arguably the responsibility of the consumer to ensure the message is *safe* for delivery to IRC.
+     *
+     * As of Feb 2022, the message consumer is stwalkerster's IRC bot Helpmebot.
+     *
      * @param string $message The text to send
      */
     protected function send($message)
@@ -79,7 +87,10 @@ class IrcNotificationHelper
         $blacklist = array("DCC", "CCTP", "PRIVMSG");
         $message = str_replace($blacklist, "(IRC Blacklist)", $message); // Lets stop DCC etc
 
-        $msg = IrcColourCode::RESET . IrcColourCode::BOLD . "[$instanceName]" . IrcColourCode::RESET . ": $message";
+        $msg = $message;
+        if ($instanceName !== null && mb_strlen($instanceName) > 0) {
+            $msg = IrcColourCode::RESET . IrcColourCode::BOLD . "[$instanceName]" . IrcColourCode::RESET . ": $message";
+        }
 
         try {
             $amqpConfig = $this->siteConfiguration->getAmqpConfiguration();
@@ -87,6 +98,9 @@ class IrcNotificationHelper
             $channel = $connection->channel();
 
             $msg = new AMQPMessage(substr($msg, 0, 512));
+            $msg->set('user_id', $amqpConfig['user']);
+            $msg->set('app_id', $this->siteConfiguration->getUserAgent());
+            $msg->set('content_type', 'text/plain');
             $channel->basic_publish($msg, $amqpConfig['exchange'], $this->routingKey);
             $channel->close();
         }
