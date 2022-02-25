@@ -370,4 +370,5 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setCommonEmailDomains($commonEmailDomains)
     ->setBanMaxIpRange($banMaxIpRange)
     ->setBanMaxIpBlockRange($banMaxIpBlockRange)
-    ->setJobQueueBatchSize($jobQueueBatchSize);
+    ->setJobQueueBatchSize($jobQueueBatchSize)
+    ->setAmqpConfiguration($amqpConfiguration);
