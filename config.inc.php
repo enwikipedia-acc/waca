@@ -81,7 +81,7 @@ $ircBotNotificationsEnabled = 1; // Enable Helpmebot's notifications.
 $whichami = 'Live';
 
 // AMQP configuration for notifications.
-$amqpConfiguration = ['host' => 'localhost', 'port' => 5672, 'user' => 'guest', 'password' => 'guest', 'exchange' => ''];
+$amqpConfiguration = ['host' => 'localhost', 'port' => 5672, 'user' => 'guest', 'password' => 'guest', 'vhost' => '/', 'exchange' => '', 'tls' => false];
 
 /***************************************
  * Email confirmation

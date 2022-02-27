@@ -9,6 +9,7 @@
 namespace Waca\Helpers;
 
 use Exception;
+use PhpAmqpLib\Connection\AMQPSSLConnection;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use Waca\DataObjects\Ban;
@@ -94,7 +95,11 @@ class IrcNotificationHelper
 
         try {
             $amqpConfig = $this->siteConfiguration->getAmqpConfiguration();
-            $connection = new AMQPStreamConnection($amqpConfig['host'], $amqpConfig['port'], $amqpConfig['user'], $amqpConfig['password']);
+            if ($amqpConfig['tls']) {
+                $connection = new AMQPSSLConnection($amqpConfig['host'], $amqpConfig['port'], $amqpConfig['user'], $amqpConfig['password'], $amqpConfig['vhost'], ['verify_peer' => true]);
+            } else {
+                $connection = new AMQPStreamConnection($amqpConfig['host'], $amqpConfig['port'], $amqpConfig['user'], $amqpConfig['password'], $amqpConfig['vhost']);
+            }
             $channel = $connection->channel();
 
             $msg = new AMQPMessage(substr($msg, 0, 512));
