@@ -34,34 +34,7 @@ class SiteConfiguration
     private $emailConfirmationEnabled = true;
     private $emailConfirmationExpiryDays = 7;
     private $miserModeLimit = 25;
-    /** @deprecated */
-    private $requestStates = array(
-        'Open'          => array(
-            'defertolog' => 'users', // don't change or you'll break old logs
-            'deferto'    => 'users',
-            'header'     => 'Open requests',
-            'api'        => "open",
-        ),
-        'Flagged users' => array(
-            'defertolog' => 'flagged users', // don't change or you'll break old logs
-            'deferto'    => 'flagged users',
-            'header'     => 'Flagged user needed',
-            'api'        => "admin",
-        ),
-        'Checkuser'     => array(
-            'defertolog' => 'checkusers', // don't change or you'll break old logs
-            'deferto'    => 'checkusers',
-            'header'     => 'Checkuser needed',
-            'api'        => "checkuser",
-        ),
-    );
     private $squidList = array();
-    /** @deprecated */
-    private $defaultCreatedTemplateId = 1;
-    /** @deprecated */
-    private $defaultRequestStateKey = 'Open';
-    /** @deprecated */
-    private $defaultRequestDeferredStateKey = 'Flagged users';
     private $useStrictTransportSecurity = false;
     private $userAgent = 'Wikipedia-ACC Tool/0.1 (+https://accounts.wmflabs.org/internal.php/team)';
     private $curlDisableVerifyPeer = false;
@@ -403,28 +376,6 @@ class SiteConfiguration
 
     /**
      * @return array
-     * @deprecated To be removed after dynamic queues hit production. This will need to be major point release.
-     */
-    public function getRequestStates()
-    {
-        return $this->requestStates;
-    }
-
-    /**
-     * @param array $requestStates
-     *
-     * @return SiteConfiguration
-     * @deprecated To be removed after dynamic queues hit production. This will need to be major point release.
-     */
-    public function setRequestStates($requestStates)
-    {
-        $this->requestStates = $requestStates;
-
-        return $this;
-    }
-
-    /**
-     * @return array
      */
     public function getSquidList()
     {
@@ -439,71 +390,6 @@ class SiteConfiguration
     public function setSquidList($squidList)
     {
         $this->squidList = $squidList;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     * @deprecated
-     */
-    public function getDefaultCreatedTemplateId()
-    {
-        return $this->defaultCreatedTemplateId;
-    }
-
-    /**
-     * @param int $defaultCreatedTemplateId
-     * @deprecated
-     * @return SiteConfiguration
-     */
-    public function setDefaultCreatedTemplateId($defaultCreatedTemplateId)
-    {
-        $this->defaultCreatedTemplateId = $defaultCreatedTemplateId;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     * @deprecated
-     */
-    public function getDefaultRequestStateKey()
-    {
-        return $this->defaultRequestStateKey;
-    }
-
-    /**
-     * @param string $defaultRequestStateKey
-     *
-     * @return SiteConfiguration
-     * @deprecated
-     */
-    public function setDefaultRequestStateKey($defaultRequestStateKey)
-    {
-        $this->defaultRequestStateKey = $defaultRequestStateKey;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     * @deprecated
-     */
-    public function getDefaultRequestDeferredStateKey()
-    {
-        return $this->defaultRequestDeferredStateKey;
-    }
-
-    /**
-     * @param string $defaultRequestDeferredStateKey
-     *
-     * @return SiteConfiguration
-     * @deprecated
-     */
-    public function setDefaultRequestDeferredStateKey($defaultRequestDeferredStateKey)
-    {
-        $this->defaultRequestDeferredStateKey = $defaultRequestDeferredStateKey;
 
         return $this;
     }
