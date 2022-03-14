@@ -5,13 +5,13 @@
 // Development Team. Please see team.json for a list of contributors.          *
 //******************************************************************************
 
-td.numeric, td.numeric-delta{
+td.numeric, td.numeric-delta, td.timespan-delta {
   text-align: right;
   font-family: monospace;
   font-size: 1rem;
 }
 
-td.numeric-delta {
+td.numeric-delta, td.timespan-delta {
   @extend .text-success;
 
   &::before {
@@ -27,12 +27,7 @@ td.numeric-delta {
 
     &[data-value^="-"] {
       @extend .text-success;
-
-      &::before {
-        content: "-"
-      }
     }
-
   }
 
   &[data-value^="-"] {
@@ -49,4 +44,8 @@ td.numeric-delta {
       content: ""
     }
   }
+}
+
+td.timespan-delta.delta-inverse[data-value^="-"]::before {
+  content: "-"
 }

@@ -47,10 +47,10 @@
                 <td class="px-3 numeric-delta" data-value="{$row.activeusers_delta|escape}">{$row.activeusers_delta|escape}</td>
 
                 <td class="px-3 border-left numeric" data-value="{$row.nondeferred|escape}">{$row.nondeferred|escape|timespan}</td>
-                <td class="px-3 numeric-delta delta-inverse" data-value="{$row.nondeferred_delta|escape}">{$row.nondeferred_delta|escape|timespan}</td>
+                <td class="px-3 timespan-delta delta-inverse" data-value="{$row.nondeferred_delta|escape}">{$row.nondeferred_delta|escape|timespan}</td>
                 <td class="px-3 numeric" data-value="{$row.nondeferred_stddev|escape}">{$row.nondeferred_stddev|escape|timespan}</td>
                 <td class="px-3 border-left numeric" data-value="{$row.deferred|escape}">{$row.deferred|escape|timespan}</td>
-                <td class="px-3 numeric-delta delta-inverse" data-value="{$row.deferred_delta|escape}">{$row.deferred_delta|escape|timespan}</td>
+                <td class="px-3 timespan-delta delta-inverse" data-value="{$row.deferred_delta|escape}">{$row.deferred_delta|escape|timespan}</td>
                 <td class="px-3 numeric" data-value="{$row.deferred_stddev|escape}">{$row.deferred_stddev|escape|timespan}</td>
             </tr>
         {/foreach}
