@@ -383,7 +383,8 @@ SQL
         return new DateTime($logTime);
     }
 
-    public function getLastUpdated() {
+    public function getLastUpdated()
+    {
         $logQuery = $this->dbObject->prepare(<<<SQL
 SELECT max(d.ts) FROM (
     SELECT r.date AS ts FROM request r WHERE r.id = :requestr

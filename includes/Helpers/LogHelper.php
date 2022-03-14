@@ -407,7 +407,7 @@ HTML;
                 /** @var Domain $domain */
                 $domain = Domain::getById($objectId, $database);
 
-                if($domain === false ){
+                if ($domain === false) {
                     return "Domain #{$objectId}";
                 }
 

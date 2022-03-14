@@ -105,7 +105,7 @@ class RequestValidationHelper
         }
 
         // name is too long
-        if (mb_strlen(trim($request->getName())) > 500 ) {
+        if (mb_strlen(trim($request->getName())) > 500) {
             $errorList[ValidationError::NAME_EMPTY] = new ValidationError(ValidationError::NAME_TOO_LONG);
         }
 

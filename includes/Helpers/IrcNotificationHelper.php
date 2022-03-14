@@ -97,7 +97,8 @@ class IrcNotificationHelper
             $amqpConfig = $this->siteConfiguration->getAmqpConfiguration();
             if ($amqpConfig['tls']) {
                 $connection = new AMQPSSLConnection($amqpConfig['host'], $amqpConfig['port'], $amqpConfig['user'], $amqpConfig['password'], $amqpConfig['vhost'], ['verify_peer' => true]);
-            } else {
+            }
+            else {
                 $connection = new AMQPStreamConnection($amqpConfig['host'], $amqpConfig['port'], $amqpConfig['user'], $amqpConfig['password'], $amqpConfig['vhost']);
             }
             $channel = $connection->channel();
