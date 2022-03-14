@@ -48,7 +48,7 @@ class PageListFlaggedComments extends InternalPageBase
             if ($object->getVisibility() == 'requester' || $object->getVisibility() == 'user') {
                 $this->copyCommentData($object, $data, $database);
             }
-            elseif($object->getVisibility() == 'admin') {
+            elseif ($object->getVisibility() == 'admin') {
                 if ($seeRestrictedComments) {
                     $this->copyCommentData($object, $data, $database);
                 }
@@ -56,7 +56,7 @@ class PageListFlaggedComments extends InternalPageBase
                     $data['hidden'] = true;
                 }
             }
-            elseif($object->getVisibility() == 'checkuser') {
+            elseif ($object->getVisibility() == 'checkuser') {
                 if ($seeCheckuserComments) {
                     $this->copyCommentData($object, $data, $database);
                 }

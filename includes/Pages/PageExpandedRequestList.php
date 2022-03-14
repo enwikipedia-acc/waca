@@ -27,7 +27,7 @@ class PageExpandedRequestList extends InternalPageBase
      */
     protected function main()
     {
-        if(WebRequest::getString('queue') === null) {
+        if (WebRequest::getString('queue') === null) {
             $this->redirect('');
             return;
         }

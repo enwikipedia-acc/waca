@@ -375,7 +375,7 @@ class PageCustomClose extends PageCloseRequest
         $creationTaskClass = null;
 
         if ($action === self::CREATE_OAUTH) {
-            if(!$canOauthCreate) {
+            if (!$canOauthCreate) {
                 throw new AccessDeniedException($this->getSecurityManager());
             }
 

@@ -188,7 +188,7 @@ SQL;
         $requestsByQueue = $search->fetchByQueue(array_keys($queuesById));
 
         foreach ($requestsByQueue as $queueId => $queueData) {
-            if($queueData['count'] > 0 || $queuesById[$queueId]->isEnabled()) {
+            if ($queueData['count'] > 0 || $queuesById[$queueId]->isEnabled()) {
                 $requestSectionData[$queuesById[$queueId]->getHeader()] = array(
                     'requests' => $this->prepareRequestData($queueData['data']),
                     'total'    => $queueData['count'],

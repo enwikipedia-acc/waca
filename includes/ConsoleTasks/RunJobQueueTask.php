@@ -117,7 +117,8 @@ class RunJobQueueTask extends ConsoleTaskBase
                     Logger::backgroundJobIssue($this->getDatabase(), $job);
 
                     $database->commit();
-                } catch (Exception $ex) {
+                }
+                catch (Exception $ex) {
                     // oops, something went horribly wrong trying to handle this in a nice way; let's just fall back to
                     // logging this to disk for a tool root to investigate.
                     ExceptionHandler::logExceptionToDisk($ex, $this->getSiteConfiguration());
