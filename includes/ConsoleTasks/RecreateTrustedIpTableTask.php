@@ -142,7 +142,7 @@ class RecreateTrustedIpTableTask extends ConsoleTaskBase
         $successful = true;
 
         foreach ($ip as $i) {
-            if (count($i) > 15) {
+            if (strlen($i) > 15) {
                 echo "Rejected $i\n";
                 $successful = false;
 
