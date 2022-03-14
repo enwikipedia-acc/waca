@@ -315,6 +315,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
  *
  * @param $section
  * @param $message
+ * @scrutinizer ignore-unused
  */
 function wfDebugLog($section, $message)
 {
@@ -337,10 +338,7 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setEmailConfirmationEnabled($enableEmailConfirm == 1)
     ->setEmailConfirmationExpiryDays($emailConfirmationExpiryDays)
     ->setMiserModeLimit($requestLimitShowOnly)
-    ->setRequestStates($availableRequestStates)
     ->setSquidList($squidIpList)
-    ->setDefaultCreatedTemplateId($createdid)
-    ->setDefaultRequestStateKey($defaultRequestStateKey)
     ->setUseStrictTransportSecurity($strictTransportSecurityExpiry)
     ->setUserAgent($toolUserAgent)
     ->setCurlDisableVerifyPeer($curlDisableSSLVerifyPeer)
