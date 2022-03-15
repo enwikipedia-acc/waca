@@ -55,13 +55,14 @@
                             <div class="form-group row">
                                 <div class="offset-sm-4 offset-md-3 offset-lg-4 offset-xl-3 col-md-9">
                                     <div class="custom-control custom-switch">
-                                        <input class="custom-control-input" type="checkbox" id="enabled" name="enabled" {if $enabled}checked{/if} {if $default || $antispoof || $titleblacklist || $isTarget}disabled{/if} />
+                                        <input class="custom-control-input" type="checkbox" id="enabled" name="enabled" {if $enabled}checked{/if} {if $default || $antispoof || $titleblacklist || $isTarget || $isFormTarget }disabled{/if} />
                                         <label class="custom-control-label" for="enabled">Enabled</label>
                                         <small class="form-text text-muted" id="defaultHelp">Allow new requests to enter this queue. Disabled queues still show in the interface if they contain requests.</small>
                                         {if $default}<small class="form-text text-danger">To unset this, please first mark another queue as the default queue.</small>{/if}
                                         {if $antispoof}<small class="form-text text-danger">To unset this, please first mark another queue as the default AntiSpoof queue.</small>{/if}
                                         {if $titleblacklist}<small class="form-text text-danger">To unset this, please first mark another queue as the default TitleBlacklist queue.</small>{/if}
                                         {if $isTarget}<small class="form-text text-danger">To unset this, please first remove this queue as the target of an active email template. This can be done by deactivating the email template or by moving the email template to a new queue.</small>{/if}
+                                        {if $isFormTarget}<small class="form-text text-danger">To unset this, please first remove this queue as the target of an active request form. This can be done by deactivating the request form or by modifying the form to use a different queue.</small>{/if}
                                     </div>
                                 </div>
                             </div>

@@ -9,6 +9,7 @@
 namespace Waca\Helpers;
 
 use Waca\DataObjects\EmailTemplate;
+use Waca\DataObjects\RequestForm;
 use Waca\DataObjects\RequestQueue;
 use Waca\PdoDatabase;
 
@@ -60,6 +61,22 @@ class RequestQueueHelper
             if ($t->getQueue() === $queue->getId()) {
                 $isTarget = true;
                 break;
+            }
+        }
+
+        return $isTarget;
+    }
+
+    public function isRequestFormTarget(RequestQueue $queue, PdoDatabase $database): bool
+    {
+        $isTarget = false;
+        $forms = RequestForm::getAllForms($database, 1); // FIXME: domains
+        foreach ($forms as $t) {
+            if ($t->isEnabled()) {
+                if ($t->getOverrideQueue() === $queue->getId()) {
+                    $isTarget = true;
+                    break;
+                }
             }
         }
 
