@@ -134,7 +134,7 @@ class PageQueueManagement extends InternalPageBase
                 WebRequest::postBoolean('default'),
                 WebRequest::postBoolean('antispoof'),
                 WebRequest::postBoolean('titleblacklist'),
-                $this->helper->isEmailTemplateTarget($queue, $this->getDatabase()));
+                $this->helper->isEmailTemplateTarget($queue, $this->getDatabase()) || $this->helper->isRequestFormTarget($queue, $this->getDatabase()));
 
             $queue->setHeader(WebRequest::postString('header'));
             $queue->setDisplayName(WebRequest::postString('displayName'));
@@ -193,7 +193,9 @@ class PageQueueManagement extends InternalPageBase
         $this->assign('help', $queue->getHelp());
         $this->assign('logName', $queue->getLogName());
 
-        $isTarget = $this->helper->isEmailTemplateTarget($queue, $this->getDatabase());
-        $this->assign('isTarget', $isTarget);
+        $isQueueTarget = $this->helper->isEmailTemplateTarget($queue, $this->getDatabase());
+        $isFormTarget = $this->helper->isRequestFormTarget($queue, $this->getDatabase());
+        $this->assign('isTarget', $isQueueTarget);
+        $this->assign('isFormTarget', $isFormTarget);
     }
 }
