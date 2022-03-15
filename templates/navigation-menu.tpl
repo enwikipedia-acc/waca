@@ -23,7 +23,7 @@
                 </div>
             </li>
         {/if}
-        {if $nav__canBan || $nav__canEmailMgmt || $nav__canWelcomeMgmt || $nav__canSiteNoticeMgmt || $nav__canUserMgmt || $nav__canJobQueue || $nav__canFlaggedComments || $nav__canQueueMgmt || $nav__canDomainMgmt || $nav__canErrorLog}
+        {if $nav__canBan || $nav__canEmailMgmt || $nav__canWelcomeMgmt || $nav__canSiteNoticeMgmt || $nav__canUserMgmt || $nav__canJobQueue || $nav__canFlaggedComments || $nav__canQueueMgmt || $nav__canFormMgmt || $nav__canDomainMgmt || $nav__canErrorLog}
             <li class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown"><i class="fas fa-wrench"></i>&nbsp;Admin</a>
                 <div class="dropdown-menu">
@@ -50,6 +50,9 @@
                     {/if}
                     {if $nav__canQueueMgmt}
                         <a class="dropdown-item" href="{$baseurl}/internal.php/queueManagement"><i class="fas fa-list-ol"></i> Request Queue Management</a>
+                    {/if}
+                    {if $nav__canFormMgmt}
+                        <a class="dropdown-item" href="{$baseurl}/internal.php/requestFormManagement"><i class="fas fa-align-justify"></i> Request Form Management</a>
                     {/if}
                     {if $nav__canDomainMgmt}
                         <a class="dropdown-item" href="{$baseurl}/internal.php/domainManagement"><i class="fas fa-globe-europe"></i> Domain Management</a>

@@ -9,8 +9,10 @@
 namespace Waca\DataObjects;
 
 use Exception;
+use PDO;
 use Waca\DataObject;
 use Waca\Exceptions\OptimisticLockFailedException;
+use Waca\PdoDatabase;
 
 class RequestForm extends DataObject
 {
@@ -19,13 +21,81 @@ class RequestForm extends DataObject
     /** @var int */
     private $domain;
     /** @var string */
-    private $name;
+    private $name = '';
     /** @var string */
-    private $publicendpoint;
+    private $publicendpoint = '';
     /** @var string */
-    private $formcontent;
+    private $formcontent = '';
     /** @var int|null */
     private $overridequeue;
+
+    /**
+     * @param PdoDatabase $database
+     * @param int         $domain
+     *
+     * @return RequestForm[]
+     */
+    public static function getAllForms(PdoDatabase $database, int $domain)
+    {
+        $statement = $database->prepare("SELECT * FROM requestform WHERE domain = :domain;");
+        $statement->execute([':domain' => $domain]);
+
+        $resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
+
+        if ($resultObject === false) {
+            return [];
+        }
+
+        /** @var RequestQueue $t */
+        foreach ($resultObject as $t) {
+            $t->setDatabase($database);
+        }
+
+        return $resultObject;
+    }
+
+    public static function getByName(PdoDatabase $database, string $name, int $domain)
+    {
+        $statement = $database->prepare(<<<SQL
+            SELECT * FROM requestform WHERE name = :name AND domain = :domain;
+SQL
+        );
+
+        $statement->execute([
+            ':name' => $name,
+            ':domain'  => $domain,
+        ]);
+
+        /** @var RequestForm|false $result */
+        $result = $statement->fetchObject(get_called_class());
+
+        if ($result !== false) {
+            $result->setDatabase($database);
+        }
+
+        return $result;
+    }
+
+    public static function getByPublicEndpoint(PdoDatabase $database, string $endpoint)
+    {
+        $statement = $database->prepare(<<<SQL
+            SELECT * FROM requestform WHERE publicendpoint = :endpoint;
+SQL
+        );
+
+        $statement->execute([
+            ':endpoint' => $endpoint
+        ]);
+
+        /** @var RequestForm|false $result */
+        $result = $statement->fetchObject(get_called_class());
+
+        if ($result !== false) {
+            $result->setDatabase($database);
+        }
+
+        return $result;
+    }
 
     public function save()
     {

@@ -24,7 +24,8 @@ class ContentSecurityPolicyManager
         'img-src'         => ['self', 'data:', 'https://upload.wikimedia.org', 'https://accounts-dev.wmflabs.org/'],
         'font-src'        => ['self'],
         'form-action'     => ['self', 'oauth'],
-        'frame-ancestors' => [],
+        'frame-ancestors' => ['self'],
+        'frame-src'       => ['self'],
     ];
     private $nonce = null;
     private $reportOnly = false;

@@ -17,6 +17,7 @@ use Waca\Pages\PageListFlaggedComments;
 use Waca\Pages\PageLog;
 use Waca\Pages\PageMain;
 use Waca\Pages\PageQueueManagement;
+use Waca\Pages\PageRequestFormManagement;
 use Waca\Pages\PageSearch;
 use Waca\Pages\PageSiteNotice;
 use Waca\Pages\PageUserManagement;
@@ -80,6 +81,9 @@ trait NavigationMenuAccessControl
                     $currentUser) === SecurityManager::ALLOWED);
         $this->assign('nav__canQueueMgmt', $this->getSecurityManager()
                 ->allows(PageQueueManagement::class, RoleConfiguration::MAIN,
+                    $currentUser) === SecurityManager::ALLOWED);
+        $this->assign('nav__canFormMgmt', $this->getSecurityManager()
+                ->allows(PageRequestFormManagement::class, RoleConfiguration::MAIN,
                     $currentUser) === SecurityManager::ALLOWED);
         $this->assign('nav__canErrorLog', $this->getSecurityManager()
                 ->allows(PageErrorLogViewer::class, RoleConfiguration::MAIN, $currentUser) === SecurityManager::ALLOWED);
