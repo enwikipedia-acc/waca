@@ -22,6 +22,7 @@ use Waca\Pages\PageListFlaggedComments;
 use Waca\Pages\PageLog;
 use Waca\Pages\PageMain;
 use Waca\Pages\PageQueueManagement;
+use Waca\Pages\PageRequestFormManagement;
 use Waca\Pages\PageXffDemo;
 use Waca\Pages\RequestAction\PageCreateRequest;
 use Waca\Pages\UserAuth\PageChangePassword;
@@ -227,6 +228,11 @@ class RoleConfiguration
             PageDomainManagement::class          => array(
                 self::MAIN => self::ACCESS_ALLOW,
             ),
+            PageRequestFormManagement::class     => array(
+                self::MAIN => self::ACCESS_ALLOW,
+                'view'     => self::ACCESS_ALLOW,
+                'preview'  => self::ACCESS_ALLOW,
+            ),
             'RequestCreation'                    => array(
                 User::CREATION_MANUAL => self::ACCESS_ALLOW,
                 User::CREATION_OAUTH  => self::ACCESS_ALLOW,
@@ -274,6 +280,10 @@ class RoleConfiguration
             ),
             PageQueueManagement::class           => array(
                 self::MAIN => self::ACCESS_ALLOW,
+                'edit'     => self::ACCESS_ALLOW,
+                'create'   => self::ACCESS_ALLOW,
+            ),
+            PageRequestFormManagement::class     => array(
                 'edit'     => self::ACCESS_ALLOW,
                 'create'   => self::ACCESS_ALLOW,
             ),

@@ -18,6 +18,7 @@ use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\RequestForm;
 use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
 use Waca\DataObjects\WelcomeTemplate;
@@ -174,8 +175,10 @@ class LogHelper
             'Hospitalised'        => 'sent to the hospital',
             'QueueCreated'        => 'created a request queue',
             'QueueEdited'         => 'edited a request queue',
-            'DomainCreated'        => 'created a domain',
-            'DomainEdited'         => 'edited a domain',
+            'DomainCreated'       => 'created a domain',
+            'DomainEdited'        => 'edited a domain',
+            'RequestFormCreated'  => 'created a request form',
+            'RequestFormEdited'   => 'edited a request form',
         );
 
         if (array_key_exists($entry->getAction(), $lookup)) {
@@ -254,6 +257,10 @@ class LogHelper
                 'DomainCreated'       => 'created a domain',
                 'DomainEdited'        => 'edited a domain',
             ],
+            "Request forms" => [
+                'RequestFormCreated'        => 'created a request form',
+                'RequestFormEdited'         => 'edited a request form',
+            ],
         );
 
         $databaseDrivenLogKeys = $database->query(<<<SQL
@@ -281,7 +288,8 @@ SQL
             'User'            => 'User',
             'WelcomeTemplate' => 'Welcome template',
             'RequestQueue'    => 'Request queue',
-            'Domain'          => 'Domain'
+            'Domain'          => 'Domain',
+            'RequestForm'     => 'Request form'
         );
     }
 
@@ -413,6 +421,18 @@ HTML;
 
                 $domainName = htmlentities($domain->getShortName(), ENT_COMPAT, 'UTF-8');
                 return "<a href=\"{$baseurl}/internal.php/domainManagement/edit?domain={$objectId}\">{$domainName}</a>";
+            case 'RequestForm':
+                /** @var RequestForm $queue */
+                $queue = RequestForm::getById($objectId, $database);
+
+                if ($queue === false) {
+                    return "Request Form #{$objectId}";
+                }
+
+                $formName = htmlentities($queue->getName(), ENT_COMPAT, 'UTF-8');
+
+                return "<a href=\"{$baseurl}/internal.php/requestFormManagement/edit?form={$objectId}\">{$formName}</a>";
+
             default:
                 return '[' . $objectType . " " . $objectId . ']';
         }

@@ -17,6 +17,7 @@ use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\RequestForm;
 use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\SiteNotice;
 use Waca\DataObjects\User;
@@ -430,6 +431,17 @@ class Logger
     public static function domainEdited(PdoDatabase $database, Domain $domain)
     {
         self::createLogEntry($database, $domain, 'DomainEdited');
+    }
+    #endregion
+    #region Request Forms
+    public static function requestFormCreated(PdoDatabase $database, RequestForm $requestForm)
+    {
+        self::createLogEntry($database, $requestForm, 'RequestFormCreated');
+    }
+
+    public static function requestFormEdited(PdoDatabase $database, RequestForm $requestForm)
+    {
+        self::createLogEntry($database, $requestForm, 'RequestFormEdited');
     }
     #endregion
 }

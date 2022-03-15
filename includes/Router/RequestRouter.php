@@ -21,6 +21,7 @@ use Waca\Pages\PageFlagComment;
 use Waca\Pages\PageJobQueue;
 use Waca\Pages\PageListFlaggedComments;
 use Waca\Pages\PageQueueManagement;
+use Waca\Pages\PageRequestFormManagement;
 use Waca\Pages\PageXffDemo;
 use Waca\Pages\RequestAction\PageCreateRequest;
 use Waca\Pages\UserAuth\Login\PageOtpLogin;
@@ -205,6 +206,11 @@ class RequestRouter implements IRequestRouter
             array(
                 'class'   => PageQueueManagement::class,
                 'actions' => array('create', 'edit'),
+            ),
+        'requestFormManagement'       =>
+            array(
+                'class'   => PageRequestFormManagement::class,
+                'actions' => array('create', 'edit', 'view', 'preview'),
             ),
         'jobQueue'                    =>
             array(

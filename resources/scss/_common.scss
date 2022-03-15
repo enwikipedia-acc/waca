@@ -98,3 +98,11 @@ $borderwidth: 1, 2, 3;
 .badge-pill svg.svg-inline--fa.fa-w-16 {
     min-width: 1.2em;
 }
+
+iframe.preview-frame {
+    width: 100%;
+    height: 60vh;
+    &.preview-frame-short {
+        height: 30vh;
+    }
+}

@@ -92,6 +92,7 @@ trait TemplateOutput
         $this->assign('nav__canFlaggedComments', false);
         $this->assign('nav__canDomainMgmt', false);
         $this->assign('nav__canQueueMgmt', false);
+        $this->assign('nav__canFormMgmt', false);
         $this->assign('nav__canErrorLog', false);
 
         // Navigation badges for concern areas.

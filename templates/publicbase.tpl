@@ -15,6 +15,7 @@
 
 <div class="container">
 
+    {block name="publicheader"}
     <div class="masthead">
         <ul class="nav nav-pills float-right">
             <li class="nav-item"><a class="nav-link" href="//en.wikipedia.org/wiki/Main_Page">Back to Wikipedia</a></li>
@@ -23,6 +24,7 @@
     </div>
 
     <hr>
+    {/block}
 
     {if count($alerts) > 0}
         {foreach $alerts as $a}
@@ -35,6 +37,7 @@
         {$defaultContent|default:"This page doesn't do anything. If you see this, and you're not a developer, this is a bug."}
     {/block}
 
+    {block name="publicfooter"}
     <hr/>
 
     <footer class="row">
@@ -47,6 +50,7 @@
             </small>
         </p>
     </footer>
+    {/block}
 
 </div><!--/container-->
 {block name="footerjs"}
