@@ -44,6 +44,16 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
         add emailhelp text not null,
         add commentshelp text not null;
 
+    INSERT INTO requestform (updateversion, enabled, domain, name, publicendpoint, formcontent, overridequeue, usernamehelp, emailhelp, commentshelp) VALUES (9, 1, 1, 'Default form', 'default', '## Request an account!
+
+We will need a few bits of information in order to create your account. However, please keep in mind that you do not need an account to read the encyclopedia or look up information - that can be done by anyone with or without an account. The first thing we need is a username, and secondly, a **valid email address that we can send your password to** (please don''t use temporary inboxes, or email aliasing, as this may cause your request to be rejected). If you want to leave any comments, feel free to do so in the comments field below. Note that if you use this form, your IP address will be recorded, and displayed to [those who review account requests](https://dorado.scimonshouse.net/internal.php/statistics/users). When you are done, click the "Submit" button.
+
+**Please note!**
+We do not have access to existing account data. If you have lost your password, please reset it using [this form](https://en.wikipedia.org/wiki/Special:PasswordReset) at wikipedia.org. If you are trying to ''take over'' an account that already exists, please use ["Changing usernames/Usurpation"](http://en.wikipedia.org/wiki/WP:CHU/U) at wikipedia.org. We cannot do either of these things for you.
+{:.alert.alert-warning}
+
+If you have not yet done so, please review the [Username Policy](https://en.wikipedia.org/wiki/Wikipedia:Username_policy) before submitting a request.', null, 'Case sensitive, first letter is always capitalized, you do not need to use all uppercase. Note that this need not be your real name. Please make sure you don''t leave any trailing spaces or underscores on your requested username. Usernames may not consist entirely of numbers, contain the following characters: `# / | [ ] { } < > @ % :` or exceed 85 characters in length.', 'We need a valid email in order to send you your password and confirm your account request. Without it, you will not receive your password, and will be unable to log in to your account.', 'Any additional details you feel are relevant may be placed here. **Please do NOT ask for a specific password. One will be randomly created for you.**');
+    commit;
     -- -------------------------------------------------------------------------
     -- finally, update the schema version to indicate success
     UPDATE schemaversion SET version = patchversion;
