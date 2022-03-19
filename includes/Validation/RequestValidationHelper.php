@@ -225,6 +225,9 @@ class RequestValidationHelper
         // Blacklist check
         $this->checkTitleBlacklist($request);
 
+        // Add comment for form override
+        $this->formOverride($request);
+
         $bans = $this->banHelper->getBans($request);
 
         foreach ($bans as $ban) {
@@ -436,5 +439,18 @@ class RequestValidationHelper
 
         $comment->setComment($deferComment);
         $comment->save();
+    }
+
+    private function formOverride(Request $request)
+    {
+        $form = $request->getOriginFormObject();
+        if($form === null || $form->getOverrideQueue() === null) {
+            return;
+        }
+
+        /** @var RequestQueue $targetQueue */
+        $targetQueue = RequestQueue::getById($form->getOverrideQueue(), $request->getDatabase());
+
+        $this->deferRequest($request, $targetQueue, 'Request deferred automatically due to request submission through a request form with a default queue set.');
     }
 }
