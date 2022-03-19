@@ -28,6 +28,12 @@ class RequestForm extends DataObject
     private $formcontent = '';
     /** @var int|null */
     private $overridequeue;
+    /** @var string */
+    private $usernamehelp;
+    /** @var string */
+    private $emailhelp;
+    /** @var string */
+    private $commentshelp;
 
     /**
      * @param PdoDatabase $database
@@ -103,9 +109,9 @@ SQL
             // insert
             $statement = $this->dbObject->prepare(<<<SQL
                 INSERT INTO requestform (
-                    enabled, domain, name, publicendpoint, formcontent, overridequeue
+                    enabled, domain, name, publicendpoint, formcontent, overridequeue, usernamehelp, emailhelp, commentshelp
                 ) VALUES (
-                    :enabled, :domain, :name, :publicendpoint, :formcontent, :overridequeue
+                    :enabled, :domain, :name, :publicendpoint, :formcontent, :overridequeue, :usernamehelp, :emailhelp, :commentshelp
                 );
 SQL
             );
@@ -116,6 +122,9 @@ SQL
             $statement->bindValue(":publicendpoint", $this->publicendpoint);
             $statement->bindValue(":formcontent", $this->formcontent);
             $statement->bindValue(":overridequeue", $this->overridequeue);
+            $statement->bindValue(":usernamehelp", $this->usernamehelp);
+            $statement->bindValue(":emailhelp", $this->emailhelp);
+            $statement->bindValue(":commentshelp", $this->commentshelp);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -133,6 +142,9 @@ SQL
                     publicendpoint = :publicendpoint,
                     formcontent = :formcontent,
                     overridequeue = :overridequeue,
+                    usernamehelp = :usernamehelp,
+                    emailhelp = :emailhelp,
+                    commentshelp = :commentshelp,
                 
                     updateversion = updateversion + 1
 				WHERE id = :id AND updateversion = :updateversion;
@@ -145,6 +157,10 @@ SQL
             $statement->bindValue(":publicendpoint", $this->publicendpoint);
             $statement->bindValue(":formcontent", $this->formcontent);
             $statement->bindValue(":overridequeue", $this->overridequeue);
+            $statement->bindValue(":usernamehelp", $this->usernamehelp);
+            $statement->bindValue(":emailhelp", $this->emailhelp);
+            $statement->bindValue(":commentshelp", $this->commentshelp);
+
 
             $statement->bindValue(':id', $this->id);
             $statement->bindValue(':updateversion', $this->updateversion);
@@ -257,5 +273,51 @@ SQL
         $this->overridequeue = $overrideQueue;
     }
 
+    /**
+     * @return string
+     */
+    public function getUsernameHelp(): ?string
+    {
+        return $this->usernamehelp;
+    }
 
+    /**
+     * @param string $usernamehelp
+     */
+    public function setUsernameHelp(string $usernamehelp): void
+    {
+        $this->usernamehelp = $usernamehelp;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmailHelp(): ?string
+    {
+        return $this->emailhelp;
+    }
+
+    /**
+     * @param string $emailhelp
+     */
+    public function setEmailHelp(string $emailhelp): void
+    {
+        $this->emailhelp = $emailhelp;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCommentHelp(): ?string
+    {
+        return $this->commentshelp;
+    }
+
+    /**
+     * @param string $commenthelp
+     */
+    public function setCommentHelp(string $commenthelp): void
+    {
+        $this->commentshelp = $commenthelp;
+    }
 }

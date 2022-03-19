@@ -13,7 +13,7 @@
                 {include file="security/csrf.tpl"}
 
                 <fieldset>
-                    <legend>Form details</legend>
+                    <legend>Form metadata</legend>
                     <div class="row">
                         <div class="col-lg-6 col-xs-12">
                             <div class="form-group row">
@@ -85,26 +85,75 @@
                     </div>
 
                 </fieldset>
+                <fieldset>
+                    <legend>Form content</legend>
+                    <p>Formatting in these fields is supported using Markdown syntax.</p>
 
-                <div class="row">
-                    <div class="col">
-                        <div class="form-group row">
-                            <div class="col-md-3 col-lg-2">
-                                <label for="content" class="col-form-label">Form content:</label>
-                            </div>
-                            <div class="col-md-9 col-lg-10">
-                                <textarea class="form-control" id="content" rows="5" name="content">{$content|escape}</textarea>
-                                <small class="form-text text-muted" id="contentHelp">The text displayed with the request form. Formatting is done with Markdown.</small>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group row">
+                                <div class="col-md-3 col-lg-2">
+                                    <label for="content" class="col-form-label">Preamble:</label>
+                                </div>
+                                <div class="col-md-9 col-lg-10">
+                                    <textarea class="form-control" id="content" rows="5" name="content" required="required">{$content|escape}</textarea>
+                                    <small class="form-text text-muted" id="contentHelp">The text displayed before the request form.</small>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12">
-                        <iframe src="{$baseurl}/internal.php/requestFormManagement/preview" class="preview-frame preview-frame-short"></iframe>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group row">
+                                <div class="col-md-3 col-lg-2">
+                                    <label for="username" class="col-form-label">Username help:</label>
+                                </div>
+                                <div class="col-md-9 col-lg-10">
+                                    <input type="text" class="form-control" id="username" required="required" name="username" value="{$username|escape}"/>
+                                    <small class="form-text text-muted" id="usernameHelp">The text displayed underneath the username field.</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group row">
+                                <div class="col-md-3 col-lg-2">
+                                    <label for="email" class="col-form-label">Email address help:</label>
+                                </div>
+                                <div class="col-md-9 col-lg-10">
+                                    <input type="text" class="form-control" id="email" required="required" name="email" value="{$email|escape}"/>
+                                    <small class="form-text text-muted" id="emailHelp">The text displayed underneath the email address fields.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group row">
+                                <div class="col-md-3 col-lg-2">
+                                    <label for="email" class="col-form-label">Comments help:</label>
+                                </div>
+                                <div class="col-md-9 col-lg-10">
+                                    <input type="text" class="form-control" id="comment" required="required" name="comment" value="{$comment|escape}"/>
+                                    <small class="form-text text-muted" id="commentHelp">The text displayed underneath the comment field.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                {if !isset($hidePreview)}
+
+                <fieldset>
+                    <legend>Preview</legend>
+                    <div class="row">
+                        <div class="col-12">
+                            <iframe src="{$baseurl}/internal.php/requestFormManagement/preview" class="preview-frame preview-frame-short"></iframe>
+                        </div>
+                    </div>
+                </fieldset>
+                {/if}
 
                 <div class="row">
                     <div class="col">
