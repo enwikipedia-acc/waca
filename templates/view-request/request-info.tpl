@@ -33,6 +33,24 @@
     </div>
     {/if}
 
+    {if $originForm !== null}
+        <div class="row">
+            <div class="col-md-4">
+                <strong>Submitted via form:</strong>
+            </div>
+            <div class="col-md-8">
+                {if $canPreviewForm}
+                    <a href="{$baseurl}/internal.php/requestFormManagement/view?form={$originForm->getId()|escape}">
+                        {$originForm->getName()|escape}
+                    </a>
+                {else}
+                    {$originForm->getName()|escape}
+                {/if}
+
+            </div>
+        </div>
+    {/if}
+
     {block name="requestDataPrimary"}<!-- Request data not available in this template -->{/block}
 
     {block name="requestDataPrimaryCheckUser"}<!-- Request data not available in this template -->{/block}

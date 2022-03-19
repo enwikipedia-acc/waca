@@ -13,6 +13,7 @@ use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\SearchHelpers\RequestSearchHelper;
+use Waca\Pages\PageRequestFormManagement;
 use Waca\Pages\RequestAction\PageBreakReservation;
 use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\ILocationProvider;
@@ -267,6 +268,9 @@ trait RequestData
             $this->assign('requestQueue', $queue->getHeader());
             $this->assign('requestQueueApiName', $queue->getApiName());
         }
+
+        $this->assign('canPreviewForm', $this->barrierTest('view', User::getCurrent($this->getDatabase()), PageRequestFormManagement::class));
+        $this->assign('originForm', $request->getOriginFormObject());
 
         $isClosed = $request->getStatus() === RequestStatus::CLOSED || $request->getStatus() === RequestStatus::JOBQUEUE;
         $this->assign('requestIsClosed', $isClosed);
