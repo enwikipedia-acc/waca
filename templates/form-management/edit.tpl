@@ -50,12 +50,12 @@
                                     {if $createMode}
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <div class="input-group-text">{$baseurl|escape}/index.php/</div>
+                                            <div class="input-group-text">{$baseurl|escape}/index.php/r/{$currentDomain->getShortName()|escape}/</div>
                                         </div>
                                         <input type="text" class="form-control" id="endpoint" name="endpoint" maxlength="64" required="required" pattern="^[A-Za-z][a-zA-Z0-9-]*$" placeholder="default-form" value="{$endpoint|escape}"  {if !$createMode}disabled{/if}/>
                                     </div>
                                     {else}
-                                        <span class="form-control"><a href="{$baseurl|escape}/index.php/{$endpoint|escape}">{$baseurl|escape}/index.php/{$endpoint|escape}</a></span>
+                                        <span class="form-control"><a href="{$baseurl|escape}/index.php/r/{$domain->getShortName()|escape}/{$endpoint|escape}">{$baseurl|escape}/index.php/r/{$domain->getShortName()|escape}/{$endpoint|escape}</a></span>
                                     {/if}
 
                                     <small class="form-text text-muted" id="displayNameHelp">The public URL of the form. Cannot be changed after creation. Must start with a letter, and only contain letters, numbers, hyphens and underscores.</small>

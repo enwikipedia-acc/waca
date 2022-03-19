@@ -39,7 +39,7 @@
                                 {/if}
                             </td>
                             <td class="text-nowrap">
-                                <a href="{$baseurl}/index.php/{$form->getPublicEndpoint()|escape}">{$baseurl}/index.php/{$form->getPublicEndpoint()|escape}</a>
+                                <a href="{$baseurl}/index.php/r/{$form->getDomainObject()->getShortName()|escape}/{$form->getPublicEndpoint()|escape}">{$baseurl}/index.php/r/{$form->getDomainObject()->getShortName()|escape}/{$form->getPublicEndpoint()|escape}</a>
                             </td>
                             <td>
                                 {if isset($queues[$form->getOverrideQueue()])}
