@@ -37,6 +37,7 @@ class Request extends DataObject
     private $forwardedip;
     private $hasComments = false;
     private $hasCommentsResolved = false;
+    private $originform;
 
     /**
      * @throws Exception
@@ -50,11 +51,11 @@ class Request extends DataObject
 INSERT INTO `request` (
 	email, ip, name, status, date, emailsent,
 	emailconfirm, reserved, useragent, forwardedip,
-    queue
+    queue, originform
 ) VALUES (
 	:email, :ip, :name, :status, CURRENT_TIMESTAMP(), :emailsent,
 	:emailconfirm, :reserved, :useragent, :forwardedip,
-    :queue
+    :queue, :originform
 );
 SQL
             );
@@ -68,6 +69,7 @@ SQL
             $statement->bindValue(':useragent', $this->useragent);
             $statement->bindValue(':forwardedip', $this->forwardedip);
             $statement->bindValue(':queue', $this->queue);
+            $statement->bindValue(':originform', $this->originform);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -454,5 +456,33 @@ SQL
     public function setQueue(?int $queue): void
     {
         $this->queue = $queue;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getOriginForm(): ?int
+    {
+        return $this->originform;
+    }
+
+    public function getOriginFormObject(): ?RequestForm
+    {
+        if ($this->originform === null) {
+            return null;
+        }
+
+        /** @var RequestForm|bool $form */
+        $form = RequestForm::getById($this->originform, $this->getDatabase());
+
+        return $form === false ? null : $form;
+    }
+
+    /**
+     * @param int|null $originForm
+     */
+    public function setOriginForm(?int $originForm): void
+    {
+        $this->originform = $originForm;
     }
 }
