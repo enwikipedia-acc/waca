@@ -53,4 +53,15 @@ class PublicRequestRouter extends RequestRouter
     {
         return array(PageRequestAccount::class, 'main');
     }
+
+    public function getRouteFromPath($pathInfo): array
+    {
+        if (count($pathInfo) === 3 && $pathInfo[0] === 'r') {
+            // this request should be routed to the dynamic request form handler
+            return [PageRequestAccount::class, 'dynamic'];
+        }
+        else {
+            return parent::getRouteFromPath($pathInfo);
+        }
+    }
 }

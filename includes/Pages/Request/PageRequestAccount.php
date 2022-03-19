@@ -12,9 +12,12 @@ use Exception;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\Domain;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\RequestForm;
 use Waca\DataObjects\RequestQueue;
+use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Helpers\BanHelper;
+use Waca\Helpers\MarkdownRenderingHelper;
 use Waca\SessionAlert;
 use Waca\Tasks\PublicInterfacePageBase;
 use Waca\Validation\RequestValidationHelper;
@@ -36,67 +39,77 @@ class PageRequestAccount extends PublicInterfacePageBase
     {
         // dual mode page
         if (WebRequest::wasPosted()) {
-            $request = $this->createNewRequest();
-            $comment = $this->createComment();
-
-            $validationErrors = $this->validateRequest($request);
-
-            if (count($validationErrors) > 0) {
-                foreach ($validationErrors as $validationError) {
-                    SessionAlert::error($validationError->getErrorMessage());
-                }
-
-                // Preserve the data after an error
-                WebRequest::setSessionContext('accountReq',
-                    array(
-                        'username' => WebRequest::postString('name'),
-                        'email'    => WebRequest::postEmail('email'),
-                        'comments' => WebRequest::postString('comments'),
-                    )
-                );
-
-                // Validation error, bomb out early.
-                $this->redirect();
-
-                return;
-            }
-
-            // actually save the request to the database
-            if ($this->getSiteConfiguration()->getEmailConfirmationEnabled()) {
-                $this->saveAsEmailConfirmation($request, $comment);
-            }
-            else {
-                $this->saveWithoutEmailConfirmation($request, $comment);
-            }
-
-            $this->getRequestValidationHelper()->postSaveValidations($request);
+            $request = $this->createNewRequest(null);
+            $this->handleFormPost($request);
         }
         else {
-            // set the form values from the session context
-            $context = WebRequest::getSessionContext('accountReq');
-            if ($context !== null && is_array($context)) {
-                $this->assign('username', $context['username']);
-                $this->assign('email', $context['email']);
-                $this->assign('comments', $context['comments']);
-            }
-
-            // Clear it for a refresh
-            WebRequest::setSessionContext('accountReq', null);
+            $this->handleFormRefilling();
 
             $this->setTemplate('request/request-form.tpl');
         }
     }
 
     /**
-     * @return Request
+     * Handles dynamic request forms.
+     * @return void
+     * @throws OptimisticLockFailedException
+     * @throws Exception
      */
-    protected function createNewRequest()
+    protected function dynamic()
+    {
+        $database = $this->getDatabase();
+
+        $pathInfo = WebRequest::pathInfo();
+        $domain = Domain::getByShortName($pathInfo[1], $database);
+        if ($domain === false || !$domain->isEnabled()) {
+            throw new ApplicationLogicException("This form is not available at this time.");
+        }
+
+        $form = RequestForm::getByPublicEndpoint($database, $pathInfo[2], $domain->getId());
+
+        if ($form === false || !$form->isEnabled()) {
+            throw new ApplicationLogicException("This form is not available at this time.");
+        }
+
+        // dual mode page
+        if (WebRequest::wasPosted()) {
+            $request = $this->createNewRequest($form);
+            $this->handleFormPost($request);
+        }
+        else {
+            $this->handleFormRefilling();
+
+            $renderer = new MarkdownRenderingHelper();
+            $this->assign('formPreamble', $renderer->doRender($form->getFormContent()));
+            $this->assign('formUsernameHelp', $renderer->doRenderInline($form->getUsernameHelp()));
+            $this->assign('formEmailHelp', $renderer->doRenderInline($form->getEmailHelp()));
+            $this->assign('formCommentsHelp', $renderer->doRenderInline($form->getCommentHelp()));
+
+            $this->setTemplate('request/request-form-dynamic.tpl');
+        }
+    }
+
+    /**
+     * @param RequestForm|null $form
+     *
+     * @return Request
+     * @throws ApplicationLogicException
+     */
+    protected function createNewRequest(?RequestForm $form): Request
     {
         $database = $this->getDatabase();
 
         $request = new Request();
-        // FIXME: domains!
-        $request->setQueue(RequestQueue::getDefaultQueue($database, 1)->getId());
+
+        if ($form === null) {
+            $domain = 1;
+        }
+        else {
+            $domain = $form->getDomain();
+            $request->setOriginForm($form->getId());
+        }
+
+        $request->setQueue(RequestQueue::getDefaultQueue($database, $domain)->getId());
         $request->setDatabase($database);
 
         $request->setName(trim(WebRequest::postString('name')));
@@ -231,4 +244,64 @@ class PageRequestAccount extends PublicInterfacePageBase
 
         return $this->validationHelper;
 }
+
+    /**
+     * @param Request $request
+     *
+     * @return void
+     * @throws OptimisticLockFailedException
+     */
+    protected function handleFormPost(Request $request): void
+    {
+        $comment = $this->createComment();
+
+        $validationErrors = $this->validateRequest($request);
+
+        if (count($validationErrors) > 0) {
+            foreach ($validationErrors as $validationError) {
+                SessionAlert::error($validationError->getErrorMessage());
+            }
+
+            // Preserve the data after an error
+            WebRequest::setSessionContext('accountReq',
+                array(
+                    'username' => WebRequest::postString('name'),
+                    'email'    => WebRequest::postEmail('email'),
+                    'comments' => WebRequest::postString('comments'),
+                )
+            );
+
+            // Validation error, bomb out early.
+            $this->redirect();
+
+            return;
+        }
+
+        // actually save the request to the database
+        if ($this->getSiteConfiguration()->getEmailConfirmationEnabled()) {
+            $this->saveAsEmailConfirmation($request, $comment);
+        }
+        else {
+            $this->saveWithoutEmailConfirmation($request, $comment);
+        }
+
+        $this->getRequestValidationHelper()->postSaveValidations($request);
+    }
+
+    /**
+     * @return void
+     */
+    protected function handleFormRefilling(): void
+    {
+        // set the form values from the session context
+        $context = WebRequest::getSessionContext('accountReq');
+        if ($context !== null && is_array($context)) {
+            $this->assign('username', $context['username']);
+            $this->assign('email', $context['email']);
+            $this->assign('comments', $context['comments']);
+        }
+
+        // Clear it for a refresh
+        WebRequest::setSessionContext('accountReq', null);
+    }
 }
