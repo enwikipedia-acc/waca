@@ -8,9 +8,11 @@
 
 namespace Waca\Pages;
 
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\RequestForm;
 use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
+use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\Helpers\MarkdownRenderingHelper;
@@ -25,7 +27,8 @@ class PageRequestFormManagement extends InternalPageBase
         $this->setHtmlTitle('Request Form Management');
 
         $database = $this->getDatabase();
-        $forms = RequestForm::getAllForms($database, 1); // FIXME: domains
+        $domainId = Domain::getCurrent($database)->getId();
+        $forms = RequestForm::getAllForms($database, $domainId);
         $this->assign('forms', $forms);
 
         $queues = [];
@@ -36,7 +39,7 @@ class PageRequestFormManagement extends InternalPageBase
                     /** @var RequestQueue $queue */
                     $queue = RequestQueue::getById($queueId, $this->getDatabase());
 
-                    if ($queue->getDomain() == 1) { // FIXME: domains
+                    if ($queue->getDomain() == $domainId) {
                         $queues[$queueId] = $queue;
                     }
                 }
@@ -55,8 +58,7 @@ class PageRequestFormManagement extends InternalPageBase
 
     protected function preview() {
         $previewContent = WebRequest::getSessionContext('preview');
-        
-        
+
         $renderer = new MarkdownRenderingHelper();
         $this->assign('renderedContent', $renderer->doRender($previewContent['main']));
         $this->assign('username', $renderer->doRenderInline($previewContent['username']));
@@ -71,11 +73,12 @@ class PageRequestFormManagement extends InternalPageBase
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
             $database = $this->getDatabase();
+            $domainId = Domain::getCurrent($database)->getId();
 
             $form = new RequestForm();
 
             $form->setDatabase($database);
-            $form->setDomain(1); // FIXME: domain
+            $form->setDomain($domainId);
 
             $this->setupObjectFromPost($form);
             $form->setPublicEndpoint(WebRequest::postString('endpoint'));
@@ -98,7 +101,7 @@ class PageRequestFormManagement extends InternalPageBase
 
             $proceed = true;
 
-            if (RequestForm::getByPublicEndpoint($database, $form->getPublicEndpoint()) !== false) {
+            if (RequestForm::getByPublicEndpoint($database, $form->getPublicEndpoint(), $domainId) !== false) {
                 SessionAlert::error("The chosen public endpoint is already in use. Please choose another.");
                 $proceed = false;
             }
@@ -108,17 +111,15 @@ class PageRequestFormManagement extends InternalPageBase
                 $proceed = false;
             }
 
-            if (RequestForm::getByName($database, $form->getName(), 1) !== false) {
-                // FIXME: domain
+            if (RequestForm::getByName($database, $form->getName(), $domainId) !== false) {
                 SessionAlert::error("The chosen name is already in use. Please choose another.");
                 $proceed = false;
             }
 
             if ($form->getOverrideQueue() !== null) {
-                /** @var RequestQueue $queue */
+                /** @var RequestQueue|bool $queue */
                 $queue = RequestQueue::getById($form->getOverrideQueue(), $database);
-                if ($queue === false || $queue->getDomain() !== 1 || !$queue->isEnabled()) {
-                    // FIXME: domain
+                if ($queue === false || $queue->getDomain() !== $domainId || !$queue->isEnabled()) {
                     SessionAlert::error("The chosen queue does not exist or is disabled.");
                     $proceed = false;
                 }
@@ -159,7 +160,10 @@ class PageRequestFormManagement extends InternalPageBase
 
         /** @var RequestForm $form */
         $form = RequestForm::getById(WebRequest::getInt('form'), $database);
-        // FIXME: domain check here
+
+        if ($form->getDomain() !== Domain::getCurrent($database)->getId()) {
+            throw new AccessDeniedException();
+        }
 
         $this->populateFromObject($form);
 
@@ -186,7 +190,10 @@ class PageRequestFormManagement extends InternalPageBase
 
         /** @var RequestForm $form */
         $form = RequestForm::getById(WebRequest::getInt('form'), $database);
-        // FIXME: domain check here
+
+        if ($form->getDomain() !== Domain::getCurrent($database)->getId()) {
+            throw new AccessDeniedException();
+        }
 
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
@@ -211,9 +218,8 @@ class PageRequestFormManagement extends InternalPageBase
 
             $proceed = true;
 
-            $foundForm = RequestForm::getByName($database, $form->getName(), 1);
+            $foundForm = RequestForm::getByName($database, $form->getName(), $form->getDomain());
             if ($foundForm !== false && $foundForm->getId() !== $form->getId()) {
-                // FIXME: domain
                 SessionAlert::error("The chosen name is already in use. Please choose another.");
                 $proceed = false;
             }
@@ -221,8 +227,7 @@ class PageRequestFormManagement extends InternalPageBase
             if ($form->getOverrideQueue() !== null) {
                 /** @var RequestQueue $queue */
                 $queue = RequestQueue::getById($form->getOverrideQueue(), $database);
-                if ($queue === false || $queue->getDomain() !== 1 || !$queue->isEnabled()) {
-                    // FIXME: domain
+                if ($queue === false || $queue->getDomain() !== $form->getDomain() || !$queue->isEnabled()) {
                     SessionAlert::error("The chosen queue does not exist or is disabled.");
                     $proceed = false;
                 }
@@ -275,6 +280,8 @@ class PageRequestFormManagement extends InternalPageBase
         $this->assign('username', $form->getUsernameHelp());
         $this->assign('email', $form->getEmailHelp());
         $this->assign('comment', $form->getCommentHelp());
+
+        $this->assign('domain', $form->getDomainObject());
 
         $this->assign('availableQueues', RequestQueue::getEnabledQueues($this->getDatabase()));
     }

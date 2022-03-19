@@ -26,7 +26,7 @@
     <div class="row">
         <div class="col">
             <ul class="list-unstyled">
-                <li><strong>Public endpoint:</strong>&nbsp;<a href="{$baseurl|escape}/index.php/{$endpoint|escape}">{$baseurl|escape}/index.php/{$endpoint|escape}</a></li>
+                <li><strong>Public endpoint:</strong>&nbsp;<a href="{$baseurl|escape}/index.php/r/{$domain->getShortName()|escape}/{$endpoint|escape}">{$baseurl|escape}/index.php/r/{$domain->getShortName()|escape}/{$endpoint|escape}</a></li>
                 <li><strong>Override queue:</strong>&nbsp;{if $queue === null}(Default queue){else}{$queueObject->getHeader()|escape}{/if}</li>
             </ul>
         </div>

@@ -82,15 +82,16 @@ SQL
         return $result;
     }
 
-    public static function getByPublicEndpoint(PdoDatabase $database, string $endpoint)
+    public static function getByPublicEndpoint(PdoDatabase $database, string $endpoint, int $domain)
     {
         $statement = $database->prepare(<<<SQL
-            SELECT * FROM requestform WHERE publicendpoint = :endpoint;
+            SELECT * FROM requestform WHERE publicendpoint = :endpoint and domain = :domain;
 SQL
         );
 
         $statement->execute([
-            ':endpoint' => $endpoint
+            ':endpoint' => $endpoint,
+            ':domain' => $domain,
         ]);
 
         /** @var RequestForm|false $result */
@@ -199,6 +200,17 @@ SQL
     public function getDomain(): int
     {
         return $this->domain;
+    }
+
+    public function getDomainObject(): ?Domain
+    {
+        if ($this->domain !== null) {
+            /** @var Domain $domain */
+            $domain = Domain::getById($this->domain, $this->getDatabase());
+            return $domain;
+        }
+
+        return null;
     }
 
     /**
