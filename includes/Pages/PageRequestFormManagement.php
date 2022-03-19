@@ -11,8 +11,9 @@ namespace Waca\Pages;
 use Waca\DataObjects\RequestForm;
 use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
+use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
-use Waca\Helpers\RenderingHelper;
+use Waca\Helpers\MarkdownRenderingHelper;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -54,8 +55,13 @@ class PageRequestFormManagement extends InternalPageBase
 
     protected function preview() {
         $previewContent = WebRequest::getSessionContext('preview');
-        $renderer = new RenderingHelper();
-        $this->assign('renderedContent', $renderer->doRender($previewContent));
+        
+        
+        $renderer = new MarkdownRenderingHelper();
+        $this->assign('renderedContent', $renderer->doRender($previewContent['main']));
+        $this->assign('username', $renderer->doRenderInline($previewContent['username']));
+        $this->assign('email', $renderer->doRenderInline($previewContent['email']));
+        $this->assign('comment', $renderer->doRenderInline($previewContent['comment']));
 
         $this->setTemplate('form-management/preview.tpl');
     }
@@ -71,18 +77,20 @@ class PageRequestFormManagement extends InternalPageBase
             $form->setDatabase($database);
             $form->setDomain(1); // FIXME: domain
 
-            $form->setName(WebRequest::postString('name'));
-            $form->setEnabled(WebRequest::postBoolean('enabled'));
+            $this->setupObjectFromPost($form);
             $form->setPublicEndpoint(WebRequest::postString('endpoint'));
-            $form->setFormContent(WebRequest::postString('content'));
-            $form->setOverrideQueue(WebRequest::postInt('queue'));
 
             if (WebRequest::postString("preview") === "preview") {
                 $this->populateFromObject($form);
 
-                WebRequest::setSessionContext('preview', $form->getFormContent());
+                WebRequest::setSessionContext('preview', [
+                    'main' => $form->getFormContent(),
+                    'username' => $form->getUsernameHelp(),
+                    'email' => $form->getEmailHelp(),
+                    'comment' => $form->getCommentHelp(),
+                ]);
 
-                $this->assign('createMode', false);
+                $this->assign('createMode', true);
                 $this->setTemplate('form-management/edit.tpl');
 
                 return;
@@ -95,9 +103,9 @@ class PageRequestFormManagement extends InternalPageBase
                 $proceed = false;
             }
 
-            if (preg_match('^[A-Za-z][a-zA-Z0-9-]*$', $form->getPublicEndpoint()) !== 1) {
+            if (preg_match('/^[A-Za-z][a-zA-Z0-9-]*$/', $form->getPublicEndpoint()) !== 1) {
                 SessionAlert::error("The chosen public endpoint contains invalid characters");
-                //$proceed = false;
+                $proceed = false;
             }
 
             if (RequestForm::getByName($database, $form->getName(), 1) !== false) {
@@ -123,7 +131,12 @@ class PageRequestFormManagement extends InternalPageBase
             }
             else {
                 $this->populateFromObject($form);
-                WebRequest::setSessionContext('preview', $form->getFormContent());
+                WebRequest::setSessionContext('preview', [
+                    'main' => $form->getFormContent(),
+                    'username' => $form->getUsernameHelp(),
+                    'email' => $form->getEmailHelp(),
+                    'comment' => $form->getCommentHelp(),
+                ]);
 
                 $this->assign('createMode', true);
                 $this->setTemplate('form-management/edit.tpl');
@@ -131,7 +144,8 @@ class PageRequestFormManagement extends InternalPageBase
         }
         else {
             $this->populateFromObject(new RequestForm());
-            WebRequest::setSessionContext('preview', '');
+            WebRequest::setSessionContext('preview', null);
+            $this->assign('hidePreview', true);
 
             $this->assignCSRFToken();
             $this->assign('createMode', true);
@@ -153,9 +167,14 @@ class PageRequestFormManagement extends InternalPageBase
             $this->assign('queueObject', RequestQueue::getById($form->getOverrideQueue(), $database));
         }
 
-        WebRequest::setSessionContext('preview', $form->getFormContent());
+        WebRequest::setSessionContext('preview', [
+            'main' => $form->getFormContent(),
+            'username' => $form->getUsernameHelp(),
+            'email' => $form->getEmailHelp(),
+            'comment' => $form->getCommentHelp(),
+        ]);
 
-        $renderer = new RenderingHelper();
+        $renderer = new MarkdownRenderingHelper();
         $this->assign('renderedContent', $renderer->doRender($form->getFormContent()));
 
         $this->setTemplate('form-management/view.tpl');
@@ -172,15 +191,17 @@ class PageRequestFormManagement extends InternalPageBase
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
 
-            $form->setName(WebRequest::postString('name'));
-            $form->setFormContent(WebRequest::postString('content'));
-            $form->setOverrideQueue(WebRequest::postInt('queue'));
-            $form->setEnabled(WebRequest::postBoolean('enabled'));
+            $this->setupObjectFromPost($form);
 
             if (WebRequest::postString("preview") === "preview") {
                 $this->populateFromObject($form);
 
-                WebRequest::setSessionContext('preview', $form->getFormContent());
+                WebRequest::setSessionContext('preview', [
+                    'main' => $form->getFormContent(),
+                    'username' => $form->getUsernameHelp(),
+                    'email' => $form->getEmailHelp(),
+                    'comment' => $form->getCommentHelp(),
+                ]);
 
                 $this->assign('createMode', false);
                 $this->setTemplate('form-management/edit.tpl');
@@ -214,7 +235,12 @@ class PageRequestFormManagement extends InternalPageBase
             }
             else {
                 $this->populateFromObject($form);
-                WebRequest::setSessionContext('preview', $form->getFormContent());
+                WebRequest::setSessionContext('preview', [
+                    'main' => $form->getFormContent(),
+                    'username' => $form->getUsernameHelp(),
+                    'email' => $form->getEmailHelp(),
+                    'comment' => $form->getCommentHelp(),
+                ]);
 
                 $this->assign('createMode', false);
                 $this->setTemplate('form-management/edit.tpl');
@@ -222,7 +248,12 @@ class PageRequestFormManagement extends InternalPageBase
         }
         else {
             $this->populateFromObject($form);
-            WebRequest::setSessionContext('preview', $form->getFormContent());
+            WebRequest::setSessionContext('preview', [
+                'main' => $form->getFormContent(),
+                'username' => $form->getUsernameHelp(),
+                'email' => $form->getEmailHelp(),
+                'comment' => $form->getCommentHelp(),
+            ]);
 
             $this->assign('createMode', false);
             $this->setTemplate('form-management/edit.tpl');
@@ -241,7 +272,35 @@ class PageRequestFormManagement extends InternalPageBase
         $this->assign('endpoint', $form->getPublicEndpoint());
         $this->assign('queue', $form->getOverrideQueue());
         $this->assign('content', $form->getFormContent());
+        $this->assign('username', $form->getUsernameHelp());
+        $this->assign('email', $form->getEmailHelp());
+        $this->assign('comment', $form->getCommentHelp());
 
         $this->assign('availableQueues', RequestQueue::getEnabledQueues($this->getDatabase()));
+    }
+
+    /**
+     * @param RequestForm $form
+     *
+     * @return void
+     * @throws ApplicationLogicException
+     */
+    protected function setupObjectFromPost(RequestForm $form): void
+    {
+        if (WebRequest::postString('content') === null
+            || WebRequest::postString('username') === null
+            || WebRequest::postString('email') === null
+            || WebRequest::postString('comment') === null
+        ) {
+            throw new ApplicationLogicException("Form content, username help, email help, and comment help are all required fields.");
+        }
+
+        $form->setName(WebRequest::postString('name'));
+        $form->setEnabled(WebRequest::postBoolean('enabled'));
+        $form->setFormContent(WebRequest::postString('content'));
+        $form->setOverrideQueue(WebRequest::postInt('queue'));
+        $form->setUsernameHelp(WebRequest::postString('username'));
+        $form->setEmailHelp(WebRequest::postString('email'));
+        $form->setCommentHelp(WebRequest::postString('comment'));
     }
 }
