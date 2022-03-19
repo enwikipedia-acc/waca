@@ -35,4 +35,3 @@
     </div>
 {/block}
 {block name="publicfooter"}{/block}
-{block name="publicheader"}{/block}
