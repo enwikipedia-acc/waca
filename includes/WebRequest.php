@@ -10,6 +10,7 @@
 
 namespace Waca;
 
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\Providers\GlobalState\IGlobalStateProvider;
 
@@ -333,6 +334,13 @@ class WebRequest
         unset($session['partialLogin']);
     }
 
+    public static function setActiveDomain(Domain $domain)
+    {
+        $session = &self::$globalStateProvider->getSessionSuperGlobal();
+
+        $session['domainID'] = $domain->getId();
+    }
+
     /**
      * Sets the post-login redirect
      *
@@ -501,6 +509,16 @@ class WebRequest
         $session = &self::$globalStateProvider->getSessionSuperGlobal();
 
         return isset($session['userID']) ? (int)$session['userID'] : null;
+    }
+
+    /**
+     * @return int|null
+     */
+    public static function getSessionDomain()
+    {
+        $session = &self::$globalStateProvider->getSessionSuperGlobal();
+
+        return isset($session['domainID']) ? (int)$session['domainID'] : null;
     }
 
     /**

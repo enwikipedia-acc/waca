@@ -11,6 +11,7 @@ namespace Waca\Security;
 use Waca\DataObjects\User;
 use Waca\Pages\PageBan;
 use Waca\Pages\PageDomainManagement;
+use Waca\Pages\PageDomainSwitch;
 use Waca\Pages\PageEditComment;
 use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageErrorLogViewer;
@@ -132,6 +133,9 @@ class RoleConfiguration
                 'attach' => self::ACCESS_ALLOW,
                 'detach' => self::ACCESS_ALLOW,
             ),
+            PageDomainSwitch::class   => array(
+                self::MAIN => self::ACCESS_ALLOW
+            )
         ),
         'user'              => array(
             '_description'                       => 'A standard tool user.',

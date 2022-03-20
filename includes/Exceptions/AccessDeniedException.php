@@ -8,11 +8,13 @@
 
 namespace Waca\Exceptions;
 
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\User;
 use Waca\Fragments\NavigationMenuAccessControl;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
 use Waca\PdoDatabase;
+use Waca\Security\DomainAccessManager;
 use Waca\Security\SecurityManager;
 
 /**
@@ -31,14 +33,19 @@ class AccessDeniedException extends ReadableException
      */
     private $securityManager;
 
+    /** @var DomainAccessManager|null */
+    private $domainAccessManager;
+
     /**
      * AccessDeniedException constructor.
      *
-     * @param SecurityManager $securityManager
+     * @param SecurityManager          $securityManager
+     * @param DomainAccessManager|null $domainAccessManager
      */
-    public function __construct(SecurityManager $securityManager = null)
+    public function __construct(SecurityManager $securityManager = null, DomainAccessManager $domainAccessManager = null)
     {
         $this->securityManager = $securityManager;
+        $this->domainAccessManager = $domainAccessManager;
     }
 
     public function getReadableError()
@@ -53,6 +60,7 @@ class AccessDeniedException extends ReadableException
         $database = PdoDatabase::getDatabaseConnection('acc');
         $currentUser = User::getCurrent($database);
         $this->assign('currentUser', $currentUser);
+        $this->assign('currentDomain', Domain::getCurrent($database));
 
         if ($this->securityManager !== null) {
             $this->setupNavMenuAccess($currentUser);
@@ -107,5 +115,10 @@ class AccessDeniedException extends ReadableException
     protected function getSecurityManager()
     {
         return $this->securityManager;
+    }
+
+    public function getDomainAccessManager(): DomainAccessManager
+    {
+        return $this->domainAccessManager;
     }
 }

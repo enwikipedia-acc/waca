@@ -24,6 +24,7 @@ use Waca\Pages\PageViewRequest;
 use Waca\Pages\PageWelcomeTemplateManagement;
 use Waca\Pages\Statistics\StatsMain;
 use Waca\Pages\Statistics\StatsUsers;
+use Waca\Security\DomainAccessManager;
 use Waca\Security\RoleConfiguration;
 use Waca\Security\SecurityManager;
 
@@ -35,6 +36,8 @@ trait NavigationMenuAccessControl
      * @return SecurityManager
      */
     protected abstract function getSecurityManager();
+
+    public abstract function getDomainAccessManager(): DomainAccessManager;
 
     /**
      * @param $currentUser
@@ -83,5 +86,7 @@ trait NavigationMenuAccessControl
 
         $this->assign('nav__canViewRequest', $this->getSecurityManager()
                 ->allows(PageViewRequest::class, RoleConfiguration::MAIN, $currentUser) === SecurityManager::ALLOWED);
+
+        $this->assign('nav__domainList', $this->getDomainAccessManager()->getAllowedDomains($currentUser));
     }
 }

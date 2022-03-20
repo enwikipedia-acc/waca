@@ -72,12 +72,35 @@
     </ul>
     <ul class="navbar-nav ml-auto">
         {if ! $currentUser->isCommunityUser()}
+            {if count($nav__domainList) > 1}
+                <li class="nav-item dropdown pr-lg-3">
+                    <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown"><i class="fas fa-globe-europe"></i>
+                        {$currentDomain->getLongName()}
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <form action="{$baseurl}/internal.php/domainSwitch" method="post">
+                            <input type="hidden" name="referrer" value="{implode('/',\Waca\WebRequest::pathInfo())|escape}" />
+                            {foreach from=$nav__domainList item=domain}
+                                <button class="dropdown-item" type="submit" name="newdomain" value="{$domain->getId()|escape}">
+                                    <i class="fas fa-globe-europe"></i>&nbsp;<code>{$domain->getShortName()|escape}</code>:&nbsp;{$domain->getLongName()|escape}
+                                </button>
+                            {/foreach}
+                        </form>
+                    </div>
+                </li>
+            {/if}
             <li class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown"><i class="fas fa-user"></i>
                     {$currentUser->getUsername()}
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-
+                    {if count($nav__domainList) == 1}
+                        <h6 class="dropdown-header">Current domain</h6>
+                        <span class="dropdown-item disabled text-muted">
+                            <i class="fas fa-globe-europe"></i>
+                            {$currentDomain->getLongName()}
+                        </span>
+                    {/if}
                     <h6 class="dropdown-header">Account</h6>
                     <a class="dropdown-item" href="{$baseurl}/internal.php/statistics/users/detail?user={$currentUser->getId()}">
                         <i class="fas fa-tasks"></i> My statistics

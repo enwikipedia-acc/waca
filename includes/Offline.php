@@ -68,6 +68,7 @@ class Offline
             $smarty->assign("dontUseDbReason", $message);
             $smarty->assign("alerts", array());
             $smarty->assign('currentUser', User::getCommunity());
+            $smarty->assign('currentDomain', null);
 
             return $smarty->fetch("offline/internal.tpl");
         }

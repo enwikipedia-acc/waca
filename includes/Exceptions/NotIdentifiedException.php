@@ -8,6 +8,7 @@
 
 namespace Waca\Exceptions;
 
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\Fragments\NavigationMenuAccessControl;
 use Waca\PdoDatabase;
@@ -47,6 +48,7 @@ class NotIdentifiedException extends ReadableException
         $database = PdoDatabase::getDatabaseConnection('acc');
         $currentUser = User::getCurrent($database);
         $this->assign('currentUser', $currentUser);
+        $this->assign('currentDomain', Domain::getCurrent($database));
 
         if ($this->securityManager !== null) {
             $this->setupNavMenuAccess($currentUser);
