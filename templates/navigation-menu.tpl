@@ -120,10 +120,10 @@
                     <div class="dropdown-divider"></div>
 
                     <h6 class="dropdown-header">Help</h6>
-                    <a class="dropdown-item" href="//en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide" target="_blank">
+                    <a class="dropdown-item" href="{$currentDomain->getLocalDocumentation()|escape}" target="_blank">
                         <i class="fas fa-question-circle"></i>&nbsp;Guide
                     </a>
-                    <a class="dropdown-item" href="//en.wikipedia.org/wiki/Wikipedia:Username_policy" target="_blank">
+                    <a class="dropdown-item" href="https://en.wikipedia.org/wiki/Wikipedia:Username_policy" target="_blank">
                         <i class="fas fa-exclamation-triangle"></i>&nbsp;Username policy
                     </a>
                     <!--suppress HtmlUnknownAnchorTarget -->
