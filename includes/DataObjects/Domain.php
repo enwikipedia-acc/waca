@@ -65,6 +65,26 @@ class Domain extends DataObject
         return self::$currentDomain;
     }
 
+    public static function getByShortName(string $shortName, PdoDatabase $database)
+    {
+        $statement = $database->prepare(<<<SQL
+            SELECT * FROM domain WHERE shortname = :name;
+SQL
+        );
+
+        $statement->execute([
+            ':name' => $shortName,
+        ]);
+
+        /** @var RequestForm|false $result */
+        $result = $statement->fetchObject(get_called_class());
+
+        if ($result !== false) {
+            $result->setDatabase($database);
+        }
+
+        return $result;
+    }
 
     public static function getAll(PdoDatabase $database) {
         $statement = $database->prepare("SELECT * FROM domain;");
