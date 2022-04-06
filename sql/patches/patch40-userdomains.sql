@@ -47,9 +47,14 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
         modify localdocumentation varchar(255) not null;
 
     -- Add every user to every domain. In prod, this will be exactly one domain for now.
+    -- noinspection SqlWithoutWhere
+    delete from userdomain;
+
     insert into userdomain (user, domain)
     select u.id user, d.id domain
     from user u cross join domain d;
+
+    commit;
 
     -- -------------------------------------------------------------------------
     -- finally, update the schema version to indicate success
