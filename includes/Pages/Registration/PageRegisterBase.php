@@ -252,6 +252,7 @@ abstract class PageRegisterBase extends InternalPageBase
             // only notify if we're not using the oauth signup.
             $this->getNotificationHelper()->userNew($user);
             WebRequest::setLoggedInUser($user);
+            $this->getDomainAccessManager()->switchToDefaultDomain($user);
             $this->redirect('preferences');
         }
     }
