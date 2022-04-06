@@ -103,7 +103,7 @@ class PageBan extends InternalPageBase
         if (!$banHelper->canUnban($ban)) {
             // triggered when a user tries to unban a ban they can't see the entirety of.
             // there's no UI way to get to this, so a raw exception is fine.
-            throw new AccessDeniedException($this->getSecurityManager());
+            throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
         }
 
         // dual mode

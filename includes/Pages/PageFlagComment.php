@@ -47,7 +47,7 @@ class PageFlagComment extends InternalPageBase
 
         if ($comment->getFlagged() && !$this->barrierTest('unflag', User::getCurrent($database))) {
             // user isn't allowed to unflag comments
-            throw new AccessDeniedException();
+            throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
         }
 
         $comment->setFlagged($flagState == 1);

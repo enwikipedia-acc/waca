@@ -87,7 +87,7 @@ class WebStart extends ApplicationBase
                     $page->setBlacklistHelper(new BlacklistHelper($page->getHttpHelper(), $database));
                 }
 
-                $page->setDomainAccessManager(new DomainAccessManager());
+                $page->setDomainAccessManager(new DomainAccessManager($page->getSecurityManager()));
             }
         }
     }

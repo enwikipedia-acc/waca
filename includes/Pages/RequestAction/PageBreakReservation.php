@@ -40,7 +40,7 @@ class PageBreakReservation extends RequestActionBase
                 $this->doBreakReserve($request, $database);
             }
             else {
-                throw new AccessDeniedException($this->getSecurityManager());
+                throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
             }
         }
     }

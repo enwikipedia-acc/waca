@@ -120,7 +120,7 @@ class PageCustomClose extends PageCloseRequest
         $allowedPrivateData = $this->isAllowedPrivateData($request, $currentUser);
         if (!$allowedPrivateData) {
             // we probably shouldn't be showing the user this form if they're not allowed to access private data...
-            throw new AccessDeniedException($this->getSecurityManager());
+            throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
         }
 
         $template = $this->getTemplate($database);
@@ -376,7 +376,7 @@ class PageCustomClose extends PageCloseRequest
 
         if ($action === self::CREATE_OAUTH) {
             if (!$canOauthCreate) {
-                throw new AccessDeniedException($this->getSecurityManager());
+                throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
             }
 
             $creationTaskClass = UserCreationTask::class;
@@ -384,7 +384,7 @@ class PageCustomClose extends PageCloseRequest
 
         if ($action === self::CREATE_BOT) {
             if (!$canBotCreate) {
-                throw new AccessDeniedException($this->getSecurityManager());
+                throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
             }
 
             $creationTaskClass = BotCreationTask::class;

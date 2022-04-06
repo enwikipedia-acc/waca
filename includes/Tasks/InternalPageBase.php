@@ -166,11 +166,11 @@ abstract class InternalPageBase extends PageBase
 
             if ($denyReason === SecurityManager::ERROR_NOT_IDENTIFIED) {
                 // Not identified
-                throw new NotIdentifiedException($this->getSecurityManager());
+                throw new NotIdentifiedException($this->getSecurityManager(), $this->getDomainAccessManager());
             }
             elseif ($denyReason === SecurityManager::ERROR_DENIED) {
                 // Nope, plain old access denied
-                throw new AccessDeniedException($this->getSecurityManager());
+                throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
             }
             else {
                 throw new Exception('Unknown response from security manager.');

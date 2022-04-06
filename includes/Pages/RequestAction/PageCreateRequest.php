@@ -54,12 +54,12 @@ class PageCreateRequest extends RequestActionBase
         if ($secMgr->allows('RequestCreation', User::CREATION_BOT, $user) !== SecurityManager::ALLOWED
             && $creationMode === 'bot'
         ) {
-            throw new AccessDeniedException($secMgr);
+            throw new AccessDeniedException($secMgr, $this->getDomainAccessManager());
         }
         elseif ($secMgr->allows('RequestCreation', User::CREATION_OAUTH, $user) !== SecurityManager::ALLOWED
             && $creationMode === 'oauth'
         ) {
-            throw new AccessDeniedException($secMgr);
+            throw new AccessDeniedException($secMgr, $this->getDomainAccessManager());
         }
 
         if ($request->getEmailSent()) {

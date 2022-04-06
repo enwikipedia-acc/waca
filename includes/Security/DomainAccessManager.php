@@ -17,6 +17,16 @@ use Waca\WebRequest;
 class DomainAccessManager
 {
     /**
+     * @var SecurityManager
+     */
+    private $securityManager;
+
+    public function __construct(SecurityManager $securityManager)
+    {
+        $this->securityManager = $securityManager;
+    }
+
+    /**
      * @param User $user
      *
      * @return Domain[]
@@ -42,7 +52,7 @@ class DomainAccessManager
             WebRequest::setActiveDomain($newDomain);
         }
         else {
-            throw new AccessDeniedException();
+            throw new AccessDeniedException($this->securityManager, $this);
         }
     }
 }

@@ -43,19 +43,19 @@ class PageEditComment extends InternalPageBase
 
         $currentUser = User::getCurrent($database);
         if ($comment->getUser() !== $currentUser->getId() && !$this->barrierTest('editOthers', $currentUser)) {
-            throw new AccessDeniedException($this->getSecurityManager());
+            throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
         }
 
         if ($comment->getVisibility() === 'admin'
             && !$this->barrierTest('seeRestrictedComments', $currentUser, 'RequestData')
             && $comment->getUser() !== $currentUser->getId()) {
-            throw new AccessDeniedException($this->getSecurityManager());
+            throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
         }
 
         if ($comment->getVisibility() === 'checkuser'
             && !$this->barrierTest('seeCheckuserComments', $currentUser, 'RequestData')
             && $comment->getUser() !== $currentUser->getId()) {
-            throw new AccessDeniedException($this->getSecurityManager());
+            throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
         }
 
         /** @var Request|false $request */

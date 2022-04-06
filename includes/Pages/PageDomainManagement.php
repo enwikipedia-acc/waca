@@ -59,7 +59,7 @@ class PageDomainManagement extends InternalPageBase
         // new domains either. With any luck, a competent developer would never grant create without editAll to a role
         // anyway, so this will never be hit.
         if (!$this->barrierTest('editAll', $currentUser)) {
-            throw new AccessDeniedException();
+            throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
         }
 
         if (WebRequest::wasPosted()) {

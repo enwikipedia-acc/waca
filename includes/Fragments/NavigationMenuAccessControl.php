@@ -87,6 +87,9 @@ trait NavigationMenuAccessControl
         $this->assign('nav__canViewRequest', $this->getSecurityManager()
                 ->allows(PageViewRequest::class, RoleConfiguration::MAIN, $currentUser) === SecurityManager::ALLOWED);
 
-        $this->assign('nav__domainList', $this->getDomainAccessManager()->getAllowedDomains($currentUser));
+        $this->assign('nav__domainList', []);
+        if ($this->getDomainAccessManager() !== null) {
+            $this->assign('nav__domainList', $this->getDomainAccessManager()->getAllowedDomains($currentUser));
+        }
     }
 }

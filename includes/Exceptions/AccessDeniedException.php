@@ -28,21 +28,18 @@ class AccessDeniedException extends ReadableException
 {
     use NavigationMenuAccessControl;
 
-    /**
-     * @var SecurityManager
-     */
+    /** @var SecurityManager */
     private $securityManager;
-
-    /** @var DomainAccessManager|null */
+    /** @var DomainAccessManager */
     private $domainAccessManager;
 
     /**
      * AccessDeniedException constructor.
      *
-     * @param SecurityManager          $securityManager
-     * @param DomainAccessManager|null $domainAccessManager
+     * @param SecurityManager     $securityManager
+     * @param DomainAccessManager $domainAccessManager
      */
-    public function __construct(SecurityManager $securityManager = null, DomainAccessManager $domainAccessManager = null)
+    public function __construct(SecurityManager $securityManager, DomainAccessManager $domainAccessManager)
     {
         $this->securityManager = $securityManager;
         $this->domainAccessManager = $domainAccessManager;
@@ -109,10 +106,7 @@ class AccessDeniedException extends ReadableException
         return $logs[0]->getComment();
     }
 
-    /**
-     * @return SecurityManager
-     */
-    protected function getSecurityManager()
+    protected function getSecurityManager(): SecurityManager
     {
         return $this->securityManager;
     }
