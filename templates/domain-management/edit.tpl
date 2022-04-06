@@ -129,6 +129,17 @@
                                     <small class="form-text text-muted" id="notificationTargetHelp">The target to send IRC notifications to via Helpmebot.</small>
                                 </div>
                             </div>
+
+
+                            <div class="form-group row">
+                                <div class="col-sm-4 col-md-3 col-lg-4 col-xl-3">
+                                    <label for="localDocumentation" class="col-form-label">Tool documentation URL:</label>
+                                </div>
+                                <div class="col-sm-8 col-md-9 col-lg-8 col-xl-9">
+                                    <input type="text" class="form-control" id="localDocumentation" name="localDocumentation" maxlength="255" required="required" placeholder="e.g. https://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide" value="{$localDocumentation|escape}"/>
+                                    <small class="form-text text-muted" id="localDocumentationHelp">The URL of the page containing the local tool documentation</small>
+                                </div>
+                            </div>
                         </fieldset>
                     </div>
                 </div>

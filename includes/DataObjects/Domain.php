@@ -35,6 +35,8 @@ class Domain extends DataObject
     private $emailsender;
     /** @var string|null */
     private $notificationtarget;
+    /** @var string */
+    private $localdocumentation;
 
     /** @var Domain Cache variable of the current domain */
     private static $currentDomain;
@@ -111,10 +113,10 @@ SQL
             $statement = $this->dbObject->prepare(<<<SQL
                 INSERT INTO domain (
                     shortname, longname, wikiarticlepath, wikiapipath, enabled, defaultclose, defaultlanguage, 
-                    emailsender, notificationtarget
+                    emailsender, notificationtarget, localdocumentation
                 ) VALUES (
                     :shortname, :longname, :wikiarticlepath, :wikiapipath, :enabled, :defaultclose, :defaultlanguage,
-                    :emailsender, :notificationtarget
+                    :emailsender, :notificationtarget, :localdocumentation
                 );
 SQL
             );
@@ -128,6 +130,8 @@ SQL
             $statement->bindValue(":defaultlanguage", $this->defaultlanguage);
             $statement->bindValue(":emailsender", $this->emailsender);
             $statement->bindValue(":notificationtarget", $this->notificationtarget);
+            $statement->bindValue(":localdocumentation", $this->localdocumentation);
+
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -147,6 +151,7 @@ SQL
                     defaultlanguage = :defaultlanguage,
                     emailsender = :emailsender,
                     notificationtarget = :notificationtarget,
+                    localdocumentation = :localdocumentation,
                 
                     updateversion = updateversion + 1
 				WHERE id = :id AND updateversion = :updateversion;
@@ -161,6 +166,7 @@ SQL
             $statement->bindValue(":defaultlanguage", $this->defaultlanguage);
             $statement->bindValue(":emailsender", $this->emailsender);
             $statement->bindValue(":notificationtarget", $this->notificationtarget);
+            $statement->bindValue(":localdocumentation", $this->localdocumentation);
 
             $statement->bindValue(':id', $this->id);
             $statement->bindValue(':updateversion', $this->updateversion);
@@ -321,5 +327,19 @@ SQL
         $this->notificationtarget = $notificationTarget;
     }
 
+    /**
+     * @return string
+     */
+    public function getLocalDocumentation(): string
+    {
+        return $this->localdocumentation;
+    }
 
+    /**
+     * @param string $localDocumentation
+     */
+    public function setLocalDocumentation(string $localDocumentation): void
+    {
+        $this->localdocumentation = $localDocumentation;
+    }
 }

@@ -42,7 +42,7 @@
                                 <th>Language</th><td>{$domain->getDefaultLanguage()|escape}</td>
                             </tr>
                             <tr>
-                                <th>Email sender</th><td>{$domain->getEmailSender()}</td>
+                                <th>Email sender</th><td>{$domain->getEmailSender()|escape}</td>
                             </tr>
                             {if ($currentDomain->getId() == $domain->getId() && $canEdit) || $canEditAll}
                                 <tr>
@@ -61,6 +61,9 @@
                                     </td>
                                 </tr>
                             {/if}
+                            <tr>
+                                <th>Documentation</th><td><a href="{$domain->getLocalDocumentation()|escape}">{$domain->getLocalDocumentation()|escape}</a></td>
+                            </tr>
                         </table>
                     </div>
                 </div>
