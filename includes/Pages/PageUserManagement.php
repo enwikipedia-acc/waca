@@ -25,6 +25,7 @@ use Waca\WebRequest;
  */
 class PageUserManagement extends InternalPageBase
 {
+    // FIXME: domains
     /** @var string */
     private $adminMailingList = 'enwiki-acc-admins@googlegroups.com';
 
@@ -445,11 +446,10 @@ class PageUserManagement extends InternalPageBase
             /** @var Domain $domain */
             $domain = Domain::getById(1, $database);
             $this->getEmailHelper()->sendMail(
-                $domain->getEmailSender(),
+                $this->adminMailingList,
                 $user->getEmail(),
                 'Your username on WP:ACC has been changed',
-                $this->fetchTemplate('usermanagement/emails/renamed.tpl'),
-                array('Reply-To' => $this->adminMailingList)
+                $this->fetchTemplate('usermanagement/emails/renamed.tpl')
             );
 
             $this->redirect("userManagement");
@@ -569,11 +569,10 @@ class PageUserManagement extends InternalPageBase
         /** @var Domain $domain */
         $domain = Domain::getById(1, $this->getDatabase());
         $this->getEmailHelper()->sendMail(
-            $domain->getEmailSender(),
+            $this->adminMailingList,
             $user->getEmail(),
             $subject,
-            $this->fetchTemplate($template),
-            array('Reply-To' => $this->adminMailingList)
+            $this->fetchTemplate($template)
         );
     }
 

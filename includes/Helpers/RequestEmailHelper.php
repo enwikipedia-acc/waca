@@ -48,7 +48,7 @@ class RequestEmailHelper
         $domain = Domain::getById(1, $request->getDatabase());
 
         if ($ccMailingList) {
-            $headers['Cc'] = $domain->getEmailSender();
+            $headers['Cc'] = $domain->getEmailReplyAddress();
         }
 
         $helper = $this->emailHelper;
@@ -61,7 +61,7 @@ class RequestEmailHelper
         $subject = "RE: [ACC #{$request->getId()}] English Wikipedia Account Request";
         $content = $mailText . $emailSig;
 
-        $helper->sendMail($domain->getEmailSender(), $request->getEmail(), $subject, $content, $headers);
+        $helper->sendMail($domain->getEmailReplyAddress(), $request->getEmail(), $subject, $content, $headers);
 
         $request->setEmailSent(true);
     }

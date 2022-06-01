@@ -20,7 +20,7 @@ interface IEmailHelper
     /**
      * Sends an email to the specified email address.
      *
-     * @param string $from
+     * @param string $replyAddress
      * @param string $to
      * @param string $subject
      * @param string $content
@@ -28,5 +28,5 @@ interface IEmailHelper
      *
      * @return void
      */
-    public function sendMail($from, $to, $subject, $content, $headers = array());
+    public function sendMail(?string $replyAddress, $to, $subject, $content, $headers = array());
 }

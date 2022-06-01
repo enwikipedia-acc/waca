@@ -318,17 +318,17 @@ SQL
     /**
      * @return string
      */
-    public function getEmailSender(): string
+    public function getEmailReplyAddress(): string
     {
         return $this->emailsender;
     }
 
     /**
-     * @param string $emailSender
+     * @param string $emailReplyAddress
      */
-    public function setEmailSender(string $emailSender): void
+    public function setEmailReplyAddress(string $emailReplyAddress): void
     {
-        $this->emailsender = $emailSender;
+        $this->emailsender = $emailReplyAddress;
     }
 
     /**

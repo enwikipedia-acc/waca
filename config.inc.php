@@ -165,6 +165,8 @@ $banMaxIpRange = [4 => 16, 6 => 32];
 
 $jobQueueBatchSize = 10;
 
+$emailSender = 'accounts@wmflabs.org';
+
 /**************************************************************************
  **********                   IMPORTANT NOTICE                    **********
  ***************************************************************************
@@ -268,4 +270,5 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setBanMaxIpRange($banMaxIpRange)
     ->setBanMaxIpBlockRange($banMaxIpBlockRange)
     ->setJobQueueBatchSize($jobQueueBatchSize)
-    ->setAmqpConfiguration($amqpConfiguration);
+    ->setAmqpConfiguration($amqpConfiguration)
+    ->setEmailSender($emailSender);

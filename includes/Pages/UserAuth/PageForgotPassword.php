@@ -100,7 +100,7 @@ class PageForgotPassword extends InternalPageBase
             /** @var Domain $domain */
             $domain = Domain::getById(1, $this->getDatabase());
             $this->getEmailHelper()->sendMail(
-                $domain->getEmailSender(), $user->getEmail(), "WP:ACC password reset", $emailContent);
+                null, $user->getEmail(), "WP:ACC password reset", $emailContent);
         }
     }
 
