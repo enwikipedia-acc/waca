@@ -16,8 +16,6 @@ class JsTemplateConfirmsAction extends JsonApiPageBase implements IJsonApiAction
 {
     public function executeApiAction()
     {
-        $this->getDatabase();
-
         /** @var EmailTemplate[] $templates */
         $templates = EmailTemplate::getAllActiveTemplates(null, $this->getDatabase());
 
