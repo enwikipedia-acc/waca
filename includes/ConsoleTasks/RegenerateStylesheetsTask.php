@@ -21,7 +21,7 @@ class RegenerateStylesheetsTask extends ConsoleTaskBase
         $scss->setImportPaths('resources/scss');
 
         if (!$this->getSiteConfiguration()->getDebuggingTraceEnabled()) {
-            $scss->setFormatter(OutputStyle::COMPRESSED);
+            $scss->setFormatter('\ScssPhp\ScssPhp\OutputStyle::COMPRESSED');
             $scss->setSourceMap(Compiler::SOURCE_MAP_INLINE);
         }
 
