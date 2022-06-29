@@ -32,7 +32,8 @@ class RegenerateStylesheetsTask extends ConsoleTaskBase
         foreach (['bootstrap-main', 'bootstrap-alt', 'bootstrap-auto'] as $file) {
             file_put_contents(
                 self::RESOURCES_GENERATED . '/' . $file . '.css',
-                $scss->compileString('/*! Do not edit this auto-generated file! */ @import "' . $file . '";'));
+                $scss->compileString('/*! Do not edit this auto-generated file! */ @import "' . $file . '";')->getCss()
+            );
         }
     }
 }
