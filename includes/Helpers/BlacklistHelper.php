@@ -66,6 +66,7 @@ class BlacklistHelper implements IBlacklistHelper
         }
         catch (CurlException $ex) {
             // LOGME log this, but fail gracefully.
+            $this->assign('gettingtbl', 'nope');
             ExceptionHandler::logExceptionToDisk($ex, $this->siteConfiguration);
             return false;
         }
