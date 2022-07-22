@@ -13,6 +13,7 @@ use Waca\ExceptionHandler;
 use Waca\Exceptions\CurlException;
 use Waca\Helpers\Interfaces\IBlacklistHelper;
 use Waca\PdoDatabase;
+use Waca\SiteConfiguration;
 
 class BlacklistHelper implements IBlacklistHelper
 {
