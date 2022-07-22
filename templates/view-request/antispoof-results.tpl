@@ -48,3 +48,12 @@
         {/foreach}
     </table>
 {/if}
+
+<h5>Title Blacklist results:</h5>
+{if !$requestBlacklist}
+    <p class="text-muted">None detected</p>
+{elseif !is_array($requestBlacklist)}
+    <div class="alert alert-danger">
+        {$requestBlacklist|escape}
+    </div>
+{/if}
