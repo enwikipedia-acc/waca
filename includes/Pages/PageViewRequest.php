@@ -271,8 +271,8 @@ class PageViewRequest extends InternalPageBase
     protected function setupUsernameData(Request $request)
     {
         try {
+            $this->assign('gettingtbl', 'yup');
             $blacklistData = $this->getBlacklistHelper()->isBlacklisted($request->getName());
-            
         } 
         catch (Exception $ex) {
             $blacklistData = $ex->getMessage();

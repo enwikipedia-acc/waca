@@ -50,6 +50,9 @@
 {/if}
 
 <h5>Title Blacklist results:</h5>
+{if $gettingtbl}
+    <p class="text-muted">{$gettingtbl}</p>
+{/if}
 {if !$requestBlacklist}
     <p class="text-muted">None detected</p>
 {elseif !is_array($requestBlacklist)}
