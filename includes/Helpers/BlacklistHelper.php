@@ -9,6 +9,7 @@
 namespace Waca\Helpers;
 
 use Waca\DataObjects\Domain;
+use Waca\ExceptionHandler;
 use Waca\Exceptions\CurlException;
 use Waca\Helpers\Interfaces\IBlacklistHelper;
 use Waca\PdoDatabase;
@@ -62,6 +63,7 @@ class BlacklistHelper implements IBlacklistHelper
         }
         catch (CurlException $ex) {
             // LOGME log this, but fail gracefully.
+            ExceptionHandler::logExceptionToDisk($ex, $this->siteConfiguration);
             return false;
         }
 
