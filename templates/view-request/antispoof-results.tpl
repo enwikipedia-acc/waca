@@ -51,7 +51,7 @@
 
 <h5>Title Blacklist results:</h5>
 {if $gettingtbl}
-    <p class="text-muted">{$gettingtbl}</p>
+    <p class="text-muted">{$gettingtbl} - {$tbldomain} - {$tblendpoint} - {$tbldata}</p>
 {/if}
 {if !$requestBlacklist}
     <p class="text-muted">None detected</p>

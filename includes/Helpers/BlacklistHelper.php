@@ -61,6 +61,7 @@ class BlacklistHelper implements IBlacklistHelper
         }*/
 
         try {
+            $this->assign('gettingtbl', 'yup');
             $result = $this->performWikiLookup($username);
         }
         catch (CurlException $ex) {
@@ -95,9 +96,9 @@ class BlacklistHelper implements IBlacklistHelper
         // FIXME: domains!
         /** @var Domain $domain */
         $domain = Domain::getById(1, $this->database);
-
+        $this->assign('tbldomain',$domain);
         $endpoint = $domain->getWikiApiPath();
-
+        $this->assign('tblendpoint',$endpoint);
         $parameters = array(
             'action'       => 'titleblacklist',
             'format'       => 'php',
@@ -109,7 +110,7 @@ class BlacklistHelper implements IBlacklistHelper
         $apiResult = $this->httpHelper->get($endpoint, $parameters);
 
         $data = unserialize($apiResult);
-
+        $this->assign('tbldata',$data);
         return $data['titleblacklist'];
     }
 }
