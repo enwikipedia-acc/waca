@@ -18,8 +18,6 @@ class JsUsersAction extends JsonApiPageBase implements IJsonApiAction
 {
     public function executeApiAction()
     {
-        $this->getDatabase();
-
         $userSearchHelper = UserSearchHelper::get($this->getDatabase());
 
         if (WebRequest::getString('all') === null) {
