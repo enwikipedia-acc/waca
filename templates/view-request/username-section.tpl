@@ -1,4 +1,5 @@
 <h3>Username data for {$requestName|escape}:</h3>
+{$tblResult}
 {if $requestIsBlacklisted}
     {include file="alert.tpl" alertblock="1" alerttype="alert-danger" alertclosable="0" alertheader=""
     alertmessage="The requested username is currently blacklisted by the regular expression <code>{$requestBlacklist|escape}</code>."}
