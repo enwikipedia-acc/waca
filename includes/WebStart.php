@@ -81,10 +81,10 @@ class WebStart extends ApplicationBase
                 $page->setSecurityManager(new SecurityManager($identificationVerifier, new RoleConfiguration()));
 
                 if ($siteConfiguration->getTitleBlacklistEnabled()) {
-                    $page->setBlacklistHelper(new FakeBlacklistHelper());
+                    $page->setBlacklistHelper(new BlacklistHelper($page->getHttpHelper(), $database));
                 }
                 else {
-                    $page->setBlacklistHelper(new BlacklistHelper($page->getHttpHelper(), $database));
+                    $page->setBlacklistHelper(new FakeBlacklistHelper());
                 }
 
                 $page->setDomainAccessManager(new DomainAccessManager($page->getSecurityManager()));
