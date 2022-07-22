@@ -51,18 +51,17 @@ class BlacklistHelper implements IBlacklistHelper
      */
     public function isBlacklisted($username)
     {
-        if (isset($this->cache[$username])) {
+        /*if (isset($this->cache[$username])) {
             $result = $this->cache[$username];
             if ($result === false) {
                 return false;
             }
 
             return $result['line'];
-        }
+        }*/
 
         try {
             $result = $this->performWikiLookup($username);
-            $this->assign('tblResult', $result);
         }
         catch (CurlException $ex) {
             // LOGME log this, but fail gracefully.
