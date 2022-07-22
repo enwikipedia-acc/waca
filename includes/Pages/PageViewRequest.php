@@ -270,11 +270,17 @@ class PageViewRequest extends InternalPageBase
      */
     protected function setupUsernameData(Request $request)
     {
-        $blacklistData = $this->getBlacklistHelper()->isBlacklisted($request->getName());
-
+        try {
+            $blacklistData = $this->getBlacklistHelper()->isBlacklisted($request->getName());
+            
+        } 
+        catch (Exception $ex) {
+            $blacklistData = $ex->getMessage();
+        }
+        
         $this->assign('requestIsBlacklisted', $blacklistData !== false);
         $this->assign('requestBlacklist', $blacklistData);
-
+        
         try {
             $spoofs = $this->getAntiSpoofProvider()->getSpoofs($request->getName());
         }
