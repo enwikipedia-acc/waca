@@ -9,6 +9,7 @@
 namespace Waca\Helpers;
 
 use Waca\DataObjects\Domain;
+use Exception;
 use Waca\ExceptionHandler;
 use Waca\Exceptions\CurlException;
 use Waca\Helpers\Interfaces\IBlacklistHelper;
