@@ -107,6 +107,9 @@ abstract class InternalPageBase extends PageBase
         $database = $this->getDatabase();
         $currentUser = User::getCurrent($database);
 
+        // Load in the badges for the navbar
+        $this->setUpNavBarBadges($currentUser, $database);
+
         if ($this->barrierTest('viewSiteNotice', User::getCurrent($database), 'GlobalInfo')) {
             $siteNotice = SiteNotice::get($this->getDatabase());
             $siteNoticeHash = sha1($siteNotice);
