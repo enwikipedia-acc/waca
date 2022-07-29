@@ -25,7 +25,12 @@
         {/if}
         {if $nav__canBan || $nav__canEmailMgmt || $nav__canWelcomeMgmt || $nav__canSiteNoticeMgmt || $nav__canUserMgmt || $nav__canJobQueue || $nav__canFlaggedComments || $nav__canQueueMgmt || $nav__canDomainMgmt || $nav__canErrorLog}
             <li class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown"><i class="fas fa-wrench"></i>&nbsp;Admin</a>
+                <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown">
+                    <i class="fas fa-wrench"></i>&nbsp;Admin
+                    {if $nav__numAdmin > 0}
+                        <div class="badge badge-danger">{$nav__numAdmin}</div>
+                    {/if}
+                </a>
                 <div class="dropdown-menu">
                     {if $nav__canBan}
                         <a class="dropdown-item" href="{$baseurl}/internal.php/bans"><i class="fas fa-ban"></i>&nbsp;Ban Management</a>
@@ -43,10 +48,24 @@
                         <a class="dropdown-item" href="{$baseurl}/internal.php/userManagement"><i class="fas fa-user"></i> User Management</a>
                     {/if}
                     {if $nav__canJobQueue}
-                        <a class="dropdown-item" href="{$baseurl}/internal.php/jobQueue"><i class="fas fa-tools"></i> Job Queue</a>
+                        <a class="dropdown-item" href="{$baseurl}/internal.php/jobQueue">
+                            <i class="fas fa-tools"></i> Job Queue
+                            {if $nav__numJobQueueFailed > 0}
+                                <span class="badge badge-danger">
+                                    {$nav__numJobQueueFailed}
+                                </span>
+                            {/if}
+                        </a>
                     {/if}
                     {if $nav__canFlaggedComments}
-                        <a class="dropdown-item" href="{$baseurl}/internal.php/flaggedComments"><i class="fas fa-flag"></i> Flagged Comments</a>
+                        <a class="dropdown-item" href="{$baseurl}/internal.php/flaggedComments">
+                            <i class="fas fa-flag"></i> Flagged Comments
+                            {if $nav__numFlaggedComments > 0}
+                                <span class="badge badge-danger">
+                                    {$nav__numFlaggedComments}
+                                </span>
+                            {/if}
+                        </a>
                     {/if}
                     {if $nav__canQueueMgmt}
                         <a class="dropdown-item" href="{$baseurl}/internal.php/queueManagement"><i class="fas fa-list-ol"></i> Request Queue Management</a>

@@ -94,6 +94,11 @@ trait TemplateOutput
         $this->assign('nav__canQueueMgmt', false);
         $this->assign('nav__canErrorLog', false);
 
+        // Navigation badges for concern areas.
+        $this->assign("nav__numAdmin", 0);
+        $this->assign("nav__numFlaggedComments", 0);
+        $this->assign("nav__numJobQueueFailed", 0);
+
         // debug helpers
         $this->assign('showDebugCssBreakpoints', $this->getSiteConfiguration()->getDebuggingCssBreakpointsEnabled());
 
