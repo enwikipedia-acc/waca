@@ -109,7 +109,7 @@ trait NavigationMenuAccessControl
      *
      * @return void
      */
-    public function setUpNavBarBadges($currentUser, $database) {
+    public function setUpNavBarBadges(User $currentUser, PdoDatabase $database) {
         // Set up some variables.
         // A size of 0 causes nothing to show up on the page (checked on navigation-menu.tpl) so leaving it 0 here is fine.
         $countOfFlagged = 0;
