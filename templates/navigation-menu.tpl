@@ -52,8 +52,8 @@
                             <i class="fas fa-tools"></i> Job Queue
                             {if $nav__numJobQueueFailed > 0}
                                 <span class="badge badge-danger">
-                                        {$nav__numJobQueueFailed}
-                                    </span>
+                                    {$nav__numJobQueueFailed}
+                                </span>
                             {/if}
                         </a>
                     {/if}
