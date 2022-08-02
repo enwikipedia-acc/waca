@@ -65,6 +65,10 @@
        href="{$baseurl}/redir.php?tool=bullseye&amp;data={$ipaddress}">
         Bullseye
     </a>
+    <a id="IPalyzer-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+       href="https://ipalyzer.com/{$ipaddress}">
+        IPalyzer
+    </a> 
     <a id="IPBGPView-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
        href="{$baseurl}/redir.php?tool=bgpview&amp;data={$ipaddress}">
         BGP Prefixes
