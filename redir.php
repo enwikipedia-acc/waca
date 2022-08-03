@@ -18,7 +18,8 @@ $toolList = array(
     'rangefinder'        => 'https://tools.wmflabs.org/rangeblockfinder/?ip=%DATA%',
     'ipcheck'            => 'https://ipcheck.toolforge.org/index.php?ip=%DATA%',
     'bgpview'            => 'https://bgpview.io/ip/%DATA%',
-    'bullseye'           => 'https://bullseye.toolforge.org/ip/%DATA%'
+    'bullseye'           => 'https://bullseye.toolforge.org/ip/%DATA%',
+    'ipalyzer'           => 'https://ipalyzer.com/%DATA%'
 );
 
 if (!isset($_GET['tool'])

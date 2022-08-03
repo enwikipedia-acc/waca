@@ -66,7 +66,7 @@
         Bullseye
     </a>
     <a id="IPalyzer-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
-       href="https://ipalyzer.com/{$ipaddress}">
+       href="{$baseurl}/redir.php?tool=ipalyzer&amp;data={$ipaddress}">
         IPalyzer
     </a> 
     <a id="IPBGPView-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
