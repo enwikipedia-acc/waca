@@ -20,4 +20,7 @@ VOLUME /var/www/html/errorlog
 WORKDIR /var/www/html
 COPY . /var/www/html
 
+ENV XDEBUG_CONFIG="client_host=host.docker.internal client_port=9003 discover_client_host=true"
+ENV XDEBUG_MODE="develop,debug,profile"
+
 ENTRYPOINT /var/www/html/docker/entrypoint.sh
