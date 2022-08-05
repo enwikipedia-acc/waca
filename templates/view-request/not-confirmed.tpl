@@ -13,11 +13,12 @@
                 <form method="post" action="{$baseurl}/internal.php/viewRequest/confirm">
                     <div class="alert alert-danger">
                         <input type="hidden" name="request" value="{$requestId}" />
+                        <input type="hidden" name="version" value="{$requestVersion}" />
                         {include file="security/csrf.tpl"}
-                        As a tool administrator, you may manually confirm this request.
-                        <em>This bypasses the email confirmation step, which is not recommended unless the user has replied to the email list.</em>
-                        <br />
-                        <br />
+                        <p>
+                            As a tool administrator, you may manually confirm this request.
+                            <em>This bypasses the email confirmation step, which is not recommended unless the user has replied to the email list.</em>
+                        </p>
                         <button type="submit" class="btn btn-danger">Manually Confirm This Request</button>
                     </div>
                 </form>
