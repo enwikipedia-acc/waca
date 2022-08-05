@@ -22,6 +22,7 @@ use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\RequestData;
 use Waca\Helpers\LogHelper;
 use Waca\Helpers\OAuthUserHelper;
+use Waca\Pages\RequestAction\PageManuallyConfirm;
 use Waca\PdoDatabase;
 use Waca\Security\RoleConfiguration;
 use Waca\RequestStatus;
@@ -55,12 +56,18 @@ class PageViewRequest extends InternalPageBase
         $domain = Domain::getById(1, $this->getDatabase());
         $this->assign('mediawikiScriptPath', $domain->getWikiArticlePath());
 
-        // Test we should be able to look at this request
-        if ($config->getEmailConfirmationEnabled()) {
-            if ($request->getEmailConfirm() !== 'Confirmed') {
-                // Not allowed to look at this yet.
-                throw new ApplicationLogicException('The email address has not yet been confirmed for this request.');
-            }
+        // Shows a page if the email is not confirmed.
+        if ($request->getEmailConfirm() !== 'Confirmed') {
+            // Show a banner if the user can manually confirm the request
+            $viewConfirm = $this->barrierTest("main", $currentUser, PageManuallyConfirm::class);
+
+            // Render
+            $this->setTemplate("view-request/not-confirmed.tpl");
+            $this->assign("requestId", $request->getId());
+            $this->assign('canViewConfirmButton', $viewConfirm);
+
+            // Make sure to return, to prevent the leaking of other information.
+            return;
         }
 
         $this->setupBasicData($request, $config);

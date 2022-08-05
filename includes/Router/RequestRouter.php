@@ -24,6 +24,7 @@ use Waca\Pages\PageQueueManagement;
 use Waca\Pages\PageRequestFormManagement;
 use Waca\Pages\PageXffDemo;
 use Waca\Pages\RequestAction\PageCreateRequest;
+use Waca\Pages\RequestAction\PageManuallyConfirm;
 use Waca\Pages\UserAuth\Login\PageOtpLogin;
 use Waca\Pages\UserAuth\Login\PagePasswordLogin;
 use Waca\Pages\UserAuth\Login\PageU2FLogin;
@@ -322,6 +323,11 @@ class RequestRouter implements IRequestRouter
         'viewRequest'                 =>
             array(
                 'class'   => PageViewRequest::class,
+                'actions' => array(),
+            ),
+        'viewRequest/confirm'         =>
+            array(
+                'class'   => PageManuallyConfirm::class,
                 'actions' => array(),
             ),
         'viewRequest/reserve'         =>
