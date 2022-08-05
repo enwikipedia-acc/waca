@@ -11,6 +11,7 @@ namespace Waca\Pages\RequestAction;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Helpers\Logger;
+use Waca\WebRequest;
 
 class PageManuallyConfirm extends RequestActionBase
 {
@@ -32,6 +33,9 @@ class PageManuallyConfirm extends RequestActionBase
         // Find the request
         // This method throws exceptions if there is an error with the request.
         $request = $this->getRequest($database);
+        $version = WebRequest::postInt('version');
+
+        $request->setUpdateVersion($version);
 
         // Mark the request as confirmed.
         $request->setEmailConfirm("Confirmed");
