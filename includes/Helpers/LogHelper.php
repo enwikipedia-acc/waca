@@ -139,6 +139,7 @@ class LogHelper
         $lookup = array(
             'Reserved'            => 'reserved',
             'Email Confirmed'     => 'email-confirmed',
+            'Manually Confirmed'     => 'manually confirmed the request',
             'Unreserved'          => 'unreserved',
             'Approved'            => 'approved',
             'Suspended'           => 'suspended',

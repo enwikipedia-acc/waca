@@ -24,6 +24,7 @@ use Waca\Pages\PageMain;
 use Waca\Pages\PageQueueManagement;
 use Waca\Pages\PageXffDemo;
 use Waca\Pages\RequestAction\PageCreateRequest;
+use Waca\Pages\RequestAction\PageManuallyConfirm;
 use Waca\Pages\UserAuth\PageChangePassword;
 use Waca\Pages\UserAuth\MultiFactor\PageMultiFactor;
 use Waca\Pages\UserAuth\PageOAuth;
@@ -265,6 +266,9 @@ class RoleConfiguration
             ),
             PageSearch::class                    => array(
                 'byComment' => self::ACCESS_ALLOW,
+            ),
+            PageManuallyConfirm::class               => array(
+                self::MAIN => self::ACCESS_ALLOW,
             ),
             PageWelcomeTemplateManagement::class => array(
                 'edit'   => self::ACCESS_ALLOW,

@@ -263,6 +263,11 @@ class Logger
         self::createLogEntry($database, $object, "Closed $target", $comment, $logUser);
     }
 
+    public static function manuallyConfirmRequest(PdoDatabase $database, Request $object)
+    {
+        self::createLogEntry($database, $object, "Manually Confirmed");
+    }
+
     /**
      * @param PdoDatabase $database
      * @param Request     $object
