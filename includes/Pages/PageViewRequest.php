@@ -59,11 +59,17 @@ class PageViewRequest extends InternalPageBase
         // Shows a page if the email is not confirmed.
         if ($request->getEmailConfirm() !== 'Confirmed') {
             // Show a banner if the user can manually confirm the request
-            $viewConfirm = $this->barrierTest("main", $currentUser, PageManuallyConfirm::class);
+            $viewConfirm = $this->barrierTest(RoleConfiguration::MAIN, $currentUser, PageManuallyConfirm::class);
+
+            // If the request is purged, there's nothing to confirm!
+            if ($request->getEmail() === $this->getSiteConfiguration()->getDataClearEmail()) {
+                $viewConfirm = false;
+            }
 
             // Render
             $this->setTemplate("view-request/not-confirmed.tpl");
             $this->assign("requestId", $request->getId());
+            $this->assign("requestVersion", $request->getUpdateVersion());
             $this->assign('canViewConfirmButton', $viewConfirm);
 
             // Make sure to return, to prevent the leaking of other information.

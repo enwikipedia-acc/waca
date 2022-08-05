@@ -139,7 +139,7 @@ class LogHelper
         $lookup = array(
             'Reserved'            => 'reserved',
             'Email Confirmed'     => 'email-confirmed',
-            'Manually Confirmed'     => 'manually confirmed the request',
+            'Manually Confirmed'  => 'manually confirmed the request',
             'Unreserved'          => 'unreserved',
             'Approved'            => 'approved',
             'Suspended'           => 'suspended',
@@ -198,6 +198,7 @@ class LogHelper
             "Requests" => [
                 'Reserved'            => 'reserved',
                 'Email Confirmed'     => 'email-confirmed',
+                'Manually Confirmed'  => 'manually confirmed',
                 'Unreserved'          => 'unreserved',
                 'EditComment-c'       => 'edited a comment (by comment ID)',
                 'EditComment-r'       => 'edited a comment (by request)',
