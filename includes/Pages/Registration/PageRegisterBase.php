@@ -9,7 +9,9 @@
 namespace Waca\Pages\Registration;
 
 use Exception;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
+use Waca\DataObjects\UserDomain;
 use Waca\DataObjects\UserRole;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
@@ -55,6 +57,19 @@ abstract class PageRegisterBase extends InternalPageBase
             }
         }
         else {
+            $domain = WebRequest::getString('d');
+            if ($domain === null) {
+                throw new ApplicationLogicException("No domain specified.");
+            }
+
+            /** @var Domain|false $domainObject */
+            $domainObject = Domain::getByShortName($domain, $this->getDatabase());
+            if ($domainObject === false || !$domainObject->isEnabled()) {
+                throw new ApplicationLogicException("Unknown domain or domain not enabled.");
+            }
+
+            $this->assign('localDocumentation', $domainObject->getLocalDocumentation());
+
             $this->assignCSRFToken();
             $this->assign("useOAuthSignup", $useOAuthSignup);
             $this->setTemplate($this->getRegistrationTemplate());
@@ -94,6 +109,7 @@ abstract class PageRegisterBase extends InternalPageBase
      * @param $useOAuthSignup
      * @param $confirmationId
      * @param $onwikiUsername
+     * @param Domain|false $domainObject
      *
      * @throws ApplicationLogicException
      */
@@ -103,10 +119,19 @@ abstract class PageRegisterBase extends InternalPageBase
         $username,
         $useOAuthSignup,
         $confirmationId,
-        $onwikiUsername
+        $onwikiUsername,
+        $domainObject
     ) {
         if (!WebRequest::postBoolean('guidelines')) {
             throw new ApplicationLogicException('You must read the interface guidelines before your request may be submitted.');
+        }
+
+        if ($domainObject === false) {
+            throw new ApplicationLogicException('The chosen wiki does not exist on this tool.');
+        }
+
+        if (!$domainObject->isEnabled()) {
+            throw new ApplicationLogicException('The chosen wiki is not currently enabled on this tool.');
         }
 
         $this->validateGeneralInformation($emailAddress, $password, $username);
@@ -173,11 +198,13 @@ abstract class PageRegisterBase extends InternalPageBase
         $confirmationId = WebRequest::postInt('conf_revid');
         $onwikiUsername = WebRequest::postString('wname');
 
+        $database = $this->getDatabase();
+        $domain = WebRequest::getString('d');
+        $domainObject = Domain::getByShortName($domain, $database);
+
         // Do some validation
         $this->validateRequest($emailAddress, $password, $username, $useOAuthSignup, $confirmationId,
-            $onwikiUsername);
-
-        $database = $this->getDatabase();
+            $onwikiUsername, $domainObject);
 
         $user = new User();
         $user->setDatabase($database);
@@ -207,6 +234,12 @@ abstract class PageRegisterBase extends InternalPageBase
         Logger::newUser($database, $user);
         Logger::userRolesEdited($database, $user, 'Registration', array($defaultRole), array());
 
+        $userDomain = new UserDomain();
+        $userDomain->setDatabase($database);
+        $userDomain->setUser($user->getId());
+        $userDomain->setDomain($domainObject->getId());
+        $userDomain->save();
+
         if ($useOAuthSignup) {
             $oauthProtocolHelper = $this->getOAuthProtocolHelper();
             $oauth = new OAuthUserHelper($user, $database, $oauthProtocolHelper, $this->getSiteConfiguration());
@@ -219,6 +252,7 @@ abstract class PageRegisterBase extends InternalPageBase
             // only notify if we're not using the oauth signup.
             $this->getNotificationHelper()->userNew($user);
             WebRequest::setLoggedInUser($user);
+            $this->getDomainAccessManager()->switchToDefaultDomain($user);
             $this->redirect('preferences');
         }
     }

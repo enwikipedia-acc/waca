@@ -75,6 +75,7 @@ class PageOAuthCallback extends InternalPageBase
         // login to a full login
         if (WebRequest::getOAuthPartialLogin() === $user->getId()) {
             WebRequest::setLoggedInUser($user);
+            $this->getDomainAccessManager()->switchToDefaultDomain($user);
         }
 
         // My thinking is there are three cases here:

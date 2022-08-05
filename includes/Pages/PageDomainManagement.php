@@ -77,6 +77,7 @@ class PageDomainManagement extends InternalPageBase
             $domain->setDefaultClose(null);
             $domain->setEmailSender(WebRequest::postString('emailSender'));
             $domain->setNotificationTarget(WebRequest::postString('notificationTarget'));
+            $domain->setLocalDocumentation(WebRequest::postString('localDocumentation'));
 
             $domain->save();
 
@@ -94,6 +95,7 @@ class PageDomainManagement extends InternalPageBase
             $this->assign('defaultLanguage', 'en');
             $this->assign('emailSender', '');
             $this->assign('notificationTarget', '');
+            $this->assign('localDocumentation', '');
 
             $this->assign('createMode', true);
             $this->assign('canEditAll', true);
@@ -118,6 +120,7 @@ class PageDomainManagement extends InternalPageBase
 
             $domain->setLongName(WebRequest::postString('longName'));
             $domain->setDefaultLanguage(WebRequest::postString('defaultLanguage'));
+            $domain->setLocalDocumentation(WebRequest::postString('localDocumentation'));
 
             /** @var EmailTemplate $template */
             $template = EmailTemplate::getById(WebRequest::postInt('defaultClose'), $database);
@@ -158,6 +161,8 @@ class PageDomainManagement extends InternalPageBase
             $this->assign('defaultLanguage', $domain->getDefaultLanguage());
             $this->assign('emailSender', $domain->getEmailSender());
             $this->assign('notificationTarget', $domain->getNotificationTarget());
+            $this->assign('localDocumentation', $domain->getLocalDocumentation());
+
 
             $this->assign('createMode', false);
             $this->assign('canEditAll', $canEditAll);

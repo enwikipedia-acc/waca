@@ -114,7 +114,7 @@
                             <input class="custom-control-input" id="guidelines" type="checkbox" name="guidelines" required="required"/>
                             <label class="custom-control-label" for="guidelines">
                                 I have read and understand the
-                                <a href="http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide">interface guide</a>.
+                                <a href="{$localDocumentation|escape}">interface documentation and guide</a>.
                             </label>
                         </div>
                     </div>

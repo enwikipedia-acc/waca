@@ -8,6 +8,7 @@
 
 namespace Waca\Pages\Registration;
 
+use Waca\DataObjects\Domain;
 use Waca\Tasks\InternalPageBase;
 
 class PageRegisterOption extends InternalPageBase
@@ -19,6 +20,7 @@ class PageRegisterOption extends InternalPageBase
     protected function main()
     {
         $this->assign('allowRegistration', $this->getSiteConfiguration()->isRegistrationAllowed());
+        $this->assign('domains', Domain::getAll($this->getDatabase()));
         $this->setTemplate('registration/option.tpl');
     }
 

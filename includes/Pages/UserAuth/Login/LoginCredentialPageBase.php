@@ -251,6 +251,7 @@ abstract class LoginCredentialPageBase extends InternalPageBase
         }
 
         WebRequest::setLoggedInUser($user);
+        $this->getDomainAccessManager()->switchToDefaultDomain($user);
 
         $this->goBackWhenceYouCame($user);
     }
