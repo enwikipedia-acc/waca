@@ -8,6 +8,7 @@
 
 namespace Waca\ConsoleTasks;
 
+use PDO;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\Tasks\ConsoleTaskBase;
@@ -19,7 +20,7 @@ class ClearOAuthDataTask extends ConsoleTaskBase
         $database = $this->getDatabase();
 
         $users = UserSearchHelper::get($database)->inIds(
-            $database->query('SELECT user FROM oauthtoken WHERE type = \'access\'')->fetchColumn()
+            $database->query('SELECT user FROM oauthtoken WHERE type = \'access\'')->fetchAll(PDO::FETCH_COLUMN)
         );
 
         foreach ($users as $u) {

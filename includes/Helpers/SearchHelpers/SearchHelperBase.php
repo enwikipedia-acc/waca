@@ -260,7 +260,7 @@ abstract class SearchHelperBase
             $colData[] = 'origin.' . $c;
         }
 
-        $query = "SELECT {$this->modifiersClause} /* SearchHelper */ " . implode(', ', $colData) . ' FROM ' . $this->table . ' origin ';
+        $query = "SELECT {$this->modifiersClause} /* " . get_called_class() . " */ " . implode(', ', $colData) . ' FROM ' . $this->table . ' origin ';
         $query .= $this->joinClause . $this->whereClause . $this->groupByClause;
 
         return $query;
@@ -276,6 +276,7 @@ abstract class SearchHelperBase
     protected function inClause($column, $values)
     {
         if (count($values) === 0) {
+            $this->whereClause .= ' AND 1 = 2 /* empty IN() */';
             return;
         }
 
