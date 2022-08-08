@@ -7,13 +7,14 @@ services:
     volumes:
       - .:/var/www/html/
     ports:
-      - 8080:80
+      - "8080:80"
     depends_on:
       - database
+      - msgbroker
   database:
     image: mariadb:10.3
     ports:
-      - 3306:3306
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: waca
       MYSQL_DATABASE: waca
@@ -23,6 +24,16 @@ services:
       - mysql-data:/var/lib/mysql
       - ./docker/database.sh:/docker-entrypoint-initdb.d/init.sh
       - ./sql:/wacadb
+  msgbroker:
+    image: rabbitmq:3.10-management-alpine
+    ports:
+      - "5672:5672" # Actual message broker port.
+      - "15672:15672" # Management web interface port. Plain HTTP, username guest, password guest.
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+      - ./docker/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+
 volumes:
   mysql-data:
+  rabbitmq-data:
 

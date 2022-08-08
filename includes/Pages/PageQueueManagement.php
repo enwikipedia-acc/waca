@@ -55,6 +55,7 @@ class PageQueueManagement extends InternalPageBase
 
             $queue->setHeader(WebRequest::postString('header'));
             $queue->setDisplayName(WebRequest::postString('displayName'));
+            $queue->setApiName(WebRequest::postString('apiName'));
             $queue->setEnabled(WebRequest::postBoolean('enabled'));
             $queue->setDefault(WebRequest::postBoolean('default') && WebRequest::postBoolean('enabled'));
             $queue->setDefaultAntispoof(WebRequest::postBoolean('antispoof') && WebRequest::postBoolean('enabled'));
@@ -70,7 +71,7 @@ class PageQueueManagement extends InternalPageBase
                 $proceed = false;
             }
 
-            if (preg_match('^[A-Za-z][a-zA-Z0-9_-]*$', $queue->getApiName()) !== 1) {
+            if (preg_match('/^[A-Za-z][a-zA-Z0-9_-]*$/', $queue->getApiName()) !== 1) {
                 SessionAlert::error("The chosen API name contains invalid characters");
                 $proceed = false;
             }

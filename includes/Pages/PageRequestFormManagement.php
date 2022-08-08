@@ -162,7 +162,7 @@ class PageRequestFormManagement extends InternalPageBase
         $form = RequestForm::getById(WebRequest::getInt('form'), $database);
 
         if ($form->getDomain() !== Domain::getCurrent($database)->getId()) {
-            throw new AccessDeniedException();
+            throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
         }
 
         $this->populateFromObject($form);
@@ -192,7 +192,7 @@ class PageRequestFormManagement extends InternalPageBase
         $form = RequestForm::getById(WebRequest::getInt('form'), $database);
 
         if ($form->getDomain() !== Domain::getCurrent($database)->getId()) {
-            throw new AccessDeniedException();
+            throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
         }
 
         if (WebRequest::wasPosted()) {
