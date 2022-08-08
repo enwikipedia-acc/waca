@@ -3,12 +3,11 @@
         "IRC": "FastLizard4",
         "ToolID": "18",
         "wiki": "FastLizard4",
-        "WWW": "http://fastlizard4.org/",
+        "WWW": "https://fastlizard4.org/",
         "Name": "Andrew Adams",
         "Role": [
             "Project Lead",
-            "Developer",
-            "OTRS Liaison"
+            "Developer"
         ],
         "Retired": [],
         "Access": [
@@ -17,7 +16,7 @@
             "Mailing list admin",
             "WMCS project"
         ],
-        "Cloak": "*!*@wikipedia/pdpc.active.FastLizard4",
+        "Cloak": "*!*@wikipedia/FastLizard4",
         "Other": null
     },
     "Stwalkerster": {

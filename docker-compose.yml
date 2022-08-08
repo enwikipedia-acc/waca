@@ -11,6 +11,7 @@ services:
     depends_on:
       - database
       - msgbroker
+      - mailsink
   database:
     image: mariadb:10.3
     ports:
@@ -32,8 +33,13 @@ services:
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
       - ./docker/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./docker/rabbitmq-definitions.json:/etc/rabbitmq/definitions.json
+  mailsink:
+    image: nicktriller/mail-sink
+    ports:
+      - "1025:1025" # SMTP target to receive (and sink) emails
+      - "8081:8080" # HTTP web interface to view received emails
 
 volumes:
   mysql-data:
   rabbitmq-data:
-
