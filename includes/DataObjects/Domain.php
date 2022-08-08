@@ -32,7 +32,7 @@ class Domain extends DataObject
     /** @var string */
     private $defaultlanguage = 'en';
     /** @var string */
-    private $emailsender;
+    private $emailreplyaddress;
     /** @var string|null */
     private $notificationtarget;
     /** @var string */
@@ -133,10 +133,10 @@ SQL
             $statement = $this->dbObject->prepare(<<<SQL
                 INSERT INTO domain (
                     shortname, longname, wikiarticlepath, wikiapipath, enabled, defaultclose, defaultlanguage, 
-                    emailsender, notificationtarget, localdocumentation
+                    emailreplyaddress, notificationtarget, localdocumentation
                 ) VALUES (
                     :shortname, :longname, :wikiarticlepath, :wikiapipath, :enabled, :defaultclose, :defaultlanguage,
-                    :emailsender, :notificationtarget, :localdocumentation
+                    :emailreplyaddress, :notificationtarget, :localdocumentation
                 );
 SQL
             );
@@ -148,7 +148,7 @@ SQL
             $statement->bindValue(":enabled", $this->enabled);
             $statement->bindValue(":defaultclose", $this->defaultclose);
             $statement->bindValue(":defaultlanguage", $this->defaultlanguage);
-            $statement->bindValue(":emailsender", $this->emailsender);
+            $statement->bindValue(":emailreplyaddress", $this->emailreplyaddress);
             $statement->bindValue(":notificationtarget", $this->notificationtarget);
             $statement->bindValue(":localdocumentation", $this->localdocumentation);
 
@@ -169,7 +169,7 @@ SQL
                     enabled = :enabled,
                     defaultclose = :defaultclose,
                     defaultlanguage = :defaultlanguage,
-                    emailsender = :emailsender,
+                    emailreplyaddress = :emailreplyaddress,
                     notificationtarget = :notificationtarget,
                     localdocumentation = :localdocumentation,
                 
@@ -184,7 +184,7 @@ SQL
             $statement->bindValue(":enabled", $this->enabled);
             $statement->bindValue(":defaultclose", $this->defaultclose);
             $statement->bindValue(":defaultlanguage", $this->defaultlanguage);
-            $statement->bindValue(":emailsender", $this->emailsender);
+            $statement->bindValue(":emailreplyaddress", $this->emailreplyaddress);
             $statement->bindValue(":notificationtarget", $this->notificationtarget);
             $statement->bindValue(":localdocumentation", $this->localdocumentation);
 
@@ -320,7 +320,7 @@ SQL
      */
     public function getEmailReplyAddress(): string
     {
-        return $this->emailsender;
+        return $this->emailreplyaddress;
     }
 
     /**
@@ -328,7 +328,7 @@ SQL
      */
     public function setEmailReplyAddress(string $emailReplyAddress): void
     {
-        $this->emailsender = $emailReplyAddress;
+        $this->emailreplyaddress = $emailReplyAddress;
     }
 
     /**
