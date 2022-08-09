@@ -12,15 +12,31 @@ use Waca\Helpers\Interfaces\IEmailHelper;
 
 class EmailHelper implements IEmailHelper
 {
-    /**
-     * @param string $to
-     * @param string $subject
-     * @param string $content
-     * @param array  $headers Extra headers to include
-     */
-    public function sendMail($from, $to, $subject, $content, $headers = array())
+    /** @var string */
+    private $emailFrom;
+    private $instance;
+
+    public function __construct(string $emailFrom, $instance)
     {
-        $headers['From'] = $from;
+        $this->emailFrom = $emailFrom;
+        $this->instance = $instance;
+    }
+
+    /**
+     * @param string|null $replyAddress
+     * @param string      $to
+     * @param string      $subject
+     * @param string      $content
+     * @param array       $headers Extra headers to include
+     */
+    public function sendMail(?string $replyAddress, $to, $subject, $content, $headers = array())
+    {
+        if ($replyAddress !== null) {
+            $headers['Reply-To'] = $replyAddress;
+        }
+
+        $headers['From'] = $this->emailFrom;
+        $headers['X-ACC-Instance'] = $this->instance;
         $headerString = '';
 
         foreach ($headers as $header => $headerValue) {

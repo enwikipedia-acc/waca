@@ -19,7 +19,7 @@ class SiteConfiguration
 {
     private $baseUrl;
     private $filePath;
-    private $schemaVersion = 41;
+    private $schemaVersion = 42;
     private $debuggingTraceEnabled;
     private $debuggingCssBreakpointsEnabled;
     private $dataClearIp = '127.0.0.1';
@@ -72,6 +72,7 @@ class SiteConfiguration
     private $banMaxIpRange = [4 => 16, 6 => 32];
     private $jobQueueBatchSize = 10;
     private $amqpConfiguration = ['host' => 'localhost', 'port' => 5672, 'user' => 'guest', 'password' => 'guest', 'exchange' => ''];
+    private $emailSender = 'accounts@wmflabs.org';
 
     /**
      * Gets the base URL of the tool
@@ -1005,4 +1006,24 @@ class SiteConfiguration
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getEmailSender(): string
+    {
+        return $this->emailSender;
+    }
+
+    /**
+     * @param string $emailSender
+     *
+     * @return SiteConfiguration
+     */
+    public function setEmailSender(string $emailSender): SiteConfiguration
+    {
+        $this->emailSender = $emailSender;
+
+        return $this;
+}
 }

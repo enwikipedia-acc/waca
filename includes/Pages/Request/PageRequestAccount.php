@@ -193,7 +193,7 @@ class PageRequestAccount extends PublicInterfacePageBase
         /** @var Domain $domain */
         $domain = Domain::getById(1, $this->getDatabase());
         $this->getEmailHelper()->sendMail(
-            $domain->getEmailSender(),
+            $domain->getEmailReplyAddress(),
             $request->getEmail(),
             "[ACC #{$request->getId()}] English Wikipedia Account Request",
             $this->fetchTemplate('request/confirmation-mail.tpl'));

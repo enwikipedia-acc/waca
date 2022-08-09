@@ -46,7 +46,9 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
         add emailhelp text not null,
         add commentshelp text not null;
 
+
     INSERT INTO requestform (updateversion, enabled, domain, name, publicendpoint, formcontent, overridequeue, usernamehelp, emailhelp, commentshelp) VALUES (0, 1, 1, 'Default form', 'default', '## Request an account!
+
 
 We will need a few bits of information in order to create your account. However, please keep in mind that you do not need an account to read the encyclopedia or look up information - that can be done by anyone with or without an account. The first thing we need is a username, and secondly, a **valid email address that we can send your password to** (please don''t use temporary inboxes, or email aliasing, as this may cause your request to be rejected). If you want to leave any comments, feel free to do so in the comments field below. Note that if you use this form, your IP address will be recorded, and displayed to [those who review account requests](https://accounts.wmflabs.org/internal.php/statistics/users). When you are done, click the "Submit" button.
 

@@ -75,7 +75,7 @@ class PageDomainManagement extends InternalPageBase
             $domain->setEnabled(WebRequest::postBoolean('enabled'));
             $domain->setDefaultLanguage(WebRequest::postString('defaultLanguage'));
             $domain->setDefaultClose(null);
-            $domain->setEmailSender(WebRequest::postString('emailSender'));
+            $domain->setEmailReplyAddress(WebRequest::postString('emailReplyTo'));
             $domain->setNotificationTarget(WebRequest::postString('notificationTarget'));
             $domain->setLocalDocumentation(WebRequest::postString('localDocumentation'));
 
@@ -93,7 +93,7 @@ class PageDomainManagement extends InternalPageBase
             $this->assign('apiPath', '');
             $this->assign('enabled', false);
             $this->assign('defaultLanguage', 'en');
-            $this->assign('emailSender', '');
+            $this->assign('emailReplyTo', '');
             $this->assign('notificationTarget', '');
             $this->assign('localDocumentation', '');
 
@@ -137,7 +137,7 @@ class PageDomainManagement extends InternalPageBase
                 $domain->setWikiArticlePath(WebRequest::postString('articlePath'));
                 $domain->setWikiApiPath(WebRequest::postString('apiPath'));
                 $domain->setEnabled(WebRequest::postBoolean('enabled'));
-                $domain->setEmailSender(WebRequest::postString('emailSender'));
+                $domain->setEmailReplyAddress(WebRequest::postString('emailReplyTo'));
                 $domain->setNotificationTarget(WebRequest::postString('notificationTarget'));
             }
 
@@ -159,7 +159,7 @@ class PageDomainManagement extends InternalPageBase
             $this->assign('enabled', $domain->isEnabled());
             $this->assign('defaultClose', $domain->getDefaultClose());
             $this->assign('defaultLanguage', $domain->getDefaultLanguage());
-            $this->assign('emailSender', $domain->getEmailSender());
+            $this->assign('emailReplyTo', $domain->getEmailReplyAddress());
             $this->assign('notificationTarget', $domain->getNotificationTarget());
             $this->assign('localDocumentation', $domain->getLocalDocumentation());
 

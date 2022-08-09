@@ -129,7 +129,10 @@ abstract class ApplicationBase
         // set up helpers and inject them into the page.
         $httpHelper = new HttpHelper($siteConfiguration);
 
-        $page->setEmailHelper(new EmailHelper());
+        $page->setEmailHelper(
+            new EmailHelper($siteConfiguration->getEmailSender(), $siteConfiguration->getIrcNotificationsInstance())
+        );
+
         $page->setHttpHelper($httpHelper);
 
         if ($siteConfiguration->getLocationProviderApiKey() === null) {

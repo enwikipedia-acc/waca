@@ -42,7 +42,7 @@
                                 <th>Language</th><td>{$domain->getDefaultLanguage()|escape}</td>
                             </tr>
                             <tr>
-                                <th>Email sender</th><td>{$domain->getEmailSender()|escape}</td>
+                                <th>Email reply-to address</th><td>{$domain->getEmailReplyAddress()|escape}</td>
                             </tr>
                             {if ($currentDomain->getId() == $domain->getId() && $canEdit) || $canEditAll}
                                 <tr>

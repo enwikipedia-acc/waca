@@ -112,11 +112,11 @@
 
                             <div class="form-group row">
                                 <div class="col-sm-4 col-md-3 col-lg-4 col-xl-3">
-                                    <label for="emailSender" class="col-form-label">Email sender address:</label>
+                                    <label for="emailReplyTo" class="col-form-label">Email reply-to address:</label>
                                 </div>
                                 <div class="col-sm-8 col-md-9 col-lg-8 col-xl-9">
-                                    <input type="email" class="form-control" id="emailSender" name="emailSender" maxlength="255" required="required" placeholder="accounts-enwiki-l@lists.wikimedia.org" value="{$emailSender|escape}" {if !$canEditAll}readonly{/if}/>
-                                    <small class="form-text text-muted" id="emailSenderHelp">The email address to send emails from. This is also used as a Reply-To address.</small>
+                                    <input type="email" class="form-control" id="emailReplyTo" name="emailReplyTo" maxlength="255" required="required" placeholder="accounts-enwiki-l@lists.wikimedia.org" value="{$emailReplyTo|escape}" {if !$canEditAll}readonly{/if}/>
+                                    <small class="form-text text-muted" id="emailReplyToHelp">The email address used as a Reply-To address. This email address will receive any replies to emails sent from the tool.</small>
                                 </div>
                             </div>
 
