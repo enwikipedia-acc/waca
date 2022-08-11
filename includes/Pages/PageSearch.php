@@ -50,13 +50,24 @@ class PageSearch extends PagedInternalPageBase
                 $excludeNonConfirmed = WebRequest::getBoolean('excludeNonConfirmed');
             }
 
+            $formParameters = [
+                'term' => $searchTerm,
+                'type' => $searchType,
+            ];
+
+            if ($excludeNonConfirmed) {
+                $formParameters['excludeNonConfirmed'] = true;
+            }
+
+            $requestSearch = RequestSearchHelper::get($database);
+            $this->setSearchHelper($requestSearch);
+            $this->setupLimits();
+
             $validationError = "";
             if (!$this->validateSearchParameters($searchType, $searchTerm, $validationError)) {
                 SessionAlert::error($validationError, "Search error");
 
-                $this->assign('term', $searchTerm);
-                $this->assign('target', $searchType);
-                $this->assign('excludeNonConfirmed', $excludeNonConfirmed);
+                $this->setupPageData(0, $formParameters);
                 $this->assign('hasResultset', false);
 
                 return;
@@ -67,11 +78,6 @@ class PageSearch extends PagedInternalPageBase
                 // only accessible by url munging, don't care about the UX
                 throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
             }
-
-            $requestSearch = RequestSearchHelper::get($database);
-
-            $this->setSearchHelper($requestSearch);
-            $this->setupLimits();
 
             if ($excludeNonConfirmed) {
                 $requestSearch->withConfirmedEmail();
@@ -94,16 +100,6 @@ class PageSearch extends PagedInternalPageBase
 
             /** @var Request[] $results */
             $results = $requestSearch->getRecordCount($count)->fetch();
-
-            $formParameters = [
-                'term' => $searchTerm,
-                'type' => $searchType,
-            ];
-
-            if ($excludeNonConfirmed) {
-                $formParameters['excludeNonConfirmed'] = true;
-            }
-
             $this->setupPageData($count, $formParameters);
 
             // deal with results
@@ -116,7 +112,7 @@ class PageSearch extends PagedInternalPageBase
             $this->assign('defaultSortDirection', $defaultSortDirection);
         }
         else {
-            $this->assign('target', 'name');
+            $this->assign('type', 'name');
             $this->assign('hasResultset', false);
             $this->assign('limit', 50);
             $this->assign('excludeNonConfirmed', true);
