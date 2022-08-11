@@ -78,7 +78,7 @@
         </div>
         <div class="row">
             <div class="col">
-                <p class="lead">Search results for "{$term|escape}" as {$target}...</p>
+                <p class="lead">Search results for "{$term|escape}" as {$type}...</p>
                 {if $resultCount == 0}
                     {include file="alert.tpl" alertblock=false alerttype="alert-info" alertclosable=false alertheader='' alertmessage='No requests found!'}
                 {else}
