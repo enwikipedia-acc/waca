@@ -18,7 +18,7 @@
         Global Rename log
     </a>
     <a id="UsernameCentralAuth" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
-       href="https://meta.wikipedia.org/wiki/Special:CentralAuth/{$requestName|escape:'url'}">
+       href="https://meta.wikimedia.org/wiki/Special:CentralAuth/{$requestName|escape:'url'}">
         Special:CentralAuth
     </a>
     <a id="UsernameUsernameList" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
