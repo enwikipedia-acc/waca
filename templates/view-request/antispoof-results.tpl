@@ -31,7 +31,7 @@
                             Logs
                         </a>
                         <a id="SpoofCentralAuth-{$spoof@iteration}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
-                           href="https://en.wikipedia.org/wiki/Special:CentralAuth/{$spoof|escape:'url'}">
+                           href="https://meta.wikimedia.org/wiki/Special:CentralAuth/{$spoof|escape:'url'}">
                             Special:CentralAuth
                         </a>
                         <a id="SpoofPassReset-{$spoof@iteration}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
