@@ -36,14 +36,11 @@ class PagePreferences extends InternalPageBase
         // Dual mode
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
-            $preferencesManager->setLocalPreference(PreferenceManager::PREF_EMAIL_SIGNATURE, WebRequest::postString('emailsig'));
-            $preferencesManager->setLocalPreference(PreferenceManager::PREF_SKIP_JS_ABORT, WebRequest::postBoolean('abortpref') ? 1 : 0);
-            $this->setCreationMode($user, $preferencesManager);
 
-            $newSkin = WebRequest::postString('skintype');
-            if ($newSkin === 'main' || $newSkin === 'alt' || $newSkin === 'auto') {
-                $preferencesManager->setLocalPreference(PreferenceManager::PREF_SKIN, $newSkin);
-            }
+            $this->setPreference($preferencesManager,PreferenceManager::PREF_EMAIL_SIGNATURE, 'emailSignature');
+            $this->setPreferenceWithValue($preferencesManager,PreferenceManager::PREF_SKIP_JS_ABORT, 'skipJsAbort', WebRequest::postBoolean('skipJsAbort') ? 1 : 0);
+            $this->setCreationMode($user, $preferencesManager);
+            $this->setSkin($preferencesManager);
 
             $email = WebRequest::postEmail('email');
             if ($email !== null) {
@@ -71,10 +68,10 @@ class PagePreferences extends InternalPageBase
 
             $this->assign("enforceOAuth", $enforceOAuth);
 
-            $this->assign('emailSignature', $preferencesManager->getPreference(PreferenceManager::PREF_EMAIL_SIGNATURE));
-            $this->assign('creationMode', $preferencesManager->getPreference(PreferenceManager::PREF_CREATION_MODE));
-            $this->assign('skin', $preferencesManager->getPreference(PreferenceManager::PREF_SKIN));
-            $this->assign('skipJsAbort', $preferencesManager->getPreference(PreferenceManager::PREF_SKIP_JS_ABORT));
+            $this->assignPreference($preferencesManager, PreferenceManager::PREF_EMAIL_SIGNATURE, 'emailSignature', false);
+            $this->assignPreference($preferencesManager, PreferenceManager::PREF_CREATION_MODE, 'creationMode', false);
+            $this->assignPreference($preferencesManager, PreferenceManager::PREF_SKIN, 'skin', true);
+            $this->assignPreference($preferencesManager, PreferenceManager::PREF_SKIP_JS_ABORT, 'skipJsAbort', false);
 
             $this->assign('canManualCreate',
                 $this->barrierTest(PreferenceManager::CREATION_MANUAL, $user, 'RequestCreation'));
@@ -95,6 +92,39 @@ class PagePreferences extends InternalPageBase
             $this->assign('identity', $identity);
             $this->assign('graceTime', $this->getSiteConfiguration()->getOauthIdentityGraceTime());
         }
+    }
+
+    private function assignPreference(
+        PreferenceManager $preferencesManager,
+        string $preference,
+        string $fieldName,
+        bool $defaultGlobal
+    ): void {
+        $this->assign($fieldName, $preferencesManager->getPreference($preference));
+        $this->assign($fieldName . 'Global', $preferencesManager->isGlobalPreference($preference) ?? $defaultGlobal);
+    }
+
+    private function setPreferenceWithValue(
+        PreferenceManager $preferencesManager,
+        string $preferenceName,
+        string $fieldName,
+        $value
+    ): void {
+        $globalDefinition = WebRequest::postBoolean($fieldName . 'Global');
+        if ($globalDefinition) {
+            $preferencesManager->setGlobalPreference($preferenceName, $value);
+        }
+        else {
+            $preferencesManager->setLocalPreference($preferenceName, $value);
+        }
+    }
+
+    private function setPreference(
+        PreferenceManager $preferencesManager,
+        string $preferenceName,
+        string $fieldName
+    ): void {
+        $this->setPreferenceWithValue($preferencesManager, $preferenceName, $fieldName, WebRequest::postString($fieldName));
     }
 
     protected function refreshOAuth()
@@ -126,17 +156,24 @@ class PagePreferences extends InternalPageBase
         return;
     }
 
-    /**
-     * @param User $user
-     */
     private function setCreationMode(User $user, PreferenceManager $preferenceManager)
     {
         // if the user is selecting a creation mode that they are not allowed, do nothing.
         // this has the side effect of allowing them to keep a selected mode that either has been changed for them,
         // or that they have kept from when they previously had certain access.
-        $creationMode = WebRequest::postInt('creationmode');
+        // This setting is only settable locally, as ACLs may change between domains.
+        $creationMode = WebRequest::postInt('creationMode');
         if ($this->barrierTest($creationMode, $user, 'RequestCreation')) {
-            $preferenceManager->setLocalPreference(PreferenceManager::PREF_CREATION_MODE, $creationMode);
+            $preferenceManager->setLocalPreference(PreferenceManager::PREF_CREATION_MODE, WebRequest::postString('creationMode'));
+        }
+    }
+
+    private function setSkin(PreferenceManager $preferencesManager): void
+    {
+        $newSkin = WebRequest::postString('skin');
+        $allowedSkins = ['main', 'alt', 'auto'];
+        if (in_array($newSkin, $allowedSkins)) {
+            $this->setPreference($preferencesManager, PreferenceManager::PREF_SKIN, 'skin');
         }
     }
 }
