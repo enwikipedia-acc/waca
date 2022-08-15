@@ -41,6 +41,7 @@ class PagePreferences extends InternalPageBase
             $this->setPreferenceWithValue($preferencesManager,PreferenceManager::PREF_SKIP_JS_ABORT, 'skipJsAbort', WebRequest::postBoolean('skipJsAbort') ? 1 : 0);
             $this->setCreationMode($user, $preferencesManager);
             $this->setSkin($preferencesManager);
+            $preferencesManager->setGlobalPreference(PreferenceManager::PREF_DEFAULT_DOMAIN, WebRequest::postInt('defaultDomain'));
 
             $email = WebRequest::postEmail('email');
             if ($email !== null) {
@@ -72,6 +73,7 @@ class PagePreferences extends InternalPageBase
             $this->assignPreference($preferencesManager, PreferenceManager::PREF_CREATION_MODE, 'creationMode', false);
             $this->assignPreference($preferencesManager, PreferenceManager::PREF_SKIN, 'skin', true);
             $this->assignPreference($preferencesManager, PreferenceManager::PREF_SKIP_JS_ABORT, 'skipJsAbort', false);
+            $this->assignPreference($preferencesManager, PreferenceManager::PREF_DEFAULT_DOMAIN, 'defaultDomain', true);
 
             $this->assign('canManualCreate',
                 $this->barrierTest(PreferenceManager::CREATION_MANUAL, $user, 'RequestCreation'));

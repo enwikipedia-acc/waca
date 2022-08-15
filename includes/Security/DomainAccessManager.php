@@ -12,6 +12,7 @@ use Waca\DataObject;
 use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
+use Waca\Helpers\PreferenceManager;
 use Waca\WebRequest;
 
 class DomainAccessManager
@@ -56,19 +57,25 @@ class DomainAccessManager
         }
     }
 
-    /**
-     * Not a very smart way of doing this - just set the user's current domain to the first one in the list.
-     *
-     * We may wish to allow the user to configure a default domain, but I don't expect this to be needed by many people,
-     * so for now they can suffer until someone complains.
-     *
-     * @param User $user
-     *
-     * @return void
-     */
     public function switchToDefaultDomain(User $user): void
     {
         $domains = $this->getAllowedDomains($user);
+        $preferenceManager = new PreferenceManager($user->getDatabase(), $user->getId(), null);
+        $defaultDomainPreference = $preferenceManager->getPreference(PreferenceManager::PREF_DEFAULT_DOMAIN);
+
+        $chosenDomain = null;
+        foreach ($domains as $d) {
+            if ($d->getId() == $defaultDomainPreference) {
+                $chosenDomain = $d;
+                break;
+            }
+        }
+
+        if ($chosenDomain !== null) {
+            WebRequest::setActiveDomain($chosenDomain);
+            return;
+        }
+
         if (count($domains) > 0) {
             WebRequest::setActiveDomain($domains[0]);
         }
