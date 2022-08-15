@@ -53,7 +53,12 @@ class PagePreferences extends InternalPageBase
             $user->save();
             SessionAlert::success("Preferences updated!");
 
-            $this->redirect('');
+            if ($this->barrierTest(RoleConfiguration::MAIN, $user, PageMain::class)) {
+                $this->redirect('');
+            }
+            else {
+                $this->redirect('preferences');
+            }
         }
         else {
             $this->assignCSRFToken();
