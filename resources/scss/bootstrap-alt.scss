@@ -61,6 +61,9 @@ $card-bg: lighten($gray-900, 3%);
 
 $popover-bg: $gray-800;
 
+$modal-content-bg: $gray-800;
+$modal-backdrop-opacity: .65;
+
 $alert-bg-level: 6;
 $alert-border-level: 2;
 $alert-color-level: -10;
@@ -69,6 +72,8 @@ $progress-bg: $gray-800;
 
 $sortabletable-marker: $gray-500;
 $sortabletable-hover: $gray-800;
+
+$close-color: $white;
 
 @import "common";
 
