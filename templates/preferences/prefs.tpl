@@ -107,6 +107,29 @@
                         {include file="preferences/globalcheck.tpl" settingName="skin" settingState=$skinGlobal settingAvailable=true offset="offset-md-2 offset-lg-2 offset-xl-2"}
                     </div>
 
+                    {if count($nav__domainList) > 1}
+                    <div class="form-group row mb-5">
+                        <div class="col-md-2 col-lg-3">
+                            <label class="col-form-label" for="defaultDomain">Default domain</label>
+                        </div>
+                        <div class="col-md-6 col-lg-5 col-xl-4">
+                            <select class="form-control" id="defaultDomain" name="defaultDomain">
+                                {foreach from=$nav__domainList item=domain}
+                                    <option value="{$domain->getId()}" {if $defaultDomain == $domain->getId()}selected="selected"{/if}>
+                                        {$domain->getLongName()|escape}
+                                    </option>
+                                {/foreach}
+                            </select>
+                            <small class="form-text text-muted">This is used to choose the domain which is selected by default on login.</small>
+
+                        </div>
+                        {include file="preferences/globalcheck.tpl" settingName="defaultDomain" settingState=true settingAvailable=false offset="offset-md-2 offset-lg-2 offset-xl-2"}
+
+                    </div>
+                    {else}
+                        <input type="hidden" name="defaultDomain" value="">
+                    {/if}
+
                     <div class="form-group row">
                         <div class="offset-md-2 offset-lg-3 col-md-4 col-lg-3">
                             <button type="submit" class="btn btn-primary btn-block">Save preferences</button>
