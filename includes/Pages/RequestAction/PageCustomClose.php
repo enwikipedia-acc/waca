@@ -22,6 +22,7 @@ use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Fragments\RequestData;
 use Waca\Helpers\Logger;
 use Waca\Helpers\OAuthUserHelper;
+use Waca\Helpers\PreferenceManager;
 use Waca\PdoDatabase;
 use Waca\RequestStatus;
 use Waca\SessionAlert;
@@ -115,6 +116,7 @@ class PageCustomClose extends PageCloseRequest
         $this->setHtmlTitle("Custom close");
 
         $currentUser = User::getCurrent($database);
+        $preferencesManager = PreferenceManager::getForCurrent($database);
         $config = $this->getSiteConfiguration();
 
         $allowedPrivateData = $this->isAllowedPrivateData($request, $currentUser);
@@ -161,18 +163,21 @@ class PageCustomClose extends PageCloseRequest
         $this->assign('allowWelcomeSkip', false);
         $this->assign('forceWelcomeSkip', false);
 
-        $canOauthCreate = $this->barrierTest(User::CREATION_OAUTH, $currentUser, 'RequestCreation');
-        $canBotCreate = $this->barrierTest(User::CREATION_BOT, $currentUser, 'RequestCreation');
+        $canOauthCreate = $this->barrierTest(PreferenceManager::CREATION_OAUTH, $currentUser, 'RequestCreation');
+        $canBotCreate = $this->barrierTest(PreferenceManager::CREATION_BOT, $currentUser, 'RequestCreation');
 
         $oauth = new OAuthUserHelper($currentUser, $this->getDatabase(), $this->getOAuthProtocolHelper(), $config);
 
-        if ($currentUser->getWelcomeTemplate() != 0) {
+        $welcomeTemplate = $preferencesManager->getPreference(PreferenceManager::PREF_WELCOMETEMPLATE);
+        if ($welcomeTemplate != 0) {
             $this->assign('allowWelcomeSkip', true);
 
             if (!$oauth->canWelcome()) {
                 $this->assign('forceWelcomeSkip', true);
             }
         }
+
+        $this->assign('preferredCreationMode', (int)$preferencesManager->getPreference(PreferenceManager::PREF_CREATION_MODE));
 
         // disable options if there's a misconfiguration.
         $canOauthCreate &= $oauth->canCreateAccount();
@@ -367,8 +372,8 @@ class PageCustomClose extends PageCloseRequest
     {
         $db = $this->getDatabase();
         $oauth = new OAuthUserHelper($currentUser, $db, $this->getOAuthProtocolHelper(), $this->getSiteConfiguration());
-        $canOauthCreate = $this->barrierTest(User::CREATION_OAUTH, $currentUser, 'RequestCreation');
-        $canBotCreate = $this->barrierTest(User::CREATION_BOT, $currentUser, 'RequestCreation');
+        $canOauthCreate = $this->barrierTest(PreferenceManager::CREATION_OAUTH, $currentUser, 'RequestCreation');
+        $canBotCreate = $this->barrierTest(PreferenceManager::CREATION_BOT, $currentUser, 'RequestCreation');
         $canOauthCreate &= $oauth->canCreateAccount();
         $canBotCreate &= $this->getSiteConfiguration()->getCreationBotPassword() !== null;
 

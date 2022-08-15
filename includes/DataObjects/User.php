@@ -12,7 +12,6 @@ use DateTime;
 use Exception;
 use Waca\DataObject;
 use Waca\Exceptions\OptimisticLockFailedException;
-use Waca\Helpers\PreferenceManager;
 use Waca\IdentificationVerifier;
 use Waca\PdoDatabase;
 use Waca\WebRequest;
@@ -26,13 +25,6 @@ class User extends DataObject
     const STATUS_SUSPENDED = 'Suspended';
     const STATUS_DECLINED = 'Declined';
     const STATUS_NEW = 'New';
-
-    /** @deprecated  */
-    const CREATION_MANUAL = 0;
-    /** @deprecated  */
-    const CREATION_OAUTH = 1;
-    /** @deprecated  */
-    const CREATION_BOT = 2;
 
     private $username;
     private $email;
@@ -358,49 +350,6 @@ SQL
     }
 
     /**
-     * Returns the ID of the welcome template used.
-     * @return int
-     * @deprecated
-     */
-    public function getWelcomeTemplate()
-    {
-        return PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->getPreference(PreferenceManager::PREF_WELCOMETEMPLATE);
-    }
-
-    /**
-     * Sets the ID of the welcome template used.
-     *
-     * @param ?int $welcomeTemplate
-     * @deprecated
-     */
-    public function setWelcomeTemplate($welcomeTemplate)
-    {
-        PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->setLocalPreference(PreferenceManager::PREF_WELCOMETEMPLATE, $welcomeTemplate);
-    }
-
-    /**
-     * Gets the user's abort preference
-     * @todo this is badly named too! Also a bool that's actually an int.
-     * @return int
-     * @deprecated
-     */
-    public function getAbortPref()
-    {
-        return PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->getPreference(PreferenceManager::PREF_SKIP_JS_ABORT);
-    }
-
-    /**
-     * Sets the user's abort preference
-     * @todo rename, retype, and re-comment.
-     * @deprecated
-     * @param int $abortPreference
-     */
-    public function setAbortPref($abortPreference)
-    {
-        PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->setLocalPreference(PreferenceManager::PREF_SKIP_JS_ABORT, $abortPreference);
-    }
-
-    /**
      * Gets the user's confirmation diff. Unused if OAuth is in use.
      * @return int the diff ID
      */
@@ -417,64 +366,6 @@ SQL
     public function setConfirmationDiff($confirmationDiff)
     {
         $this->confirmationdiff = $confirmationDiff;
-    }
-
-    /**
-     * Gets the users' email signature used on outbound mail.
-     * @todo rename me!
-     * @return string
-     * @deprecated
-     */
-    public function getEmailSig()
-    {
-        return PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->getPreference(PreferenceManager::PREF_EMAIL_SIGNATURE);
-    }
-
-    /**
-     * Sets the user's email signature for outbound mail.
-     *
-     * @param string $emailSignature
-     * @deprecated
-     */
-    public function setEmailSig($emailSignature)
-    {
-        PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->setLocalPreference(PreferenceManager::PREF_EMAIL_SIGNATURE, $emailSignature);
-    }
-
-    /**
-     * @return int
-     * @deprecated
-     */
-    public function getCreationMode()
-    {
-        return PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->getPreference(PreferenceManager::PREF_CREATION_MODE);
-    }
-
-    /**
-     * @param $creationMode int
-     * @deprecated
-     */
-    public function setCreationMode($creationMode)
-    {
-        PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->setLocalPreference(PreferenceManager::PREF_CREATION_MODE, $creationMode);
-    }
-
-    /**
-     * @return string
-     * @deprecated
-     */
-    public function getSkin()
-    {
-        return PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->getPreference(PreferenceManager::PREF_SKIN);
-    }
-
-    /**
-     * @param $skin string
-     * @deprecated
-     */
-    public function setSkin($skin)
-    {
-        PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->setGlobalPreference(PreferenceManager::PREF_SKIN, $skin);
     }
 
     #endregion

@@ -93,24 +93,6 @@ class CommunityUser extends User
     {
     }
 
-    public function getWelcomeTemplate()
-    {
-        return 0;
-    }
-
-    public function setWelcomeTemplate($welcomeTemplate)
-    {
-    }
-
-    public function getAbortPref()
-    {
-        return 0;
-    }
-
-    public function setAbortPref($abortPreference)
-    {
-    }
-
     public function getConfirmationDiff()
     {
         return null;
@@ -120,14 +102,6 @@ class CommunityUser extends User
     {
     }
 
-    public function getEmailSig()
-    {
-        return null;
-    }
-
-    public function setEmailSig($emailSignature)
-    {
-    }
 
     public function setUseAlternateSkin($useAlternate)
     {

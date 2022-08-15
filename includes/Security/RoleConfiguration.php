@@ -8,7 +8,7 @@
 
 namespace Waca\Security;
 
-use Waca\DataObjects\User;
+use Waca\Helpers\PreferenceManager;
 use Waca\Pages\PageBan;
 use Waca\Pages\PageDomainManagement;
 use Waca\Pages\PageDomainSwitch;
@@ -240,8 +240,8 @@ class RoleConfiguration
                 'preview'  => self::ACCESS_ALLOW,
             ),
             'RequestCreation'                    => array(
-                User::CREATION_MANUAL => self::ACCESS_ALLOW,
-                User::CREATION_OAUTH  => self::ACCESS_ALLOW,
+                PreferenceManager::CREATION_MANUAL => self::ACCESS_ALLOW,
+                PreferenceManager::CREATION_OAUTH  => self::ACCESS_ALLOW,
             ),
             'GlobalInfo'                         => array(
                 'viewSiteNotice' => self::ACCESS_ALLOW,
@@ -353,7 +353,7 @@ class RoleConfiguration
             '_editableBy'     => array('admin', 'toolRoot'),
             '_childRoles'     => array(),
             'RequestCreation' => array(
-                User::CREATION_BOT => self::ACCESS_ALLOW,
+                PreferenceManager::CREATION_BOT => self::ACCESS_ALLOW,
             ),
         ),
 

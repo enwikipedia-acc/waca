@@ -3,7 +3,7 @@
     <div class="col-md-6">
         <a class="btn btn-primary btn-block jsconfirm" target="_blank"
            href="{$mediawikiScriptPath}?title=Special:UserLogin/signup&amp;wpName={$requestName|escape:'url'}&amp;email={$requestEmail|escape:'url'}&amp;reason={$createAccountReason|escape:'url'}{$requestId}&amp;wpCreateaccountMail=true"
-                {if !$currentUser->getAbortPref() && $createdHasJsQuestion}
+                {if !$skipJsAborts && $createdHasJsQuestion}
                     data-template="{$createdId}"
                 {/if}>
             Create account
@@ -24,7 +24,7 @@
                     {foreach $createReasons as $reason}
                         <li>
                             <button class="btn-link dropdown-item jsconfirm" name="template" value="{$reason->getId()}" type="submit"
-                                    {if !$currentUser->getAbortPref() && $reason->getJsquestion() != ''}
+                                    {if !$skipJsAborts && $reason->getJsquestion() != ''}
                                         data-template="{$reason->getId()}"
                                     {/if}>
                                 {$reason->getName()|escape}

@@ -16,6 +16,7 @@ use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\Helpers\OAuthUserHelper;
+use Waca\Helpers\PreferenceManager;
 use Waca\Helpers\RequestEmailHelper;
 use Waca\PdoDatabase;
 use Waca\RequestStatus;
@@ -246,12 +247,13 @@ class PageCloseRequest extends RequestActionBase
     {
         $database = $this->getDatabase();
         $currentUser = User::getCurrent($database);
+        $preferencesManager = PreferenceManager::getForCurrent($database);
 
         if ($action !== EmailTemplate::ACTION_CREATED) {
             return;
         }
 
-        if ($currentUser->getWelcomeTemplate() === null) {
+        if ($preferencesManager->getPreference(PreferenceManager::PREF_WELCOMETEMPLATE) === null) {
             return;
         }
 

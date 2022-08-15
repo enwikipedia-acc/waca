@@ -16,6 +16,7 @@ use Waca\ExceptionHandler;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Fragments\TemplateOutput;
+use Waca\Helpers\PreferenceManager;
 use Waca\Security\ContentSecurityPolicyManager;
 use Waca\Security\TokenManager;
 use Waca\SessionAlert;
@@ -79,9 +80,11 @@ abstract class PageBase extends TaskBase implements IRoutedTask
     {
         $this->setUpSmarty();
 
-        $currentUser = User::getCurrent($this->getDatabase());
+        $database = $this->getDatabase();
+        $currentUser = User::getCurrent($database);
         $this->assign('currentUser', $currentUser);
-        $this->assign('currentDomain', Domain::getCurrent($this->getDatabase()));
+        $this->assign('skin', PreferenceManager::getForCurrent($database)->getPreference(PreferenceManager::PREF_SKIN));
+        $this->assign('currentDomain', Domain::getCurrent($database));
         $this->assign('loggedIn', (!$currentUser->isCommunityUser()));
     }
 

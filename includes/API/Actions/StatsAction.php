@@ -14,6 +14,7 @@ use Waca\API\ApiException;
 use Waca\API\IXmlApiAction;
 use Waca\DataObjects\User;
 use Waca\Helpers\OAuthUserHelper;
+use Waca\Helpers\PreferenceManager;
 use Waca\Tasks\XmlApiPageBase;
 use Waca\WebRequest;
 
@@ -59,10 +60,13 @@ class StatsAction extends XmlApiPageBase implements IXmlApiAction
         $oauth = new OAuthUserHelper($user, $this->getDatabase(), $this->getOAuthProtocolHelper(),
             $this->getSiteConfiguration());
 
+        // FIXME: domains
+        $prefs = new PreferenceManager($this->getDatabase(), $user->getId(), 1);
+
         $userElement->setAttribute("username", $user->getUsername());
         $userElement->setAttribute("status", $user->getStatus());
         $userElement->setAttribute("lastactive", $user->getLastActive());
-        $userElement->setAttribute("welcome_template", $user->getWelcomeTemplate());
+        $userElement->setAttribute("welcome_template", $prefs->getPreference(PreferenceManager::PREF_WELCOMETEMPLATE));
         $userElement->setAttribute("onwikiname", $user->getOnWikiName());
         $userElement->setAttribute("oauth", $oauth->isFullyLinked() ? "true" : "false");
 
