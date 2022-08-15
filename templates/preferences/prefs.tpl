@@ -15,50 +15,57 @@
                 <fieldset>
                     <legend>General settings</legend>
 
-                    <div class="form-group row">
+                    <div class="form-group row mb-5">
                         <div class="col-md-2 col-lg-3">
                             <label for="inputEmail" class="col-form-label">Your Email address</label>
                         </div>
-                        <div class="col-md-10 col-lg-8 col-xl-6">
+                        <div class="col-md-8 col-lg-7 col-xl-6">
                             <input class="form-control" type="email" id="inputEmail" name="email" required="required" value="{$currentUser->getEmail()|escape}"/>
                             <small class="form-text text-muted">This is used to send you automatic notifications about events involving your account in the tool, including sending password reset emails.</small>
                         </div>
+                        {include file="preferences/globalcheck.tpl" settingName="email" settingState=true settingAvailable=false}
                     </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row mb-5">
                         <div class="col-md-2 col-lg-3">
-                            <label for="inputEmailsig" class="col-form-label">Email signature</label>
+                            <label for="emailSignature" class="col-form-label">Email signature</label>
                         </div>
-                        <div class="col-md-10 col-lg-8 col-xl-6">
-                            <textarea class="form-control" id="inputEmailsig" rows="4" name="emailsig">{$emailSignature|escape}</textarea>
+                        <div class="col-md-8 col-lg-7 col-xl-6">
+                            <textarea class="form-control" id="emailSignature" rows="5" name="emailSignature">{$emailSignature|escape}</textarea>
                             <small class="form-text text-muted">This will show up at the end of any Email you send through the interface.</small>
                         </div>
+                        {include file="preferences/globalcheck.tpl" settingName="emailSignature" settingState=$emailSignatureGlobal settingAvailable=true}
                     </div>
 
-                    <div class="form-group row">
-                        <div class="offset-md-2 offset-lg-3 col-md-10 col-lg-8 col-xl-6">
+                    <div class="form-group row mb-5">
+
+                        <div class="col-md-2 col-lg-3">
+                            <span class="col-form-label">Request closure</span>
+                        </div>
+                        <div class="col-md-8 col-lg-7 col-xl-6">
                             <div class="custom-control custom-switch">
-                                <input class="custom-control-input" type="checkbox" id="inputAbortpref" name="abortpref"{if $skipJsAbort} checked{/if}>
-                                <label class="custom-control-label" for="inputAbortpref">Skip double-check prompt before closing requests</label>
+                                <input class="custom-control-input" type="checkbox" id="skipJsAbort" name="skipJsAbort"{if $skipJsAbort} checked{/if}>
+                                <label class="custom-control-label" for="skipJsAbort">Skip double-check prompt before closing requests</label>
                             </div>
                         </div>
+                        {include file="preferences/globalcheck.tpl" settingName="skipJsAbort" settingState=$skipJsAbortGlobal settingAvailable=true}
                     </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row mb-5">
                         <div class="col-md-2 col-lg-3">
                             <label class="col-form-label">Account Creation Mode</label>
                         </div>
-                        <div class="col-md-10 col-lg-8 col-xl-6">
+                        <div class="col-md-8 col-lg-7 col-xl-6">
 
                             <div class="custom-control custom-radio">
-                                <input type="radio" name="creationmode" value="0" class="custom-control-input" id="autocreateNone"
+                                <input type="radio" name="creationMode" value="0" class="custom-control-input" id="autocreateNone"
                                        {if $creationMode == 0}checked="checked"{/if}
                                        {if !$canManualCreate}disabled="disabled"{/if}/>
                                 <label class="custom-control-label" for="autocreateNone">Create accounts manually using Special:CreateAccount</label>
                             </div>
 
                             <div class="custom-control custom-radio">
-                                <input type="radio" name="creationmode" value="1" class="custom-control-input" id="autocreateOauth"
+                                <input type="radio" name="creationMode" value="1" class="custom-control-input" id="autocreateOauth"
                                        {if $creationMode == 1}checked="checked"{/if}
                                        {if !$canOauthCreate}disabled="disabled"{/if}/>
                                 <label class="custom-control-label" for="autocreateOauth">Use my Wikimedia account to create the accounts on my behalf where possible</label>
@@ -68,7 +75,7 @@
                             </div>
 
                             <div class="custom-control custom-radio">
-                                <input type="radio" name="creationmode" value="2" class="custom-control-input" id="autocreateBot"
+                                <input type="radio" name="creationMode" value="2" class="custom-control-input" id="autocreateBot"
                                        {if $creationMode == 2}checked="checked"{/if}
                                        {if !$canBotCreate}disabled="disabled"{/if}/>
                                 <label class="custom-control-label" for="autocreateBot">Use a bot to create the accounts on my behalf where possible</label>
@@ -76,14 +83,16 @@
 
                             <small class="form-text text-muted">Please refer to the Guide for a full explanation of these options.</small>
                         </div>
+                        {include file="preferences/globalcheck.tpl" settingName="creationMode" settingState=false settingAvailable=false}
+
                     </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row mb-5">
                         <div class="col-md-2 col-lg-3">
-                            <label class="col-form-label" for="inputSkinType">Tool theme:</label>
+                            <label class="col-form-label" for="skin">Tool theme</label>
                         </div>
                         <div class="col-md-6 col-lg-5 col-xl-4">
-                            <select class="form-control" id="inputSkinType" name="skintype">
+                            <select class="form-control" id="skin" name="skin">
                                 <option value="auto" {if $skin === 'auto'}selected="selected"{/if}>
                                     Use browser default
                                 </option>
@@ -95,12 +104,18 @@
                                 </option>
                             </select>
                         </div>
+                        {include file="preferences/globalcheck.tpl" settingName="skin" settingState=$skinGlobal settingAvailable=true offset="offset-md-2 offset-lg-2 offset-xl-2"}
                     </div>
 
                     <div class="form-group row">
                         <div class="offset-md-2 offset-lg-3 col-md-4 col-lg-3">
                             <button type="submit" class="btn btn-primary btn-block">Save preferences</button>
                         </div>
+                        {if count($nav__domainList) > 1}
+                            <div class="offset-md-4 offset-lg-4 offset-xl-3 col-md-2 col-lg-1 d-none d-md-block">
+                                <a href="#modalGlobalSettings" data-toggle="modal" class="btn btn-outline-info btn-block">Help</a>
+                            </div>
+                        {/if}
                     </div>
 
                 </fieldset>
@@ -274,4 +289,8 @@
 
         {/if}
     </fieldset>
+
+    {if count($nav__domainList) > 1}
+        {include file="preferences/globalhelp.tpl"}
+    {/if}
 {/block}
