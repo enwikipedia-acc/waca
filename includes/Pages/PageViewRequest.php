@@ -22,6 +22,7 @@ use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\RequestData;
 use Waca\Helpers\LogHelper;
 use Waca\Helpers\OAuthUserHelper;
+use Waca\Helpers\PreferenceManager;
 use Waca\Pages\RequestAction\PageManuallyConfirm;
 use Waca\PdoDatabase;
 use Waca\Security\RoleConfiguration;
@@ -180,6 +181,12 @@ class PageViewRequest extends InternalPageBase
         $this->assign('createdId', $createdTemplate->getId());
         $this->assign('createdName', $createdTemplate->getName());
 
+        $preferenceManager = PreferenceManager::getForCurrent($database);
+        $skipJsAborts = $preferenceManager->getPreference(PreferenceManager::PREF_SKIP_JS_ABORT);
+        $preferredCreationMode = (int)$preferenceManager->getPreference(PreferenceManager::PREF_CREATION_MODE);
+        $this->assign('skipJsAborts', $skipJsAborts);
+        $this->assign('preferredCreationMode', $preferredCreationMode);
+
         $createReasons = EmailTemplate::getActiveNonpreloadTemplates(EmailTemplate::ACTION_CREATED, $database, $domain->getDefaultClose());
         $this->assign("createReasons", $createReasons);
         $declineReasons = EmailTemplate::getActiveNonpreloadTemplates(EmailTemplate::ACTION_NOT_CREATED, $database);
@@ -303,9 +310,14 @@ class PageViewRequest extends InternalPageBase
         $this->assign('allowWelcomeSkip', false);
         $this->assign('forceWelcomeSkip', false);
 
-        $oauth = new OAuthUserHelper($user, $this->getDatabase(), $this->getOAuthProtocolHelper(), $this->getSiteConfiguration());
+        $database = $this->getDatabase();
+        $preferenceManager = PreferenceManager::getForCurrent($database);
 
-        if ($user->getWelcomeTemplate() != 0) {
+        $oauth = new OAuthUserHelper($user, $database, $this->getOAuthProtocolHelper(), $this->getSiteConfiguration());
+
+        $welcomeTemplate = $preferenceManager->getPreference(PreferenceManager::PREF_WELCOMETEMPLATE);
+
+        if ($welcomeTemplate != null) {
             $this->assign('allowWelcomeSkip', true);
 
             if (!$oauth->canWelcome()) {
@@ -314,9 +326,9 @@ class PageViewRequest extends InternalPageBase
         }
 
         // test credentials
-        $canManualCreate = $this->barrierTest(User::CREATION_MANUAL, $user, 'RequestCreation');
-        $canOauthCreate = $this->barrierTest(User::CREATION_OAUTH, $user, 'RequestCreation');
-        $canBotCreate = $this->barrierTest(User::CREATION_BOT, $user, 'RequestCreation');
+        $canManualCreate = $this->barrierTest(PreferenceManager::CREATION_MANUAL, $user, 'RequestCreation');
+        $canOauthCreate = $this->barrierTest(PreferenceManager::CREATION_OAUTH, $user, 'RequestCreation');
+        $canBotCreate = $this->barrierTest(PreferenceManager::CREATION_BOT, $user, 'RequestCreation');
 
         $this->assign('canManualCreate', $canManualCreate);
         $this->assign('canOauthCreate', $canOauthCreate);
@@ -325,7 +337,8 @@ class PageViewRequest extends InternalPageBase
         // show/hide the type radio buttons
         $creationHasChoice = count(array_filter([$canManualCreate, $canOauthCreate, $canBotCreate])) > 1;
 
-        if (!$this->barrierTest($user->getCreationMode(), $user, 'RequestCreation')) {
+        $creationModePreference = $preferenceManager->getPreference(PreferenceManager::PREF_CREATION_MODE);
+        if (!$this->barrierTest($creationModePreference, $user, 'RequestCreation')) {
             // user is not allowed to use their default. Force a choice.
             $creationHasChoice = true;
         }

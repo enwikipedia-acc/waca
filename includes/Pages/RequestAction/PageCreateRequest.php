@@ -17,6 +17,7 @@ use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
+use Waca\Helpers\PreferenceManager;
 use Waca\PdoDatabase;
 use Waca\RequestStatus;
 use Waca\Security\SecurityManager;
@@ -49,14 +50,15 @@ class PageCreateRequest extends RequestActionBase
         $template = $this->getTemplate($database);
         $creationMode = $this->getCreationMode();
         $user = User::getCurrent($database);
+        $preferencesManager = PreferenceManager::getForCurrent($database);
 
         $secMgr = $this->getSecurityManager();
-        if ($secMgr->allows('RequestCreation', User::CREATION_BOT, $user) !== SecurityManager::ALLOWED
+        if ($secMgr->allows('RequestCreation', PreferenceManager::CREATION_BOT, $user) !== SecurityManager::ALLOWED
             && $creationMode === 'bot'
         ) {
             throw new AccessDeniedException($secMgr, $this->getDomainAccessManager());
         }
-        elseif ($secMgr->allows('RequestCreation', User::CREATION_OAUTH, $user) !== SecurityManager::ALLOWED
+        elseif ($secMgr->allows('RequestCreation', PreferenceManager::CREATION_OAUTH, $user) !== SecurityManager::ALLOWED
             && $creationMode === 'oauth'
         ) {
             throw new AccessDeniedException($secMgr, $this->getDomainAccessManager());
@@ -74,7 +76,8 @@ class PageCreateRequest extends RequestActionBase
 
         $creationTaskId = $this->enqueueCreationTask($creationMode, $request, $template, $user, $database);
 
-        if ($user->getWelcomeTemplate() !== null && !WebRequest::postBoolean('skipAutoWelcome')) {
+        $welcomeTemplate = $preferencesManager->getPreference(PreferenceManager::PREF_WELCOMETEMPLATE);
+        if ($welcomeTemplate !== null && !WebRequest::postBoolean('skipAutoWelcome')) {
             $this->enqueueWelcomeTask($request, $creationTaskId, $user, $database);
         }
 

@@ -15,6 +15,7 @@ use Waca\DataObjects\User;
 use Waca\DataObjects\WelcomeTemplate;
 use Waca\Helpers\MediaWikiHelper;
 use Waca\Helpers\OAuthUserHelper;
+use Waca\Helpers\PreferenceManager;
 use Waca\PdoDatabase;
 use Waca\RequestStatus;
 
@@ -38,15 +39,19 @@ class WelcomeUserTask extends BackgroundTaskBase
         $database = $this->getDatabase();
         $this->request = $this->getRequest();
         $user = $this->getTriggerUser();
+        //FIXME: domains
+        $userPrefs = new PreferenceManager($database, $user->getId(), 1);
 
-        if ($user->getWelcomeTemplate() === null) {
+        $welcomeTemplate = $userPrefs->getPreference(PreferenceManager::PREF_WELCOMETEMPLATE);
+
+        if ($welcomeTemplate === null) {
             $this->markFailed('Welcome template not specified');
 
             return;
         }
 
         /** @var WelcomeTemplate $template */
-        $template = WelcomeTemplate::getById($user->getWelcomeTemplate(), $database);
+        $template = WelcomeTemplate::getById($welcomeTemplate, $database);
 
         if ($template === false) {
             $this->markFailed('Welcome template missing');

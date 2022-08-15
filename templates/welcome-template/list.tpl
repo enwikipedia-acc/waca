@@ -37,13 +37,13 @@
                 </thead>
                 {if $canSelect}
                     <tfoot>
-                        <tr {if $currentUser->getWelcomeTemplate() == null}class="table-success"{/if}>
+                        <tr {if $currentTemplate == null}class="table-success"{/if}>
                             <th colspan="2">Disable automatic welcoming</th>
                             {if $canEdit}
                                 <th class="d-none d-lg-block"><!-- count --></th>
                             {/if}
                             <td class="table-button-cell">
-                                {if $currentUser->getWelcomeTemplate() !== null}
+                                {if $currentTemplate !== null}
                                     <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select">
                                         {include file="security/csrf.tpl"}
                                         <input type="hidden" name="disable" value="true"/>
@@ -60,7 +60,7 @@
                 {/if}
                 <tbody>
                 {foreach from=$templateList item="t" name="templateloop"}
-                    <tr {if $currentUser->getWelcomeTemplate() == $t->getId()}class="table-success"{/if}>
+                    <tr {if $currentTemplate == $t->getId()}class="table-success"{/if}>
                         <td>
                             {$t->getUserCode()|escape}
                         </td>
@@ -96,7 +96,7 @@
                                     </button>
                                 </form>
                             {/if}
-                            {if $currentUser->getWelcomeTemplate() != $t->getId()}
+                            {if $currentTemplate != $t->getId()}
                                 {if $canSelect}
                                     <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select" class="d-inline-block">
                                         {include file="security/csrf.tpl"}

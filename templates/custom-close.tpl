@@ -41,16 +41,16 @@
                     <option value="" {if $defaultAction == Waca\DataObjects\EmailTemplate::ACTION_NONE}selected="selected"{/if}>(please select)</option>
                     <option value="mail" {if $preloadAction == "mail"}selected="selected"{/if}>Only send the email</option>
                     <optgroup label="Send email and close request...">
-                        <option value="created" {if $preloadAction == Waca\DataObjects\EmailTemplate::ACTION_CREATED || ($preloadAction === null && $defaultAction == Waca\DataObjects\EmailTemplate::ACTION_CREATED && $currentUser->getCreationMode() == 0)}selected="selected"{/if}>
+                        <option value="created" {if $preloadAction == Waca\DataObjects\EmailTemplate::ACTION_CREATED || ($preloadAction === null && $defaultAction == Waca\DataObjects\EmailTemplate::ACTION_CREATED && $preferredCreationMode == 0)}selected="selected"{/if}>
                             Close request as created
                         </option>
                         {if $canOauthCreate}
-                            <option value="{Waca\Pages\RequestAction\PageCustomClose::CREATE_OAUTH}"  {if $preloadAction == Waca\Pages\RequestAction\PageCustomClose::CREATE_OAUTH || ($preloadAction === null && $defaultAction == Waca\DataObjects\EmailTemplate::ACTION_CREATED && $currentUser->getCreationMode() == 1)}selected="selected"{/if}>
+                            <option value="{Waca\Pages\RequestAction\PageCustomClose::CREATE_OAUTH}"  {if $preloadAction == Waca\Pages\RequestAction\PageCustomClose::CREATE_OAUTH || ($preloadAction === null && $defaultAction == Waca\DataObjects\EmailTemplate::ACTION_CREATED && $preferredCreationMode == 1)}selected="selected"{/if}>
                                 Create account (Wikimedia account) & close request as created
                             </option>
                         {/if}
                         {if $canBotCreate}
-                            <option value="{Waca\Pages\RequestAction\PageCustomClose::CREATE_BOT}"  {if $preloadAction == Waca\Pages\RequestAction\PageCustomClose::CREATE_BOT || ($preloadAction === null && $defaultAction == Waca\DataObjects\EmailTemplate::ACTION_CREATED && $currentUser->getCreationMode() == 2)}selected="selected"{/if}>
+                            <option value="{Waca\Pages\RequestAction\PageCustomClose::CREATE_BOT}"  {if $preloadAction == Waca\Pages\RequestAction\PageCustomClose::CREATE_BOT || ($preloadAction === null && $defaultAction == Waca\DataObjects\EmailTemplate::ACTION_CREATED && $preferredCreationMode == 2)}selected="selected"{/if}>
                                 Create account (via bot) & close request as created
                             </option>
                         {/if}

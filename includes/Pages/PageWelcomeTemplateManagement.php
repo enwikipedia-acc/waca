@@ -28,13 +28,19 @@ class PageWelcomeTemplateManagement extends InternalPageBase
      */
     protected function main()
     {
-        $templateList = WelcomeTemplate::getAll($this->getDatabase());
+        $database = $this->getDatabase();
+        $templateList = WelcomeTemplate::getAll($database);
+        $preferenceManager = PreferenceManager::getForCurrent($database);
 
         $this->setHtmlTitle('Welcome Templates');
 
         $this->assignCSRFToken();
 
-        $user = User::getCurrent($this->getDatabase());
+        $user = User::getCurrent($database);
+
+        $currentTemplate = $preferenceManager->getPreference(PreferenceManager::PREF_WELCOMETEMPLATE);
+        $this->assign('currentTemplate', $currentTemplate);
+
         $this->assign('canEdit', $this->barrierTest('edit', $user));
         $this->assign('canAdd', $this->barrierTest('add', $user));
         $this->assign('canSelect', $this->barrierTest('select', $user));
@@ -57,19 +63,18 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 
         $this->validateCSRFToken();
 
-        $user = User::getCurrent($this->getDatabase());
+        $database = $this->getDatabase();
+        $user = User::getCurrent($database);
+        $preferenceManager = PreferenceManager::getForCurrent($database);
 
         if (WebRequest::postBoolean('disable')) {
-            $user->setWelcomeTemplate(null);
-            $user->save();
+            $preferenceManager->setLocalPreference(PreferenceManager::PREF_WELCOMETEMPLATE, null);
 
             SessionAlert::success('Disabled automatic user welcoming.');
             $this->redirect('welcomeTemplates');
 
             return;
         }
-
-        $database = $this->getDatabase();
 
         $templateId = WebRequest::postInt('template');
         /** @var false|WelcomeTemplate $template */
@@ -79,8 +84,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
             throw new ApplicationLogicException('Unknown template');
         }
 
-        $user->setWelcomeTemplate($template->getId());
-        $user->save();
+        $preferenceManager->setLocalPreference(PreferenceManager::PREF_WELCOMETEMPLATE, $template->getId());
 
         SessionAlert::success("Updated selected welcome template for automatic welcoming.");
 

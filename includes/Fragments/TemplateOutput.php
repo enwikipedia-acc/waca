@@ -45,6 +45,7 @@ trait TemplateOutput
         $this->smarty->addPluginsDir($this->getSiteConfiguration()->getFilePath() . '/smarty-plugins');
 
         $this->assign('currentUser', User::getCommunity());
+        $this->assign('skin', 'main');
         $this->assign('currentDomain', null);
         $this->assign('loggedIn', false);
         $this->assign('baseurl', $this->getSiteConfiguration()->getBaseUrl());

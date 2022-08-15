@@ -62,7 +62,7 @@
                 <label for="inputEmailsig" class="col-form-label">Email signature</label>
             </div>
             <div class="col-md-9 col-lg-7 col-xl-6">
-                <div class="form-control prewrap minh-5">{$user->getEmailSig()|escape}</div>
+                <div class="form-control prewrap minh-5">{$emailSignature|escape}</div>
             </div>
         </div>
 
@@ -76,7 +76,7 @@
                 </div>
                 <div class="custom-control custom-radio">
                     <input type="radio" name="creationmode" value="0" class="custom-control-input" id="autocreateNone"
-                           {if $user->getCreationMode() == 0}checked="checked"{/if} />
+                           {if $preferredCreationMode == 0}checked="checked"{/if} />
                     <label class="custom-control-label" for="autocreateNone">
                         {if !$canManualCreate}<span class="badge badge-danger">Not authorised</span>{/if}
                         Create accounts manually using Special:CreateAccount
@@ -85,7 +85,7 @@
 
                 <div class="custom-control custom-radio">
                     <input type="radio" name="creationmode" value="1" class="custom-control-input" id="autocreateOauth"
-                           {if $user->getCreationMode() == 1}checked="checked"{/if} />
+                           {if $preferredCreationMode == 1}checked="checked"{/if} />
                     <label class="custom-control-label" for="autocreateOauth">
                         {if !$canOauthCreate}<span class="badge badge-danger">Not authorised</span>{/if}
                         Use my Wikimedia account to create the accounts on my behalf where possible
@@ -94,7 +94,7 @@
 
                 <div class="custom-control custom-radio">
                     <input type="radio" name="creationmode" value="2" class="custom-control-input" id="autocreateBot"
-                           {if $user->getCreationMode() == 2}checked="checked"{/if} />
+                           {if $preferredCreationMode == 2}checked="checked"{/if} />
                     <label class="custom-control-label" for="autocreateBot">
                         {if !$canBotCreate}<span class="badge badge-danger">Not authorised</span>{/if}
                         Use a bot to create the accounts on my behalf where possible

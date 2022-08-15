@@ -33,14 +33,14 @@ class RequestEmailHelper
     /**
      * @param Request $request
      * @param string  $mailText
-     * @param User    $currentUser
+     * @param User    $sendingUser      The user sending the email
      * @param boolean $ccMailingList
      */
-    public function sendMail(Request $request, $mailText, User $currentUser, $ccMailingList)
+    public function sendMail(Request $request, $mailText, User $sendingUser, $ccMailingList)
     {
         $headers = array(
             'X-ACC-Request' => $request->getId(),
-            'X-ACC-UserID'  => $currentUser->getId(),
+            'X-ACC-UserID'  => $sendingUser->getId(),
         );
 
         // FIXME: domains!
@@ -53,7 +53,10 @@ class RequestEmailHelper
 
         $helper = $this->emailHelper;
 
-        $emailSig = $currentUser->getEmailSig();
+        // FIXME: domains
+        $preferenceManager = new PreferenceManager($request->getDatabase(), $sendingUser->getId(), 1);
+
+        $emailSig = $preferenceManager->getPreference(PreferenceManager::PREF_EMAIL_SIGNATURE);
         if ($emailSig !== '' || $emailSig !== null) {
             $emailSig = "\n\n" . $emailSig;
         }

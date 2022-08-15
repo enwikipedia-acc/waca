@@ -12,6 +12,7 @@ use Waca\DataObjects\Domain;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\User;
 use Waca\Fragments\NavigationMenuAccessControl;
+use Waca\Helpers\PreferenceManager;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
 use Waca\PdoDatabase;
 use Waca\Security\DomainAccessManager;
@@ -56,6 +57,7 @@ class AccessDeniedException extends ReadableException
         // uck. We should still be able to access the database in this situation though.
         $database = PdoDatabase::getDatabaseConnection('acc');
         $currentUser = User::getCurrent($database);
+        $this->assign('skin', PreferenceManager::getForCurrent($database)->getPreference(PreferenceManager::PREF_SKIN));
         $this->assign('currentUser', $currentUser);
         $this->assign('currentDomain', Domain::getCurrent($database));
 

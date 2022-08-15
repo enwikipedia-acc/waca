@@ -14,6 +14,7 @@ use Waca\DataObjects\UserRole;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\Helpers\OAuthUserHelper;
+use Waca\Helpers\PreferenceManager;
 use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
@@ -482,6 +483,9 @@ class PageUserManagement extends InternalPageBase
             throw new ApplicationLogicException('Sorry, the user you are trying to edit could not be found.');
         }
 
+        // FIXME: domains
+        $prefs = new PreferenceManager($database, $user->getId(), 1);
+
         // Dual-mode action
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
@@ -505,7 +509,8 @@ class PageUserManagement extends InternalPageBase
             }
 
             $user->setEmail($newEmail);
-            $user->setCreationMode(WebRequest::postInt('creationmode'));
+
+            $prefs->setLocalPreference(PreferenceManager::PREF_CREATION_MODE, WebRequest::postInt('creationmode'));
 
             $user->setUpdateVersion(WebRequest::postInt('updateversion'));
 
@@ -527,12 +532,15 @@ class PageUserManagement extends InternalPageBase
             $this->assign('user', $user);
             $this->assign('oauth', $oauth);
 
+            $this->assign('preferredCreationMode', (int)$prefs->getPreference(PreferenceManager::PREF_CREATION_MODE));
+            $this->assign('emailSignature', $prefs->getPreference(PreferenceManager::PREF_EMAIL_SIGNATURE));
+
             $this->assign('canManualCreate',
-                $this->barrierTest(User::CREATION_MANUAL, $user, 'RequestCreation'));
+                $this->barrierTest(PreferenceManager::CREATION_MANUAL, $user, 'RequestCreation'));
             $this->assign('canOauthCreate',
-                $this->barrierTest(User::CREATION_OAUTH, $user, 'RequestCreation'));
+                $this->barrierTest(PreferenceManager::CREATION_OAUTH, $user, 'RequestCreation'));
             $this->assign('canBotCreate',
-                $this->barrierTest(User::CREATION_BOT, $user, 'RequestCreation'));
+                $this->barrierTest(PreferenceManager::CREATION_BOT, $user, 'RequestCreation'));
         }
     }
 

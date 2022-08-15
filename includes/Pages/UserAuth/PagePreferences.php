@@ -11,6 +11,9 @@ namespace Waca\Pages\UserAuth;
 use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\Helpers\OAuthUserHelper;
+use Waca\Helpers\PreferenceManager;
+use Waca\Pages\PageMain;
+use Waca\Security\RoleConfiguration;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -28,17 +31,18 @@ class PagePreferences extends InternalPageBase
         $enforceOAuth = $this->getSiteConfiguration()->getEnforceOAuth();
         $database = $this->getDatabase();
         $user = User::getCurrent($database);
+        $preferencesManager = PreferenceManager::getForCurrent($database);
 
         // Dual mode
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
-            $user->setEmailSig(WebRequest::postString('emailsig'));
-            $user->setAbortPref(WebRequest::postBoolean('abortpref') ? 1 : 0);
-            $this->setCreationMode($user);
+            $preferencesManager->setLocalPreference(PreferenceManager::PREF_EMAIL_SIGNATURE, WebRequest::postString('emailsig'));
+            $preferencesManager->setLocalPreference(PreferenceManager::PREF_SKIP_JS_ABORT, WebRequest::postBoolean('abortpref') ? 1 : 0);
+            $this->setCreationMode($user, $preferencesManager);
 
             $newSkin = WebRequest::postString('skintype');
             if ($newSkin === 'main' || $newSkin === 'alt' || $newSkin === 'auto') {
-                $user->setSkin($newSkin);
+                $preferencesManager->setLocalPreference(PreferenceManager::PREF_SKIN, $newSkin);
             }
 
             $email = WebRequest::postEmail('email');
@@ -62,12 +66,17 @@ class PagePreferences extends InternalPageBase
 
             $this->assign("enforceOAuth", $enforceOAuth);
 
+            $this->assign('emailSignature', $preferencesManager->getPreference(PreferenceManager::PREF_EMAIL_SIGNATURE));
+            $this->assign('creationMode', $preferencesManager->getPreference(PreferenceManager::PREF_CREATION_MODE));
+            $this->assign('skin', $preferencesManager->getPreference(PreferenceManager::PREF_SKIN));
+            $this->assign('skipJsAbort', $preferencesManager->getPreference(PreferenceManager::PREF_SKIP_JS_ABORT));
+
             $this->assign('canManualCreate',
-                $this->barrierTest(User::CREATION_MANUAL, $user, 'RequestCreation'));
+                $this->barrierTest(PreferenceManager::CREATION_MANUAL, $user, 'RequestCreation'));
             $this->assign('canOauthCreate',
-                $this->barrierTest(User::CREATION_OAUTH, $user, 'RequestCreation'));
+                $this->barrierTest(PreferenceManager::CREATION_OAUTH, $user, 'RequestCreation'));
             $this->assign('canBotCreate',
-                $this->barrierTest(User::CREATION_BOT, $user, 'RequestCreation'));
+                $this->barrierTest(PreferenceManager::CREATION_BOT, $user, 'RequestCreation'));
 
             $oauth = new OAuthUserHelper($user, $database, $this->getOAuthProtocolHelper(),
                 $this->getSiteConfiguration());
@@ -115,14 +124,14 @@ class PagePreferences extends InternalPageBase
     /**
      * @param User $user
      */
-    protected function setCreationMode(User $user)
+    private function setCreationMode(User $user, PreferenceManager $preferenceManager)
     {
         // if the user is selecting a creation mode that they are not allowed, do nothing.
         // this has the side effect of allowing them to keep a selected mode that either has been changed for them,
         // or that they have kept from when they previously had certain access.
         $creationMode = WebRequest::postInt('creationmode');
         if ($this->barrierTest($creationMode, $user, 'RequestCreation')) {
-            $user->setCreationMode($creationMode);
+            $preferenceManager->setLocalPreference(PreferenceManager::PREF_CREATION_MODE, $creationMode);
         }
     }
 }

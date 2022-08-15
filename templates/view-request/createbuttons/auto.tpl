@@ -3,7 +3,7 @@
     {if !empty($createReasons)}
         <div class="dropright btn-group btn-block">
             <button class="btn btn-success col jsconfirm" type="submit" name="template" value="{$createdId}"
-                    {if !$currentUser->getAbortPref() && $createdHasJsQuestion}
+                    {if !$skipJsAborts && $createdHasJsQuestion}
                 data-template="{$createdId}"
                     {/if}>
                 Create and close as {$createdName|escape}
@@ -17,7 +17,7 @@
                 {foreach $createReasons as $reason}
                     <li>
                         <button class="btn-link dropdown-item jsconfirm" name="template" value="{$reason->getId()}" type="submit"
-                            {if !$currentUser->getAbortPref() && $reason->getJsquestion() != ''}
+                            {if !$skipJsAborts && $reason->getJsquestion() != ''}
                             data-template="{$reason->getId()}"
                             {/if}>
                             {$reason->getName()|escape}
@@ -28,7 +28,7 @@
         </div>
     {else}
         <button class="btn btn-success btn-block jsconfirm" type="submit" name="template" value="{$createdId}"
-                {if !$currentUser->getAbortPref() && $createdHasJsQuestion}
+                {if !$skipJsAborts && $createdHasJsQuestion}
             data-template="{$createdId}"
                 {/if}>
             {$createdName|escape}

@@ -30,7 +30,7 @@
                             <label for="inputEmailsig" class="col-form-label">Email signature</label>
                         </div>
                         <div class="col-md-10 col-lg-8 col-xl-6">
-                            <textarea class="form-control" id="inputEmailsig" rows="4" name="emailsig">{$currentUser->getEmailSig()|escape}</textarea>
+                            <textarea class="form-control" id="inputEmailsig" rows="4" name="emailsig">{$emailSignature|escape}</textarea>
                             <small class="form-text text-muted">This will show up at the end of any Email you send through the interface.</small>
                         </div>
                     </div>
@@ -38,7 +38,7 @@
                     <div class="form-group row">
                         <div class="offset-md-2 offset-lg-3 col-md-10 col-lg-8 col-xl-6">
                             <div class="custom-control custom-switch">
-                                <input class="custom-control-input" type="checkbox" id="inputAbortpref" name="abortpref"{if $currentUser->getAbortPref()} checked{/if}>
+                                <input class="custom-control-input" type="checkbox" id="inputAbortpref" name="abortpref"{if $skipJsAbort} checked{/if}>
                                 <label class="custom-control-label" for="inputAbortpref">Skip double-check prompt before closing requests</label>
                             </div>
                         </div>
@@ -52,14 +52,14 @@
 
                             <div class="custom-control custom-radio">
                                 <input type="radio" name="creationmode" value="0" class="custom-control-input" id="autocreateNone"
-                                       {if $currentUser->getCreationMode() == 0}checked="checked"{/if}
+                                       {if $creationMode == 0}checked="checked"{/if}
                                        {if !$canManualCreate}disabled="disabled"{/if}/>
                                 <label class="custom-control-label" for="autocreateNone">Create accounts manually using Special:CreateAccount</label>
                             </div>
 
                             <div class="custom-control custom-radio">
                                 <input type="radio" name="creationmode" value="1" class="custom-control-input" id="autocreateOauth"
-                                       {if $currentUser->getCreationMode() == 1}checked="checked"{/if}
+                                       {if $creationMode == 1}checked="checked"{/if}
                                        {if !$canOauthCreate}disabled="disabled"{/if}/>
                                 <label class="custom-control-label" for="autocreateOauth">Use my Wikimedia account to create the accounts on my behalf where possible</label>
                                 {if $canOauthCreate && !$oauth->canCreateAccount()}
@@ -69,7 +69,7 @@
 
                             <div class="custom-control custom-radio">
                                 <input type="radio" name="creationmode" value="2" class="custom-control-input" id="autocreateBot"
-                                       {if $currentUser->getCreationMode() == 2}checked="checked"{/if}
+                                       {if $creationMode == 2}checked="checked"{/if}
                                        {if !$canBotCreate}disabled="disabled"{/if}/>
                                 <label class="custom-control-label" for="autocreateBot">Use a bot to create the accounts on my behalf where possible</label>
                             </div>
@@ -84,13 +84,13 @@
                         </div>
                         <div class="col-md-6 col-lg-5 col-xl-4">
                             <select class="form-control" id="inputSkinType" name="skintype">
-                                <option value="auto" {if $currentUser->getSkin() === 'auto'}selected="selected"{/if}>
+                                <option value="auto" {if $skin === 'auto'}selected="selected"{/if}>
                                     Use browser default
                                 </option>
-                                <option value="main" {if $currentUser->getSkin() === 'main'}selected="selected"{/if}>
+                                <option value="main" {if $skin === 'main'}selected="selected"{/if}>
                                     Light theme
                                 </option>
-                                <option value="alt" {if $currentUser->getSkin() === 'alt'}selected="selected"{/if}>
+                                <option value="alt" {if $skin === 'alt'}selected="selected"{/if}>
                                     Dark theme
                                 </option>
                             </select>
