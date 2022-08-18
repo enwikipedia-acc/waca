@@ -42,12 +42,12 @@ class SiteConfiguration
     private $oauthLegacyConsumerTokens;
     private $oauthConsumerSecret;
     private $oauthIdentityGraceTime = '24 hours';
-    private $oauthMediaWikiCanonicalServer = 'http://en.wikipedia.org';
+    private $oauthMediaWikiCanonicalServer = 'https://en.wikipedia.org';
     private $xffTrustedHostsFile = '../TrustedXFF/trusted-hosts.txt';
     private $crossOriginResourceSharingHosts = array(
-        "http://en.wikipedia.org",
         "https://en.wikipedia.org",
-        "http://meta.wikimedia.org",
+        "https://en.wikipedia.org",
+        "https://meta.wikimedia.org",
         "https://meta.wikimedia.org",
     );
     private $ircNotificationsEnabled = true;
