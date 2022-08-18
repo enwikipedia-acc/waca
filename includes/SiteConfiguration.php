@@ -46,8 +46,6 @@ class SiteConfiguration
     private $xffTrustedHostsFile = '../TrustedXFF/trusted-hosts.txt';
     private $crossOriginResourceSharingHosts = array(
         "https://en.wikipedia.org",
-        "https://en.wikipedia.org",
-        "https://meta.wikimedia.org",
         "https://meta.wikimedia.org",
     );
     private $ircNotificationsEnabled = true;
