@@ -90,7 +90,7 @@ $oauthSecretToken = "";
 // Formerly-used OAuth tokens to permit reading identities from
 $oauthLegacyTokens = [];
 
-$oauthMediaWikiCanonicalServer = "http://en.wikipedia.org";
+$oauthMediaWikiCanonicalServer = "https://en.wikipedia.org";
 
 $useOauthSignup = true;
 $enforceOAuth = false;
