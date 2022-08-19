@@ -55,15 +55,6 @@
                            value="{$user->getOnWikiName()|escape}" required="required"/>
                 </div>
             </div>
-
-            <div class="form-group row">
-                <div class="offset-lg-2 col-md-3 col-lg-2">
-                    <label for="inputSig" class="col-form-label">Signature (wikicode)</label>
-                </div>
-                <div class="col-md-8 col-lg-6 col-xl-4">
-                    <input class="form-control" type="text" id="inputSig" name="sig" value="{$currentUser->getWelcomeSig()|escape}"/>
-                </div>
-            </div>
         {/if}
 
         <div class="form-group row">

@@ -70,15 +70,6 @@ class CommunityUser extends User
     {
     }
 
-    public function getWelcomeSig()
-    {
-        return null;
-    }
-
-    public function setWelcomeSig($welcomeSig)
-    {
-    }
-
     public function getLastActive()
     {
         $now = new DateTime();
