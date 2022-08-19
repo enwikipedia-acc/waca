@@ -32,7 +32,6 @@ class PagePreferences extends InternalPageBase
         // Dual mode
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
-            $user->setWelcomeSig(WebRequest::postString('sig'));
             $user->setEmailSig(WebRequest::postString('emailsig'));
             $user->setAbortPref(WebRequest::postBoolean('abortpref') ? 1 : 0);
             $this->setCreationMode($user);

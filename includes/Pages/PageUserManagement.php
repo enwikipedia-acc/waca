@@ -502,7 +502,6 @@ class PageUserManagement extends InternalPageBase
                 }
 
                 $user->setOnWikiName($newOnWikiName);
-                $user->setWelcomeSig(WebRequest::postString('sig'));
             }
 
             $user->setEmail($newEmail);

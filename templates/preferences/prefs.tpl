@@ -14,19 +14,6 @@
                 {include file="security/csrf.tpl"}
                 <fieldset>
                     <legend>General settings</legend>
-                    {if !$oauth->isFullyLinked() }
-                    <div class="form-group row">
-                        <div class="col-md-2 col-lg-3">
-                            <label for="inputSig" class="col-form-label">Your signature (wikicode)</label>
-                        </div>
-                        <div class="col-md-10 col-lg-8 col-xl-6">
-                            <input class="form-control" type="text" id="inputSig" name="sig" value="{$currentUser->getWelcomeSig()|escape}"/>
-                            <small class="form-text text-muted">This would be the same as ~~~ on-wiki. No date, please.</small>
-                        </div>
-                    </div>
-                    {else}
-                        <input type="hidden" name="sig" value=""/>
-                    {/if}
 
                     <div class="form-group row">
                         <div class="col-md-2 col-lg-3">

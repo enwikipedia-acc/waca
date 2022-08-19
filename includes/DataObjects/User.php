@@ -32,7 +32,6 @@ class User extends DataObject
     private $email;
     private $status = self::STATUS_NEW;
     private $onwikiname;
-    private $welcome_sig = "";
     private $lastactive = "0000-00-00 00:00:00";
     private $forcelogout = 0;
     private $forceidentified = null;
@@ -176,11 +175,11 @@ class User extends DataObject
             // insert
             $statement = $this->dbObject->prepare(<<<SQL
 				INSERT INTO `user` ( 
-					username, email, status, onwikiname, welcome_sig, 
+					username, email, status, onwikiname, 
 					lastactive, forcelogout, forceidentified,
 					welcome_template, abortpref, confirmationdiff, emailsig, creationmode, skin
 				) VALUES (
-					:username, :email, :status, :onwikiname, :welcome_sig,
+					:username, :email, :status, :onwikiname,
 					:lastactive, :forcelogout, :forceidentified,
 					:welcome_template, :abortpref, :confirmationdiff, :emailsig, :creationmode, :skin
 				);
@@ -190,7 +189,6 @@ SQL
             $statement->bindValue(":email", $this->email);
             $statement->bindValue(":status", $this->status);
             $statement->bindValue(":onwikiname", $this->onwikiname);
-            $statement->bindValue(":welcome_sig", $this->welcome_sig);
             $statement->bindValue(":lastactive", $this->lastactive);
             $statement->bindValue(":forcelogout", $this->forcelogout);
             $statement->bindValue(":forceidentified", $this->forceidentified);
@@ -214,7 +212,7 @@ SQL
 				UPDATE `user` SET 
 					username = :username, email = :email, 
 					status = :status,
-					onwikiname = :onwikiname, welcome_sig = :welcome_sig, 
+					onwikiname = :onwikiname, 
 					lastactive = :lastactive, forcelogout = :forcelogout, 
 					forceidentified = :forceidentified,
 					welcome_template = :welcome_template, abortpref = :abortpref, 
@@ -233,7 +231,6 @@ SQL
             $statement->bindValue(':email', $this->email);
             $statement->bindValue(':status', $this->status);
             $statement->bindValue(':onwikiname', $this->onwikiname);
-            $statement->bindValue(':welcome_sig', $this->welcome_sig);
             $statement->bindValue(':lastactive', $this->lastactive);
             $statement->bindValue(':forcelogout', $this->forcelogout);
             $statement->bindValue(':forceidentified', $this->forceidentified);
@@ -337,25 +334,6 @@ SQL
     public function setOnWikiName($onWikiName)
     {
         $this->onwikiname = $onWikiName;
-    }
-
-    /**
-     * Gets the welcome signature
-     * @return string
-     */
-    public function getWelcomeSig()
-    {
-        return $this->welcome_sig;
-    }
-
-    /**
-     * Sets the welcome signature
-     *
-     * @param string $welcomeSig
-     */
-    public function setWelcomeSig($welcomeSig)
-    {
-        $this->welcome_sig = $welcomeSig;
     }
 
     /**
