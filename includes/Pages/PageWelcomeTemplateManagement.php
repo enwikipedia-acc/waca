@@ -15,6 +15,7 @@ use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\Helpers\MediaWikiHelper;
 use Waca\Helpers\OAuthUserHelper;
+use Waca\Helpers\PreferenceManager;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -244,8 +245,11 @@ class PageWelcomeTemplateManagement extends InternalPageBase
         $template->setUpdateVersion($updateVersion);
 
         $database
-            ->prepare("UPDATE user SET welcome_template = NULL WHERE welcome_template = :id;")
-            ->execute(array(":id" => $templateId));
+            ->prepare("UPDATE userpreference SET value = NULL, updateversion = updateversion + 1 WHERE preference = :pref and value = :id;")
+            ->execute([
+                ':id'   => $templateId,
+                ':pref' => PreferenceManager::PREF_WELCOMETEMPLATE
+            ]);
 
         Logger::welcomeTemplateDeleted($database, $template);
 
