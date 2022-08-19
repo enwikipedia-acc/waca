@@ -12,6 +12,7 @@ use Exception;
 use PDO;
 use Waca\DataObject;
 use Waca\Exceptions\OptimisticLockFailedException;
+use Waca\Helpers\PreferenceManager;
 use Waca\PdoDatabase;
 
 /**
@@ -135,9 +136,12 @@ SQL
     public function getUsersUsingTemplate()
     {
         if ($this->usageCache === null) {
-            $statement = $this->dbObject->prepare("SELECT * FROM user WHERE welcome_template = :id;");
+            $statement = $this->dbObject->prepare("SELECT * FROM user WHERE id IN (SELECT DISTINCT user FROM userpreference WHERE preference = :pref AND value = :id);");
 
-            $statement->execute(array(":id" => $this->id));
+            $statement->execute([
+                ':id' => $this->id,
+                ':pref' => PreferenceManager::PREF_WELCOMETEMPLATE
+            ]);
 
             $result = array();
             /** @var WelcomeTemplate $v */

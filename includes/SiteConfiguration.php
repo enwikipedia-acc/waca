@@ -19,7 +19,7 @@ class SiteConfiguration
 {
     private $baseUrl;
     private $filePath;
-    private $schemaVersion = 42;
+    private $schemaVersion = 43;
     private $debuggingTraceEnabled;
     private $debuggingCssBreakpointsEnabled;
     private $dataClearIp = '127.0.0.1';

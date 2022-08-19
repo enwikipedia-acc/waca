@@ -12,6 +12,7 @@ use DateTime;
 use Exception;
 use Waca\DataObject;
 use Waca\Exceptions\OptimisticLockFailedException;
+use Waca\Helpers\PreferenceManager;
 use Waca\IdentificationVerifier;
 use Waca\PdoDatabase;
 use Waca\WebRequest;
@@ -25,9 +26,14 @@ class User extends DataObject
     const STATUS_SUSPENDED = 'Suspended';
     const STATUS_DECLINED = 'Declined';
     const STATUS_NEW = 'New';
+
+    /** @deprecated  */
     const CREATION_MANUAL = 0;
+    /** @deprecated  */
     const CREATION_OAUTH = 1;
+    /** @deprecated  */
     const CREATION_BOT = 2;
+
     private $username;
     private $email;
     private $status = self::STATUS_NEW;
@@ -35,12 +41,7 @@ class User extends DataObject
     private $lastactive = "0000-00-00 00:00:00";
     private $forcelogout = 0;
     private $forceidentified = null;
-    private $welcome_template = null;
-    private $abortpref = 0;
     private $confirmationdiff = 0;
-    private $emailsig = "";
-    private $creationmode = 0;
-    private $skin = "auto";
     /** @var User Cache variable of the current user - it's never going to change in the middle of a request. */
     private static $currentUser;
     #region Object load methods
@@ -177,11 +178,11 @@ class User extends DataObject
 				INSERT INTO `user` ( 
 					username, email, status, onwikiname, 
 					lastactive, forcelogout, forceidentified,
-					welcome_template, abortpref, confirmationdiff, emailsig, creationmode, skin
+					confirmationdiff
 				) VALUES (
 					:username, :email, :status, :onwikiname,
 					:lastactive, :forcelogout, :forceidentified,
-					:welcome_template, :abortpref, :confirmationdiff, :emailsig, :creationmode, :skin
+					:confirmationdiff
 				);
 SQL
             );
@@ -192,12 +193,7 @@ SQL
             $statement->bindValue(":lastactive", $this->lastactive);
             $statement->bindValue(":forcelogout", $this->forcelogout);
             $statement->bindValue(":forceidentified", $this->forceidentified);
-            $statement->bindValue(":welcome_template", $this->welcome_template);
-            $statement->bindValue(":abortpref", $this->abortpref);
             $statement->bindValue(":confirmationdiff", $this->confirmationdiff);
-            $statement->bindValue(":emailsig", $this->emailsig);
-            $statement->bindValue(":creationmode", $this->creationmode);
-            $statement->bindValue(":skin", $this->skin);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -213,11 +209,10 @@ SQL
 					username = :username, email = :email, 
 					status = :status,
 					onwikiname = :onwikiname, 
-					lastactive = :lastactive, forcelogout = :forcelogout, 
+					lastactive = :lastactive,
+					forcelogout = :forcelogout, 
 					forceidentified = :forceidentified,
-					welcome_template = :welcome_template, abortpref = :abortpref, 
-					confirmationdiff = :confirmationdiff, emailsig = :emailsig, 
-					creationmode = :creationmode, skin = :skin,
+					confirmationdiff = :confirmationdiff,
                     updateversion = updateversion + 1
 				WHERE id = :id AND updateversion = :updateversion;
 SQL
@@ -234,12 +229,7 @@ SQL
             $statement->bindValue(':lastactive', $this->lastactive);
             $statement->bindValue(':forcelogout', $this->forcelogout);
             $statement->bindValue(':forceidentified', $this->forceidentified);
-            $statement->bindValue(':welcome_template', $this->welcome_template);
-            $statement->bindValue(':abortpref', $this->abortpref);
             $statement->bindValue(':confirmationdiff', $this->confirmationdiff);
-            $statement->bindValue(':emailsig', $this->emailsig);
-            $statement->bindValue(':creationmode', $this->creationmode);
-            $statement->bindValue(':skin', $this->skin);
 
             if (!$statement->execute()) {
                 throw new Exception($statement->errorInfo());
@@ -370,41 +360,44 @@ SQL
     /**
      * Returns the ID of the welcome template used.
      * @return int
+     * @deprecated
      */
     public function getWelcomeTemplate()
     {
-        return $this->welcome_template;
+        return PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->getPreference(PreferenceManager::PREF_WELCOMETEMPLATE);
     }
 
     /**
      * Sets the ID of the welcome template used.
      *
-     * @param int $welcomeTemplate
+     * @param ?int $welcomeTemplate
+     * @deprecated
      */
     public function setWelcomeTemplate($welcomeTemplate)
     {
-        $this->welcome_template = $welcomeTemplate;
+        PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->setLocalPreference(PreferenceManager::PREF_WELCOMETEMPLATE, $welcomeTemplate);
     }
 
     /**
      * Gets the user's abort preference
      * @todo this is badly named too! Also a bool that's actually an int.
      * @return int
+     * @deprecated
      */
     public function getAbortPref()
     {
-        return $this->abortpref;
+        return PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->getPreference(PreferenceManager::PREF_SKIP_JS_ABORT);
     }
 
     /**
      * Sets the user's abort preference
      * @todo rename, retype, and re-comment.
-     *
+     * @deprecated
      * @param int $abortPreference
      */
     public function setAbortPref($abortPreference)
     {
-        $this->abortpref = $abortPreference;
+        PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->setLocalPreference(PreferenceManager::PREF_SKIP_JS_ABORT, $abortPreference);
     }
 
     /**
@@ -430,52 +423,58 @@ SQL
      * Gets the users' email signature used on outbound mail.
      * @todo rename me!
      * @return string
+     * @deprecated
      */
     public function getEmailSig()
     {
-        return $this->emailsig;
+        return PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->getPreference(PreferenceManager::PREF_EMAIL_SIGNATURE);
     }
 
     /**
      * Sets the user's email signature for outbound mail.
      *
      * @param string $emailSignature
+     * @deprecated
      */
     public function setEmailSig($emailSignature)
     {
-        $this->emailsig = $emailSignature;
+        PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->setLocalPreference(PreferenceManager::PREF_EMAIL_SIGNATURE, $emailSignature);
     }
 
     /**
      * @return int
+     * @deprecated
      */
     public function getCreationMode()
     {
-        return $this->creationmode;
+        return PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->getPreference(PreferenceManager::PREF_CREATION_MODE);
     }
 
     /**
      * @param $creationMode int
+     * @deprecated
      */
     public function setCreationMode($creationMode)
     {
-        $this->creationmode = $creationMode;
+        PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->setLocalPreference(PreferenceManager::PREF_CREATION_MODE, $creationMode);
     }
 
     /**
      * @return string
+     * @deprecated
      */
     public function getSkin()
     {
-        return $this->skin;
+        return PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->getPreference(PreferenceManager::PREF_SKIN);
     }
 
     /**
      * @param $skin string
+     * @deprecated
      */
     public function setSkin($skin)
     {
-        $this->skin = $skin;
+        PreferenceManager::getForCurrent(PdoDatabase::getDatabaseConnection('acc'))->setGlobalPreference(PreferenceManager::PREF_SKIN, $skin);
     }
 
     #endregion

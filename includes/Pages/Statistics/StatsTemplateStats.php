@@ -9,7 +9,9 @@
 namespace Waca\Pages\Statistics;
 
 use PDO;
+use Waca\Helpers\PreferenceManager;
 use Waca\Tasks\InternalPageBase;
+use Waca\WebRequest;
 
 class StatsTemplateStats extends InternalPageBase
 {
@@ -21,32 +23,40 @@ class StatsTemplateStats extends InternalPageBase
 SELECT
     t.id AS templateid,
     t.usercode AS usercode,
-    u.count AS activecount,
-    countall AS usercount
+    activeUsers.count AS activecount,
+    allUsers.count AS usercount
 FROM welcometemplate t
-    LEFT JOIN
-    (
-        SELECT
-            welcome_template,
-            COUNT(*) AS count
-        FROM user
-        WHERE
-            (status = 'User' OR status = 'Admin')
-            AND welcome_template IS NOT NULL
-        GROUP BY welcome_template
-    ) u ON u.welcome_template = t.id
-    LEFT JOIN
-    (
-        SELECT
-            welcome_template AS allid,
-            COUNT(*) AS countall
-        FROM user
-        WHERE welcome_template IS NOT NULL
-        GROUP BY welcome_template
-    ) u2 ON u2.allid = t.id;
+LEFT JOIN
+     (
+         SELECT up.value as welcome_template, count(*) as count
+         FROM user u
+         INNER JOIN userpreference up ON u.id = up.user
+         WHERE u.status = 'Active'
+           AND up.domain = :domain1
+           AND up.preference = :preference1
+           AND up.value IS NOT NULL
+         GROUP BY up.value
+     ) activeUsers ON activeUsers.welcome_template = t.id
+LEFT JOIN
+     (
+         SELECT up2.value as welcome_template, count(*) as count
+         FROM user u2
+         INNER JOIN userpreference up2 ON u2.id = up2.user
+         WHERE up2.domain = :domain2
+           AND up2.preference = :preference2
+           AND up2.value IS NOT NULL
+         GROUP BY up2.value
+     ) allUsers ON allUsers.welcome_template = t.id
+ORDER BY t.id
 SQL;
         $database = $this->getDatabase();
-        $statement = $database->query($query);
+        $statement = $database->prepare($query);
+        $statement->execute([
+            ':domain1' => WebRequest::getSessionDomain(),
+            ':domain2' => WebRequest::getSessionDomain(),
+            ':preference1' => PreferenceManager::PREF_WELCOMETEMPLATE,
+            ':preference2' => PreferenceManager::PREF_WELCOMETEMPLATE,
+        ]);
         $data = $statement->fetchAll(PDO::FETCH_ASSOC);
         $this->assign('dataTable', $data);
         $this->assign('statsPageTitle', 'Template Stats');
