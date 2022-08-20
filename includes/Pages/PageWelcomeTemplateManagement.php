@@ -225,9 +225,8 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 
     protected function delete()
     {
-        $this->redirect('welcomeTemplates');
-
         if (!WebRequest::wasPosted()) {
+            $this->redirect('welcomeTemplates');
             return;
         }
 
@@ -258,6 +257,8 @@ class PageWelcomeTemplateManagement extends InternalPageBase
         Logger::welcomeTemplateDeleted($database, $template);
 
         $template->delete();
+
+        $this->redirect('welcomeTemplates');
 
         SessionAlert::success(
             "Template deleted. Any users who were using this template have had automatic welcoming disabled.");
