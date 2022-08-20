@@ -122,8 +122,15 @@ class PageQueueManagement extends InternalPageBase
     {
         $database = $this->getDatabase();
 
+        $id = WebRequest::getInt('queue');
+        if ($id === null) {
+            $this->redirect('queueManagement');
+
+            return;
+        }
+
         /** @var RequestQueue $queue */
-        $queue = RequestQueue::getById(WebRequest::getInt('queue'), $database);
+        $queue = RequestQueue::getById($id, $database);
 
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();

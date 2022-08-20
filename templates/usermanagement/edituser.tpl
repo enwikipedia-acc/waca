@@ -62,7 +62,7 @@
                 <label for="inputEmailsig" class="col-form-label">Email signature</label>
             </div>
             <div class="col-md-9 col-lg-7 col-xl-6">
-                <div class="form-control prewrap minh-5">{$emailSignature|escape}</div>
+                <div class="form-control prewrap minh-5 uneditable-input">{$emailSignature|escape}</div>
             </div>
         </div>
 

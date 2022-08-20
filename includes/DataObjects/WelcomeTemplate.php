@@ -166,7 +166,7 @@ SQL
             return;
         }
 
-        $deleteQuery = "UPDATE welcometemplate SET deleted = 1 WHERE id = :id AND updateversion = :updateversion;";
+        $deleteQuery = "UPDATE welcometemplate SET deleted = 1, updateversion = updateversion + 1 WHERE id = :id AND updateversion = :updateversion;";
         $statement = $this->dbObject->prepare($deleteQuery);
 
         $statement->bindValue(":id", $this->id);

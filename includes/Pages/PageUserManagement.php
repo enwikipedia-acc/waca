@@ -116,7 +116,7 @@ class PageUserManagement extends InternalPageBase
         /** @var User $user */
         $user = User::getById($userId, $database);
 
-        if ($user === false) {
+        if ($user === false || $user->isCommunityUser()) {
             throw new ApplicationLogicException('Sorry, the user you are trying to edit could not be found.');
         }
 
@@ -215,7 +215,7 @@ class PageUserManagement extends InternalPageBase
         /** @var User $user */
         $user = User::getById($userId, $database);
 
-        if ($user === false) {
+        if ($user === false || $user->isCommunityUser()) {
             throw new ApplicationLogicException('Sorry, the user you are trying to suspend could not be found.');
         }
 
@@ -280,7 +280,7 @@ class PageUserManagement extends InternalPageBase
         $userId = WebRequest::getInt('user');
         $user = User::getById($userId, $database);
 
-        if ($user === false) {
+        if ($user === false || $user->isCommunityUser()) {
             throw new ApplicationLogicException('Sorry, the user you are trying to decline could not be found.');
         }
 
@@ -341,7 +341,7 @@ class PageUserManagement extends InternalPageBase
         $userId = WebRequest::getInt('user');
         $user = User::getById($userId, $database);
 
-        if ($user === false) {
+        if ($user === false || $user->isCommunityUser()) {
             throw new ApplicationLogicException('Sorry, the user you are trying to approve could not be found.');
         }
 
@@ -400,7 +400,7 @@ class PageUserManagement extends InternalPageBase
         $userId = WebRequest::getInt('user');
         $user = User::getById($userId, $database);
 
-        if ($user === false) {
+        if ($user === false || $user->isCommunityUser()) {
             throw new ApplicationLogicException('Sorry, the user you are trying to rename could not be found.');
         }
 
@@ -479,7 +479,7 @@ class PageUserManagement extends InternalPageBase
         $user = User::getById($userId, $database);
         $oauth = new OAuthUserHelper($user, $database, $this->getOAuthProtocolHelper(), $this->getSiteConfiguration());
 
-        if ($user === false) {
+        if ($user === false || $user->isCommunityUser()) {
             throw new ApplicationLogicException('Sorry, the user you are trying to edit could not be found.');
         }
 
