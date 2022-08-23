@@ -122,6 +122,6 @@ class IpLocationProvider implements ILocationProvider
      */
     protected function getApiBase()
     {
-        return "http://api.ipinfodb.com/v3/ip-city/";
+        return "https://api.ipinfodb.com/v3/ip-city/";
     }
 }
