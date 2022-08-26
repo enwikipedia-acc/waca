@@ -75,11 +75,11 @@
                                     {/if}
                                     {if $canBotCreate}
                                         {if $requestEmailSent}
-                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createBot">
                                                 <div class="alert alert-warning mb-0">This request has already had an email sent to the requester. Please do a custom close or fall back to manual creation.</div>
                                             </div>
                                         {elseif $botProblem}
-                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createBot">
                                                 <div class="alert alert-warning mb-0">There's an issue with the tool configuration. Please choose a different creation type above.</div>
                                             </div>
                                         {else}
