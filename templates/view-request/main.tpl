@@ -57,27 +57,21 @@
                                         </div>
                                     {/if}
                                     {if $canOauthCreate}
-                                        {if $requestEmailSent}
-                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                        <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                            {if $requestEmailSent}
                                                 <div class="alert alert-warning mb-0">This request has already had an email sent to the requester. Please do a custom close or fall back to manual creation.</div>
-                                            </div>
-                                        {elseif $oauthProblem}
-                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                            {elseif $oauthProblem}
                                                 <div class="alert alert-warning mb-0">There's an issue with your account setup. Please check your OAuth configuration and ensure you've allowed the necessary grants.</div>
-                                            </div>
-                                        {elseif is_array($spoofs) && count($spoofs) > 0}
-                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                            {elseif is_array($spoofs) && count($spoofs) > 0}
                                                 <div class="alert alert-warning mb-0">This request has antispoof hits and cannot be created automatically.</div>
-                                            </div>
-                                        {elseif $requestIsBlacklisted}
-                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                            {elseif $requestIsBlacklisted}
                                                 <div class="alert alert-warning mb-0">This request has title blacklist hits and cannot be created automatically.</div>
-                                            </div>
-                                        {else}
-                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                            {elseif $requestQueue == 'Hospital'}
+                                                <div class="alert alert-warning mb-0">This request has been sent to the Hospital queue as it failed to create automatically.</div>
+                                            {else}
                                                 {include file="view-request/createbuttons/auto.tpl" creationMode="oauth" }
-                                            </div>
-                                        {/if}
+                                            {/if}
+                                        </div>
                                     {/if}
                                     {if $canBotCreate}
                                         {if $requestEmailSent}
