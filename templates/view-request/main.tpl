@@ -66,7 +66,7 @@
                                                 <div class="alert alert-warning mb-0">This request has antispoof hits and cannot be created automatically.</div>
                                             {elseif $requestIsBlacklisted}
                                                 <div class="alert alert-warning mb-0">This request has title blacklist hits and cannot be created automatically.</div>
-                                            {elseif $requestQueue == 'Hospital'}
+                                            {elseif $requestQueue === 'Hospital'}
                                                 <div class="alert alert-warning mb-0">This request has been sent to the Hospital queue as it failed to create automatically.</div>
                                             {else}
                                                 {include file="view-request/createbuttons/auto.tpl" creationMode="oauth" }
