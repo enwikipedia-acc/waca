@@ -67,7 +67,7 @@
                                             {elseif $requestIsBlacklisted}
                                                 <div class="alert alert-warning mb-0">This request has title blacklist hits and cannot be created automatically.</div>
                                             {elseif $requestStatus === 'Hospital'}
-                                                <div class="alert alert-warning mb-0">This request has been sent to the Hospital queue as it failed to create automatically.</div>
+                                                <div class="alert alert-warning mb-0">This request has been sent to the Hospital. Please try creating manually, there may be hidden Anti-spoof or Title Blacklist hits</div>
                                             {else}
                                                 {include file="view-request/createbuttons/auto.tpl" creationMode="oauth" }
                                             {/if}
