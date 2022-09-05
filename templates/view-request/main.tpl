@@ -44,7 +44,6 @@
                                             <label for="createModeBot" class="custom-control-label">Use the bot</label>
 										</div>
                                     {/if}
-									</div>
                                 </div>
                             </div>
                         {/if}
