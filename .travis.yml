@@ -9,17 +9,18 @@ addons:
 os: linux
 dist: focal
 
-before_install:
-  - composer install
-
 git:
   submodules: true
 
 env:
-  - MYSQL_HOST=localhost MYSQL_USER=root MYSQL_SCHEMA=testdb
+  - MYSQL_HOST=localhost MYSQL_USER=root MYSQL_SCHEMA=testdb MYSQL_PASSWORD=travis
+
+install:
+  - pecl install runkit7-4.0.0a6
+  - sudo mysql -e "SET Password=PASSWORD('travis')"
 
 before_script:
-  - pecl install runkit7-4.0.0a6
+  - composer install
   - phpenv config-add .travis.php.ini
   - cd sql
   - bash test_db.sh 1
