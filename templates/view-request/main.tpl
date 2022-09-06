@@ -24,25 +24,25 @@
                             <div class="creationOptions">
                                 <div class="creationTypeOptions">
                                     {if $canManualCreate}
-                                        <div class="custom-control-inline custom-radio">
+										<div class="custom-control-inline custom-radio">
                                             <input type="radio" name="createMode" id="createModeManual" value="manual" class="custom-control-input"
                                                    {if $currentUser->getCreationMode() == 0}checked="checked"{/if} />
                                             <label for="createModeManual" class="custom-control-label">Manual</label>
-                                        </div>
+										</div>
                                     {/if}
                                     {if $canOauthCreate}
-                                        <div class="custom-control-inline custom-radio">
+									    <div class="custom-control-inline custom-radio">
                                             <input type="radio" name="createMode" id="createModeOauth" value="oauth" class="custom-control-input"
                                                    {if $currentUser->getCreationMode() == 1}checked="checked"{/if}>
                                             <label for="createModeOauth" class="custom-control-label">Use my Wikimedia account</label>
-                                        </div>
+										</div>
                                     {/if}
                                     {if $canBotCreate}
-                                        <div class="custom-control-inline custom-radio">
+									    <div class="custom-control-inline custom-radio">
                                             <input type="radio" name="createMode" id="createModeBot" value="bot" class="custom-control-input"
                                                    {if $currentUser->getCreationMode() == 2}checked="checked"{/if}>
                                             <label for="createModeBot" class="custom-control-label">Use the bot</label>
-                                        </div>
+										</div>
                                     {/if}
                                 </div>
                             </div>
@@ -57,39 +57,33 @@
                                         </div>
                                     {/if}
                                     {if $canOauthCreate}
-                                        {if $requestEmailSent}
-                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                        <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                            {if $requestEmailSent}
                                                 <div class="alert alert-warning mb-0">This request has already had an email sent to the requester. Please do a custom close or fall back to manual creation.</div>
-                                            </div>
-                                        {elseif $oauthProblem}
-                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                            {elseif $oauthProblem}
                                                 <div class="alert alert-warning mb-0">There's an issue with your account setup. Please check your OAuth configuration and ensure you've allowed the necessary grants.</div>
-                                            </div>
-                                        {elseif is_array($spoofs) && count($spoofs) > 0}
-                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                            {elseif is_array($spoofs) && count($spoofs) > 0}
                                                 <div class="alert alert-warning mb-0">This request has antispoof hits and cannot be created automatically.</div>
-                                            </div>
-                                        {elseif $requestIsBlacklisted}
-                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                            {elseif $requestIsBlacklisted}
                                                 <div class="alert alert-warning mb-0">This request has title blacklist hits and cannot be created automatically.</div>
-                                            </div>
-                                        {else}
-                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                            {elseif $requestIsHospital}
+                                                <div class="alert alert-warning mb-0">This request has been sent to the Hospital. Please try creating manually, there may be hidden Anti-spoof or Title Blacklist hits</div>
+                                            {else}
                                                 {include file="view-request/createbuttons/auto.tpl" creationMode="oauth" }
-                                            </div>
-                                        {/if}
+                                            {/if}
+                                        </div>
                                     {/if}
                                     {if $canBotCreate}
                                         {if $requestEmailSent}
-                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 2}d-none{/if}" id="createBot">
                                                 <div class="alert alert-warning mb-0">This request has already had an email sent to the requester. Please do a custom close or fall back to manual creation.</div>
                                             </div>
                                         {elseif $botProblem}
-                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 2}d-none{/if}" id="createBot">
                                                 <div class="alert alert-warning mb-0">There's an issue with the tool configuration. Please choose a different creation type above.</div>
                                             </div>
                                         {else}
-                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createBot">
+                                            <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 2}d-none{/if}" id="createBot">
                                                 {include file="view-request/createbuttons/auto.tpl" creationMode="bot"}
                                             </div>
                                         {/if}

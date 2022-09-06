@@ -274,6 +274,8 @@ trait RequestData
 
         $isClosed = $request->getStatus() === RequestStatus::CLOSED || $request->getStatus() === RequestStatus::JOBQUEUE;
         $this->assign('requestIsClosed', $isClosed);
+		$isHospital = $request->getStatus() === RequestStatus::HOSPITAL;
+		$this->assign('requestIsHospital', $isHospital);
     }
 
     /**
