@@ -1,16 +1,14 @@
 {
-    "rabbit_version": "3.10.7",
-    "rabbitmq_version": "3.10.7",
+    "rabbit_version": "3.8.34",
+    "rabbitmq_version": "3.8.34",
     "product_name": "RabbitMQ",
-    "product_version": "3.10.7",
+    "product_version": "3.8.34",
     "users": [
         {
             "name": "guest",
-            "password_hash": "Qc1Q8iTLO1z51lpulvLJBdICCl0XWo9p32z2tOaszlgRJlcW",
+            "password_hash": "fbA7sbl2kHV5ljv5wymNQugTE6IdxEUcFZOpl+oUkmU4Hs8O",
             "hashing_algorithm": "rabbit_password_hashing_sha256",
-            "tags": [
-                "administrator"
-            ],
+            "tags": "administrator",
             "limits": {}
         }
     ],
@@ -33,7 +31,7 @@
     "global_parameters": [
         {
             "name": "internal_cluster_id",
-            "value": "rabbitmq-cluster-id-wb6Nr3IIqXpuiOTPpBz6oA"
+            "value": "rabbitmq-cluster-id-9zDTywHuD9k6q_wRQioN1A"
         }
     ],
     "policies": [],
