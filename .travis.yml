@@ -1,25 +1,26 @@
 language: php
 
 php:
-  - 7.3
+  - 7.4
 
 addons:
-  mariadb: '10.2'
+  mariadb: '10.5'
 
 os: linux
-dist: bionic
-
-before_install:
-  - composer install
+dist: focal
 
 git:
   submodules: true
 
 env:
-  - MYSQL_HOST=127.0.0.1 MYSQL_USER=root MYSQL_SCHEMA=testdb
+  - MYSQL_HOST=localhost MYSQL_USER=root MYSQL_SCHEMA=testdb MYSQL_PASSWORD=travis
+
+install:
+  - pecl install runkit7-4.0.0a6
+  - sudo mysql -e "SET Password=PASSWORD('travis')"
 
 before_script:
-  - pecl install runkit7-3.0.0
+  - composer install
   - phpenv config-add .travis.php.ini
   - cd sql
   - bash test_db.sh 1

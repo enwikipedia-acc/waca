@@ -3,14 +3,14 @@ This is a brief installation guide for developers/testers etc to get this system
 # Prerequisites
 
 * Web server
-* MariaDB 10.3.22+ (or equivalent)
-* PHP 7.3+
+* MariaDB 10.5.15+ (or equivalent)
+* PHP 7.4+
 
 The webserver must be configured to pre-process *.php files through the PHP engine before sending them to a client.
 
 You must also have a database which you can use with the tool.
 
-Note: MariaDB 10.2.1 is likely sufficient, but compatibility cannot be guaranteed as Production runs on 10.3.22.
+Note: MariaDB 10.2.1 is likely sufficient, but compatibility cannot be guaranteed as Production runs on 10.5.15.
 
 ## PHP configuration
 You'll also need some PHP extensions:
@@ -37,10 +37,10 @@ Note that runkit is a pain[1] to get working on Windows, and is only used by som
 
 ### Production
 
-* MariaDB 10.1.37
-* PHP 7.3.14
-* Apache 2.4.38 (Debian)
-* Debian Buster (Wikimedia Cloud VPS)
+* MariaDB 10.5.15
+* PHP 7.4.30
+* Apache 2.4.54 (Debian)
+* Debian Bullseye (Wikimedia Cloud VPS)
 
 # Basic information
 
