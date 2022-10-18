@@ -119,7 +119,7 @@
         {block name="otherRequests"}
             {if $canSeeRelatedRequests === true}
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <h3>Other requests from this email address</h3>
                         {if $requestDataCleared}
                             <p class="text-muted">Email information cleared</p>
@@ -129,7 +129,7 @@
                             {include file="view-request/related-requests.tpl" requests=$requestRelatedEmailRequests}
                         {/if}
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <h3>Other requests from this IP address</h3>
                         {if $requestDataCleared}
                             <p class="text-muted">IP information cleared</p>
@@ -139,7 +139,7 @@
                             {include file="view-request/related-requests.tpl" requests=$requestRelatedIpRequests}
                         {/if}
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <h3>Other requests from this IP address range (/24)</h3>
                         {if $requestDataCleared}
                             <p class="text-muted">IP information cleared</p>
