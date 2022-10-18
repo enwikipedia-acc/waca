@@ -153,6 +153,22 @@ class RequestSearchHelper extends SearchHelperBase
 
         return $this;
     }
+    
+    /**
+     * Excludes an IP from the results
+     *
+     * @param int $requestId
+     *
+     * @return $this
+     */
+    public function excludingIP($ipAddress)
+    {
+        $this->whereClause .= ' AND ipAddress <> ?';
+        $this->parameterList[] = $ipAddress;
+
+        return $this;
+    }
+    
 
     /**
      * Filters the results to only those with a confirmed email address

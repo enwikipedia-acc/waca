@@ -241,6 +241,7 @@ trait RequestData
             ->withConfirmedEmail()
             ->excludingPurgedData($configuration)
             ->excludingRequest($request->getId())
+            ->excludingIP($trustedIp)
             ->fetch();
 
         $this->assign('requestRelatedIpRangeRequestsCount', count($relatedIpRangeRequests));
