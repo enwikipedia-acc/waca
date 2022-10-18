@@ -139,6 +139,16 @@
                             {include file="view-request/related-requests.tpl" requests=$requestRelatedIpRequests}
                         {/if}
                     </div>
+                    <div class="col-md-6">
+                        <h3>Other requests from this IP address range (/24)</h3>
+                        {if $requestDataCleared}
+                            <p class="text-muted">IP information cleared</p>
+                        {elseif $requestRelatedIpRangeRequestsCount == 0}
+                            <p class="text-muted">None detected</p>
+                        {else}
+                            {include file="view-request/related-requests.tpl" requests=$requestRelatedIpRangeRequests}
+                        {/if}
+                    </div>
                 </div>
             {/if}
         {/block}

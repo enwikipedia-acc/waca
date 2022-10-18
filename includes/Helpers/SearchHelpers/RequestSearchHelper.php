@@ -43,11 +43,18 @@ class RequestSearchHelper extends SearchHelperBase
      * Filters the results by IP address
      *
      * @param string $ipAddress
+     * @param bool $getRange
      *
      * @return $this
      */
-    public function byIp($ipAddress)
+    public function byIp($ipAddress, $getRange = false)
     {
+        if ($getRange) {
+            //Split the IP address in to an array, pop the last octet off, and rebuild variable.
+            //Should end up with the query doing 'LIKE x.x.x%' which will get 0-255 on the last octet. 
+            $ipSplit = explode('.', $ipAddress);
+            $ipAddress = implode('.', array_pop($ipSplit));
+        }
         $this->whereClause .= ' AND (ip LIKE ? OR forwardedip LIKE ?)';
         $this->parameterList[] = $ipAddress;
         $this->parameterList[] = '%' . trim($ipAddress, '%') . '%';

@@ -235,6 +235,16 @@ trait RequestData
 
         $this->assign('requestRelatedIpRequestsCount', count($relatedIpRequests));
         $this->assign('requestRelatedIpRequests', $relatedIpRequests);
+        
+        $relatedIpRangeRequests = RequestSearchHelper::get($database)
+            ->byIp($trustedIp, true)
+            ->withConfirmedEmail()
+            ->excludingPurgedData($configuration)
+            ->excludingRequest($request->getId())
+            ->fetch();
+
+        $this->assign('requestRelatedIpRangeRequestsCount', count($relatedIpRangeRequests));
+        $this->assign('requestRelatedIpRangeRequests', $relatedIpRangeRequests);
     }
 
     /**
