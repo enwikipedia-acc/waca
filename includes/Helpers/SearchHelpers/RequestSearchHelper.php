@@ -157,13 +157,14 @@ class RequestSearchHelper extends SearchHelperBase
     /**
      * Excludes an IP from the results
      *
-     * @param int $requestId
+     * @param string $ipAddress
      *
      * @return $this
      */
     public function excludingIP($ipAddress)
     {
-        $this->whereClause .= ' AND ipAddress <> ?';
+        $this->whereClause .= ' AND ip <> ? AND forwardedip <> ?';
+        $this->parameterList[] = $ipAddress;
         $this->parameterList[] = $ipAddress;
 
         return $this;
