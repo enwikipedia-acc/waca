@@ -53,7 +53,8 @@ class RequestSearchHelper extends SearchHelperBase
             //Split the IP address in to an array, pop the last octet off, and rebuild variable.
             //Should end up with the query doing 'LIKE x.x.x%' which will get 0-255 on the last octet. 
             $ipSplit = explode('.', $ipAddress);
-            $ipAddress = implode('.', array_pop($ipSplit));
+            array_pop($ipSplit);
+            $ipAddress = implode('.', $ipSplit);
         }
         $this->whereClause .= ' AND (ip LIKE ? OR forwardedip LIKE ?)';
         $this->parameterList[] = $ipAddress;
