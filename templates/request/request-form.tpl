@@ -39,7 +39,7 @@
                         Case sensitive, first letter is always capitalized, you do not need to use all uppercase.
                         Note that this need not be your real name. Please make sure you don't leave any trailing
                         spaces or underscores on your requested username. Usernames may not consist entirely of
-                        numbers, contain the following characters: <code># / | [ ] { } &lt; &gt; @ % :</code> or
+                        numbers, contain the following characters: <code># / | [ ] { } &lt; &gt; @ % : =</code> or
                         exceed 85 characters in length.
                     </small>
                 </div>
