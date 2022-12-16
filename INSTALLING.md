@@ -1,5 +1,8 @@
 This is a brief installation guide for developers/testers etc to get this system up-and-running on a new machine.
 
+**Note that this document is for installing ACC in a "bare metal" environment. If you have Docker available and would
+like to use that instead for essentially one-click ACC setup, please see [here](docker/README.md).**
+
 # Prerequisites
 
 * Web server
@@ -66,16 +69,6 @@ This was written using Windows 10.
 8. run the database setup scripts:
   * `./test_db.sh 1 localhost <dbname> <user> <password>`
 9. Create the configuration file (see below).
-
-# Docker
-There is **experimental** support for Docker. Knowledge of Docker is assumed here if you want to use it - this is not
-a configuration which the team will spend much time to support.
-
-You will still need to create the configuration file as below, but you should be able to just run `docker-compose up -d`
-in this folder, and two containers should start - one for the database listening on port 3306, and one for the web
-application listening on port 8080. The configuration should use "waca" as the username, password, and database name,
-and "database" for the hostname. The `$baseurl` setting should also be set to `http://127.0.0.1:8080`. All other 
-installation steps including dependencies and loading the initial database schema are handled automatically by Docker.
 
 # Configuration File
 Create a new PHP file called config.local.inc.php, and fill it with the following:
