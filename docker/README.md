@@ -49,7 +49,9 @@ http://localhost:8080/internal.php with the username `Admin` and password `enwpa
 will attempt to contact your IDE on port 9003.
 
 Any changes you make in the repo to the app, including code and config changes, should reflect automatically and almost
-immediately without needing to restart any Docker services or containers.
+immediately without needing to restart any Docker services or containers. Two notable exceptions here are if you change
+the Composer packages required or if you make a change that requires regenerating stylesheets - in these cases or others
+where you need to restart the application service, simply do `docker compose restart application`.
 
 (Note: If you optionally want to use a reverse-proxy/tunnel service like ngrok to access ACC, you will need to update
 the `$baseurl` variable in your `config.local.inc.php` file _in the repo root_ accordingly, then use that to access ACC.
