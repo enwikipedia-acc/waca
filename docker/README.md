@@ -9,7 +9,10 @@ OAuth is also not covered as part of this document, nor is it handled by the Doc
 [INSTALLING](../INSTALLING.md) file for OAuth setup instructions.
 
 # Prerequisites
-* Reasonably recent version of Docker with Docker Compose support on any Docker-supported platform
+* Reasonably recent version of Docker with Docker Compose support on any Docker-supported platform, or equivalent tool
+  * Must support the Docker Compose _schema_ v3 (not to be confused with the version of the Docker Compose tool itself)
+  * Docker Compose may be a separate installation on some platforms, particularly Linux: See
+    [here](https://docs.docker.com/compose/install/) for details.
   * Tested with Docker Desktop v4.0+ on Windows and macOS
 * (Optional) A reverse-proxy/tunnel tool with TLS support for testing features that require HTTPS, such as WebAuthn
   * For example, [ngrok](https://ngrok.com/)
