@@ -27,8 +27,8 @@ before_script:
   - cd ..
 
 script:
-  - bash .travis.phplint.sh
-  - bash .travis.scss.sh
+  #- bash .travis.phplint.sh
+  #- bash .travis.scss.sh
   - php vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
 
 after_script:

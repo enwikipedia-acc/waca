@@ -32,9 +32,10 @@ just need to switch some of them on in the php.ini file.
 
 Useful (but optional) extensions - only used for development:
 * xdebug (http://xdebug.org/)
-* runkit (http://pecl.php.net/runkit / https://github.com/zenovich/runkit/)
+* runkit7 (http://pecl.php.net/runkit7 / https://github.com/runkit7/runkit7)
 
-Note that runkit is a pain[1] to get working on Windows, and is only used by some unit tests.
+Note that runkit is a pain[1] to get working on Windows, and is only used by some unit tests. runkit7 may be different;
+it's not known if anyone's actually tried it yet.
 
 ## Known good configurations
 

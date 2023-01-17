@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo -e "\033[32mRunning SCSS rebuild...\033[0m"
-cd "$(dirname "$0")" || { echo "Failed to find root directory!"; exit 1; }
+cd "$(dirname "$0")/../.." || { echo "Failed to find root directory!"; exit 1; }
 
 echo "Cleaning up existing files for test"
 find resources/generated -type f -name '*.css' -delete
