@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+    branches: [ "master", "ghactions" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+    
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    name: "Unit tests (PHP ${{ matrix.php-version }})"
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version: [7.4, 8.2]
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup PHP Action
+      uses: shivammathur/setup-php@2.23.0
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: runkit7
+        tools: phpunit, composer
+        ini-values: runkit.internal_override=1
+        
+    - name: Validate composer.json and composer.lock
+      run: composer validate --no-check-publish
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-${{ matrix.php-version }}-
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+          
+    - name: Run PHP linting
+      run: bash .github/scripts/lint.sh
+  
+    - name: Run test suite
+      run: php vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
+      
+  database:
+    name: "Database"
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Shut down old dbs
+      run: "[ $(docker ps -q | wc -l) -gt 0 ] && docker stop $(docker ps -q) || true"
+      
+    - name: Start up MariaDB
+      uses: getong/mariadb-action@v1.1
+      with:
+        mariadb version: '10.5'
+        mysql database: 'waca'
+        mysql user: 'waca'
+        mysql password: ${{ secrets.DatabasePassword }}
+    
+    - name: Test database build
+      run: |
+        sleep 5
+        cd sql
+        ./test_db.sh 1
+      env:
+        MYSQL_HOST: 127.0.0.1
+        MYSQL_USER: waca
+        MYSQL_PASSWORD: ${{ secrets.DatabasePassword }}
+        MYSQL_SCHEMA: waca
+
+  scss:
+    name: "Stylesheets"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run SCSS build
+        run: npm run build-scss

@@ -41,3 +41,4 @@ robots.txt
 /.scannerwork/*
 sonar-project.properties
 node_modules/
+.phpunit.result.cache

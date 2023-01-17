@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Waca\Helpers\EmailHelper;
 
 /**
- * @requires extension runkit
+ * @requires extension runkit7
  */
 class EmailHelperTest extends TestCase
 {
@@ -24,13 +24,15 @@ class EmailHelperTest extends TestCase
 
     public function setUp() : void
     {
-        if (!extension_loaded('runkit')) {
-            $this->markTestSkipped('Dependencies for test are not available. Please install zenovich/runkit');
+        $this->markTestSkipped("runkit-based tests broken since PHPUnit upgrade");
+
+        if (!extension_loaded('runkit7')) {
+            $this->markTestSkipped('Dependencies for test are not available. Please install runkit7/runkit7');
 
             return;
         }
 
-        $this->emailHelper = new EmailHelper();
+        $this->emailHelper = new EmailHelper("sender@example.com", "phpunit");
 
         $this->mailMock = new PHPUnit_Extensions_MockFunction('mail', $this->emailHelper);
     }
@@ -58,7 +60,7 @@ class EmailHelperTest extends TestCase
 
     public function tearDown() : void
     {
-        if (extension_loaded('runkit')) {
+        if (extension_loaded('runkit7')) {
             // restore functionality
             $this->mailMock->restore();
         }

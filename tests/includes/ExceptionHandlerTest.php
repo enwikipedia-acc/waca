@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 use \ErrorException;
 
 /**
- * @requires extension runkit
+ * @requires extension runkit7
  */
 class ExceptionHandlerTest extends TestCase
 {
@@ -26,8 +26,8 @@ class ExceptionHandlerTest extends TestCase
 
     public function setUp() : void
     {
-        if (!extension_loaded('runkit')) {
-            $this->markTestSkipped('Dependencies for test are not available. Please install zenovich/runkit');
+        if (!extension_loaded('runkit7')) {
+            $this->markTestSkipped('Dependencies for test are not available. Please install runkit7/runkit7');
 
             return;
         }
@@ -67,10 +67,10 @@ class ExceptionHandlerTest extends TestCase
 
         $this->assertNotNull($text);
 
-        $this->assertContains("trained monkeys ask", $text);
-        $this->assertContains("Oops! Something went wrong!", $text);
-        $this->assertNotContains("internal.php", $text);
-        $this->assertNotContains("We need a few bits of information ", $text);
+        $this->assertStringContainsString("trained monkeys ask", $text);
+        $this->assertStringContainsString("Oops! Something went wrong!", $text);
+        $this->assertStringNotContainsString("internal.php", $text);
+        $this->assertStringNotContainsString("We need a few bits of information ", $text);
     }
 
     public function testErrorHandler()
