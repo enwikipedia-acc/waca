@@ -62,6 +62,7 @@ class SiteConfiguration
     private $yubicoApiKey = "";
     private $totpEncryptionKey = "1234";
     private $identificationNoticeboardPage = 'Access to nonpublic personal data policy/Noticeboard';
+    private $identificationNoticeboardWebserviceEndpoint = 'https://meta.wikimedia.org/w/api.php';
     private $registrationAllowed = true;
     private $cspReportUri = null;
     private $resourceCacheEpoch = 1;
@@ -831,6 +832,18 @@ class SiteConfiguration
         $this->identificationNoticeboardPage = $identificationNoticeboardPage;
 
         return $this;
+    }
+
+    public function setIdentificationNoticeboardWebserviceEndpoint(string $identificationNoticeboardWebserviceEndpoint
+    ): SiteConfiguration {
+        $this->identificationNoticeboardWebserviceEndpoint = $identificationNoticeboardWebserviceEndpoint;
+
+        return $this;
+    }
+
+    public function getIdentificationNoticeboardWebserviceEndpoint(): string
+    {
+        return $this->identificationNoticeboardWebserviceEndpoint;
     }
 
     public function isRegistrationAllowed(): bool

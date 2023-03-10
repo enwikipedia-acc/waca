@@ -187,7 +187,7 @@ SQL;
         $parameters['titles'] = $this->siteConfiguration->getIdentificationNoticeboardPage();
 
         try {
-            $endpoint = $this->siteConfiguration->getMetaWikimediaWebServiceEndpoint();
+            $endpoint = $this->siteConfiguration->getIdentificationNoticeboardWebserviceEndpoint();
             $response = $this->httpHelper->get($endpoint, $parameters);
             $response = json_decode($response, true);
         }

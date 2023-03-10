@@ -167,6 +167,9 @@ $jobQueueBatchSize = 10;
 
 $emailSender = 'accounts@wmflabs.org';
 
+$identificationNoticeboardPage = 'Access to nonpublic personal data policy/Noticeboard';
+$identificationNoticeboardApi = $metaWikimediaWebServiceEndpoint;
+
 /**************************************************************************
  **********                   IMPORTANT NOTICE                    **********
  ***************************************************************************
@@ -271,4 +274,6 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setBanMaxIpBlockRange($banMaxIpBlockRange)
     ->setJobQueueBatchSize($jobQueueBatchSize)
     ->setAmqpConfiguration($amqpConfiguration)
-    ->setEmailSender($emailSender);
+    ->setEmailSender($emailSender)
+    ->setIdentificationNoticeboardPage($identificationNoticeboardPage)
+    ->setIdentificationNoticeboardWebserviceEndpoint($identificationNoticeboardApi);
