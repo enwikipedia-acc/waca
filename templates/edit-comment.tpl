@@ -70,8 +70,8 @@
                 <div class="col-md-8 col-lg-4">
                     <select name="visibility" class="form-control" id="visibility">
                         <option value="user" {if $comment->getVisibility() == "user"}selected{/if}>Standard</option>
-                        <option value="admin" {if $comment->getVisibility() == "admin"}selected{/if}>Restricted</option>
-                        <option value="checkuser" {if $comment->getVisibility() == "checkuser"}selected{/if}>CheckUser</option>
+                        <option value="admin" {if $comment->getVisibility() == "admin"}selected{/if}>Tool admins & checkusers</option>
+                        <option value="checkuser" {if $comment->getVisibility() == "checkuser"}selected{/if}>CheckUsers only</option>
                     </select>
                 </div>
             </div>
