@@ -13,7 +13,7 @@
         "paragonie/constant_time_encoding": "^2.0",
         "yubico/u2flib-server": "^1.0.1",
         "drvic10k/bootstrap-sortable": "^2.1",
-        "wikimedia/common-passwords": "^0.2",
+        "wikimedia/common-passwords": "^0.5",
         "dropbox/zxcvbn": "^4.4",
         "bjeavons/zxcvbn-php": "^1.1",
         "ext-openssl": "*",
