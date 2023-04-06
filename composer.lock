@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "32e7addf4fdc8b5d3986e244a430fbee",
+    "content-hash": "8827dcc97c9bd8c15fd59ef7cbab723b",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -764,52 +764,6 @@
             "time": "2023-03-05T17:13:09+00:00"
         },
         {
-            "name": "pleonasm/bloom-filter",
-            "version": "1.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pleonasm/bloom-filter.git",
-                "reference": "4a3292c9f83a778c44271bf4e4f6be1204b87f7b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pleonasm/bloom-filter/zipball/4a3292c9f83a778c44271bf4e4f6be1204b87f7b",
-                "reference": "4a3292c9f83a778c44271bf4e4f6be1204b87f7b",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.8 || ^5.7 || ^6.4",
-                "satooshi/php-coveralls": "^1.0.1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Pleo\\BloomFilter\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-2-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Matthew Nagi",
-                    "email": "matthew.nagi@base-2.net"
-                }
-            ],
-            "description": "A pure PHP implementation of a Bloom Filter",
-            "keywords": [
-                "Bloom Filter",
-                "bloom",
-                "filter",
-                "sets"
-            ],
-            "time": "2018-03-03T21:16:42+00:00"
-        },
-        {
             "name": "psr/log",
             "version": "1.1.4",
             "source": {
@@ -1358,38 +1312,34 @@
         },
         {
             "name": "wikimedia/common-passwords",
-            "version": "0.2.0",
+            "version": "v0.5.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/wikimedia/common-passwords.git",
-                "reference": "b9db612730d427a55e28f4a9b143b87fd72173e0"
+                "url": "https://github.com/wikimedia/mediawiki-libs-CommonPasswords.git",
+                "reference": "ff3920985ef3c2e23d3b262e0620ff3f83292ac3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wikimedia/common-passwords/zipball/b9db612730d427a55e28f4a9b143b87fd72173e0",
-                "reference": "b9db612730d427a55e28f4a9b143b87fd72173e0",
+                "url": "https://api.github.com/repos/wikimedia/mediawiki-libs-CommonPasswords/zipball/ff3920985ef3c2e23d3b262e0620ff3f83292ac3",
+                "reference": "ff3920985ef3c2e23d3b262e0620ff3f83292ac3",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2.9",
-                "pleonasm/bloom-filter": "1.0.2"
-            },
-            "replace": {
-                "wikimedia/password-blacklist": "^0.1.4"
+                "php": ">=7.4.3"
             },
             "require-dev": {
-                "mediawiki/mediawiki-codesniffer": "31.0.0",
-                "mediawiki/minus-x": "1.1.0",
-                "ockcyp/covers-validator": "1.1.1",
-                "php-parallel-lint/php-console-highlighter": "0.5.0",
-                "php-parallel-lint/php-parallel-lint": "1.2.0",
-                "phpunit/phpunit": "^8.5"
+                "mediawiki/mediawiki-codesniffer": "40.0.1",
+                "mediawiki/mediawiki-phan-config": "0.12.0",
+                "mediawiki/minus-x": "1.1.1",
+                "ockcyp/covers-validator": "1.6.0",
+                "php-parallel-lint/php-console-highlighter": "1.0.0",
+                "php-parallel-lint/php-parallel-lint": "1.3.2",
+                "phpunit/phpunit": "^9.5"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Wikimedia\\CommonPasswords\\": "src/CommonPasswords/",
-                    "Wikimedia\\PasswordBlacklist\\": "src/PasswordBlacklist/"
+                    "Wikimedia\\CommonPasswords\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1404,7 +1354,7 @@
             ],
             "description": "List of the 100,000 most commonly used passwords",
             "homepage": "https://www.mediawiki.org/wiki/CommonPasswords",
-            "time": "2020-06-11T14:00:12+00:00"
+            "time": "2023-01-22T21:53:44+00:00"
         },
         {
             "name": "yubico/u2flib-server",
