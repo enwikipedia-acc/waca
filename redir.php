@@ -13,6 +13,7 @@ $toolList = array(
     'tl-whois'           => 'https://tools.wmflabs.org/whois/gateway.py?lookup=true&ip=%DATA%',
     'honeypot'           => 'https://www.projecthoneypot.org/ip_%DATA%',
     'stopforumspam'      => 'https://www.stopforumspam.com/ipcheck/%DATA%',
+    'spur'               => 'https://spur.us/context/%DATA%',
     'google'             => 'https://www.google.com/search?q=%DATA%',
     'domain'             => 'https://%DATA%/',
     'rangefinder'        => 'https://tools.wmflabs.org/rangeblockfinder/?ip=%DATA%',

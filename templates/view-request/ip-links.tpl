@@ -61,6 +61,10 @@
        href="{$baseurl}/redir.php?tool=ipcheck&amp;data={$ipaddress}">
         IP Check
     </a>
+    <a id="Spur-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+       href="{$baseurl}/redir.php?tool=spur&amp;data={$ipaddress}">
+        Spur
+    </a>
     <a id="Bullseye-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
        href="{$baseurl}/redir.php?tool=bullseye&amp;data={$ipaddress}">
         Bullseye
