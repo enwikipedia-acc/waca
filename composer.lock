@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8827dcc97c9bd8c15fd59ef7cbab723b",
+    "content-hash": "716cf43e2581b5a612bb0c19278fc5af",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -886,29 +886,29 @@
         },
         {
             "name": "smarty/smarty",
-            "version": "v3.1.48",
+            "version": "v4.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/smarty-php/smarty.git",
-                "reference": "2fc443806cdcaee4441be4d0bb09f8fa56a17f2c"
+                "reference": "e28cb0915b4e3749bf57d4ebae2984e25395cfe5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/smarty-php/smarty/zipball/2fc443806cdcaee4441be4d0bb09f8fa56a17f2c",
-                "reference": "2fc443806cdcaee4441be4d0bb09f8fa56a17f2c",
+                "url": "https://api.github.com/repos/smarty-php/smarty/zipball/e28cb0915b4e3749bf57d4ebae2984e25395cfe5",
+                "reference": "e28cb0915b4e3749bf57d4ebae2984e25395cfe5",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.2 || ^7.0"
+                "php": "^7.1 || ^8.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^7.5 || ^6.5 || ^5.7 || ^4.8",
+                "phpunit/phpunit": "^8.5 || ^7.5",
                 "smarty/smarty-lexer": "^3.1"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.1.x-dev"
+                    "dev-master": "4.0.x-dev"
                 }
             },
             "autoload": {
@@ -932,14 +932,18 @@
                 {
                     "name": "Rodney Rehm",
                     "email": "rodney.rehm@medialize.de"
+                },
+                {
+                    "name": "Simon Wisselink",
+                    "homepage": "https://www.iwink.nl/"
                 }
             ],
             "description": "Smarty - the compiling PHP template engine",
-            "homepage": "http://www.smarty.net",
+            "homepage": "https://smarty-php.github.io/smarty/",
             "keywords": [
                 "templating"
             ],
-            "time": "2023-03-28T19:45:54+00:00"
+            "time": "2023-03-28T19:47:03+00:00"
         },
         {
             "name": "spomky-labs/otphp",
