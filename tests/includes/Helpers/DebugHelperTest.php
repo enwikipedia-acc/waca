@@ -17,7 +17,7 @@ class DebugHelperTest extends TestCase
     /** @var DebugHelper */
     private $dbh;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->dbh = $this->getMockBuilder(DebugHelper::class)->setMethods(["get_debug_backtrace"])->getMock();
         $this->dbh->method('get_debug_backtrace')->willReturn(
@@ -50,19 +50,19 @@ class DebugHelperTest extends TestCase
         );
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         $this->dbh = null;
     }
 
     public function testGetBacktrace()
     {
-        $this->assertContains("/tmp/c.php", $this->dbh->getBacktrace());
-        $this->assertContains("/tmp/d.php", $this->dbh->getBacktrace());
-        $this->assertContains("d_test", $this->dbh->getBacktrace());
+        $this->assertStringContainsString("/tmp/c.php", $this->dbh->getBacktrace());
+        $this->assertStringContainsString("/tmp/d.php", $this->dbh->getBacktrace());
+        $this->assertStringContainsString("d_test", $this->dbh->getBacktrace());
 
-        $this->assertNotContains("/tmp/a.php", $this->dbh->getBacktrace());
-        $this->assertNotContains("/tmp/b.php", $this->dbh->getBacktrace());
-        $this->assertNotContains("b_test", $this->dbh->getBacktrace());
+        $this->assertStringNotContainsString("/tmp/a.php", $this->dbh->getBacktrace());
+        $this->assertStringNotContainsString("/tmp/b.php", $this->dbh->getBacktrace());
+        $this->assertStringNotContainsString("b_test", $this->dbh->getBacktrace());
     }
 }

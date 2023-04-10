@@ -22,14 +22,14 @@ class WebStartTest extends TestCase
     /** @var  WebStart */
     private $ws;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->sc = new SiteConfiguration();
         $this->ir = new RequestRouter();
         $this->ws = new WebStart($this->sc, $this->ir);
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         unset($this->ws);
         unset($this->ir);

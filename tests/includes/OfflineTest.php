@@ -17,7 +17,7 @@ class OfflineTest extends TestCase
     private $offline;
     private $offMock;
 
-    public function setUp()
+    public function setUp() : void
     {
         if (!extension_loaded('runkit')) {
             $this->markTestSkipped('Dependencies for test are not available. Please install zenovich/runkit');

@@ -33,7 +33,7 @@ class RequestDataPrivateDataTest extends TestCase
     /** @var PHPUnit_Framework_MockObject_MockObject|User */
     private $currentUser;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->requestDataMock = $this->getMockForTrait(RequestData::class);
 

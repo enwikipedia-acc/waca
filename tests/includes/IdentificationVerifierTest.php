@@ -33,7 +33,7 @@ class IdentificationVerifierTest extends TestCase
     /** @var SiteConfiguration */
     private $dummyConfiguration;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->dummyConfiguration = new SiteConfiguration();
         $this->dummyConfiguration->setCurlDisableVerifyPeer(true);
@@ -49,7 +49,7 @@ class IdentificationVerifierTest extends TestCase
             $dummyDatabase);
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         $this->identificationVerifier = null;
     }

@@ -14,13 +14,13 @@ class EnvironmentTest extends TestCase
     private $toolVersion;
     private $environment;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->environment = new \Waca\Environment();
         $this->toolVersion = exec("git describe --always --dirty");
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         $this->environment = null;
         $this->toolVersion = null;

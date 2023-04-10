@@ -20,7 +20,7 @@ class TokenManagerTests extends TestCase
     /** @var \Waca\Providers\GlobalState\FakeGlobalStateProvider */
     private $stateProvider;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->stateProvider = new FakeGlobalStateProvider();
         $this->stateProvider->session = array();

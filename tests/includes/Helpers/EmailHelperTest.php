@@ -22,7 +22,7 @@ class EmailHelperTest extends TestCase
     /** @var EmailHelper */
     private $emailHelper;
 
-    public function setUp()
+    public function setUp() : void
     {
         if (!extension_loaded('runkit')) {
             $this->markTestSkipped('Dependencies for test are not available. Please install zenovich/runkit');
@@ -56,7 +56,7 @@ class EmailHelperTest extends TestCase
             array('X-ACC-Test' => 'foobar'));
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         if (extension_loaded('runkit')) {
             // restore functionality

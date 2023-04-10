@@ -17,7 +17,7 @@ class PdoDatabaseTest extends TestCase
     /** @var PdoDatabase */
     private $pdb;
     
-    public function setUp()
+    public function setUp() : void
     {
         $this->markTestIncomplete("Mocking issues.");
         $this->pdb = $this->getMock("PdoDatabase", array('get_database', 'getDatabaseConnection','get_arguments'));

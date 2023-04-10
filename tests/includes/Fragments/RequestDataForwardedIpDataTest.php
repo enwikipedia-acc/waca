@@ -33,7 +33,7 @@ class RequestDataForwardedIpDataTest extends TestCase
     /** @var PHPUnit_Framework_MockObject_MockObject|ILocationProvider */
     private $locationProvider;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->requestDataMock = $this->getMockForTrait(RequestData::class);
 

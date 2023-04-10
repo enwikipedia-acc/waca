@@ -18,7 +18,7 @@ class ApiExceptionTest extends TestCase
     /** @var ApiException */
     private $ex;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->message = "This is a test message";
 
