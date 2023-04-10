@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "716cf43e2581b5a612bb0c19278fc5af",
+    "content-hash": "2f86c7ac461cc0cc899045384bf99a90",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -274,16 +274,16 @@
         },
         {
             "name": "fortawesome/font-awesome",
-            "version": "5.13.1",
+            "version": "6.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FortAwesome/Font-Awesome.git",
-                "reference": "1147d199a35293b391152ee85e2d30988439157f"
+                "reference": "0698449d50f2b95517562295a59d414afc68b369"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/1147d199a35293b391152ee85e2d30988439157f",
-                "reference": "1147d199a35293b391152ee85e2d30988439157f",
+                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/0698449d50f2b95517562295a59d414afc68b369",
+                "reference": "0698449d50f2b95517562295a59d414afc68b369",
                 "shasum": ""
             },
             "type": "library",
@@ -295,32 +295,8 @@
             ],
             "authors": [
                 {
-                    "name": "Travis Chase",
-                    "homepage": "http://twitter.com/supercodepoet"
-                },
-                {
-                    "name": "Dave Gandy",
-                    "homepage": "http://twitter.com/davegandy"
-                },
-                {
-                    "name": "Rob Madole",
-                    "homepage": "http://twitter.com/robmadole"
-                },
-                {
-                    "name": "Jory Raphael",
-                    "homepage": "http://twitter.com/sensibleworld"
-                },
-                {
-                    "name": "Geremia Taglialatela",
-                    "homepage": "http://twitter.com/gtagliala"
-                },
-                {
-                    "name": "Brian Talbot",
-                    "homepage": "http://twitter.com/talbs"
-                },
-                {
-                    "name": "Mike Wilkerson",
-                    "homepage": "http://twitter.com/mw77"
+                    "name": "The Font Awesome Team",
+                    "homepage": "https://github.com/orgs/FortAwesome/people"
                 }
             ],
             "description": "The iconic font, CSS, and SVG framework",
@@ -333,7 +309,7 @@
                 "icon",
                 "svg"
             ],
-            "time": "2020-06-18T20:53:17+00:00"
+            "time": "2023-03-27T16:58:41+00:00"
         },
         {
             "name": "league/commonmark",
