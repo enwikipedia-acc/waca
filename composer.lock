@@ -586,16 +586,16 @@
         },
         {
             "name": "php-amqplib/php-amqplib",
-            "version": "v3.1.2",
+            "version": "v3.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-amqplib/php-amqplib.git",
-                "reference": "e8aba06c4e1c467612f2d99304f672f2660e8492"
+                "reference": "bccaaf8ef8bcf18b4ab41e645e92537752b887bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/e8aba06c4e1c467612f2d99304f672f2660e8492",
-                "reference": "e8aba06c4e1c467612f2d99304f672f2660e8492",
+                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/bccaaf8ef8bcf18b4ab41e645e92537752b887bd",
+                "reference": "bccaaf8ef8bcf18b4ab41e645e92537752b887bd",
                 "shasum": ""
             },
             "require": {
@@ -659,7 +659,7 @@
                 "queue",
                 "rabbitmq"
             ],
-            "time": "2022-01-18T17:08:01+00:00"
+            "time": "2023-04-03T18:25:49+00:00"
         },
         {
             "name": "phpseclib/phpseclib",
