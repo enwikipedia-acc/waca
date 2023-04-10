@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2f86c7ac461cc0cc899045384bf99a90",
+    "content-hash": "483f9a2e9323a3b62eae0b46c8b84d14",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -400,30 +400,30 @@
         },
         {
             "name": "mediawiki/oauthclient",
-            "version": "1.2.0",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wikimedia/mediawiki-oauthclient-php.git",
-                "reference": "ace642e67b8292a5e351c50daca7d3f2b25fa4cb"
+                "reference": "77db605711071ad1ef6afc0860216a53ef8a99b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wikimedia/mediawiki-oauthclient-php/zipball/ace642e67b8292a5e351c50daca7d3f2b25fa4cb",
-                "reference": "ace642e67b8292a5e351c50daca7d3f2b25fa4cb",
+                "url": "https://api.github.com/repos/wikimedia/mediawiki-oauthclient-php/zipball/77db605711071ad1ef6afc0860216a53ef8a99b2",
+                "reference": "77db605711071ad1ef6afc0860216a53ef8a99b2",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
                 "ext-json": "*",
-                "php": ">=7.2.9",
+                "php": ">=7.4",
                 "psr/log": "^1.0"
             },
             "require-dev": {
-                "mediawiki/mediawiki-codesniffer": "37.0.0",
+                "mediawiki/mediawiki-codesniffer": "41.0.0",
                 "mediawiki/minus-x": "1.1.1",
-                "php-parallel-lint/php-console-highlighter": "0.5.0",
-                "php-parallel-lint/php-parallel-lint": "1.3.0",
-                "phpunit/phpunit": "^8.5"
+                "php-parallel-lint/php-console-highlighter": "1.0.0",
+                "php-parallel-lint/php-parallel-lint": "1.3.2",
+                "phpunit/phpunit": "9.5.28"
             },
             "type": "library",
             "autoload": {
@@ -451,7 +451,7 @@
             ],
             "description": "PHP OAuth client for use with Wikipedia and other MediaWiki-based wikis running the OAuth extension",
             "homepage": "https://www.mediawiki.org/wiki/oauthclient-php",
-            "time": "2021-10-21T13:34:48+00:00"
+            "time": "2023-03-30T19:44:06+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
