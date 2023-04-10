@@ -23,7 +23,7 @@
         "ext-curl": "*",
         "ext-mbstring": "*",
         "ext-simplexml": "*",
-        "mediawiki/oauthclient": "^1.2",
+        "mediawiki/oauthclient": "^2.0",
         "php-amqplib/php-amqplib": ">=3.0",
         "league/commonmark": "^1.6"
     },
