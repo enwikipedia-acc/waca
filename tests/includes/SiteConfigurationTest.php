@@ -16,12 +16,12 @@ class SiteConfigurationTest extends TestCase
     /** @var SiteConfiguration */
     private $si;
 
-    function setUp()
+    function setUp() : void
     {
         $this->si = new SiteConfiguration();
     }
 
-    function tearDown()
+    function tearDown() : void
     {
         unset($this->si);
     }
@@ -151,13 +151,14 @@ class SiteConfigurationTest extends TestCase
         $newValue = array("this" => "that");
 
         $test1 = $this->si->getSquidList();
-        $this->assertInternalType('array', $test1);
+        $this->assertIsArray($test1);
         $this->assertArrayNotHasKey("this", $test1);
 
         $this->assertInstanceOf(SiteConfiguration::class, $this->si->setSquidList($newValue));
 
         $test2 = $this->si->getSquidList();
-        $this->assertInternalType('array', $test2);
+        $this->assertIsArray($test2);
+        $this->assertIsArray($test2);
         $this->assertArrayHasKey("this", $test2);
     }
 
@@ -246,7 +247,7 @@ class SiteConfigurationTest extends TestCase
             "http://localhost/awesomeHosts",
         );
 
-        $this->assertInternalType("array", $this->si->getCrossOriginResourceSharingHosts());
+        $this->assertIsArray($this->si->getCrossOriginResourceSharingHosts());
         $this->assertNotContains("http://localhost/awesomeHosts", $this->si->getCrossOriginResourceSharingHosts());
 
         $this->assertInstanceOf(SiteConfiguration::class, $this->si->setCrossOriginResourceSharingHosts($newValue));
@@ -314,13 +315,13 @@ class SiteConfigurationTest extends TestCase
         $newValue = array("one" => "The Other");
 
         $test1 = $this->si->getTorExitPaths();
-        $this->assertInternalType('array', $test1);
+        $this->assertIsArray($test1);
         $this->assertArrayNotHasKey("one", $test1);
 
         $this->assertInstanceOf(SiteConfiguration::class, $this->si->setTorExitPaths($newValue));
 
         $test2 = $this->si->getTorExitPaths();
-        $this->assertInternalType('array', $test2);
+        $this->assertIsArray($test2);
         $this->assertArrayHasKey("one", $test2);
     }
 }

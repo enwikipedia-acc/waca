@@ -22,7 +22,7 @@ class SessionAlertTests extends TestCase
      */
     private $globalState;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->globalState = $this->getMockBuilder(GlobalStateProvider::class)->getMock();
         WebRequest::setGlobalStateProvider($this->globalState);

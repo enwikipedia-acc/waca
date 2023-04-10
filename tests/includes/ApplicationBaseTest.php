@@ -19,7 +19,7 @@ class ApplicationBaseTest extends TestCase
     /** @var PHPUnit_Framework_MockObject_MockObject */
     private $ab;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->si = new SiteConfiguration();
 

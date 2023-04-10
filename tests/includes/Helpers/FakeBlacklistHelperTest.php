@@ -16,12 +16,12 @@ class FakeBlacklistHelperTest extends TestCase
     /** @var FakeBlacklistHelper */
     private $blacklistHelper;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->blacklistHelper = new FakeBlacklistHelper();
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         $this->blacklistHelper = null;
     }

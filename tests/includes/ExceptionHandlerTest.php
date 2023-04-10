@@ -24,7 +24,7 @@ class ExceptionHandlerTest extends TestCase
     private $eh;
     private $ob_mock;
 
-    public function setUp()
+    public function setUp() : void
     {
         if (!extension_loaded('runkit')) {
             $this->markTestSkipped('Dependencies for test are not available. Please install zenovich/runkit');
@@ -49,7 +49,7 @@ class ExceptionHandlerTest extends TestCase
         $this->eh = new ExceptionHandler();
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         global $siteConfiguration;
         unset($siteConfiguration);

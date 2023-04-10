@@ -15,11 +15,11 @@ class HttpHelperTest extends TestCase
 {
     private $hh;
 
-    public function setUp()
+    public function setUp() : void
     {
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         $this->hh = null;
     }

@@ -27,7 +27,7 @@ class SecurityManagerTest extends TestCase
     /** @var IdentificationVerifier|PHPUnit_Framework_MockObject_MockObject */
     private $identificationVerifier;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->user = $this->getMockBuilder(User::class)->getMock();
 
