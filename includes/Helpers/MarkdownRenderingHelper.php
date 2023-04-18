@@ -8,8 +8,9 @@
 
 namespace Waca\Helpers;
 
-use League\CommonMark\Environment;
+use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\Attributes\AttributesExtension;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\InlinesOnly\InlinesOnlyExtension;
 use League\CommonMark\MarkdownConverter;
 
@@ -26,24 +27,23 @@ class MarkdownRenderingHelper
 
     public function __construct()
     {
-        $blockEnvironment = Environment::createCommonMarkEnvironment();
+        $blockEnvironment = new Environment($this->config);
+        $blockEnvironment->addExtension(new CommonMarkCoreExtension());
         $blockEnvironment->addExtension(new AttributesExtension());
-        $blockEnvironment->mergeConfig($this->config);
         $this->blockRenderer = new MarkdownConverter($blockEnvironment);
 
-        $inlineEnvironment = new Environment();
+        $inlineEnvironment = new Environment($this->config);
         $inlineEnvironment->addExtension(new AttributesExtension());
         $inlineEnvironment->addExtension(new InlinesOnlyExtension());
-        $inlineEnvironment->mergeConfig($this->config);
         $this->inlineRenderer = new MarkdownConverter($inlineEnvironment);
     }
 
     public function doRender(string $content): string {
-        return $this->blockRenderer->convertToHtml($content);
+        return $this->blockRenderer->convert($content)->getContent();
     }
 
     public function doRenderInline(string $content): string {
-        return $this->inlineRenderer->convertToHtml($content);
+        return $this->inlineRenderer->convert($content)->getContent();
     }
 
 }
