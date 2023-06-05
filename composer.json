@@ -4,7 +4,7 @@
     "require": {
         "smarty/smarty": "^v4.3.1",
         "components/jquery": "^3.5.0",
-        "twbs/bootstrap": "^4.4",
+        "twbs/bootstrap": "^5.3",
         "twitter/typeahead.js": "^0.11.1",
         "fortawesome/font-awesome": "~6.4.0",
         "scssphp/scssphp": "^1.1",
