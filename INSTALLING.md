@@ -6,14 +6,14 @@ like to use that instead for essentially one-click ACC setup, please see [here](
 # Prerequisites
 
 * Web server
-* MariaDB 10.5.15+ (or equivalent)
+* MariaDB 10.11.3 (or equivalent)
 * PHP 7.4+
 
 The webserver must be configured to pre-process *.php files through the PHP engine before sending them to a client.
 
 You must also have a database which you can use with the tool.
 
-Note: MariaDB 10.2.1 is likely sufficient, but compatibility cannot be guaranteed as Production runs on 10.5.15.
+Note: MariaDB 10.2.1 is likely sufficient, but compatibility cannot be guaranteed as Production runs on 10.11.3.
 
 ## PHP configuration
 You'll also need some PHP extensions:
@@ -40,10 +40,11 @@ Note that runkit is a pain[1] to get working on Windows, and is only used by som
 
 ### Production
 
-* MariaDB 10.5.15
+* MariaDB 10.11.3
 * PHP 7.4.30
 * Apache 2.4.54 (Debian)
-* Debian Bullseye (Wikimedia Cloud VPS)
+* Debian Bullseye (Application; Wikimedia Cloud VPS)
+* Debian Bookworm (Database; Wikimedia Cloud VPS)
 
 # Basic information
 
