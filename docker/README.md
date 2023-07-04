@@ -35,8 +35,8 @@ Four Docker Compose services will be started, each within its own container:
 | Service name  | Container name       | Description                                                       |
 |---------------|----------------------|-------------------------------------------------------------------|
 | `application` | `waca-application-1` | Apache web server with PHP 7.4 hosting the actual ACC app.        |
-| `database`    | `waca-database-1`    | MariaDB 10.5 database server used by ACC.                         |
-| `msgbroker`   | `waca-msgbroker-1`   | RabbitMQ 3.8 message broker server used for notifications.        |
+| `database`    | `waca-database-1`    | MariaDB 10.11.3 database server used by ACC.                      |
+| `msgbroker`   | `waca-msgbroker-1`   | RabbitMQ 3.10.8 message broker server used for notifications.     |
 | `mailsink`    | `waca-mailsink-1`    | A simple mailsink running a dummy SMTP server which ACC will use. |
 
 If it doesn't already exist, a `config.local.inc.php` file will automatically be created in the repo root containing
