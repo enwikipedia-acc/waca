@@ -12,6 +12,7 @@ use Exception;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\Domain;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\RequestData;
 use Waca\DataObjects\RequestForm;
 use Waca\DataObjects\RequestQueue;
 use Waca\Exceptions\ApplicationLogicException;
@@ -43,6 +44,7 @@ class PageRequestAccount extends PublicInterfacePageBase
             $this->handleFormPost($request);
         }
         else {
+            $this->requestClientHints();
             $this->handleFormRefilling();
 
             $this->setTemplate('request/request-form.tpl');
@@ -77,6 +79,7 @@ class PageRequestAccount extends PublicInterfacePageBase
             $this->handleFormPost($request);
         }
         else {
+            $this->requestClientHints();
             $this->handleFormRefilling();
 
             $renderer = new MarkdownRenderingHelper();
@@ -280,9 +283,11 @@ class PageRequestAccount extends PublicInterfacePageBase
         // actually save the request to the database
         if ($this->getSiteConfiguration()->getEmailConfirmationEnabled()) {
             $this->saveAsEmailConfirmation($request, $comment);
+            $this->savePrivateData($request);
         }
         else {
             $this->saveWithoutEmailConfirmation($request, $comment);
+            $this->savePrivateData($request);
         }
 
         $this->getRequestValidationHelper()->postSaveValidations($request);
@@ -303,5 +308,34 @@ class PageRequestAccount extends PublicInterfacePageBase
 
         // Clear it for a refresh
         WebRequest::setSessionContext('accountReq', null);
+    }
+
+    private function requestClientHints()
+    {
+        $hints = $this->getSiteConfiguration()->getAcceptClientHints();
+
+        $this->headerQueue[] = "Accept-CH: " . implode(', ', $hints);
+    }
+
+    private function savePrivateData(Request $request)
+    {
+        foreach ($this->getSiteConfiguration()->getAcceptClientHints() as $header)
+        {
+            $value = WebRequest::httpHeader($header);
+
+            if($value === null){
+                continue;
+            }
+
+            $d = new RequestData();
+            $d->setDatabase($request->getDatabase());
+            $d->setRequest($request->getId());
+
+            $d->setType(RequestData::TYPE_CLIENTHINT);
+            $d->setName($header);
+            $d->setValue(WebRequest::httpHeader($header));
+
+            $d->save();
+        }
     }
 }

@@ -19,7 +19,7 @@ class SiteConfiguration
 {
     private $baseUrl;
     private $filePath;
-    private $schemaVersion = 43;
+    private $schemaVersion = 44;
     private $debuggingTraceEnabled;
     private $debuggingCssBreakpointsEnabled;
     private $dataClearIp = '127.0.0.1';
@@ -72,6 +72,8 @@ class SiteConfiguration
     private $jobQueueBatchSize = 10;
     private $amqpConfiguration = ['host' => 'localhost', 'port' => 5672, 'user' => 'guest', 'password' => 'guest', 'exchange' => ''];
     private $emailSender = 'accounts@wmflabs.org';
+    private $acceptClientHints = [];
+
 
     /**
      * Gets the base URL of the tool
@@ -1036,5 +1038,25 @@ class SiteConfiguration
         $this->emailSender = $emailSender;
 
         return $this;
-}
+    }
+
+    /**
+     * @param array $acceptClientHints
+     *
+     * @return SiteConfiguration
+     */
+    public function setAcceptClientHints(array $acceptClientHints): SiteConfiguration
+    {
+        $this->acceptClientHints = $acceptClientHints;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAcceptClientHints(): array
+    {
+        return $this->acceptClientHints;
+    }
 }
