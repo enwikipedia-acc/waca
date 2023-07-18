@@ -606,6 +606,18 @@ class WebRequest
         return null;
     }
 
+    public static function httpHeader(string $headerName): ?string {
+        $server = &self::$globalStateProvider->getServerSuperGlobal();
+
+        $headerKey = strtoupper("HTTP_" . str_replace('-', '_', $headerName));
+
+        if (isset($server[$headerKey])) {
+            return $server[$headerKey];
+        }
+
+        return null;
+    }
+
     public static function testSiteNoticeCookieValue($expectedHash)
     {
         $cookie = &self::$globalStateProvider->getCookieSuperGlobal();

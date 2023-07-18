@@ -170,6 +170,8 @@ $emailSender = 'accounts@wmflabs.org';
 $identificationNoticeboardPage = 'Access to nonpublic personal data policy/Noticeboard';
 $identificationNoticeboardApi = $metaWikimediaWebServiceEndpoint;
 
+$acceptClientHints = [];
+
 /**************************************************************************
  **********                   IMPORTANT NOTICE                    **********
  ***************************************************************************
@@ -276,4 +278,5 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setAmqpConfiguration($amqpConfiguration)
     ->setEmailSender($emailSender)
     ->setIdentificationNoticeboardPage($identificationNoticeboardPage)
-    ->setIdentificationNoticeboardWebserviceEndpoint($identificationNoticeboardApi);
+    ->setIdentificationNoticeboardWebserviceEndpoint($identificationNoticeboardApi)
+    ->setAcceptClientHints($acceptClientHints);

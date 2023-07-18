@@ -83,4 +83,26 @@ $zoom-section-spacer: 1.45rem;
     button.dropdown-toggle-split {
         border-left: 1px solid rgba($black, .2);
     }
+
+    #client-hint-container {
+        .col {
+            @extend .ml-3;
+            @extend .border-left;
+            @extend .border-visited;
+            @extend .border-w2;
+        }
+
+        .client-hint {
+            .client-hint-name, .client-hint-value {
+                @extend .pl-2;
+                @extend .pl-md-3;
+            }
+            .client-hint-name {
+                @extend .col-md-4;
+            }
+            .client-hint-value {
+                @extend .col-md-8;
+            }
+        }
+    }
 }

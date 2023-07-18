@@ -18,6 +18,9 @@ class PageEmailConfirmationRequired extends PublicInterfacePageBase
      */
     protected function main()
     {
+        // clear any requests for client hints
+        $this->headerQueue[] = "Accept-CH:";
+
         $this->setTemplate('request/email-confirmation.tpl');
     }
 }

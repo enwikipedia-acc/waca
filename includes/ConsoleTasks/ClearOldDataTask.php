@@ -31,7 +31,22 @@ SQL
         ));
 
         if (!$success) {
-            throw new Exception("Error in transaction: Could not clear data.");
+            throw new Exception("Error in transaction 1: Could not clear data.");
+        }
+
+        $dataQuery = $this->getDatabase()->prepare(<<<SQL
+DELETE rd
+FROM requestdata rd
+INNER JOIN request r ON r.id = rd.request
+WHERE r.date < DATE_SUB(curdate(), INTERVAL {$dataClearInterval})
+  AND r.status = 'Closed';
+SQL
+        );
+
+        $success = $dataQuery->execute();
+
+        if (!$success) {
+            throw new Exception("Error in transaction 2: Could not clear data.");
         }
     }
 }

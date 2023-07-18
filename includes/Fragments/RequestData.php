@@ -245,6 +245,9 @@ trait RequestData
     protected function setupCheckUserData(Request $request)
     {
         $this->assign('requestUserAgent', $request->getUserAgent());
+
+        $data = \Waca\DataObjects\RequestData::getForRequest($request->getId(), $request->getDatabase(), \Waca\DataObjects\RequestData::TYPE_CLIENTHINT);
+        $this->assign('requestClientHints', $data);
     }
 
     /**

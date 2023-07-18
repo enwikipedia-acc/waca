@@ -18,6 +18,11 @@ class PageRequestSubmitted extends PublicInterfacePageBase
      */
     protected function main()
     {
+        // clear any requests for client hints. Should have been done already prior to
+        // email confirmation, but this catches the case where email confirmation is
+        // disabled.
+        $this->headerQueue[] = "Accept-CH:";
+
         $this->setTemplate('request/email-confirmed.tpl');
     }
 }
