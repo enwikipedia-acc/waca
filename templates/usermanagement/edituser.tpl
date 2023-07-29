@@ -42,8 +42,7 @@
             <div class="form-group row">
                 <div class="offset-lg-2 col-md-3 col-lg-2"><label for="user_onwikiname" class="col-form-label">On-wiki Username:</label></div>
                 <div class="col-md-8 col-lg-6 col-xl-4">
-                    <span class="form-control uneditable-input"
-                          id="user_onwikiname">{$user->getOnWikiName()|escape}</span>
+                    <input class="form-control" type="text" id="user_onwikiname" value="{$user->getOnWikiName()|escape}" readonly="readonly"/>
                     <span class="badge {if $oauth->isPartiallyLinked()}badge-danger{else}badge-success{/if}">OAuth</span>
                 </div>
             </div>
@@ -62,7 +61,7 @@
                 <label for="inputEmailsig" class="col-form-label">Email signature</label>
             </div>
             <div class="col-md-9 col-lg-7 col-xl-6">
-                <div class="form-control prewrap minh-5 uneditable-input">{$emailSignature|escape}</div>
+                <textarea class="form-control" rows="5" name="user_emailsig" id="inputEmailsig" readonly>{$emailSignature|escape}</textarea>
             </div>
         </div>
 

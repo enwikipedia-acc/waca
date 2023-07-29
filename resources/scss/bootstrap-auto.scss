@@ -9,12 +9,9 @@
  * Styles based on Bootstrap
  */
 
-@media(prefers-color-scheme: dark) {
-  @import "bootstrap-alt";
-}
-
-@media(prefers-color-scheme: light) {
-  @import "bootstrap-main";
-}
+//noinspection CssUnknownTarget
+@import "bootstrap-main.css" screen and (prefers-color-scheme: light);
+//noinspection CssUnknownTarget
+@import "bootstrap-alt.css" screen and (prefers-color-scheme: dark);
 
 

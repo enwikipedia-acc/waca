@@ -107,7 +107,3 @@ iframe.preview-frame {
         height: 30vh;
     }
 }
-
-.form-control.uneditable-input {
-    @extend .form-control[readonly]
-}
