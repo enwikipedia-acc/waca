@@ -7,7 +7,6 @@
         "twbs/bootstrap": "^4.4",
         "twitter/typeahead.js": "^0.11.1",
         "fortawesome/font-awesome": "~6.4.0",
-        "scssphp/scssphp": "^1.1",
         "spomky-labs/otphp": "^10.0",
         "bacon/bacon-qr-code": "^2.0",
         "paragonie/constant_time_encoding": "^2.0",

@@ -13,6 +13,6 @@ npm install
 
 chown -R www-data templates_c errorlog
 
-php maintenance/RegenerateStylesheets.php
+npm run build-scss
 
 exec apache2-foreground
