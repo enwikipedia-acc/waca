@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Le styles -->
-    <link href="{$baseurl}/vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{$baseurl}/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{$baseurl}/resources/public.css" rel="stylesheet"/>
 
 </head>
@@ -55,8 +55,8 @@
 </div><!--/container-->
 {block name="footerjs"}
     {* JS: Placed at the end of the document so the pages load faster *}
-    <script src="{$baseurl}/vendor/components/jquery/jquery.min.js" type="text/javascript"></script>
-    <script src="{$baseurl}/vendor/twbs/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="{$baseurl}/node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script>
+    <script src="{$baseurl}/node_modules/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
 {/block}
 </body>
 </html>
