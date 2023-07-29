@@ -77,10 +77,10 @@
 
 {block name="footerjs"}
     {* JS: Placed at the end of the document so the pages load faster *}
-    <script src="{$baseurl}/vendor/components/jquery/jquery.min.js" type="text/javascript"></script>
+    <script src="{$baseurl}/node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script>
     <script src="{$baseurl}/vendor/fortawesome/font-awesome/js/all.min.js" data-auto-add-css="false" type="text/javascript"></script>
     <script src="{$baseurl}/node_modules/popper.js/dist/umd/popper.min.js" type="text/javascript"></script>
-    <script src="{$baseurl}/vendor/twbs/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="{$baseurl}/node_modules/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="{$baseurl}/vendor/twitter/typeahead.js/dist/typeahead.bundle.min.js"></script>
     <script src="{$baseurl}/vendor/drvic10k/bootstrap-sortable/Scripts/bootstrap-sortable.js"></script>
     <script src="{$baseurl}/vendor/drvic10k/bootstrap-sortable/Scripts/moment.min.js"></script>
