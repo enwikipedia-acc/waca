@@ -67,7 +67,7 @@ This was written using Windows 10.
 6. Run `composer install` (https://getcomposer.org)
 7. Run `npm install`
 8. Generate the stylesheets:
-  * `cd maintenance/; php RegenerateStylesheets.php`
+  * `npm run build-scss`
 8. run the database setup scripts:
   * `./test_db.sh 1 localhost <dbname> <user> <password>`
 9. Create the configuration file (see below).
