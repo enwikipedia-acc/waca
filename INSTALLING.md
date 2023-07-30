@@ -69,8 +69,8 @@ This was written using Windows 10.
 7. Run `npm install`
 8. Generate the stylesheets:
   * `npm run build-scss`
-8. run the database setup scripts:
-  * `./test_db.sh 1 localhost <dbname> <user> <password>`
+8. run the database setup scripts (you'll be prompted for a password):
+  * `./test_db.sh --create --host localhost --schema <dbname> --user <user>`
 9. Create the configuration file (see below).
 
 # Configuration File

@@ -1,114 +1,227 @@
 #!/bin/bash
-# Usage: ./test_db.sh <createonly> <server> <dbname> <user> <pass>
-# Arguments other than the first are optional
-# Set <createonly> to 1 if you do not need to test the build
-# Set <createonly> to 0 if you do need to test the build
+
+cd "$(dirname "$0")"
+
+function usage {
+    cat <<EEOOFF
+Usage: $0 [options]
+
+One of the following three options is required:
+  --ci              : Performs a CI build. This will pull credentials from the environment.
+  --create          : Interactively create a database
+  --test            : Interactively build and test a database
+
+For all options other than \`--ci\` above, these three parameters are also required.
+  --host=HOSTNAME   : The MariaDB server hostname
+  --user=USERNAME   : The username to connect to MariaDB with
+  --schema=DATABASE : The database name to use on MariaDB
+EEOOFF
+}
+
+PARAMS=$(getopt -o ic --long ci,test,create,host:,user:,schema: -- "$@")
+
+if [[ $? -ne 0 ]]; then
+    usage
+    exit 1
+fi
+
+eval set -- "$PARAMS"
+
+CreateOnly=-1
+UseEnvironmentCredentials=0
+
+MySqlHost=""
+MySqlSchema=""
+MySqlUsername=""
+MySqlPassword=""
+
+while true; do
+    case "$1" in
+    --ci)
+        CreateOnly=0
+        UseEnvironmentCredentials=1
+        ;;
+    --test)
+        CreateOnly=0
+        ;;
+    --create)
+        CreateOnly=1
+        ;;
+    --host)
+        MySqlHost=$2
+        shift
+        ;;
+    --user)
+        MySqlUsername=$2
+        shift
+        ;;
+    --schema)
+        MySqlSchema=$2
+        shift
+        ;;
+    --)
+        shift
+        break
+        ;;
+    esac
+    shift
+done
+
+if [[ $CreateOnly -eq -1 ]]; then
+    # Legacy mode
+    if [[ $# -eq 0 ]]; then
+        # No legacy parameters and no mode specified.
+        usage
+        exit 1
+    fi
+
+    CreateOnly=$1
+
+    if [[ $# -gt 1 ]]; then
+        if [ $# -ge 2 ]; then
+            MySqlHost=$2
+        fi
+
+        if [ $# -ge 3 ]; then
+            MySqlSchema=$3
+        fi
+
+        if [ $# -ge 4 ]; then
+            MySqlUsername=$4
+        fi
+
+        if [ $# -ge 5 ]; then
+            MySqlPassword=$5
+        fi
+    fi
+fi
+
+if [[ $UseEnvironmentCredentials -eq 1 ]]; then
+    MySqlHost=$MYSQL_HOST
+    MySqlSchema=$MYSQL_SCHEMA
+    MySqlUsername=$MYSQL_USER
+    MySqlPassword=$MYSQL_PASSWORD
+fi
+
+if [[ $MySqlSchema == "" || $MySqlUsername == "" || $MySqlHost == "" ]]; then
+    usage
+    exit 1;
+fi
+
+if [[ $MySqlPassword == "" ]]; then
+    read -r -s -p "MariaDB password: " MySqlPassword
+fi
+
+# -- Write credentials to a temporary file
+defaultsFile=$(mktemp)
+chmod go= "$defaultsFile"
+
+# shellcheck disable=SC2064
+trap "rm -f $defaultsFile" EXIT
+
+{
+    echo "[client]"
+    echo "user = ${MySqlUsername}"
+    echo "password = ${MySqlPassword}"
+    echo "host = ${MySqlHost}"
+
+    echo "[mysqldump]"
+    echo "column-statistics=0"
+} >> "$defaultsFile"
+
+function log() {
+    printf "[%s] %s\n" "$(date --iso-8601=s)" "$1"
+}
+
+function testStringContains() {
+    haystack=$1
+    needle=$2
+
+    if [[ "$haystack" == *"$needle"* ]]; then
+        log "Check for $needle: SUCCESS"
+    else
+        log "Check for $needle: FAILED"
+    fi
+}
 
 set -e
 
-if [ $# -lt 1 ]; then
-	echo "Usage: ./test_db.sh <createonly> <server> <dbname> <user> <pass>\n"
-	echo "Only the first parameter is required. It should be set to a 1 if\n"
-	echo "you are only creating a database, or 0 if you are testing the build.\n"
-	exit 1
-fi
-
-if [ $1 -eq 0 ]; then
-	echo "Testing database build."
+if [[ $CreateOnly -eq 0 ]]; then
+    log "Testing database build."
 else
-	echo "Creating database."
+    log "Creating database."
 fi
 
-# Default to values given in variables used by TravisCI if no args are given
-if [ $# -ge 2 ]; then
-	SQL_SERVER=$2
-else
-	SQL_SERVER=$MYSQL_HOST
+log "Check a few configuration flags"
+log "Checking SQL_MODE"
+sqlMode=$(mysql --defaults-file="$defaultsFile" -e "SELECT @@sql_mode;")
+
+testStringContains "${sqlMode}" "STRICT_ALL_TABLES"
+testStringContains "${sqlMode}" "ONLY_FULL_GROUP_BY"
+testStringContains "${sqlMode}" "ERROR_FOR_DIVISION_BY_ZERO"
+testStringContains "${sqlMode}" "NO_ENGINE_SUBSTITUTION"
+
+mysql --defaults-file="$defaultsFile" -e "SELECT @@version;"
+
+if [[ $MySqlUsername == "root" ]]; then
+    log "Forcing SQL mode"
+    mysql --defaults-file="$defaultsFile" -e "SET GLOBAL sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION,STRICT_ALL_TABLES,ONLY_FULL_GROUP_BY,ERROR_FOR_DIVISION_BY_ZERO';"
+
+    mysql --defaults-file="$defaultsFile" -e "SELECT @@sql_mode;"
 fi
 
-if [ $# -ge 3 ]; then
-	SQL_DBNAME=$3
-else
-	SQL_DBNAME=$MYSQL_SCHEMA
-fi
+log "Dropping old database..."
+mysql --defaults-file="$defaultsFile"  -e "DROP DATABASE IF EXISTS ${MySqlSchema};"
 
-if [ $# -ge 4 ]; then
-	SQL_USERNAME=$4
-else
-	SQL_USERNAME=$MYSQL_USER
-fi
+log "Creating database..."
+mysql --defaults-file="$defaultsFile"  -e "CREATE DATABASE ${MySqlSchema};"
 
-if [ $# -ge 5 ]; then
-	SQL_PASSWORD=-p$5
-elif [ -n "$MYSQL_PASSWORD" ]; then
-	SQL_PASSWORD=-p$MYSQL_PASSWORD
-else
-	SQL_PASSWORD=
-fi
+log "Loading initial schema..."
+mysql --defaults-file="$defaultsFile" "${MySqlSchema}" < db-structure.sql
 
-echo "Check a few configuration flags"
-mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "SELECT @@sql_mode;"
-mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "SELECT @@version;"
-
-if [[ $SQL_USERNAME == "root" ]]; then
-	echo "Forcing SQL mode"
-	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "SET GLOBAL sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION,STRICT_ALL_TABLES,ONLY_FULL_GROUP_BY,ERROR_FOR_DIVISION_BY_ZERO';"
-
-	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "SELECT @@sql_mode;"
-fi
-
-echo "Dropping old database..."
-mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "DROP DATABASE IF EXISTS $SQL_DBNAME;"
-
-echo "Creating database..."
-mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "CREATE DATABASE $SQL_DBNAME;"
-
-echo "Loading initial schema..."
-mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < db-structure.sql
-
-echo "Loading initial seed data..."
-for f in `ls seed/*_data.sql`; do
-	echo "  * $f"
-	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < $f
+log "Loading initial seed data..."
+for f in seed/*_data.sql; do
+    log "  * $f"
+    mysql --defaults-file="$defaultsFile" "${MySqlSchema}" < "$f"
 done
 
-echo "Applying patches..."
-for f in `ls patches/patch*.sql`; do
-	if [ "$f" == "patches/patch00-example.sql" ]; then
-		continue;
-	fi
+log "Applying patches..."
+for f in patches/patch*.sql; do
+    if [[ "$f" == "patches/patch00-example.sql" ]]; then
+        continue
+    fi
 
-	echo "  * $f"
-	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < $f
+    log "  * $f"
+    mysql --defaults-file="$defaultsFile" "${MySqlSchema}" < "$f"
 done
 
-echo "Checking schema version..."
-mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME -e 'select * from schemaversion'
+log "Checking schema version..."
+mysql --defaults-file="$defaultsFile" "${MySqlSchema}" -e 'select * from schemaversion'
 
-if [ $1 -eq 0 ]; then
-	echo "Dumping schema to file..."
-	mysqldump --compact -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME > schema.sql
+if [[ $CreateOnly -eq 0 ]]; then
+    log "Dumping schema to file..."
+    mysqldump --defaults-file="$defaultsFile" "${MySqlSchema}" --skip-comments > schema.sql
 
-	echo "Dropping database from server..."
-	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "DROP DATABASE IF EXISTS $SQL_DBNAME;"
+    log "Dropping old database..."
+    mysql --defaults-file="$defaultsFile"  -e "DROP DATABASE IF EXISTS ${MySqlSchema};"
 
-	echo "Creating database..."
-	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "CREATE DATABASE $SQL_DBNAME;"
+    log "Creating database..."
+    mysql --defaults-file="$defaultsFile"  -e "CREATE DATABASE ${MySqlSchema};"
 
-	echo "Reloading database from file..."
-	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < schema.sql
+    log "Reloading database from file..."
+    mysql --defaults-file="$defaultsFile" "${MySqlSchema}" < schema.sql
 
-	echo "Dumping schema to file..."
-	mysqldump --compact -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME > schema2.sql
+    log "Dumping schema to file..."
+    mysqldump --defaults-file="$defaultsFile" "${MySqlSchema}" --skip-comments > schema2.sql
 
-	echo "Comparing dumps..."
-	diff -q schema.sql schema2.sql
+    log "Comparing dumps..."
+    if ! diff -q schema.sql schema2.sql; then
+        log "Difference detected!"
+        exit 1
+    fi
 
-	echo "Rewriting definer..."
-	cat schema.sql | sed "s/!50013 DEFINER=/DISABLED: 50013 DEFINER=/" > database.sql
-
-	echo "Removing unneeded files..."
-	rm schema.sql schema2.sql
+    log "Removing unneeded files..."
+    rm schema.sql schema2.sql
 fi
 
-echo "Done."
+log "Done."
