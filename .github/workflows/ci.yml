@@ -2,10 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ "master", "ghactions" ]
+    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-  workflow_dispatch:
     
 permissions:
   contents: read
@@ -21,6 +20,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        # Bump depth for Scrutinizer
+        fetch-depth: 10
     
     - name: Setup PHP Action
       uses: shivammathur/setup-php@2.23.0
@@ -50,7 +52,16 @@ jobs:
   
     - name: Run test suite
       run: php vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
-      
+
+    - name: Upload Scrutinizer coverage
+      uses: sudo-bot/action-scrutinizer@latest
+      # Do not run this step on forked versions of the main repository (example: contributor forks)
+      # Also only run it for current production PHP version
+      if: github.repository == 'enwikipedia-acc/waca' && matrix.php-version == '7.4'
+      with:
+        cli-args: "--format=php-clover coverage.xml --revision=${{ github.event.pull_request.head.sha || github.sha }}"
+
+
   database:
     name: "Database"
     runs-on: ubuntu-latest
