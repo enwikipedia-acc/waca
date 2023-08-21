@@ -120,7 +120,7 @@ class PageUserManagement extends InternalPageBase
             throw new ApplicationLogicException('Sorry, the user you are trying to edit could not be found.');
         }
 
-        $roleData = $this->getRoleData(UserRole::getForUser($user->getId(), $database));
+        $roleData = $this->getRoleData(UserRole::getForUser($user->getId(), $database, 1)); // FIXME: domains
 
         // Dual-mode action
         if (WebRequest::wasPosted()) {
@@ -174,11 +174,12 @@ class PageUserManagement extends InternalPageBase
                 $a = new UserRole();
                 $a->setUser($user->getId());
                 $a->setRole($x);
+                $a->setDomain(1); // FIXME: domains
                 $a->setDatabase($database);
                 $a->save();
             }
 
-            Logger::userRolesEdited($database, $user, $reason, $add, $removed);
+            Logger::userRolesEdited($database, $user, $reason, $add, $removed, 1); // FIXME: domains
 
             // dummy save for optimistic locking. If this fails, the entire txn will roll back.
             $user->setUpdateVersion(WebRequest::postInt('updateversion'));

@@ -162,8 +162,11 @@ class Logger
      * @param string      $reason
      * @param array       $added
      * @param array       $removed
+     * @param int         $domain
+     *
+     * @throws Exception
      */
-    public static function userRolesEdited(PdoDatabase $database, User $object, $reason, $added, $removed)
+    public static function userRolesEdited(PdoDatabase $database, User $object, $reason, $added, $removed, int $domain)
     {
         $logData = serialize(array(
             'added'   => $added,
@@ -171,7 +174,7 @@ class Logger
             'reason'  => $reason,
         ));
 
-        self::createLogEntry($database, $object, "RoleChange", $logData);
+        self::createLogEntry($database, $object, "RoleChange", $logData, null, $domain);
     }
 
     #endregion

@@ -28,11 +28,12 @@ class UserRole extends DataObject
      *
      * @return UserRole[]
      */
-    public static function getForUser($userId, PdoDatabase $database)
+    public static function getForUser($userId, PdoDatabase $database, int $domainId)
     {
-        $sql = 'SELECT * FROM userrole WHERE user = :user';
+        $sql = 'SELECT * FROM userrole WHERE user = :user AND domain = :domain';
         $statement = $database->prepare($sql);
         $statement->bindValue(':user', $userId);
+        $statement->bindValue(':domain', $domainId);
 
         $statement->execute();
 
