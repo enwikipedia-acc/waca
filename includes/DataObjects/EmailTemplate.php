@@ -35,6 +35,8 @@ class EmailTemplate extends DataObject
     private $preloadonly = 0;
     private $defaultaction = self::ACTION_NOT_CREATED;
     private $queue;
+    /** @var int */
+    private $domain;
 
     /**
      * Gets active non-preload templates
@@ -171,8 +173,8 @@ SQL
         if ($this->isNew()) {
             // insert
             $statement = $this->dbObject->prepare(<<<SQL
-INSERT INTO `emailtemplate` (name, text, jsquestion, defaultaction, active, preloadonly, queue)
-VALUES (:name, :text, :jsquestion, :defaultaction, :active, :preloadonly, :queue);
+INSERT INTO `emailtemplate` (name, text, jsquestion, defaultaction, active, preloadonly, queue, domain)
+VALUES (:name, :text, :jsquestion, :defaultaction, :active, :preloadonly, :queue, :domain);
 SQL
             );
             $statement->bindValue(":name", $this->name);
@@ -182,6 +184,7 @@ SQL
             $statement->bindValue(":active", $this->active);
             $statement->bindValue(":preloadonly", $this->preloadonly);
             $statement->bindValue(":queue", $this->queue);
+            $statement->bindValue(":domain", $this->domain);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -365,5 +368,15 @@ SQL
     public function setQueue(?int $queue): void
     {
         $this->queue = $queue;
+    }
+
+    public function getDomain(): int
+    {
+        return $this->domain;
+    }
+
+    public function setDomain(int $domain): void
+    {
+        $this->domain = $domain;
     }
 }

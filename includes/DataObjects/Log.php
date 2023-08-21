@@ -28,6 +28,8 @@ class Log extends DataObject
     private $timestamp;
     /** @var string|null */
     private $comment;
+    /** @var int */
+    private $domain;
 
     /**
      * @throws Exception
@@ -36,8 +38,8 @@ class Log extends DataObject
     {
         if ($this->isNew()) {
             $statement = $this->dbObject->prepare(<<<SQL
-                INSERT INTO log (objectid, objecttype, user, action, timestamp, comment) 
-                VALUES (:id, :type, :user, :action, CURRENT_TIMESTAMP(), :comment);
+                INSERT INTO log (objectid, objecttype, user, action, timestamp, comment, domain) 
+                VALUES (:id, :type, :user, :action, CURRENT_TIMESTAMP(), :comment, :domain);
 SQL
             );
 
@@ -46,6 +48,7 @@ SQL
             $statement->bindValue(":user", $this->user);
             $statement->bindValue(":action", $this->action);
             $statement->bindValue(":comment", $this->comment);
+            $statement->bindValue(":domain", $this->domain);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -163,5 +166,15 @@ SQL
     public function setComment($comment)
     {
         $this->comment = $comment;
+    }
+
+    public function getDomain(): int
+    {
+        return $this->domain;
+    }
+
+    public function setDomain(int $domain): void
+    {
+        $this->domain = $domain;
     }
 }

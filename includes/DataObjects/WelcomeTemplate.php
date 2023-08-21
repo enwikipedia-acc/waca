@@ -26,6 +26,8 @@ class WelcomeTemplate extends DataObject
     private $botcode;
     private $usageCache;
     private $deleted = 0;
+    /** @var int */
+    private $domain;
 
     /**
      * Summary of getAll
@@ -58,11 +60,12 @@ class WelcomeTemplate extends DataObject
         if ($this->isNew()) {
             // insert
             $statement = $this->dbObject->prepare(<<<SQL
-INSERT INTO welcometemplate (usercode, botcode) VALUES (:usercode, :botcode);
+INSERT INTO welcometemplate (usercode, botcode, domain) VALUES (:usercode, :botcode, :domain);
 SQL
             );
             $statement->bindValue(":usercode", $this->usercode);
             $statement->bindValue(":botcode", $this->botcode);
+            $statement->bindValue(":domain", $this->domain);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -206,5 +209,15 @@ SQL
         $templateText = str_replace('$username', $creator, $templateText);
 
         return $templateText;
+    }
+
+    public function getDomain(): int
+    {
+        return $this->domain;
+    }
+
+    public function setDomain(int $domain): void
+    {
+        $this->domain = $domain;
     }
 }
