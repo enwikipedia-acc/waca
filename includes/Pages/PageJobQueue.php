@@ -172,7 +172,8 @@ class PageJobQueue extends PagedInternalPageBase
         $this->assign('parent', JobQueue::getById($job->getParent(), $database));
 
         /** @var Log[] $logs */
-        $logs = LogSearchHelper::get($database)->byObjectType('JobQueue')
+        // FIXME: domains
+        $logs = LogSearchHelper::get($database, 1)->byObjectType('JobQueue')
             ->byObjectId($job->getId())->getRecordCount($logCount)->fetch();
         if ($logCount === 0) {
             $this->assign('log', array());

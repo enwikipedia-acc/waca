@@ -41,7 +41,8 @@ class LogHelper
      */
     public static function getRequestLogsWithComments($requestId, PdoDatabase $db, SecurityManager $securityManager)
     {
-        $logs = LogSearchHelper::get($db)->byObjectType('Request')->byObjectId($requestId)->fetch();
+        // FIXME: domains
+        $logs = LogSearchHelper::get($db, 1)->byObjectType('Request')->byObjectId($requestId)->fetch();
 
         $currentUser = User::getCurrent($db);
         $showRestrictedComments = $securityManager->allows('RequestData', 'seeRestrictedComments', $currentUser) === SecurityManager::ALLOWED;

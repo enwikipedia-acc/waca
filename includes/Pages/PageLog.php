@@ -37,7 +37,8 @@ class PageLog extends PagedInternalPageBase
 
         $this->addJs("/api.php?action=users&all=true&targetVariable=typeaheaddata");
 
-        $logSearch = LogSearchHelper::get($database);
+        // FIXME: domains
+        $logSearch = LogSearchHelper::get($database, 1);
 
         if ($filterUser !== null) {
             $userObj = User::getByUsername($filterUser, $database);

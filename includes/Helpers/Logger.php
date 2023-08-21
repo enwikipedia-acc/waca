@@ -69,6 +69,12 @@ class Logger
         }
 
         $log = new Log();
+
+        if (method_exists($object, 'getDomain'))
+        {
+            $log->setDomain($object->getDomain());
+        }
+
         $log->setDatabase($database);
         $log->setAction($logAction);
         $log->setObjectId($object->getId());
