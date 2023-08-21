@@ -122,9 +122,10 @@ class PageDomainManagement extends InternalPageBase
             $domain->setDefaultLanguage(WebRequest::postString('defaultLanguage'));
             $domain->setLocalDocumentation(WebRequest::postString('localDocumentation'));
 
-            /** @var EmailTemplate $template */
+            /** @var EmailTemplate|false $template */
             $template = EmailTemplate::getById(WebRequest::postInt('defaultClose'), $database);
-            if ($template->getActive()
+            if ($template !== false
+                && $template->getActive()
                 && $template->getPreloadOnly() === false
                 && $template->getDefaultAction() === EmailTemplate::ACTION_CREATED) {
                 $domain->setDefaultClose(WebRequest::postInt('defaultClose'));
@@ -149,7 +150,7 @@ class PageDomainManagement extends InternalPageBase
         else {
             $this->assignCSRFToken();
 
-            $templates = EmailTemplate::getActiveNonpreloadTemplates(EmailTemplate::ACTION_CREATED, $database);
+            $templates = EmailTemplate::getActiveNonpreloadTemplates(EmailTemplate::ACTION_CREATED, $database, $domain->getId());
             $this->assign('closeTemplates', $templates);
 
             $this->assign('shortName', $domain->getShortName());

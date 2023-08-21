@@ -30,8 +30,9 @@ class PageEmailManagement extends InternalPageBase
         $this->setHtmlTitle('Close Emails');
 
         // Get all active email templates
-        $activeTemplates = EmailTemplate::getAllActiveTemplates(null, $this->getDatabase());
-        $inactiveTemplates = EmailTemplate::getAllInactiveTemplates($this->getDatabase());
+        // FIXME: domains!
+        $activeTemplates = EmailTemplate::getAllActiveTemplates(null, $this->getDatabase(), 1);
+        $inactiveTemplates = EmailTemplate::getAllInactiveTemplates($this->getDatabase(), 1);
 
         $this->assign('activeTemplates', $activeTemplates);
         $this->assign('inactiveTemplates', $inactiveTemplates);
@@ -101,7 +102,7 @@ class PageEmailManagement extends InternalPageBase
 
             $this->modifyTemplateData($template);
 
-            $other = EmailTemplate::getByName($template->getName(), $database);
+            $other = EmailTemplate::getByName($template->getName(), $database, $domain->getId());
             if ($other !== false && $other->getId() !== $template->getId()) {
                 throw new ApplicationLogicException('A template with this name already exists');
             }
@@ -192,9 +193,12 @@ class PageEmailManagement extends InternalPageBase
             $template = new EmailTemplate();
             $template->setDatabase($database);
 
+            // FIXME: domains!
+            $template->setDomain(1);
+
             $this->modifyTemplateData($template);
 
-            $other = EmailTemplate::getByName($template->getName(), $database);
+            $other = EmailTemplate::getByName($template->getName(), $database, $template->getDomain());
             if ($other !== false) {
                 throw new ApplicationLogicException('A template with this name already exists');
             }

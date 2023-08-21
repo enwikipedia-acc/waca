@@ -187,16 +187,16 @@ class PageViewRequest extends InternalPageBase
         $this->assign('skipJsAborts', $skipJsAborts);
         $this->assign('preferredCreationMode', $preferredCreationMode);
 
-        $createReasons = EmailTemplate::getActiveNonpreloadTemplates(EmailTemplate::ACTION_CREATED, $database, $domain->getDefaultClose());
+        $createReasons = EmailTemplate::getActiveNonpreloadTemplates(EmailTemplate::ACTION_CREATED, $database, $domain->getId(), $domain->getDefaultClose());
         $this->assign("createReasons", $createReasons);
-        $declineReasons = EmailTemplate::getActiveNonpreloadTemplates(EmailTemplate::ACTION_NOT_CREATED, $database);
+        $declineReasons = EmailTemplate::getActiveNonpreloadTemplates(EmailTemplate::ACTION_NOT_CREATED, $database, $domain->getId());
         $this->assign("declineReasons", $declineReasons);
 
-        $allCreateReasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::ACTION_CREATED, $database);
+        $allCreateReasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::ACTION_CREATED, $database, $domain->getId());
         $this->assign("allCreateReasons", $allCreateReasons);
-        $allDeclineReasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::ACTION_NOT_CREATED, $database);
+        $allDeclineReasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::ACTION_NOT_CREATED, $database, $domain->getId());
         $this->assign("allDeclineReasons", $allDeclineReasons);
-        $allOtherReasons = EmailTemplate::getAllActiveTemplates(false, $database);
+        $allOtherReasons = EmailTemplate::getAllActiveTemplates(false, $database, $domain->getId());
         $this->assign("allOtherReasons", $allOtherReasons);
     }
 
