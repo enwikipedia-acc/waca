@@ -24,15 +24,26 @@ class LogSearchHelper extends SearchHelperBase
     }
 
     /**
-     * Initiates a search for requests
+     * Initiates a search for logs
      *
      * @param PdoDatabase $database
+     * @param int|null $domain The domain to search for. This will retrieve both logs for the specified domain and
+     *                         global logs if a value is specified. If null, only global logs are returned.
      *
      * @return LogSearchHelper
      */
-    public static function get(PdoDatabase $database)
+    public static function get(PdoDatabase $database, ?int $domain)
     {
         $helper = new LogSearchHelper($database);
+
+        if ($domain === null) {
+            $helper->whereClause .= ' AND domain IS NULL';
+        }
+        else {
+            $helper->whereClause .= ' AND coalesce(domain, ?) = ?';
+            $helper->parameterList[] = $domain;
+            $helper->parameterList[] = $domain;
+        }
 
         return $helper;
     }

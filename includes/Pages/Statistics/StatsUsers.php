@@ -121,7 +121,7 @@ SQL
         $this->assign("notcreated", $usersNotCreated);
 
         /** @var Log[] $logs */
-        $logs = LogSearchHelper::get($database)
+        $logs = LogSearchHelper::get($database, null)
             ->byObjectType('User')
             ->byObjectId($user->getId())
             ->getRecordCount($logCount)

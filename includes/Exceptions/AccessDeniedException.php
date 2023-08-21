@@ -98,7 +98,7 @@ class AccessDeniedException extends ReadableException
     private function getLogEntry($action, User $user, PdoDatabase $database)
     {
         /** @var Log[] $logs */
-        $logs = LogSearchHelper::get($database)
+        $logs = LogSearchHelper::get($database, null)
             ->byAction($action)
             ->byObjectType('User')
             ->byObjectId($user->getId())
