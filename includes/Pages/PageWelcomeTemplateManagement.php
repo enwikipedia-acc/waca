@@ -29,7 +29,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
     protected function main()
     {
         $database = $this->getDatabase();
-        $templateList = WelcomeTemplate::getAll($database);
+        $templateList = WelcomeTemplate::getAll($database, 1); // FIXME: domains
         $preferenceManager = PreferenceManager::getForCurrent($database);
 
         $this->setHtmlTitle('Welcome Templates');
@@ -156,6 +156,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
             $template->setDatabase($database);
             $template->setUserCode($userCode);
             $template->setBotCode($botCode);
+            $template->setDomain(1); // FIXME: domains!
             $template->save();
 
             Logger::welcomeTemplateCreated($database, $template);
