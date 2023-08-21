@@ -41,8 +41,15 @@ class PageJobQueue extends PagedInternalPageBase
         $database = $this->getDatabase();
 
         /** @var JobQueue[] $jobList */
-        $jobList = JobQueueSearchHelper::get($database)
-            ->statusIn(array('queued', 'ready', 'waiting', 'running', 'failed'))
+        // FIXME: domains
+        $jobList = JobQueueSearchHelper::get($database, 1)
+            ->statusIn([
+                JobQueue::STATUS_QUEUED,
+                JobQueue::STATUS_READY,
+                JobQueue::STATUS_WAITING,
+                JobQueue::STATUS_RUNNING,
+                JobQueue::STATUS_FAILED,
+            ])
             ->notAcknowledged()
             ->fetch();
 
@@ -73,7 +80,8 @@ class PageJobQueue extends PagedInternalPageBase
 
         $database = $this->getDatabase();
 
-        $searchHelper = JobQueueSearchHelper::get($database);
+        // FIXME: domains
+        $searchHelper = JobQueueSearchHelper::get($database, 1);
         $this->setSearchHelper($searchHelper);
         $this->setupLimits();
 

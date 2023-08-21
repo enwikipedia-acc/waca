@@ -409,6 +409,7 @@ class PageCustomClose extends PageCloseRequest
         ];
 
         $creationTask = new JobQueue();
+        $creationTask->setDomain(1); // FIXME: domains!
         $creationTask->setTask($creationTaskClass);
         $creationTask->setRequest($request->getId());
         $creationTask->setTriggerUserId($currentUser->getId());

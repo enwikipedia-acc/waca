@@ -128,7 +128,7 @@ trait NavigationMenuAccessControl
         // Count of failed job queue changes:
         if($this->barrierTest(RoleConfiguration::MAIN, $currentUser, PageJobQueue::class)) {
             // We want all failed jobs that haven't been acknowledged if we can visit the page.
-            JobQueueSearchHelper::get($database)
+            JobQueueSearchHelper::get($database, 1) // FIXME: domains
                 ->statusIn([JobQueue::STATUS_FAILED])
                 ->notAcknowledged()
                 ->getRecordCount($countOfJobQueue);
