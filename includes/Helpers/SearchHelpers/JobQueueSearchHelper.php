@@ -20,12 +20,17 @@ class JobQueueSearchHelper extends SearchHelperBase
 
     /**
      * @param PdoDatabase $database
+     * @param int         $domain
      *
      * @return JobQueueSearchHelper
      */
-    public static function get(PdoDatabase $database)
+    public static function get(PdoDatabase $database, int $domain)
     {
         $helper = new JobQueueSearchHelper($database);
+
+        $helper->whereClause .= ' AND domain = ?';
+        $helper->parameterList[] = $domain;
+
         return $helper;
     }
 

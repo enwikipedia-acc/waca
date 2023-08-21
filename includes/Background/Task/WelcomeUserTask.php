@@ -9,30 +9,18 @@
 namespace Waca\Background\Task;
 
 use Waca\Background\BackgroundTaskBase;
-use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\DataObjects\WelcomeTemplate;
 use Waca\Helpers\MediaWikiHelper;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\PreferenceManager;
-use Waca\PdoDatabase;
 use Waca\RequestStatus;
 
 class WelcomeUserTask extends BackgroundTaskBase
 {
     /** @var Request */
     private $request;
-
-    public static function enqueue(User $triggerUser, Request $request, PdoDatabase $database)
-    {
-        $job = new JobQueue();
-        $job->setDatabase($database);
-        $job->setTask(WelcomeUserTask::class);
-        $job->setRequest($request->getId());
-        $job->setTriggerUserId($triggerUser->getId());
-        $job->save();
-    }
 
     public function execute()
     {
