@@ -47,6 +47,8 @@ class RequestQueueHelper
     }
 
     /**
+     * Returns true if the specified queue is a target of an enabled email template with a defer action.
+     *
      * @param RequestQueue $queue
      * @param PdoDatabase  $database
      *
