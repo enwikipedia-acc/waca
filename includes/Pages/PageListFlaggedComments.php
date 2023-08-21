@@ -29,7 +29,7 @@ class PageListFlaggedComments extends InternalPageBase
         $this->assignCSRFToken();
 
         /** @var Comment[] $commentObjects */
-        $commentObjects = Comment::getFlaggedComments($database);
+        $commentObjects = Comment::getFlaggedComments($database, 1); // FIXME: domains
         $comments = [];
 
         $currentUser = User::getCurrent($database);

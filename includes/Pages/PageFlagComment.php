@@ -9,6 +9,7 @@
 namespace Waca\Pages;
 
 use Waca\DataObjects\Comment;
+use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
@@ -54,11 +55,14 @@ class PageFlagComment extends InternalPageBase
         $comment->setUpdateVersion($updateVersion);
         $comment->save();
 
+        /** @var Request $request */
+        $request = Request::getById($comment->getRequest(), $database);
+
         if ($flagState === 1) {
-            Logger::flaggedComment($database, $comment);
+            Logger::flaggedComment($database, $comment, $request->getDomain());
         }
         else {
-            Logger::unflaggedComment($database, $comment);
+            Logger::unflaggedComment($database, $comment, $request->getDomain());
         }
 
         if (WebRequest::postString('return') == 'list') {

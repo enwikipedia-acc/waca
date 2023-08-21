@@ -48,7 +48,8 @@ class Logger
      * @param DataObject  $object
      * @param string      $logAction
      * @param null|string $comment
-     * @param User        $user
+     * @param User|null   $user
+     * @param int|null    $domain
      *
      * @throws Exception
      */
@@ -57,7 +58,8 @@ class Logger
         DataObject $object,
         $logAction,
         $comment = null,
-        $user = null
+        $user = null,
+        ?int $domain = null
     ) {
         if ($user == null) {
             $user = User::getCurrent($database);
@@ -70,8 +72,10 @@ class Logger
 
         $log = new Log();
 
-        if (method_exists($object, 'getDomain'))
-        {
+        if ($domain !== null) {
+            $log->setDomain($domain);
+        }
+        elseif (method_exists($object, 'getDomain')) {
             $log->setDomain($object->getDomain());
         }
 
@@ -313,25 +317,25 @@ class Logger
     public static function editComment(PdoDatabase $database, Comment $object, Request $request)
     {
         self::createLogEntry($database, $request, "EditComment-r");
-        self::createLogEntry($database, $object, "EditComment-c");
+        self::createLogEntry($database, $object, "EditComment-c", null, null, $request->getDomain());
     }
 
     /**
      * @param PdoDatabase $database
      * @param Comment     $object
      */
-    public static function flaggedComment(PdoDatabase $database, Comment $object)
+    public static function flaggedComment(PdoDatabase $database, Comment $object, int $domain)
     {
-        self::createLogEntry($database, $object, "FlaggedComment");
+        self::createLogEntry($database, $object, "FlaggedComment", null, null, $domain);
     }
 
     /**
      * @param PdoDatabase $database
      * @param Comment     $object
      */
-    public static function unflaggedComment(PdoDatabase $database, Comment $object)
+    public static function unflaggedComment(PdoDatabase $database, Comment $object, int $domain)
     {
-        self::createLogEntry($database, $object, "UnflaggedComment");
+        self::createLogEntry($database, $object, "UnflaggedComment", null, null, $domain);
     }
 
     /**

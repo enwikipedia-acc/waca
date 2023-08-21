@@ -73,10 +73,10 @@ SQL
         return $result;
     }
 
-    public static function getFlaggedComments(PdoDatabase $database)
+    public static function getFlaggedComments(PdoDatabase $database, int $domain)
     {
-        $statement = $database->prepare('SELECT * FROM comment WHERE flagged = 1;');
-        $statement->execute();
+        $statement = $database->prepare('SELECT c.* FROM comment c INNER JOIN request r ON c.request = r.id WHERE c.flagged = 1 AND r.domain = :domain;');
+        $statement->execute([':domain' => $domain]);
 
         $result = array();
         /** @var Comment $v */

@@ -122,7 +122,7 @@ trait NavigationMenuAccessControl
         // Count of flagged comments:
         if($this->barrierTest(RoleConfiguration::MAIN, $currentUser, PageListFlaggedComments::class)) {
             // We want all flagged comments that haven't been acknowledged if we can visit the page.
-            $countOfFlagged = sizeof(Comment::getFlaggedComments($database));
+            $countOfFlagged = sizeof(Comment::getFlaggedComments($database, 1)); // FIXME: domains
         }
 
         // Count of failed job queue changes:
