@@ -36,11 +36,11 @@ class WelcomeTemplate extends DataObject
      *
      * @return WelcomeTemplate[]
      */
-    public static function getAll(PdoDatabase $database)
+    public static function getAll(PdoDatabase $database, int $domain)
     {
-        $statement = $database->prepare("SELECT * FROM welcometemplate WHERE deleted = 0;");
+        $statement = $database->prepare("SELECT * FROM welcometemplate WHERE deleted = 0 AND domain = :domain;");
 
-        $statement->execute();
+        $statement->execute([':domain' => $domain]);
 
         $result = array();
         /** @var WelcomeTemplate $v */
