@@ -38,6 +38,8 @@ class Request extends DataObject
     private $hasComments = false;
     private $hasCommentsResolved = false;
     private $originform;
+    /** @var int */
+    private $domain;
 
     /**
      * @throws Exception
@@ -51,11 +53,11 @@ class Request extends DataObject
 INSERT INTO `request` (
 	email, ip, name, status, date, emailsent,
 	emailconfirm, reserved, useragent, forwardedip,
-    queue, originform
+    queue, originform, domain
 ) VALUES (
 	:email, :ip, :name, :status, CURRENT_TIMESTAMP(), :emailsent,
 	:emailconfirm, :reserved, :useragent, :forwardedip,
-    :queue, :originform
+    :queue, :originform, :domain
 );
 SQL
             );
@@ -70,6 +72,7 @@ SQL
             $statement->bindValue(':forwardedip', $this->forwardedip);
             $statement->bindValue(':queue', $this->queue);
             $statement->bindValue(':originform', $this->originform);
+            $statement->bindValue(':domain', $this->domain);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -484,5 +487,15 @@ SQL
     public function setOriginForm(?int $originForm): void
     {
         $this->originform = $originForm;
+    }
+
+    public function getDomain(): int
+    {
+        return $this->domain;
+    }
+
+    public function setDomain(int $domain): void
+    {
+        $this->domain = $domain;
     }
 }

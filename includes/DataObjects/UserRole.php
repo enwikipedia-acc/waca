@@ -19,6 +19,8 @@ class UserRole extends DataObject
     private $user;
     /** @var string */
     private $role;
+    /** @var int */
+    private $domain;
 
     /**
      * @param int         $userId
@@ -54,10 +56,11 @@ class UserRole extends DataObject
     {
         if ($this->isNew()) {
             // insert
-            $statement = $this->dbObject->prepare('INSERT INTO `userrole` (user, role) VALUES (:user, :role);'
+            $statement = $this->dbObject->prepare('INSERT INTO `userrole` (user, role, domain) VALUES (:user, :role, :domain);'
             );
             $statement->bindValue(":user", $this->user);
             $statement->bindValue(":role", $this->role);
+            $statement->bindValue(":domain", $this->domain);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -71,8 +74,6 @@ class UserRole extends DataObject
             throw new Exception('Updating roles is not available');
         }
     }
-
-    #region Properties
 
     /**
      * @return int
@@ -105,5 +106,14 @@ class UserRole extends DataObject
     {
         $this->role = $role;
     }
-    #endregion
+
+    public function getDomain(): int
+    {
+        return $this->domain;
+    }
+
+    public function setDomain(int $domain): void
+    {
+        $this->domain = $domain;
+    }
 }

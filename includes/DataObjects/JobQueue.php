@@ -61,6 +61,8 @@ class JobQueue extends DataObject
     private $acknowledged;
     /** @var int */
     private $parent;
+    /** @var int */
+    private $domain;
 
     /**
      * This feels like the least bad place to put this method.
@@ -85,8 +87,8 @@ class JobQueue extends DataObject
         if ($this->isNew()) {
             // insert
             $statement = $this->dbObject->prepare(<<<SQL
-                INSERT INTO jobqueue (task, user, request, emailtemplate, parameters, parent, status) 
-                VALUES (:task, :user, :request, :emailtemplate, :parameters, :parent, 'queued')
+                INSERT INTO jobqueue (task, user, request, emailtemplate, parameters, parent, status, domain) 
+                VALUES (:task, :user, :request, :emailtemplate, :parameters, :parent, 'queued', :domain)
 SQL
             );
             $statement->bindValue(":task", $this->task);
@@ -95,6 +97,7 @@ SQL
             $statement->bindValue(":emailtemplate", $this->emailtemplate);
             $statement->bindValue(":parameters", $this->parameters);
             $statement->bindValue(":parent", $this->parent);
+            $statement->bindValue(":domain", $this->domain);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -296,4 +299,13 @@ SQL
         $this->emailtemplate = $emailTemplate;
     }
     #endregion
+    public function getDomain(): int
+    {
+        return $this->domain;
+    }
+
+    public function setDomain(int $domain): void
+    {
+        $this->domain = $domain;
+    }
 }
