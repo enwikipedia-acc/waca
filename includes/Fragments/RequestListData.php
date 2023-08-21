@@ -58,14 +58,15 @@ trait RequestListData
                 $request->getForwardedIp()
             );
 
-            RequestSearchHelper::get($this->getDatabase())
+            // TODO: Do we really want to return results from other domains?
+            RequestSearchHelper::get($this->getDatabase(), null)
                 ->byIp($trustedIp)
                 ->withConfirmedEmail()
                 ->excludingPurgedData($this->getSiteConfiguration())
                 ->excludingRequest($request->getId())
                 ->getRecordCount($ipCount);
 
-            RequestSearchHelper::get($this->getDatabase())
+            RequestSearchHelper::get($this->getDatabase(), null)
                 ->byEmailAddress($request->getEmail())
                 ->withConfirmedEmail()
                 ->excludingPurgedData($this->getSiteConfiguration())

@@ -59,7 +59,8 @@ class PageSearch extends PagedInternalPageBase
                 $formParameters['excludeNonConfirmed'] = true;
             }
 
-            $requestSearch = RequestSearchHelper::get($database);
+            // FIXME: domains
+            $requestSearch = RequestSearchHelper::get($database, 1);
             $this->setSearchHelper($requestSearch);
             $this->setupLimits();
 
