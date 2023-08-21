@@ -114,6 +114,7 @@ class PageRequestAccount extends PublicInterfacePageBase
 
         $request->setQueue(RequestQueue::getDefaultQueue($database, $domain)->getId());
         $request->setDatabase($database);
+        $request->setDomain($domain);
 
         $request->setName(trim(WebRequest::postString('name')));
         $request->setEmail(WebRequest::postEmail('email'));

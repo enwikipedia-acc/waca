@@ -66,7 +66,8 @@ class PageJobQueue extends PagedInternalPageBase
         $this->assign('canSeeAll', $this->barrierTest('all', User::getCurrent($database)));
 
         $this->assign('users', UserSearchHelper::get($database)->inIds($userIds)->fetchMap('username'));
-        $this->assign('requests', RequestSearchHelper::get($database)->inIds($requestIds)->fetchMap('name'));
+        // FIXME: domains
+        $this->assign('requests', RequestSearchHelper::get($database, 1)->inIds($requestIds)->fetchMap('name'));
 
         $this->assign('joblist', $jobList);
         $this->setTemplate('jobqueue/main.tpl');
@@ -137,7 +138,8 @@ class PageJobQueue extends PagedInternalPageBase
         });
 
         $this->assign('users', UserSearchHelper::get($database)->inIds($userIds)->fetchMap('username'));
-        $this->assign('requests', RequestSearchHelper::get($database)->inIds($requestIds)->fetchMap('name'));
+        // FIXME: domains!
+        $this->assign('requests', RequestSearchHelper::get($database, 1)->inIds($requestIds)->fetchMap('name'));
 
         $this->assign('joblist', $jobList);
 

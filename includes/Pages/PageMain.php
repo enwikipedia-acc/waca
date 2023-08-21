@@ -102,7 +102,8 @@ SQL;
         SiteConfiguration $config,
         &$requestSectionData
     ) {
-        $search = RequestSearchHelper::get($database)
+        // FIXME: domains!
+        $search = RequestSearchHelper::get($database, 1)
             ->limit($config->getMiserModeLimit())
             ->excludingStatus('Closed')
             ->isHospitalised();
@@ -137,7 +138,8 @@ SQL;
         SiteConfiguration $config,
         &$requestSectionData
     ) {
-        $search = RequestSearchHelper::get($database)
+        // FIXME: domains!
+        $search = RequestSearchHelper::get($database, 1)
             ->limit($config->getMiserModeLimit())
             ->byStatus(RequestStatus::JOBQUEUE);
 
@@ -171,7 +173,8 @@ SQL;
         SiteConfiguration $config,
         &$requestSectionData
     ) {
-        $search = RequestSearchHelper::get($database)->limit($config->getMiserModeLimit());
+        // FIXME: domains!
+        $search = RequestSearchHelper::get($database, 1)->limit($config->getMiserModeLimit());
         $search->byStatus(RequestStatus::OPEN);
 
         if ($config->getEmailConfirmationEnabled()) {

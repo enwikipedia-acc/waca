@@ -215,7 +215,8 @@ trait RequestData
     {
         $this->assign('canSeeRelatedRequests', true);
 
-        $relatedEmailRequests = RequestSearchHelper::get($database)
+        // TODO: Do we want to return results from other domains?
+        $relatedEmailRequests = RequestSearchHelper::get($database, null)
             ->byEmailAddress($request->getEmail())
             ->withConfirmedEmail()
             ->excludingPurgedData($configuration)
@@ -226,7 +227,9 @@ trait RequestData
         $this->assign('requestRelatedEmailRequests', $relatedEmailRequests);
 
         $trustedIp = $this->getXffTrustProvider()->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
-        $relatedIpRequests = RequestSearchHelper::get($database)
+
+        // TODO: Do we want to return results from other domains?
+        $relatedIpRequests = RequestSearchHelper::get($database, null)
             ->byIp($trustedIp)
             ->withConfirmedEmail()
             ->excludingPurgedData($configuration)

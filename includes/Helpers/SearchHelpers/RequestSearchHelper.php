@@ -29,12 +29,18 @@ class RequestSearchHelper extends SearchHelperBase
      * Initiates a search for requests
      *
      * @param PdoDatabase $database
+     * @param int|null    $domain
      *
      * @return RequestSearchHelper
      */
-    public static function get(PdoDatabase $database)
+    public static function get(PdoDatabase $database, ?int $domain)
     {
         $helper = new RequestSearchHelper($database);
+
+        if ($domain !== null) {
+            $helper->whereClause .= ' AND domain = ?';
+            $helper->parameterList[] = $domain;
+        }
 
         return $helper;
     }

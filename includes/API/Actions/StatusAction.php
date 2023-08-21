@@ -47,7 +47,8 @@ SQL
         }
 
         // hospital queue
-        $search = RequestSearchHelper::get($this->getDatabase())->isHospitalised();
+        // FIXME: domains
+        $search = RequestSearchHelper::get($this->getDatabase(), 1)->isHospitalised();
 
         if ($this->getSiteConfiguration()->getEmailConfirmationEnabled()) {
             $search->withConfirmedEmail();
@@ -56,7 +57,8 @@ SQL
         $statusElement->setAttribute('x-hospital', $hospitalCount);
 
         // job queue
-        $search = RequestSearchHelper::get($this->getDatabase())
+        // FIXME: domains
+        $search = RequestSearchHelper::get($this->getDatabase(), 1)
             ->byStatus(RequestStatus::JOBQUEUE);
 
         if ($this->getSiteConfiguration()->getEmailConfirmationEnabled()) {

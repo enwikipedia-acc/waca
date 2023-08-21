@@ -49,7 +49,8 @@ class PageExpandedRequestList extends InternalPageBase
 
         $this->assign('queuehelp', $queue->getHelp());
 
-        $search = RequestSearchHelper::get($database);
+        // FIXME: domains
+        $search = RequestSearchHelper::get($database, 1);
         $search->byStatus(RequestStatus::OPEN);
 
         list($defaultSort, $defaultSortDirection) = WebRequest::requestListDefaultSort();
