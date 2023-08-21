@@ -43,20 +43,22 @@ class EmailTemplate extends DataObject
      *
      * @param string      $defaultAction Default action to take (EmailTemplate::ACTION_CREATED or EmailTemplate::ACTION_NOT_CREATED)
      * @param PdoDatabase $database
-     * @param int|null    $filter Template IDs to filter out
+     * @param int         $domain
+     * @param int|null    $filter        Template IDs to filter out
      *
      * @return array|false
      */
-    public static function getActiveNonpreloadTemplates($defaultAction, PdoDatabase $database, ?int $filter = null)
+    public static function getActiveNonpreloadTemplates($defaultAction, PdoDatabase $database, int $domain, ?int $filter = null)
     {
         $statement = $database->prepare(<<<SQL
 SELECT * FROM `emailtemplate`
-WHERE defaultaction = :forcreated AND active = 1 AND preloadonly = 0 AND (:skipFilter = 1 OR id <> :filter);
+WHERE defaultaction = :forcreated AND active = 1 AND preloadonly = 0 AND (:skipFilter = 1 OR id <> :filter) AND domain = :domain;
 SQL
         );
         $statement->bindValue(":forcreated", $defaultAction);
         $statement->bindValue(":filter", $filter);
         $statement->bindValue(":skipFilter", $filter === null ? 1 : 0);
+        $statement->bindValue(":domain", $domain);
 
         $statement->execute();
 
@@ -77,23 +79,25 @@ SQL
      *                                        EmailTemplate::ACTION_NOT_CREATED, or EmailTemplate::ACTION_NONE), or optionally null to
      *                                        just get everything.
      * @param PdoDatabase      $database
+     * @param int              $domain
      *
      * @return array|false
      */
-    public static function getAllActiveTemplates($defaultAction, PdoDatabase $database)
+    public static function getAllActiveTemplates($defaultAction, PdoDatabase $database, int $domain)
     {
-        $statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE defaultaction = :forcreated AND active = 1;");
-
         if ($defaultAction === false) {
             $statement = $database->prepare(
-                "SELECT * FROM `emailtemplate` WHERE defaultaction NOT IN ('created', 'not created') AND active = 1;");
+                "SELECT * FROM `emailtemplate` WHERE defaultaction NOT IN ('created', 'not created') AND active = 1 AND domain = :domain;");
+        }
+        elseif ($defaultAction === null) {
+            $statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE active = 1 AND domain = :domain;");
+        }
+        else {
+            $statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE defaultaction = :forcreated AND active = 1 AND domain = :domain;");
+            $statement->bindValue(":forcreated", $defaultAction);
         }
 
-        if ($defaultAction === null) {
-            $statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE  active = 1;");
-        }
-
-        $statement->bindValue(":forcreated", $defaultAction);
+        $statement->bindValue(":domain", $domain);
 
         $statement->execute();
 
@@ -111,13 +115,14 @@ SQL
      * Gets all the inactive templates
      *
      * @param PdoDatabase $database
+     * @param int         $domain
      *
      * @return array
      */
-    public static function getAllInactiveTemplates(PdoDatabase $database)
+    public static function getAllInactiveTemplates(PdoDatabase $database, int $domain)
     {
-        $statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE  active = 0;");
-        $statement->execute();
+        $statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE active = 0 AND domain = :domain;");
+        $statement->execute([':domain' => $domain]);
 
         $resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
 
@@ -132,13 +137,15 @@ SQL
     /**
      * @param string      $name
      * @param PdoDatabase $database
+     * @param int         $domain
      *
      * @return EmailTemplate|false
      */
-    public static function getByName($name, PdoDatabase $database)
+    public static function getByName($name, PdoDatabase $database, int $domain)
     {
-        $statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE name = :name LIMIT 1;");
+        $statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE name = :name AND domain = :domain LIMIT 1;");
         $statement->bindValue(":name", $name);
+        $statement->bindValue(":domain", $domain);
 
         $statement->execute();
 

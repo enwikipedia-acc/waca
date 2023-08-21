@@ -56,7 +56,7 @@ class RequestQueueHelper
     {
         $isTarget = false;
         /** @var EmailTemplate[] $deferralTemplates */
-        $deferralTemplates = EmailTemplate::getAllActiveTemplates('defer', $database);
+        $deferralTemplates = EmailTemplate::getAllActiveTemplates(EmailTemplate::ACTION_DEFER, $database, $queue->getDomain());
         foreach ($deferralTemplates as $t) {
             if ($t->getQueue() === $queue->getId()) {
                 $isTarget = true;
