@@ -228,11 +228,12 @@ abstract class PageRegisterBase extends InternalPageBase
         $role->setDatabase($database);
         $role->setUser($user->getId());
         $role->setRole($defaultRole);
+        $role->setDomain($domainObject->getId()); // FIXME: domains
         $role->save();
 
         // Log now to get the signup date.
         Logger::newUser($database, $user);
-        Logger::userRolesEdited($database, $user, 'Registration', array($defaultRole), array());
+        Logger::userRolesEdited($database, $user, 'Registration', array($defaultRole), array(), $domainObject->getId());
 
         $userDomain = new UserDomain();
         $userDomain->setDatabase($database);

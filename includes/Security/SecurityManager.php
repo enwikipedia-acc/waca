@@ -179,7 +179,7 @@ final class SecurityManager
             $userRoles[] = 'loggedIn';
 
             if ($user->isActive()) {
-                $ur = UserRole::getForUser($user->getId(), $user->getDatabase());
+                $ur = UserRole::getForUser($user->getId(), $user->getDatabase(), 1); // FIXME: domains
 
                 // NOTE: public is still in this array.
                 foreach ($ur as $r) {
