@@ -150,7 +150,11 @@ class PageDomainManagement extends InternalPageBase
         else {
             $this->assignCSRFToken();
 
-            $templates = EmailTemplate::getActiveNonpreloadTemplates(EmailTemplate::ACTION_CREATED, $database, $domain->getId());
+            $templates = EmailTemplate::getActiveNonpreloadTemplates(
+                EmailTemplate::ACTION_CREATED,
+                $database,
+                $domain->getId());
+
             $this->assign('closeTemplates', $templates);
 
             $this->assign('shortName', $domain->getShortName());

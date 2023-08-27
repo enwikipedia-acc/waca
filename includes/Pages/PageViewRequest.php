@@ -33,6 +33,7 @@ use Waca\WebRequest;
 class PageViewRequest extends InternalPageBase
 {
     use RequestData;
+
     const STATUS_SYMBOL_OPEN = '&#927';
     const STATUS_SYMBOL_ACCEPTED = '&#x2611';
     const STATUS_SYMBOL_REJECTED = '&#x2612';
@@ -113,12 +114,12 @@ class PageViewRequest extends InternalPageBase
         }
 
         $this->assign('canCreateLocalAccount', $this->barrierTest('createLocalAccount', $currentUser, 'RequestData'));
-            
+
         $closureDate = $request->getClosureDate();
         $date = new DateTime();
         $date->modify("-7 days");
         if ($request->getStatus() == "Closed" && $closureDate < $date) {
-                $this->assign('isOldRequest', true);
+            $this->assign('isOldRequest', true);
         }
         $this->assign('canResetOldRequest', $this->barrierTest('reopenOldRequest', $currentUser, 'RequestData'));
         $this->assign('canResetPurgedRequest', $this->barrierTest('reopenClearedRequest', $currentUser, 'RequestData'));
@@ -187,16 +188,35 @@ class PageViewRequest extends InternalPageBase
         $this->assign('skipJsAborts', $skipJsAborts);
         $this->assign('preferredCreationMode', $preferredCreationMode);
 
-        $createReasons = EmailTemplate::getActiveNonpreloadTemplates(EmailTemplate::ACTION_CREATED, $database, $domain->getId(), $domain->getDefaultClose());
+        $createReasons = EmailTemplate::getActiveNonpreloadTemplates(
+            EmailTemplate::ACTION_CREATED,
+            $database,
+            $domain->getId(),
+            $domain->getDefaultClose());
         $this->assign("createReasons", $createReasons);
-        $declineReasons = EmailTemplate::getActiveNonpreloadTemplates(EmailTemplate::ACTION_NOT_CREATED, $database, $domain->getId());
+
+        $declineReasons = EmailTemplate::getActiveNonpreloadTemplates(
+            EmailTemplate::ACTION_NOT_CREATED,
+            $database,
+            $domain->getId());
         $this->assign("declineReasons", $declineReasons);
 
-        $allCreateReasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::ACTION_CREATED, $database, $domain->getId());
+        $allCreateReasons = EmailTemplate::getAllActiveTemplates(
+            EmailTemplate::ACTION_CREATED,
+            $database,
+            $domain->getId());
         $this->assign("allCreateReasons", $allCreateReasons);
-        $allDeclineReasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::ACTION_NOT_CREATED, $database, $domain->getId());
+
+        $allDeclineReasons = EmailTemplate::getAllActiveTemplates(
+            EmailTemplate::ACTION_NOT_CREATED,
+            $database,
+            $domain->getId());
         $this->assign("allDeclineReasons", $allDeclineReasons);
-        $allOtherReasons = EmailTemplate::getAllActiveTemplates(false, $database, $domain->getId());
+
+        $allOtherReasons = EmailTemplate::getAllActiveTemplates(
+            false,
+            $database,
+            $domain->getId());
         $this->assign("allOtherReasons", $allOtherReasons);
     }
 
