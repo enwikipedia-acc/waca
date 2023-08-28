@@ -1,4 +1,4 @@
-FROM php:7.4-apache-bullseye
+FROM php:8.2-apache-bookworm
 
 ENV DEBIAN_FRONTEND="noninteractive"
 
