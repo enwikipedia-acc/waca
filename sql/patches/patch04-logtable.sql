@@ -1,4 +1,11 @@
-ALTER TABLE `acc_log` 
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ * ACC Development Team. Please see team.json for a list of contributors.     *
+ *                                                                            *
+ * This is free and unencumbered software released into the public domain.    *
+ * Please see LICENSE.md for the full licencing statement.                    *
+ ******************************************************************************/
+ALTER TABLE `acc_log`
 CHANGE COLUMN `log_id` `id` INT(11) NOT NULL AUTO_INCREMENT ,
 CHANGE COLUMN `log_action` `action` VARCHAR(255) NOT NULL ,
 CHANGE COLUMN `log_time` `timestamp` DATETIME NOT NULL ,

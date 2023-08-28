@@ -18,6 +18,9 @@ deploy/
 .project
 .idea/*
 !.idea/codeStyleSettings.xml
+!.idea/codeStyles/
+!.idea/copyright
+!.idea/sqldialects.xml
 templates_c/*
 *.phpproj.user
 temp/*
