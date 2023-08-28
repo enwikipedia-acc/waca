@@ -174,9 +174,7 @@ class PageCloseRequest extends RequestActionBase
                 'ususers' => $request->getName(),
             );
 
-            // FIXME: domains!
-            /** @var Domain $domain */
-            $domain = Domain::getById(1, $this->getDatabase());
+            $domain = Domain::getCurrent($this->getDatabase());
 
             $content = $this->getHttpHelper()->get($domain->getWikiApiPath(), $parameters);
 

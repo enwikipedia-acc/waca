@@ -9,6 +9,7 @@
 namespace Waca\Fragments;
 
 use Waca\DataObjects\Comment;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\User;
 use Waca\Helpers\SearchHelpers\JobQueueSearchHelper;
@@ -119,16 +120,18 @@ trait NavigationMenuAccessControl
         $countOfFlagged = 0;
         $countOfJobQueue = 0;
 
+        $domain = Domain::getCurrent($database);
+
         // Count of flagged comments:
         if($this->barrierTest(RoleConfiguration::MAIN, $currentUser, PageListFlaggedComments::class)) {
             // We want all flagged comments that haven't been acknowledged if we can visit the page.
-            $countOfFlagged = sizeof(Comment::getFlaggedComments($database, 1)); // FIXME: domains
+            $countOfFlagged = sizeof(Comment::getFlaggedComments($database, $domain->getId()));
         }
 
         // Count of failed job queue changes:
         if($this->barrierTest(RoleConfiguration::MAIN, $currentUser, PageJobQueue::class)) {
             // We want all failed jobs that haven't been acknowledged if we can visit the page.
-            JobQueueSearchHelper::get($database, 1) // FIXME: domains
+            JobQueueSearchHelper::get($database, $domain->getId())
                 ->statusIn([JobQueue::STATUS_FAILED])
                 ->notAcknowledged()
                 ->getRecordCount($countOfJobQueue);

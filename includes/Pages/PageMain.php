@@ -9,6 +9,7 @@
 namespace Waca\Pages;
 
 use PDO;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
@@ -36,9 +37,15 @@ class PageMain extends InternalPageBase
         $currentUser = User::getCurrent($database);
 
         // general template configuration
-        // FIXME: domains!
-        $defaultQueue = RequestQueue::getDefaultQueue($database, 1);
-        $this->assign('defaultRequestState', $defaultQueue->getApiName());
+        $currentDomain = Domain::getCurrent($database);
+        $defaultQueue = RequestQueue::getDefaultQueue($database, $currentDomain->getId());
+
+        if ($defaultQueue !== false) {
+            $this->assign('defaultRequestState', $defaultQueue->getApiName());
+        } else {
+            $this->assign('defaultRequestState', null);
+        }
+
         $this->assign('requestLimitShowOnly', $config->getMiserModeLimit());
 
         $seeAllRequests = $this->barrierTest('seeAllRequests', $currentUser, PageViewRequest::class);
@@ -54,7 +61,7 @@ class PageMain extends InternalPageBase
             $this->setupHospitalQueue($database, $config, $requestSectionData);
             $this->setupJobQueue($database, $config, $requestSectionData);
         }
-        $this->setupLastFiveClosedData($database, $seeAllRequests);
+        $this->setupLastFiveClosedData($database, $seeAllRequests, $currentDomain);
 
         // Assign data to template
         $this->assign('requestSectionData', $requestSectionData);
@@ -62,13 +69,7 @@ class PageMain extends InternalPageBase
         $this->setTemplate('mainpage/mainpage.tpl');
     }
 
-    /**
-     * @param PdoDatabase $database
-     * @param bool        $seeAllRequests
-     *
-     * @internal param User $currentUser
-     */
-    private function setupLastFiveClosedData(PdoDatabase $database, $seeAllRequests)
+    private function setupLastFiveClosedData(PdoDatabase $database, bool $seeAllRequests, Domain $currentDomain)
     {
         $this->assign('showLastFive', $seeAllRequests);
         if (!$seeAllRequests) {
@@ -76,16 +77,16 @@ class PageMain extends InternalPageBase
         }
 
         $query = <<<SQL
-		SELECT request.id, request.name, request.updateversion
-		FROM request /* PageMain::main() */
-		JOIN log ON log.objectid = request.id AND log.objecttype = 'Request'
-		WHERE log.action LIKE 'Closed%'
-		ORDER BY log.timestamp DESC
-		LIMIT 5;
+        SELECT request.id, request.name, request.updateversion
+        FROM request /* PageMain::main() */
+        JOIN log ON log.objectid = request.id AND log.objecttype = 'Request'
+        WHERE log.action LIKE 'Closed%' AND request.domain = :domain
+        ORDER BY log.timestamp DESC
+        LIMIT 5;
 SQL;
 
         $statement = $database->prepare($query);
-        $statement->execute();
+        $statement->execute([':domain' => $currentDomain->getId()]);
 
         $last5result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -102,8 +103,9 @@ SQL;
         SiteConfiguration $config,
         &$requestSectionData
     ) {
-        // FIXME: domains!
-        $search = RequestSearchHelper::get($database, 1)
+        $domain = Domain::getCurrent($database);
+
+        $search = RequestSearchHelper::get($database, $domain->getId())
             ->limit($config->getMiserModeLimit())
             ->excludingStatus('Closed')
             ->isHospitalised();
@@ -138,8 +140,9 @@ SQL;
         SiteConfiguration $config,
         &$requestSectionData
     ) {
-        // FIXME: domains!
-        $search = RequestSearchHelper::get($database, 1)
+        $domain = Domain::getCurrent($database);
+
+        $search = RequestSearchHelper::get($database, $domain->getId())
             ->limit($config->getMiserModeLimit())
             ->byStatus(RequestStatus::JOBQUEUE);
 
@@ -173,16 +176,17 @@ SQL;
         SiteConfiguration $config,
         &$requestSectionData
     ) {
-        // FIXME: domains!
-        $search = RequestSearchHelper::get($database, 1)->limit($config->getMiserModeLimit());
+        $domain = Domain::getCurrent($database);
+
+        $search = RequestSearchHelper::get($database, $domain->getId())->limit($config->getMiserModeLimit());
         $search->byStatus(RequestStatus::OPEN);
 
         if ($config->getEmailConfirmationEnabled()) {
             $search->withConfirmedEmail();
         }
 
-        // FIXME: domains!
-        $requestQueues = RequestQueue::getAllQueues($database);
+        $currentDomain = Domain::getCurrent($database);
+        $requestQueues = RequestQueue::getAllQueues($database, $currentDomain->getId());
         $queuesById = array_reduce($requestQueues, function($result, RequestQueue $item) {
             $result[$item->getId()] = $item;
             return $result;

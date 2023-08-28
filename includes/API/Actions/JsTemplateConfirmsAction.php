@@ -10,15 +10,23 @@ namespace Waca\API\Actions;
 
 use Waca\API\IJsonApiAction;
 use Waca\DataObjects\EmailTemplate;
+use Waca\Exceptions\ApplicationLogicException;
 use Waca\Tasks\JsonApiPageBase;
+use Waca\Tests\WebRequestTest;
+use Waca\WebRequest;
 
 class JsTemplateConfirmsAction extends JsonApiPageBase implements IJsonApiAction
 {
     public function executeApiAction()
     {
+        $domainId = WebRequest::getInt('d');
+
+        if($domainId === null) {
+            throw new ApplicationLogicException("Unknown domain");
+        }
+
         /** @var EmailTemplate[] $templates */
-        // FIXME: domains!
-        $templates = EmailTemplate::getAllActiveTemplates(null, $this->getDatabase(), 1);
+        $templates = EmailTemplate::getAllActiveTemplates(null, $this->getDatabase(), $domainId);
 
         $dataset = [];
         foreach ($templates as $tpl) {

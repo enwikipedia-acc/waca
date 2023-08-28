@@ -22,9 +22,8 @@ class BotCreationTask extends CreationTaskBase
      */
     protected function getMediaWikiClient()
     {
-        // FIXME: domains!
         /** @var Domain $domain */
-        $domain = Domain::getById(1, $this->getDatabase());
+        $domain = Domain::getById($this->getRequest()->getDomain(), $this->getDatabase());
 
         return new BotMediaWikiClient($this->getSiteConfiguration(), $domain);
     }

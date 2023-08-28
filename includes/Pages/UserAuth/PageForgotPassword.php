@@ -96,9 +96,6 @@ class PageForgotPassword extends InternalPageBase
 
             $emailContent = $this->fetchTemplate('forgot-password/reset-mail.tpl');
 
-            // FIXME: domains!
-            /** @var Domain $domain */
-            $domain = Domain::getById(1, $this->getDatabase());
             $this->getEmailHelper()->sendMail(
                 null, $user->getEmail(), "WP:ACC password reset", $emailContent);
         }

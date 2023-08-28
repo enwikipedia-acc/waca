@@ -9,6 +9,7 @@
 namespace Waca\Tests\Helpers;
 
 use PHPUnit\Framework\TestCase;
+use Waca\DataObjects\Domain;
 use Waca\Helpers\FakeBlacklistHelper;
 
 class FakeBlacklistHelperTest extends TestCase
@@ -30,6 +31,6 @@ class FakeBlacklistHelperTest extends TestCase
     {
         $username = 'badname';
 
-        $this->assertEquals(false, $this->blacklistHelper->isBlacklisted($username));
+        $this->assertEquals(false, $this->blacklistHelper->isBlacklisted($username, new Domain()));
     }
 }

@@ -37,6 +37,8 @@ class PageUserManagement extends InternalPageBase
     {
         $this->setHtmlTitle('User Management');
 
+        $domain = Domain::getCurrent($this->getDatabase());
+
         $database = $this->getDatabase();
         $currentUser = User::getCurrent($database);
 
@@ -62,21 +64,21 @@ class PageUserManagement extends InternalPageBase
             $declinedUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_DECLINED)->fetch();
             $this->assign("declinedUsers", $declinedUsers);
 
-            UserSearchHelper::get($database)->getRoleMap($roleMap);
+            UserSearchHelper::get($database)->getRoleMap($roleMap, $domain);
         }
         else {
             $this->assign("showAll", false);
             $this->assign("suspendedUsers", array());
             $this->assign("declinedUsers", array());
 
-            UserSearchHelper::get($database)->statusIn(array('New', 'Active'))->getRoleMap($roleMap);
+            UserSearchHelper::get($database)->statusIn(array('New', 'Active'))->getRoleMap($roleMap, $domain);
         }
 
-        $newUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_NEW)->fetch();
-        $normalUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('user')->fetch();
-        $adminUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('admin')->fetch();
-        $checkUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('checkuser')->fetch();
-        $toolRoots = UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('toolRoot')->fetch();
+        $newUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_NEW)->byRole('user', $domain)->fetch();
+        $normalUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('user', $domain)->fetch();
+        $adminUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('admin', $domain)->fetch();
+        $checkUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('checkuser', $domain)->fetch();
+        $toolRoots = UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('toolRoot', $domain)->fetch();
         $this->assign('newUsers', $newUsers);
         $this->assign('normalUsers', $normalUsers);
         $this->assign('adminUsers', $adminUsers);
@@ -94,9 +96,8 @@ class PageUserManagement extends InternalPageBase
         $this->assign('canSuspend', $this->barrierTest('suspend', $currentUser));
         $this->assign('canEditRoles', $this->barrierTest('editRoles', $currentUser));
 
-        // FIXME: domains!
         /** @var Domain $domain */
-        $domain = Domain::getById(1, $this->getDatabase());
+        $domain = Domain::getCurrent($this->getDatabase());
         $this->assign('mediawikiScriptPath', $domain->getWikiArticlePath());
 
         $this->setTemplate("usermanagement/main.tpl");
@@ -111,6 +112,7 @@ class PageUserManagement extends InternalPageBase
     {
         $this->setHtmlTitle('User Management');
         $database = $this->getDatabase();
+        $domain = Domain::getCurrent($database);
         $userId = WebRequest::getInt('user');
 
         /** @var User $user */
@@ -120,7 +122,7 @@ class PageUserManagement extends InternalPageBase
             throw new ApplicationLogicException('Sorry, the user you are trying to edit could not be found.');
         }
 
-        $roleData = $this->getRoleData(UserRole::getForUser($user->getId(), $database, 1)); // FIXME: domains
+        $roleData = $this->getRoleData(UserRole::getForUser($user->getId(), $database, $domain->getId()));
 
         // Dual-mode action
         if (WebRequest::wasPosted()) {
@@ -174,18 +176,18 @@ class PageUserManagement extends InternalPageBase
                 $a = new UserRole();
                 $a->setUser($user->getId());
                 $a->setRole($x);
-                $a->setDomain(1); // FIXME: domains
+                $a->setDomain($domain->getId());
                 $a->setDatabase($database);
                 $a->save();
             }
 
-            Logger::userRolesEdited($database, $user, $reason, $add, $removed, 1); // FIXME: domains
+            Logger::userRolesEdited($database, $user, $reason, $add, $removed, $domain->getId());
 
             // dummy save for optimistic locking. If this fails, the entire txn will roll back.
             $user->setUpdateVersion(WebRequest::postInt('updateversion'));
             $user->save();
 
-            $this->getNotificationHelper()->userRolesEdited($user, $reason);
+            $this->getNotificationHelper()->userRolesEdited($user, $reason, $domain->getId());
             SessionAlert::quick('Roles changed for user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
 
             $this->redirect('statistics/users', 'detail', array('user' => $user->getId()));
@@ -444,9 +446,6 @@ class PageUserManagement extends InternalPageBase
             $this->assign('oldUsername', $oldUsername);
             $this->assign('mailingList', $this->adminMailingList);
 
-            // FIXME: domains!
-            /** @var Domain $domain */
-            $domain = Domain::getById(1, $database);
             $this->getEmailHelper()->sendMail(
                 $this->adminMailingList,
                 $user->getEmail(),
@@ -475,6 +474,7 @@ class PageUserManagement extends InternalPageBase
         $this->setHtmlTitle('User Management');
 
         $database = $this->getDatabase();
+        $domain = Domain::getCurrent($this->getDatabase());
 
         $userId = WebRequest::getInt('user');
         $user = User::getById($userId, $database);
@@ -484,8 +484,7 @@ class PageUserManagement extends InternalPageBase
             throw new ApplicationLogicException('Sorry, the user you are trying to edit could not be found.');
         }
 
-        // FIXME: domains
-        $prefs = new PreferenceManager($database, $user->getId(), 1);
+        $prefs = new PreferenceManager($database, $user->getId(), $domain->getId());
 
         // Dual-mode action
         if (WebRequest::wasPosted()) {
@@ -573,9 +572,6 @@ class PageUserManagement extends InternalPageBase
         $this->assign('actionReason', $reason);
         $this->assign('mailingList', $this->adminMailingList);
 
-        // FIXME: domains!
-        /** @var Domain $domain */
-        $domain = Domain::getById(1, $this->getDatabase());
         $this->getEmailHelper()->sendMail(
             $this->adminMailingList,
             $user->getEmail(),

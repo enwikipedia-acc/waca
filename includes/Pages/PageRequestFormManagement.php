@@ -70,10 +70,11 @@ class PageRequestFormManagement extends InternalPageBase
 
     protected function create()
     {
+        $database = $this->getDatabase();
+        $domainId = Domain::getCurrent($database)->getId();
+
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
-            $database = $this->getDatabase();
-            $domainId = Domain::getCurrent($database)->getId();
 
             $form = new RequestForm();
 
@@ -144,7 +145,10 @@ class PageRequestFormManagement extends InternalPageBase
             }
         }
         else {
-            $this->populateFromObject(new RequestForm());
+            $newForm = new RequestForm();
+            $newForm->setDatabase($database);
+            $newForm->setDomain($domainId);
+            $this->populateFromObject($newForm);
             WebRequest::setSessionContext('preview', null);
             $this->assign('hidePreview', true);
 
@@ -283,7 +287,7 @@ class PageRequestFormManagement extends InternalPageBase
 
         $this->assign('domain', $form->getDomainObject());
 
-        $this->assign('availableQueues', RequestQueue::getEnabledQueues($this->getDatabase()));
+        $this->assign('availableQueues', RequestQueue::getEnabledQueues($this->getDatabase(), $form->getDomain()));
     }
 
     /**

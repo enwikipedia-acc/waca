@@ -194,7 +194,7 @@ abstract class InternalPageBase extends PageBase
      * @return bool
      * @category Security-Critical
      */
-    final public function barrierTest($action, User $user, $pageName = null)
+    final public function barrierTest($action, User $user, $pageName = null) : bool
     {
         $page = get_called_class();
         if ($pageName !== null) {

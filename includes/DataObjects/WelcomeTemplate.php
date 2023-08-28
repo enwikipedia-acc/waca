@@ -33,6 +33,7 @@ class WelcomeTemplate extends DataObject
      * Summary of getAll
      *
      * @param PdoDatabase $database
+     * @param int         $domain
      *
      * @return WelcomeTemplate[]
      */

@@ -228,7 +228,7 @@ abstract class PageRegisterBase extends InternalPageBase
         $role->setDatabase($database);
         $role->setUser($user->getId());
         $role->setRole($defaultRole);
-        $role->setDomain($domainObject->getId()); // FIXME: domains
+        $role->setDomain($domainObject->getId());
         $role->save();
 
         // Log now to get the signup date.

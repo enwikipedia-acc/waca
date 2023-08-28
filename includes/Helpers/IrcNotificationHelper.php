@@ -77,7 +77,7 @@ class IrcNotificationHelper
      *
      * @param string $message The text to send
      */
-    protected function send($message)
+    protected function send(string $message, ?int $domainId)
     {
         $instanceName = $this->instanceName;
 
@@ -93,9 +93,12 @@ class IrcNotificationHelper
             $msg = IrcColourCode::RESET . IrcColourCode::BOLD . "[$instanceName]" . IrcColourCode::RESET . ": $message";
         }
 
-        // FIXME: domains!
-        /** @var Domain $domain */
-        $domain = Domain::getById(1, $this->primaryDatabase);
+        $notificationTarget = $this->siteConfiguration->getIrcNotificationsDefaultTarget();
+        if ($domainId !== null) {
+            /** @var Domain $domain */
+            $domain = Domain::getById($domainId, $this->primaryDatabase);
+            $notificationTarget = $domain->getNotificationTarget();
+        }
 
         try {
             $amqpConfig = $this->siteConfiguration->getAmqpConfiguration();
@@ -111,7 +114,8 @@ class IrcNotificationHelper
             $msg->set('user_id', $amqpConfig['user']);
             $msg->set('app_id', $this->siteConfiguration->getUserAgent());
             $msg->set('content_type', 'text/plain');
-            $channel->basic_publish($msg, $amqpConfig['exchange'], $domain->getNotificationTarget());
+
+            $channel->basic_publish($msg, $amqpConfig['exchange'], $notificationTarget);
             $channel->close();
         }
         catch (Exception $ex) {
@@ -133,7 +137,7 @@ class IrcNotificationHelper
      */
     public function userNew(User $user)
     {
-        $this->send("New user: {$user->getUsername()}");
+        $this->send("New user: {$user->getUsername()}", null);
     }
 
     /**
@@ -143,7 +147,7 @@ class IrcNotificationHelper
      */
     public function userApproved(User $user)
     {
-        $this->send("{$user->getUsername()} approved by " . $this->currentUser->getUsername());
+        $this->send("{$user->getUsername()} approved by " . $this->currentUser->getUsername(), null);
     }
 
     /**
@@ -154,7 +158,7 @@ class IrcNotificationHelper
      */
     public function userDeclined(User $user, $reason)
     {
-        $this->send("{$user->getUsername()} declined by " . $this->currentUser->getUsername() . " ($reason)");
+        $this->send("{$user->getUsername()} declined by " . $this->currentUser->getUsername() . " ($reason)", null);
     }
 
     /**
@@ -165,7 +169,7 @@ class IrcNotificationHelper
      */
     public function userSuspended(User $user, $reason)
     {
-        $this->send("{$user->getUsername()} suspended by " . $this->currentUser->getUsername() . " ($reason)");
+        $this->send("{$user->getUsername()} suspended by " . $this->currentUser->getUsername() . " ($reason)", null);
     }
 
     /**
@@ -175,7 +179,7 @@ class IrcNotificationHelper
      */
     public function userPrefChange(User $user)
     {
-        $this->send("{$user->getUsername()}'s preferences were changed by " . $this->currentUser->getUsername());
+        $this->send("{$user->getUsername()}'s preferences were changed by " . $this->currentUser->getUsername(), null);
     }
 
     /**
@@ -186,17 +190,18 @@ class IrcNotificationHelper
      */
     public function userRenamed(User $user, $old)
     {
-        $this->send($this->currentUser->getUsername() . " renamed $old to {$user->getUsername()}");
+        $this->send($this->currentUser->getUsername() . " renamed $old to {$user->getUsername()}", null);
     }
 
     /**
      * @param User   $user
      * @param string $reason
+     * @param int    $domainId
      */
-    public function userRolesEdited(User $user, $reason)
+    public function userRolesEdited(User $user, string $reason, int $domainId)
     {
         $currentUser = $this->currentUser->getUsername();
-        $this->send("Active roles for {$user->getUsername()} changed by " . $currentUser . " ($reason)");
+        $this->send("Active roles for {$user->getUsername()} changed by " . $currentUser . " ($reason)", $domainId);
     }
 
     #endregion
@@ -208,7 +213,7 @@ class IrcNotificationHelper
      */
     public function siteNoticeEdited()
     {
-        $this->send("Site notice edited by " . $this->currentUser->getUsername());
+        $this->send("Site notice edited by " . $this->currentUser->getUsername(), null);
     }
     #endregion
 
@@ -220,7 +225,7 @@ class IrcNotificationHelper
      */
     public function welcomeTemplateCreated(WelcomeTemplate $template)
     {
-        $this->send("Welcome template {$template->getId()} created by " . $this->currentUser->getUsername());
+        $this->send("Welcome template {$template->getId()} created by " . $this->currentUser->getUsername(), $template->getDomain());
     }
 
     /**
@@ -228,9 +233,9 @@ class IrcNotificationHelper
      *
      * @param int $templateid
      */
-    public function welcomeTemplateDeleted($templateid)
+    public function welcomeTemplateDeleted($templateid, int $domainId)
     {
-        $this->send("Welcome template {$templateid} deleted by " . $this->currentUser->getUsername());
+        $this->send("Welcome template {$templateid} deleted by " . $this->currentUser->getUsername(), $domainId);
     }
 
     /**
@@ -240,7 +245,7 @@ class IrcNotificationHelper
      */
     public function welcomeTemplateEdited(WelcomeTemplate $template)
     {
-        $this->send("Welcome template {$template->getId()} edited by " . $this->currentUser->getUsername());
+        $this->send("Welcome template {$template->getId()} edited by " . $this->currentUser->getUsername(), $template->getDomain());
     }
 
     #endregion
@@ -263,10 +268,10 @@ class IrcNotificationHelper
         $username = $this->currentUser->getUsername();
 
         if ($ban->getVisibility() == 'user') {
-            $this->send("Ban {$ban->getId()} set by {$username} for '{$ban->getReason()}' {$duration}");
+            $this->send("Ban {$ban->getId()} set by {$username} for '{$ban->getReason()}' {$duration}", null);
         }
         else {
-            $this->send("Ban {$ban->getId()} set by {$username} {$duration}");
+            $this->send("Ban {$ban->getId()} set by {$username} {$duration}", null);
         }
     }
 
@@ -279,7 +284,7 @@ class IrcNotificationHelper
     public function unbanned(Ban $ban, $unbanReason)
     {
         $this->send("Ban {$ban->getId()} unbanned by " . $this->currentUser
-                ->getUsername() . " (" . $unbanReason . ")");
+                ->getUsername() . " (" . $unbanReason . ")", null);
     }
 
     #endregion
@@ -303,7 +308,8 @@ class IrcNotificationHelper
             . IrcColourCode::DARK_RED . "* "
             . IrcColourCode::DARK_GREEN . $request->getName()
             . IrcColourCode::DARK_RED . " * "
-            . IrcColourCode::RESET
+            . IrcColourCode::RESET,
+            $request->getDomain()
         );
     }
 
@@ -320,7 +326,7 @@ class IrcNotificationHelper
         $deferTo = $queue->getDisplayName();
         $username = $this->currentUser->getUsername();
 
-        $this->send("Request {$request->getId()} ({$request->getName()}) deferred to {$deferTo} by {$username}");
+        $this->send("Request {$request->getId()} ({$request->getName()}) deferred to {$deferTo} by {$username}", $request->getDomain());
     }
 
     /**
@@ -339,7 +345,7 @@ class IrcNotificationHelper
         $id = $request->getId();
         $name = $request->getName();
 
-        $this->send("Request {$id} ({$name}) deferred to {$deferTo} with an email by {$username}");
+        $this->send("Request {$id} ({$name}) deferred to {$deferTo} with an email by {$username}", $request->getDomain());
     }
 
     /**
@@ -352,7 +358,7 @@ class IrcNotificationHelper
     {
         $username = $this->currentUser->getUsername();
 
-        $this->send("Request {$request->getId()} ({$request->getName()}) closed ($closetype) by {$username}");
+        $this->send("Request {$request->getId()} ({$request->getName()}) closed ($closetype) by {$username}", $request->getDomain());
     }
 
     /**
@@ -365,7 +371,7 @@ class IrcNotificationHelper
     {
         $username = $this->currentUser->getUsername();
 
-        $this->send("Request {$request->getId()} ({$request->getName()}) queued for creation ($closetype) by {$username}");
+        $this->send("Request {$request->getId()} ({$request->getName()}) queued for creation ($closetype) by {$username}", $request->getDomain());
     }
 
     /**
@@ -376,7 +382,7 @@ class IrcNotificationHelper
      */
     public function requestCreationFailed(Request $request, User $triggerUser)
     {
-        $this->send("Request {$request->getId()} ({$request->getName()}) failed auto-creation for {$triggerUser->getUsername()}, and was sent to the hospital queue.");
+        $this->send("Request {$request->getId()} ({$request->getName()}) failed auto-creation for {$triggerUser->getUsername()}, and was sent to the hospital queue.", $request->getDomain());
     }
 
     /**
@@ -385,7 +391,7 @@ class IrcNotificationHelper
      */
     public function requestWelcomeFailed(Request $request, User $triggerUser)
     {
-        $this->send("Request {$request->getId()} ({$request->getName()}) failed welcome for {$triggerUser->getUsername()}.");
+        $this->send("Request {$request->getId()} ({$request->getName()}) failed welcome for {$triggerUser->getUsername()}.", $request->getDomain());
     }
 
     /**
@@ -396,7 +402,7 @@ class IrcNotificationHelper
     public function sentMail(Request $request)
     {
         $this->send($this->currentUser->getUsername()
-            . " sent an email related to Request {$request->getId()} ({$request->getName()})");
+            . " sent an email related to Request {$request->getId()} ({$request->getName()})", $request->getDomain());
     }
 
     #endregion
@@ -412,7 +418,7 @@ class IrcNotificationHelper
     {
         $username = $this->currentUser->getUsername();
 
-        $this->send("Request {$request->getId()} ({$request->getName()}) reserved by {$username}");
+        $this->send("Request {$request->getId()} ({$request->getName()}) reserved by {$username}", $request->getDomain());
     }
 
     /**
@@ -424,7 +430,7 @@ class IrcNotificationHelper
     {
         $username = $this->currentUser->getUsername();
 
-        $this->send("Reservation on request {$request->getId()} ({$request->getName()}) broken by {$username}");
+        $this->send("Reservation on request {$request->getId()} ({$request->getName()}) broken by {$username}", $request->getDomain());
     }
 
     /**
@@ -434,7 +440,7 @@ class IrcNotificationHelper
      */
     public function requestUnreserved(Request $request)
     {
-        $this->send("Request {$request->getId()} ({$request->getName()}) is no longer being handled.");
+        $this->send("Request {$request->getId()} ({$request->getName()}) is no longer being handled.", $request->getDomain());
     }
 
     /**
@@ -449,7 +455,7 @@ class IrcNotificationHelper
 
         $this->send(
             "Reservation of request {$request->getId()} ({$request->getName()}) sent to {$target->getUsername()} by "
-            . $username);
+            . $username, $request->getDomain());
     }
 
     #endregion
@@ -467,7 +473,7 @@ class IrcNotificationHelper
         $username = $this->currentUser->getUsername();
         $visibility = ($comment->getVisibility() == "admin" ? "private " : "");
 
-        $this->send("{$username} posted a {$visibility}comment on request {$request->getId()} ({$request->getName()})");
+        $this->send("{$username} posted a {$visibility}comment on request {$request->getId()} ({$request->getName()})", $request->getDomain());
     }
 
     /**
@@ -480,10 +486,7 @@ class IrcNotificationHelper
     {
         $username = $this->currentUser->getUsername();
 
-        $this->send(<<<TAG
-Comment {$comment->getId()} on request {$request->getId()} ({$request->getName()}) edited by {$username}
-TAG
-        );
+        $this->send("Comment {$comment->getId()} on request {$request->getId()} ({$request->getName()}) edited by {$username}", $request->getDomain());
     }
 
     #endregion
@@ -498,7 +501,7 @@ TAG
     public function emailCreated(EmailTemplate $template)
     {
         $username = $this->currentUser->getUsername();
-        $this->send("Email {$template->getId()} ({$template->getName()}) created by " . $username);
+        $this->send("Email {$template->getId()} ({$template->getName()}) created by " . $username, $template->getDomain());
     }
 
     /**
@@ -509,7 +512,7 @@ TAG
     public function emailEdited(EmailTemplate $template)
     {
         $username = $this->currentUser->getUsername();
-        $this->send("Email {$template->getId()} ({$template->getName()}) edited by " . $username);
+        $this->send("Email {$template->getId()} ({$template->getName()}) edited by " . $username, $template->getDomain());
     }
     #endregion
 }

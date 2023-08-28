@@ -52,8 +52,8 @@ SQL;
         $requestsStatement = $database->prepare($requestsQuery);
 
         $requestStateData = array();
-
-        foreach (RequestQueue::getEnabledQueues($database) as $queue) {
+        //FIXME: domains!
+        foreach (RequestQueue::getEnabledQueues($database, 1) as $queue) {
             $requestsStatement->execute(array(
                 ':status' => RequestStatus::OPEN,
                 ':queue'  => $queue->getId(),

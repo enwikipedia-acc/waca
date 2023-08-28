@@ -41,10 +41,6 @@ class RequestValidationHelper
     private $xffTrustProvider;
     /** @var HttpHelper */
     private $httpHelper;
-    /**
-     * @var string
-     */
-    private $mediawikiApiEndpoint;
     private $titleBlacklistEnabled;
     /**
      * @var TorExitProvider
@@ -83,11 +79,6 @@ class RequestValidationHelper
         $this->xffTrustProvider = $xffTrustProvider;
         $this->httpHelper = $httpHelper;
 
-        // FIXME: domains!
-        /** @var Domain $domain */
-        $domain = Domain::getById(1, $database);
-
-        $this->mediawikiApiEndpoint = $domain->getWikiApiPath();
         $this->titleBlacklistEnabled = $siteConfiguration->getTitleBlacklistEnabled();
         $this->torExitProvider = $torExitProvider;
         $this->siteConfiguration = $siteConfiguration;
@@ -273,8 +264,7 @@ class RequestValidationHelper
         try {
             if (count($this->antiSpoofProvider->getSpoofs($request->getName())) > 0) {
                 // If there were spoofs an Admin should handle the request.
-                // FIXME: domains!
-                $defaultQueue = RequestQueue::getDefaultQueue($this->database, 1, RequestQueue::DEFAULT_ANTISPOOF);
+                $defaultQueue = RequestQueue::getDefaultQueue($this->database, $request->getDomain(), RequestQueue::DEFAULT_ANTISPOOF);
                 $this->deferRequest($request, $defaultQueue,
                     'Request automatically deferred due to AntiSpoof hit');
             }
@@ -305,9 +295,12 @@ class RequestValidationHelper
     private function checkTitleBlacklist(Request $request)
     {
         if ($this->titleBlacklistEnabled == 1) {
+            /** @var Domain $domain */
+            $domain = Domain::getById($request->getDomain(), $request->getDatabase());
+
             try {
                 $apiResult = $this->httpHelper->get(
-                    $this->mediawikiApiEndpoint,
+                    $domain->getWikiApiPath(),
                     array(
                         'action'       => 'titleblacklist',
                         'tbtitle'      => $request->getName(),
@@ -331,8 +324,7 @@ class RequestValidationHelper
             }
 
             if (!$requestIsOk) {
-                // FIXME: domains!
-                $defaultQueue = RequestQueue::getDefaultQueue($this->database, 1, RequestQueue::DEFAULT_TITLEBLACKLIST);
+                $defaultQueue = RequestQueue::getDefaultQueue($this->database, $request->getDomain(), RequestQueue::DEFAULT_TITLEBLACKLIST);
 
                 $this->deferRequest($request, $defaultQueue,
                     'Request automatically deferred due to title blacklist hit');
@@ -343,8 +335,11 @@ class RequestValidationHelper
     private function userExists(Request $request)
     {
         try {
+            /** @var Domain $domain */
+            $domain = Domain::getById($request->getDomain(), $request->getDatabase());
+
             $userExists = $this->httpHelper->get(
-                $this->mediawikiApiEndpoint,
+                $domain->getWikiApiPath(),
                 array(
                     'action'  => 'query',
                     'list'    => 'users',
@@ -375,8 +370,11 @@ class RequestValidationHelper
         $requestName = $request->getName();
 
         try {
+            /** @var Domain $domain */
+            $domain = Domain::getById($request->getDomain(), $request->getDatabase());
+
             $userExists = $this->httpHelper->get(
-                $this->mediawikiApiEndpoint,
+                $domain->getWikiApiPath(),
                 array(
                     'action'  => 'query',
                     'meta'    => 'globaluserinfo',

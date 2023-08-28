@@ -9,6 +9,7 @@
 namespace Waca\Pages;
 
 use Waca\DataObjects\Comment;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\PdoDatabase;
@@ -26,10 +27,11 @@ class PageListFlaggedComments extends InternalPageBase
         $this->setTemplate('flagged-comments.tpl');
 
         $database = $this->getDatabase();
+        $domain = Domain::getCurrent($database);
         $this->assignCSRFToken();
 
         /** @var Comment[] $commentObjects */
-        $commentObjects = Comment::getFlaggedComments($database, 1); // FIXME: domains
+        $commentObjects = Comment::getFlaggedComments($database, $domain->getId());
         $comments = [];
 
         $currentUser = User::getCurrent($database);

@@ -62,7 +62,7 @@ abstract class RequestActionBase extends InternalPageBase
     protected function enqueueWelcomeTask(Request $request, $parentTaskId, User $user, PdoDatabase $database)
     {
         $welcomeTask = new JobQueue();
-        $welcomeTask->setDomain(1); // FIXME: domains!
+        $welcomeTask->setDomain($request->getDomain());
         $welcomeTask->setTask(WelcomeUserTask::class);
         $welcomeTask->setRequest($request->getId());
         $welcomeTask->setParent($parentTaskId);

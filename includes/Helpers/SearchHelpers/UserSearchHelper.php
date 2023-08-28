@@ -10,6 +10,7 @@ namespace Waca\Helpers\SearchHelpers;
 
 use DateTime;
 use PDO;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\PdoDatabase;
 
@@ -59,15 +60,11 @@ class UserSearchHelper extends SearchHelperBase
         return $this;
     }
 
-    /**
-     * @param string $role
-     *
-     * @return $this
-     */
-    public function byRole($role)
+    public function byRole(string $role, Domain $domain) : UserSearchHelper
     {
         $this->joinClause .= ' INNER JOIN userrole r on origin.id = r.user';
-        $this->whereClause .= ' AND r.role = ?';
+        $this->whereClause .= ' AND r.domain = ? AND r.role = ?';
+        $this->parameterList[] = $domain->getId();
         $this->parameterList[] = $role;
 
         return $this;
@@ -96,7 +93,7 @@ SQLFRAG;
         return $this;
     }
 
-    public function getRoleMap(&$roleMap)
+    public function getRoleMap(&$roleMap, Domain $domain)
     {
         $query = <<<SQL
             SELECT /* UserSearchHelper/roleMap */ 
@@ -104,11 +101,12 @@ SQLFRAG;
                 , group_concat(r.role SEPARATOR ', ') roles 
             FROM userrole r 
             WHERE user IN ({$this->buildQuery(array('id'))})
+            AND r.domain = ?
             GROUP BY r.user
 SQL;
 
         $statement = $this->database->prepare($query);
-        $statement->execute($this->parameterList);
+        $statement->execute(array_merge($this->parameterList, [$domain->getId()]));
 
         $roleMap = array();
         foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {

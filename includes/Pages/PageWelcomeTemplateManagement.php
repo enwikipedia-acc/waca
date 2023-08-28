@@ -9,6 +9,7 @@
 namespace Waca\Pages;
 
 use Exception;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\DataObjects\WelcomeTemplate;
 use Waca\Exceptions\ApplicationLogicException;
@@ -29,7 +30,8 @@ class PageWelcomeTemplateManagement extends InternalPageBase
     protected function main()
     {
         $database = $this->getDatabase();
-        $templateList = WelcomeTemplate::getAll($database, 1); // FIXME: domains
+        $domain = Domain::getCurrent($database);
+        $templateList = WelcomeTemplate::getAll($database, $domain->getId());
         $preferenceManager = PreferenceManager::getForCurrent($database);
 
         $this->setHtmlTitle('Welcome Templates');
@@ -64,7 +66,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
         $this->validateCSRFToken();
 
         $database = $this->getDatabase();
-        $user = User::getCurrent($database);
+        $domain = Domain::getCurrent($database);
         $preferenceManager = PreferenceManager::getForCurrent($database);
 
         if (WebRequest::postBoolean('disable')) {
@@ -80,7 +82,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
         /** @var false|WelcomeTemplate $template */
         $template = WelcomeTemplate::getById($templateId, $database);
 
-        if ($template === false || $template->isDeleted()) {
+        if ($template === false || $template->isDeleted() || $template->getDomain() !== $domain->getId()) {
             throw new ApplicationLogicException('Unknown template');
         }
 
@@ -101,13 +103,14 @@ class PageWelcomeTemplateManagement extends InternalPageBase
         $this->setHtmlTitle('View Welcome Template');
 
         $database = $this->getDatabase();
+        $domain = Domain::getCurrent($database);
 
         $templateId = WebRequest::getInt('template');
 
         /** @var false|WelcomeTemplate $template */
         $template = WelcomeTemplate::getById($templateId, $database);
 
-        if ($template === false) {
+        if ($template === false || $template->getDomain() !== $domain->getId()) {
             throw new ApplicationLogicException('Cannot find requested template');
         }
 
@@ -146,6 +149,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
             $database = $this->getDatabase();
+            $domain = Domain::getCurrent($database);
 
             $userCode = WebRequest::postString('usercode');
             $botCode = WebRequest::postString('botcode');
@@ -156,7 +160,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
             $template->setDatabase($database);
             $template->setUserCode($userCode);
             $template->setBotCode($botCode);
-            $template->setDomain(1); // FIXME: domains!
+            $template->setDomain($domain->getId());
             $template->save();
 
             Logger::welcomeTemplateCreated($database, $template);
@@ -263,7 +267,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 
         SessionAlert::success(
             "Template deleted. Any users who were using this template have had automatic welcoming disabled.");
-        $this->getNotificationHelper()->welcomeTemplateDeleted($templateId);
+        $this->getNotificationHelper()->welcomeTemplateDeleted($templateId, $template->getDomain());
     }
 
     private function validate($userCode, $botCode)

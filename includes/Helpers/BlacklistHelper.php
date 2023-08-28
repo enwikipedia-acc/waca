@@ -27,19 +27,14 @@ class BlacklistHelper implements IBlacklistHelper
      */
     private $cache = array();
 
-    /** @var PdoDatabase */
-    private $database;
-
     /**
      * BlacklistHelper constructor.
      *
      * @param HttpHelper  $httpHelper
-     * @param PdoDatabase $database
      */
-    public function __construct(HttpHelper $httpHelper, PdoDatabase $database)
+    public function __construct(HttpHelper $httpHelper)
     {
         $this->httpHelper = $httpHelper;
-        $this->database = $database;
     }
 
     /**
@@ -49,7 +44,7 @@ class BlacklistHelper implements IBlacklistHelper
      *
      * @return false|string False if the username is not blacklisted, else the blacklist entry.
      */
-    public function isBlacklisted($username)
+    public function isBlacklisted($username, Domain $domain)
     {
         if (isset($this->cache[$username])) {
             $result = $this->cache[$username];
@@ -61,7 +56,7 @@ class BlacklistHelper implements IBlacklistHelper
         }
 
         try {
-            $result = $this->performWikiLookup($username);
+            $result = $this->performWikiLookup($username, $domain);
         }
         catch (CurlException $ex) {
             // LOGME log this, but fail gracefully.
@@ -86,16 +81,13 @@ class BlacklistHelper implements IBlacklistHelper
      * Performs a fetch to MediaWiki for the relevant title blacklist entry
      *
      * @param string $username The username to look up
+     * @param Domain $domain The domain to look up the request in
      *
      * @return array
      * @throws CurlException
      */
-    private function performWikiLookup($username)
+    private function performWikiLookup($username, Domain $domain)
     {
-        // FIXME: domains!
-        /** @var Domain $domain */
-        $domain = Domain::getById(1, $this->database);
-
         $endpoint = $domain->getWikiApiPath();
 
         $parameters = array(

@@ -141,7 +141,7 @@ class PageCustomClose extends PageCloseRequest
         }
 
         // Static data
-        $this->assign('requestQueues', $requestQueues = RequestQueue::getEnabledQueues($database));
+        $this->assign('requestQueues', $requestQueues = RequestQueue::getEnabledQueues($database, $request->getDomain()));
 
         // request data
         $this->assign('requestId', $request->getIp());
@@ -409,7 +409,7 @@ class PageCustomClose extends PageCloseRequest
         ];
 
         $creationTask = new JobQueue();
-        $creationTask->setDomain(1); // FIXME: domains!
+        $creationTask->setDomain($request->getDomain());
         $creationTask->setTask($creationTaskClass);
         $creationTask->setRequest($request->getId());
         $creationTask->setTriggerUserId($currentUser->getId());

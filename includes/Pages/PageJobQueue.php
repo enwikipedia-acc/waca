@@ -10,6 +10,7 @@ namespace Waca\Pages;
 
 use Waca\Background\Task\BotCreationTask;
 use Waca\Background\Task\UserCreationTask;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Log;
@@ -39,10 +40,10 @@ class PageJobQueue extends PagedInternalPageBase
         $this->prepareMaps();
 
         $database = $this->getDatabase();
+        $domain = Domain::getCurrent($database);
 
         /** @var JobQueue[] $jobList */
-        // FIXME: domains
-        $jobList = JobQueueSearchHelper::get($database, 1)
+        $jobList = JobQueueSearchHelper::get($database, $domain->getId())
             ->statusIn([
                 JobQueue::STATUS_QUEUED,
                 JobQueue::STATUS_READY,
@@ -66,8 +67,7 @@ class PageJobQueue extends PagedInternalPageBase
         $this->assign('canSeeAll', $this->barrierTest('all', User::getCurrent($database)));
 
         $this->assign('users', UserSearchHelper::get($database)->inIds($userIds)->fetchMap('username'));
-        // FIXME: domains
-        $this->assign('requests', RequestSearchHelper::get($database, 1)->inIds($requestIds)->fetchMap('name'));
+        $this->assign('requests', RequestSearchHelper::get($database, $domain->getId())->inIds($requestIds)->fetchMap('name'));
 
         $this->assign('joblist', $jobList);
         $this->setTemplate('jobqueue/main.tpl');
@@ -80,9 +80,9 @@ class PageJobQueue extends PagedInternalPageBase
         $this->prepareMaps();
 
         $database = $this->getDatabase();
+        $domain = Domain::getCurrent($database);
 
-        // FIXME: domains
-        $searchHelper = JobQueueSearchHelper::get($database, 1);
+        $searchHelper = JobQueueSearchHelper::get($database, $domain->getId());
         $this->setSearchHelper($searchHelper);
         $this->setupLimits();
 
@@ -138,8 +138,7 @@ class PageJobQueue extends PagedInternalPageBase
         });
 
         $this->assign('users', UserSearchHelper::get($database)->inIds($userIds)->fetchMap('username'));
-        // FIXME: domains!
-        $this->assign('requests', RequestSearchHelper::get($database, 1)->inIds($requestIds)->fetchMap('name'));
+        $this->assign('requests', RequestSearchHelper::get($database, $domain->getId())->inIds($requestIds)->fetchMap('name'));
 
         $this->assign('joblist', $jobList);
 
@@ -152,6 +151,7 @@ class PageJobQueue extends PagedInternalPageBase
     {
         $jobId = WebRequest::getInt('id');
         $database = $this->getDatabase();
+        $domain = Domain::getCurrent($database);
 
         if ($jobId === null) {
             throw new ApplicationLogicException('No job specified');
@@ -172,8 +172,7 @@ class PageJobQueue extends PagedInternalPageBase
         $this->assign('parent', JobQueue::getById($job->getParent(), $database));
 
         /** @var Log[] $logs */
-        // FIXME: domains
-        $logs = LogSearchHelper::get($database, 1)->byObjectType('JobQueue')
+        $logs = LogSearchHelper::get($database, $domain->getId())->byObjectType('JobQueue')
             ->byObjectId($job->getId())->getRecordCount($logCount)->fetch();
         if ($logCount === 0) {
             $this->assign('log', array());

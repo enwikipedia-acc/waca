@@ -27,8 +27,7 @@ class WelcomeUserTask extends BackgroundTaskBase
         $database = $this->getDatabase();
         $this->request = $this->getRequest();
         $user = $this->getTriggerUser();
-        //FIXME: domains
-        $userPrefs = new PreferenceManager($database, $user->getId(), 1);
+        $userPrefs = new PreferenceManager($database, $user->getId(), $this->request->getDomain());
 
         $welcomeTemplate = $userPrefs->getPreference(PreferenceManager::PREF_WELCOMETEMPLATE);
 

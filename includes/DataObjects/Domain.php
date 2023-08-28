@@ -43,22 +43,30 @@ class Domain extends DataObject
 
     public static function getCurrent(PdoDatabase $database)
     {
-        if (self::$currentDomain === null) {
+        if (self::$currentDomain === null || (self::$currentDomain !== null && self::$currentDomain->getId() !== WebRequest::getSessionDomain())) {
             $sessionDomain = WebRequest::getSessionDomain();
 
+            // get the domain indicated by the session variable
             if ($sessionDomain !== null) {
-                /** @var Domain $domain */
+                /** @var Domain|bool $domain */
                 $domain = self::getById($sessionDomain, $database);
 
-                if ($domain === false) {
-                    self::$currentDomain = self::getById(1, $database); // FIXME: #594 User::getCurrent($database)->getDefaultDomain();
-                }
-                else {
+                if ($domain !== false) {
                     self::$currentDomain = $domain;
                 }
             }
-            else {
-                self::$currentDomain = self::getById(1, $database); // FIXME: #594 User::getCurrent($database)->getDefaultDomain();
+
+            // still null? Fetch some random domain that the user happens to be a member of.
+            if (self::$currentDomain === null) {
+                $userDomains = self::getDomainByUser($database, User::getCurrent($database), true);
+
+                if (count($userDomains) == 0) {
+                    // eurgh.
+                    self::$currentDomain = null;
+                    return null;
+                }
+
+                self::$currentDomain = $userDomains[0];
             }
         }
 
