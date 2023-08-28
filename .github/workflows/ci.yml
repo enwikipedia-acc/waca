@@ -79,10 +79,15 @@ jobs:
         mysql database: 'waca'
         mysql user: 'waca'
         mysql password: ${{ secrets.DatabasePassword }}
+
+    - name: Wait for MariaDB
+      run: |
+        while ! mysqladmin ping -h127.0.0.1 --silent; do
+          sleep 1
+        done
     
     - name: Test database build
       run: |
-        sleep 5
         sql/test_db.sh --ci
       env:
         MYSQL_HOST: 127.0.0.1
