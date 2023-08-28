@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ * ACC Development Team. Please see team.json for a list of contributors.     *
+ *                                                                            *
+ * This is free and unencumbered software released into the public domain.    *
+ * Please see LICENSE.md for the full licencing statement.                    *
+ ******************************************************************************/
 -- Hey!
 -- This patch script exists as a placeholder for a PHP-based migration maintenance job.
 -- If you are a database build job, this job should succeed without issues

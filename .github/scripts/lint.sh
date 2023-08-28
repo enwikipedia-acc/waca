@@ -1,5 +1,13 @@
 #!/bin/bash
 
+#*******************************************************************************
+# Wikipedia Account Creation Assistance tool                                   *
+# ACC Development Team. Please see team.json for a list of contributors.       *
+#                                                                              *
+# This is free and unencumbered software released into the public domain.      *
+# Please see LICENSE.md for the full licencing statement.                      *
+#*******************************************************************************
+
 echo -e "\033[32mRunning lint test on all PHP files...\033[0m"
 echo -e "\033[32mCurrent directory is \033[37;1m`pwd`\033[0m"
 
