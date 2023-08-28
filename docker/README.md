@@ -89,15 +89,15 @@ images are re-downloaded and an Internet connection will be required.
 Sometimes, when the application container starts, the Composer install step will fail with a cryptic error message about
 being unable to delete files, usually in relation to the Font-Awesome package. This is due to a timeout; the package
 contains _lots and lots_ of tiny files. While using a shared Docker volume for the application is convenient (this is
-what allows changes to be made to the local repo to be immediately reflected in the container and vice-versa), there is
-a large performance penalty, especially on Windows and macOS.
+what allows changes made to the local repo to be immediately reflected in the container and vice-versa), there is a 
+large performance penalty, especially on Windows and macOS.
 
 You should try simply restarting the service, but if that doesn't work, here are a couple ways this can be resolved:
 
 1. If you can install a matching version of PHP locally, you can also install Composer and run `composer install` in
    your local repo before running `docker compose up`. The container will detect the pre-installed dependencies and not
    need to install them again.
-2. In `docker-compose.yml`, uncomment the `- composer-vendor:/var/www/html/vendor` line under
+2. In `/docker-compose.yml`, uncomment the `- composer-vendor:/var/www/html/vendor` line under
    `services.application.volumes` **and** the corresponding volume line near the bottom of the file. This will prevent
    the container from using the shared volume for the vendor directory, which will speed up Composer installs within the
    container. However, the Composer packages installed in the container will not be made available to the local repo, so
