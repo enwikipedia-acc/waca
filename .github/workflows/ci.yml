@@ -78,9 +78,10 @@ jobs:
         mariadb version: '10.11'
         mysql database: 'waca'
         mysql user: 'waca'
-        mysql password: ${{ secrets.DatabasePassword }}
+        mysql password: 'waca'
 
     - name: Wait for MariaDB
+      timeout-minutes: 1
       run: |
         while ! mysqladmin ping -h127.0.0.1 --silent; do
           sleep 1
@@ -92,7 +93,7 @@ jobs:
       env:
         MYSQL_HOST: 127.0.0.1
         MYSQL_USER: waca
-        MYSQL_PASSWORD: ${{ secrets.DatabasePassword }}
+        MYSQL_PASSWORD: waca
         MYSQL_SCHEMA: waca
 
   scss:
