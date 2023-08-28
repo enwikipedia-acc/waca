@@ -5,6 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
+      # - composer-vendor:/var/www/html/vendor  # Uncomment if experiencing font-awesome issues. See docker/README.md.
       - .:/var/www/html/
     ports:
       - "8080:80"
@@ -41,5 +42,6 @@ services:
       - "8081:8080" # HTTP web interface to view received emails
 
 volumes:
+  # composer-vendor:  # Uncomment if experiencing font-awesome issues. See docker/README.md.
   mysql-data:
   rabbitmq-data:

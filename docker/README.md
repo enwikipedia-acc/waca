@@ -34,7 +34,7 @@ Four Docker Compose services will be started, each within its own container:
 
 | Service name  | Container name       | Description                                                       |
 |---------------|----------------------|-------------------------------------------------------------------|
-| `application` | `waca-application-1` | Apache web server with PHP 7.4 hosting the actual ACC app.        |
+| `application` | `waca-application-1` | Apache web server with PHP 8.2 hosting the actual ACC app.        |
 | `database`    | `waca-database-1`    | MariaDB 10.11.3 database server used by ACC.                      |
 | `msgbroker`   | `waca-msgbroker-1`   | RabbitMQ 3.10.8 message broker server used for notifications.     |
 | `mailsink`    | `waca-mailsink-1`    | A simple mailsink running a dummy SMTP server which ACC will use. |
@@ -83,6 +83,26 @@ You can also blow away your entire setup by shutting down ACC then running the c
 more surgical but this is left as an exercise for the reader). You shouldn't need to do this unless something has really
 broken, or you really need to ensure that you are starting from scratch. The next time you run ACC will take longer as
 images are re-downloaded and an Internet connection will be required.
+
+# Common issues
+## Composer install fails
+Sometimes, when the application container starts, the Composer install step will fail with a cryptic error message about
+being unable to delete files, usually in relation to the Font-Awesome package. This is due to a timeout; the package
+contains _lots and lots_ of tiny files. While using a shared Docker volume for the application is convenient (this is
+what allows changes to be made to the local repo to be immediately reflected in the container and vice-versa), there is
+a large performance penalty, especially on Windows and macOS.
+
+You should try simply restarting the service, but if that doesn't work, here are a couple ways this can be resolved:
+
+1. If you can install a matching version of PHP locally, you can also install Composer and run `composer install` in
+   your local repo before running `docker compose up`. The container will detect the pre-installed dependencies and not
+   need to install them again.
+2. In `docker-compose.yml`, uncomment the `- composer-vendor:/var/www/html/vendor` line under
+   `services.application.volumes` **and** the corresponding volume line near the bottom of the file. This will prevent
+   the container from using the shared volume for the vendor directory, which will speed up Composer installs within the
+   container. However, the Composer packages installed in the container will not be made available to the local repo, so
+   your IDE for example will not be able to see them or may require additional configuration to see them. The installed
+   packages should persist through container rebuilds since they are stored in a named volume.
 
 # Implementation details
 A brief explanation of the various files that go into making ACC work in Docker, should you wish to mess with them. In
