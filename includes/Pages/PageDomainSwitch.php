@@ -39,7 +39,7 @@ class PageDomainSwitch extends InternalPageBase
             return;
         }
 
-        $this->getDomainAccessManager()->switchDomain($currentUser, $newDomain);
+        $this->getDomainAccessManager()->switchDomain($currentUser, $newDomain, $this->getSecurityManager());
 
         // try to stay on the same page if possible.
         // This only checks basic ACLs and not domain privileges, so this may still result in a 403.
