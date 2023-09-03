@@ -121,7 +121,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 
         $oauth = new OAuthUserHelper($currentUser, $database, $this->getOauthProtocolHelper(),
             $this->getSiteConfiguration());
-        $mediaWikiHelper = new MediaWikiHelper($oauth, $this->getSiteConfiguration());
+        $mediaWikiHelper = new MediaWikiHelper($oauth, $this->getSiteConfiguration(), $domain->getWikiApiPath());
 
         $templateHtml = $mediaWikiHelper->getHtmlForWikiText($wikiText);
         

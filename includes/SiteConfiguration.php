@@ -694,26 +694,6 @@ class SiteConfiguration
     }
 
     /**
-     * @param string $oauthMediaWikiCanonicalServer
-     *
-     * @return SiteConfiguration
-     */
-    public function setOauthMediaWikiCanonicalServer($oauthMediaWikiCanonicalServer)
-    {
-        $this->oauthMediaWikiCanonicalServer = $oauthMediaWikiCanonicalServer;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOauthMediaWikiCanonicalServer()
-    {
-        return $this->oauthMediaWikiCanonicalServer;
-    }
-
-    /**
      * @param string $creationBotUsername
      *
      * @return SiteConfiguration

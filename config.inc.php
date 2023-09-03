@@ -90,8 +90,6 @@ $oauthSecretToken = "";
 // Formerly-used OAuth tokens to permit reading identities from
 $oauthLegacyTokens = [];
 
-$oauthMediaWikiCanonicalServer = "https://en.wikipedia.org";
-
 $useOauthSignup = true;
 $enforceOAuth = false;
 
@@ -254,7 +252,6 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setOAuthConsumerToken($oauthConsumerToken)
     ->setOAuthLegacyConsumerTokens($oauthLegacyTokens)
     ->setOAuthConsumerSecret($oauthSecretToken)
-    ->setOauthMediaWikiCanonicalServer($oauthMediaWikiCanonicalServer)
     ->setDataClearInterval($dataclear_interval)
     ->setXffTrustedHostsFile($xff_trusted_hosts_file)
     ->setIrcNotificationsEnabled($ircBotNotificationsEnabled == 1)

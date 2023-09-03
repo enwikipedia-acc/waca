@@ -94,6 +94,27 @@ SQL
         return $result;
     }
 
+    public static function getByApiPath(string $apiPath, PdoDatabase $database)
+    {
+        $statement = $database->prepare(<<<SQL
+            SELECT * FROM domain WHERE wikiapipath = :api;
+SQL
+        );
+
+        $statement->execute([
+            ':api' => $apiPath,
+        ]);
+
+        /** @var RequestForm|false $result */
+        $result = $statement->fetchObject(get_called_class());
+
+        if ($result !== false) {
+            $result->setDatabase($database);
+        }
+
+        return $result;
+    }
+
     public static function getAll(PdoDatabase $database) {
         $statement = $database->prepare("SELECT * FROM domain;");
         $statement->execute();

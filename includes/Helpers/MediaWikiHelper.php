@@ -23,17 +23,20 @@ class MediaWikiHelper
      * @var SiteConfiguration
      */
     private $siteConfiguration;
+    private string $apiPath;
 
     /**
      * MediaWikiHelper constructor.
      *
      * @param IMediaWikiClient  $mediaWikiClient
      * @param SiteConfiguration $siteConfiguration
+     * @param string            $apiPath
      */
-    public function __construct(IMediaWikiClient $mediaWikiClient, SiteConfiguration $siteConfiguration)
+    public function __construct(IMediaWikiClient $mediaWikiClient, SiteConfiguration $siteConfiguration, string $apiPath)
     {
         $this->mediaWikiClient = $mediaWikiClient;
         $this->siteConfiguration = $siteConfiguration;
+        $this->apiPath = $apiPath;
     }
 
     /**
@@ -55,7 +58,7 @@ class MediaWikiHelper
             'type'   => 'createaccount',
         );
 
-        $response = $this->mediaWikiClient->doApiCall($tokenParams, 'POST');
+        $response = $this->mediaWikiClient->doApiCall($tokenParams, 'POST', $this->apiPath);
 
         if (isset($response->error)) {
             throw new MediaWikiApiException($response->error->code . ': ' . $response->error->info);
@@ -83,7 +86,7 @@ class MediaWikiHelper
         $createParams['email'] = $emailAddress;
         $createParams['reason'] = $reason;
 
-        $createResponse = $this->mediaWikiClient->doApiCall($createParams, 'POST');
+        $createResponse = $this->mediaWikiClient->doApiCall($createParams, 'POST', $this->apiPath);
 
         if (isset($createResponse->error)) {
             throw new MediaWikiApiException($response->error->code . ': ' . $response->error->info);
@@ -123,7 +126,7 @@ class MediaWikiHelper
             'type'   => 'csrf',
         );
 
-        $response = $this->mediaWikiClient->doApiCall($tokenParams, 'POST');
+        $response = $this->mediaWikiClient->doApiCall($tokenParams, 'POST', $this->apiPath);
 
         if (isset($response->error)) {
             throw new MediaWikiApiException($response->error->code . ': ' . $response->error->info);
@@ -149,7 +152,7 @@ class MediaWikiHelper
             $editParameters['createonly'] = true;
         }
 
-        $response = $this->mediaWikiClient->doApiCall($editParameters, 'POST');
+        $response = $this->mediaWikiClient->doApiCall($editParameters, 'POST', $this->apiPath);
 
         if (!isset($response->edit)) {
             if (isset($response->error)) {
@@ -176,7 +179,7 @@ class MediaWikiHelper
             'amirequestsfor' => 'create',
         );
 
-        $response = $this->mediaWikiClient->doApiCall($params, 'GET');
+        $response = $this->mediaWikiClient->doApiCall($params, 'GET', $this->apiPath);
 
         if (isset($response->error)) {
             throw new MediaWikiApiException($response->error->code . ': ' . $response->error->info);
@@ -250,7 +253,7 @@ class MediaWikiHelper
             'ususers' => $username,
         );
 
-        $apiResult = $this->mediaWikiClient->doApiCall($parameters, 'GET');
+        $apiResult = $this->mediaWikiClient->doApiCall($parameters, 'GET', $this->apiPath);
 
         $entry = $apiResult->query->users[0];
         $exists = !isset($entry->missing);
@@ -277,7 +280,7 @@ class MediaWikiHelper
             'text'               => $wikiText,
         );
 
-        $apiResult = $this->mediaWikiClient->doApiCall($parameters, 'GET');
+        $apiResult = $this->mediaWikiClient->doApiCall($parameters, 'GET', $this->apiPath);
 
         return $apiResult->parse->text->{'*'};
     }

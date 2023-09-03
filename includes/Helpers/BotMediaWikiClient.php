@@ -49,7 +49,7 @@ class BotMediaWikiClient implements IMediaWikiClient
         );
     }
 
-    public function doApiCall($apiParams, $method = 'GET')
+    public function doApiCall($apiParams, string $method, string $apiPath)
     {
         $this->ensureLoggedIn();
         $apiParams['assert'] = 'user';
@@ -85,12 +85,13 @@ class BotMediaWikiClient implements IMediaWikiClient
     /**
      * @param $apiParams
      * @param $method
+     * @param $apiPath
      *
      * @return mixed
      * @throws ApplicationLogicException
      * @throws CurlException
      */
-    private function callApi($apiParams, $method)
+    private function callApi($apiParams, $method, $apiPath)
     {
         $apiParams['format'] = 'json';
 

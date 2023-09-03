@@ -63,5 +63,5 @@ interface IOAuthProtocolHelper
      * @throws CurlException
      * @throws Exception
      */
-    public function apiCall($apiParams, $accessToken, $accessSecret, $method = 'GET');
+    public function apiCall($apiParams, $accessToken, $accessSecret, $method = 'GET', string $apiPath);
 }
