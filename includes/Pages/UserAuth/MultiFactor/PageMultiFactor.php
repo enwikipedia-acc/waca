@@ -216,7 +216,7 @@ class PageMultiFactor extends InternalPageBase
 
             $this->assignCSRFToken();
 
-            $this->assign('alertmessage', 'To enable your multi-factor credentials, please prove you are who you say you are by providing the information below.');
+            $this->assign('alertmessage', 'To enable your multi-factor credentials, please prove you are who you say you are by providing your tool password below.');
             $this->assign('alertheader', 'Provide credentials');
             $this->assign('continueText', 'Verify password');
             $this->setTemplate('mfa/enableAuth.tpl');
@@ -267,7 +267,7 @@ class PageMultiFactor extends InternalPageBase
         else {
             $this->assignCSRFToken();
 
-            $this->assign('alertmessage', 'To regenerate your emergency scratch tokens, please prove you are who you say you are by providing the information below. Note that continuing will invalidate all remaining scratch tokens, and provide a set of new ones.');
+            $this->assign('alertmessage', 'To regenerate your emergency scratch tokens, please prove you are who you say you are by providing your tool password below. Note that continuing will invalidate all remaining scratch tokens, and provide a set of new ones.');
             $this->assign('alertheader', 'Re-generate scratch tokens');
             $this->assign('continueText', 'Regenerate Scratch Tokens');
 
