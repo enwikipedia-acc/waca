@@ -8,41 +8,40 @@
         </div>
     </div>
 
-    <form method="post" class="password-form">
-        {include file="security/csrf.tpl"}
+    <div class="row">
+        <div class="col-xl-4 offset-xl-4 col-lg-6 offset-lg-3 col-md-8 offset-md-2">
+            <div class="card mb-5" id="loginCredentialForm">
+                <div class="card-body p-4">
+                    <h4>Change password</h4>
+                    <p>To change your password, please enter your current password and desired new password below.</p>
+                    {include file="alert.tpl" alertblock="true" alerttype="alert-warning" alertclosable=false alertheader="" alertmessage="Use of your Wikimedia credentials is highly discouraged in this tool. You should use a different password for your account than you would on projects like Wikipedia, Wikimedia Commons, etc."}
 
-        <div class="form-group row">
-            <div class="col-md-3 col-lg-2">
-                <label class="col-form-label" for="inputOldpassword">Your old password</label>
-            </div>
-            <div class="col-md-6 col-lg-4 col-xl-3">
-                <input class="form-control" type="password" id="inputOldpassword" name="oldpassword" required="required" autocomplete="password"/>
-            </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-md-3 col-lg-2">
-                <label class="col-form-label" for="inputNewpassword">Your new password</label>
-            </div>
-            <div class="col-md-6 col-lg-4 col-xl-3">
-                <input class="form-control password-strength" type="password" id="inputNewpassword" name="newpassword" required="required" autocomplete="new-password"/>
-                <div class="progress password-strength-progress">
-                    <div class="progress-bar" id="password-strength-bar"></div>
+                    <form method="post" class="password-form">
+                        {include file="security/csrf.tpl"}
+
+                        <div class="form-group">
+                            <label class="col-form-label" for="inputOldpassword">Your old password</label>
+                            <input class="form-control" type="password" id="inputOldpassword" name="oldpassword" required="required" autocomplete="password"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label" for="inputNewpassword">Your new password</label>
+                            <input class="form-control password-strength" type="password" id="inputNewpassword" name="newpassword" required="required" autocomplete="new-password"/>
+                            <div class="progress password-strength-progress">
+                                <div class="progress-bar" id="password-strength-bar"></div>
+                            </div>
+                            <span class="form-text text-danger" id="password-strength-warning"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label" for="inputNewpasswordconfirm">Confirm new password</label>
+                            <input class="form-control" type="password" id="inputNewpasswordconfirm" name="newpasswordconfirm" required="required" autocomplete="new-password"/>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-block btn-primary">Update password</button>
+                        </div>
+                    </form>
+
                 </div>
-                <span class="form-text text-danger" id="password-strength-warning"></span>
             </div>
         </div>
-        <div class="form-group row">
-            <div class="col-md-3 col-lg-2">
-                <label class="col-form-label" for="inputNewpasswordconfirm">Confirm new password</label>
-            </div>
-            <div class="col-md-6 col-lg-4 col-xl-3">
-                <input class="form-control" type="password" id="inputNewpasswordconfirm" name="newpasswordconfirm" required="required" autocomplete="new-password"/>
-            </div>
-        </div>
-        <div class="form-group row">
-            <div class="offset-md-3 offset-lg-2 col-md-6 col-lg-4 col-xl-3">
-                <button type="submit" class="btn btn-block btn-primary">Update password</button>
-            </div>
-        </div>
-    </form>
+    </div>
 {/block}
