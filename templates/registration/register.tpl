@@ -48,9 +48,7 @@
                             <div class="progress-bar" id="password-strength-bar"></div>
                         </div>
                         <span class="form-text text-danger" id="password-strength-warning"></span>
-                        <small id="passHelp" class="form-text text-muted">
-                            Please <strong>do not</strong> use the same password you use on Wikipedia!
-                        </small>
+                        {include file="alert.tpl" alerttype="alert-warning mt-2" alertclosable=false alertheader="" alertmessage="Use of your Wikimedia credentials is highly discouraged in this tool. You should use a different password for your account than you would on projects like Wikipedia, Wikimedia Commons, etc."}
                     </div>
                 </div>
 
