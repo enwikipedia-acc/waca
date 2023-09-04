@@ -14,7 +14,7 @@
                 <div class="card-body p-4">
                     <form method="post">
                         {include file="security/csrf.tpl"}
-                        {include file="alert.tpl" alertblock="true" alerttype="alert-info" alertclosable=false alertheader="Provide credentials" alertmessage="To enable your YubiKey OTP multi-factor credentials, please prove you are who you say you are by providing the information below."}
+                        {include file="alert.tpl" alertblock="true" alerttype="alert-info" alertclosable=false alertheader="Provide credentials" alertmessage="To enable your YubiKey OTP multi-factor credentials, please prove you are who you say you are by providing your tool password below."}
                         <div class="form-group row">
                             <div class="col">
                                 <label class="sr-only" for="password">Password</label>
