@@ -74,6 +74,11 @@ $zoom-section-spacer: 1.45rem;
         #commentSaveButton {
             min-width: 5rem;
         }
+
+        table tbody tr:target {
+            border: $secondary 2px solid !important;
+            border-left: $secondary 0.6rem solid !important;
+        }
     }
 
     .linkWrapSection .btn {
