@@ -20,3 +20,12 @@ updates:
       - "@enwikipedia-acc/dependency-reviewers"
     assignees:
       - "@enwikipedia-acc/dependency-reviewers"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    reviewers:
+      - "@enwikipedia-acc/dependency-reviewers"
+    assignees:
+      - "@enwikipedia-acc/dependency-reviewers"
