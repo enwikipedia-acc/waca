@@ -79,10 +79,13 @@ class PageListFlaggedComments extends InternalPageBase
 
     protected function copyCommentData(Comment $object, array &$data, PdoDatabase $database): void
     {
+        $request = Request::getById($object->getRequest(), $database);
+
         $data['comment'] = $object->getComment();
         $data['time'] = $object->getTime();
         $data['requestid'] = $object->getRequest();
-        $data['request'] = Request::getById($object->getRequest(), $database)->getName();
+        $data['request'] = $request->getName();
+        $data['requeststatus'] = $request->getStatus();
         $data['userid'] = $object->getUser();
         $data['user'] = User::getById($object->getUser(), $database)->getUsername();
     }

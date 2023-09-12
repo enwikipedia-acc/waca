@@ -14,7 +14,18 @@
                 <label class="col-form-label" for="request">Request</label>
             </div>
             <div class="col-md-8 col-lg-4">
-                <a class="form-control" id="request" href="{$baseurl}/internal.php/viewRequest?id={$comment->getRequest()}">{$request->getName()|escape}</a>
+                <div class="form-control"> 
+                    <a id="request" href="{$baseurl}/internal.php/viewRequest?id={$comment->getRequest()}">
+                        {$request->getName()|escape}
+                    </a>
+                    {if $request->getStatus() == Waca\RequestStatus::CLOSED}
+                        <span class="badge badge-danger">Closed</span>
+                    {elseif $request->getStatus() == Waca\RequestStatus::OPEN}
+                        <span class="badge badge-success">Open</span>
+                    {else}
+                        <span class="badge badge-warning">{$request->getStatus()|escape}</span>
+                    {/if}
+                </div>
             </div>
         </div>
 
@@ -85,6 +96,19 @@
                 <div class="form-control prewrap" id="oldtext">{$comment->getComment()|escape}</div>
             </div>
         </div>
+
+        {if $request->getStatus() !== Waca\RequestStatus::CLOSED && $comment->getFlagged()}
+            <div class="form-group row">
+                <div class="offset-md-4 col-md-8 offset-lg-2 col-lg-10">
+                {include file="alert.tpl"
+                    alerttype="alert-warning mb-0"
+                    alertmessage="Please consider if any redactable information in this comment will be useful for handling this request, and whether a redaction can wait until the request is closed."
+                }
+                </div>
+            </div>
+
+            
+        {/if}
 
         <div class="form-group row">
             <div class="col-md-4 col-lg-2">
