@@ -105,7 +105,7 @@ class PageEditComment extends InternalPageBase
 
             Logger::editComment($database, $comment, $request);
             if (WebRequest::postBoolean('unflag') && $canUnflag) {
-                Logger::unflaggedComment($database, $comment);
+                Logger::unflaggedComment($database, $comment, $request->getDomain());
             }
             $this->getNotificationHelper()->commentEdited($comment, $request);
             SessionAlert::success("Comment has been saved successfully");
