@@ -9,7 +9,7 @@
         <tbody>
         {if $requestLogs}
             {foreach from=$requestLogs item=zoomrow name=logloop}
-                    <tr class="{if $zoomrow.security == "admin"}table-danger{elseif $zoomrow.security == "checkuser"}table-visited{/if}">
+                    <tr class="{if $zoomrow.security == "admin"}table-danger{elseif $zoomrow.security == "checkuser"}table-visited{/if}" id="{if $zoomrow.type == "comment"}comment{else}log{/if}-{$zoomrow.id}">
                     <td class="text-nowrap">
                         {if $zoomrow.userid != null}
                             <a href='{$baseurl}/internal.php/statistics/users/detail?user={$zoomrow.userid}'>{$zoomrow.user|escape}</a>
