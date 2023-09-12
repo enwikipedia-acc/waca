@@ -81,7 +81,7 @@
                             <td>{$data.comment|escape}</td>
                             <td class="table-button-cell text-right">
                                 {if $editComments && ($editOthersComments || $data.userid == $currentUser->getId())}
-                                    <a href="{$baseurl}/internal.php/editComment?id={$data.id}" class="btn btn-sm btn-secondary"><i class="fas fa-edit"></i>&nbsp;Edit</a>
+                                    <a href="{$baseurl}/internal.php/editComment?id={$data.id}&from=flagged" class="btn btn-sm btn-secondary"><i class="fas fa-edit"></i>&nbsp;Edit</a>
                                 {/if}
                                 {if $canUnflag}
                                 <form action="{$baseurl}/internal.php/flagComment" method="post" class="d-inline-block">
