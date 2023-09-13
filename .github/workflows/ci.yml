@@ -19,7 +19,7 @@ jobs:
         php-version: [7.4, 8.2]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         # Bump depth for Scrutinizer
         fetch-depth: 10
@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Shut down old dbs
       run: "[ $(docker ps -q | wc -l) -gt 0 ] && docker stop $(docker ps -q) || true"
@@ -101,7 +101,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install dependencies
         run: npm ci
