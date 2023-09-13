@@ -12,6 +12,7 @@ use DOMElement;
 use Exception;
 use Waca\API\ApiException;
 use Waca\API\IXmlApiAction;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\PreferenceManager;
@@ -60,8 +61,17 @@ class StatsAction extends XmlApiPageBase implements IXmlApiAction
         $oauth = new OAuthUserHelper($user, $this->getDatabase(), $this->getOAuthProtocolHelper(),
             $this->getSiteConfiguration());
 
-        // FIXME: domains
-        $prefs = new PreferenceManager($this->getDatabase(), $user->getId(), 1);
+        $domain = false;
+        $domainName = WebRequest::getString("domain");
+        if ($domainName !== null) {
+            $domain = Domain::getByShortName($domainName, $this->getDatabase());
+        }
+        if ($domain === false){
+            // fallback
+            $domain = Domain::getById(1, $this->getDatabase());
+        }
+
+        $prefs = new PreferenceManager($this->getDatabase(), $user->getId(), $domain->getId());
 
         $userElement->setAttribute("username", $user->getUsername());
         $userElement->setAttribute("status", $user->getStatus());

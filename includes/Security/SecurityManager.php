@@ -8,8 +8,11 @@
 
 namespace Waca\Security;
 
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\DataObjects\UserRole;
+use Waca\Exceptions\AccessDeniedException;
+use Waca\Exceptions\ApplicationLogicException;
 use Waca\IdentificationVerifier;
 
 final class SecurityManager
@@ -24,6 +27,8 @@ final class SecurityManager
      */
     private $roleConfiguration;
 
+    private DomainAccessManager $domainAccessManager;
+
     private $cache = [];
 
     /**
@@ -31,13 +36,16 @@ final class SecurityManager
      *
      * @param IdentificationVerifier $identificationVerifier
      * @param RoleConfiguration      $roleConfiguration
+     * @param DomainAccessManager    $domainAccessManager
      */
     public function __construct(
         IdentificationVerifier $identificationVerifier,
-        RoleConfiguration $roleConfiguration
+        RoleConfiguration $roleConfiguration,
+        DomainAccessManager $domainAccessManager
     ) {
         $this->identificationVerifier = $identificationVerifier;
         $this->roleConfiguration = $roleConfiguration;
+        $this->domainAccessManager = $domainAccessManager;
     }
 
     /**
@@ -179,7 +187,20 @@ final class SecurityManager
             $userRoles[] = 'loggedIn';
 
             if ($user->isActive()) {
-                $ur = UserRole::getForUser($user->getId(), $user->getDatabase(), 1); // FIXME: domains
+                $domain = Domain::getCurrent($user->getDatabase());
+
+                $userDomains = array_map(fn(Domain $d) => $d->getId(), $this->domainAccessManager->getAllowedDomains($user));
+
+                if (!in_array($domain->getId(), $userDomains)) {
+                    $this->domainAccessManager->switchToDefaultDomain($user);
+                    $domain = Domain::getCurrent($user->getDatabase());
+                }
+
+                if (!in_array($domain->getId(), $userDomains)) {
+                    throw new AccessDeniedException($this, $this->domainAccessManager);
+                }
+
+                $ur = UserRole::getForUser($user->getId(), $user->getDatabase(), $domain->getId());
 
                 // NOTE: public is still in this array.
                 foreach ($ur as $r) {

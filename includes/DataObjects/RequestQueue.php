@@ -44,18 +44,20 @@ class RequestQueue extends DataObject
      * @deprecated Removal due as part of #607
      */
     private $logname;
+
     /**
      * @param PdoDatabase $database
+     * @param int|null    $domain
      *
      * @return RequestQueue[]
      */
-    public static function getAllQueues(PdoDatabase $database)
+    public static function getAllQueues(PdoDatabase $database, ?int $domain): array
     {
         $statement = $database->prepare(<<<SQL
-            SELECT * FROM requestqueue;
+            SELECT * FROM requestqueue WHERE domain = coalesce(:domain, domain);
 SQL
         );
-        $statement->execute();
+        $statement->execute([':domain'  => $domain]);
 
         $resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
 
@@ -72,13 +74,13 @@ SQL
      *
      * @return RequestQueue[]
      */
-    public static function getEnabledQueues(PdoDatabase $database)
+    public static function getEnabledQueues(PdoDatabase $database, int $domain)
     {
         $statement = $database->prepare(<<<SQL
-            SELECT * FROM requestqueue WHERE enabled = 1;
+            SELECT * FROM requestqueue WHERE enabled = 1 and domain = :domain;
 SQL
         );
-        $statement->execute();
+        $statement->execute([':domain' => $domain]);
 
         $resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
 

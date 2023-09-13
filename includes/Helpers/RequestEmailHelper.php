@@ -43,9 +43,8 @@ class RequestEmailHelper
             'X-ACC-UserID'  => $sendingUser->getId(),
         );
 
-        // FIXME: domains!
         /** @var Domain $domain */
-        $domain = Domain::getById(1, $request->getDatabase());
+        $domain = Domain::getById($request->getDomain(), $request->getDatabase());
 
         if ($ccMailingList) {
             $headers['Cc'] = $domain->getEmailReplyAddress();
@@ -53,8 +52,7 @@ class RequestEmailHelper
 
         $helper = $this->emailHelper;
 
-        // FIXME: domains
-        $preferenceManager = new PreferenceManager($request->getDatabase(), $sendingUser->getId(), 1);
+        $preferenceManager = new PreferenceManager($request->getDatabase(), $sendingUser->getId(), $request->getDomain());
 
         $emailSig = $preferenceManager->getPreference(PreferenceManager::PREF_EMAIL_SIGNATURE);
         if ($emailSig !== '' || $emailSig !== null) {

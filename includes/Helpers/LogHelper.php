@@ -33,22 +33,21 @@ class LogHelper
     /**
      * Summary of getRequestLogsWithComments
      *
-     * @param int             $requestId
+     * @param Request         $request
      * @param PdoDatabase     $db
      * @param SecurityManager $securityManager
      *
      * @return DataObject[]
      */
-    public static function getRequestLogsWithComments($requestId, PdoDatabase $db, SecurityManager $securityManager)
+    public static function getRequestLogsWithComments(Request $request, PdoDatabase $db, SecurityManager $securityManager)
     {
-        // FIXME: domains
-        $logs = LogSearchHelper::get($db, 1)->byObjectType('Request')->byObjectId($requestId)->fetch();
+        $logs = LogSearchHelper::get($db, $request->getDomain())->byObjectType('Request')->byObjectId($request->getId())->fetch();
 
         $currentUser = User::getCurrent($db);
         $showRestrictedComments = $securityManager->allows('RequestData', 'seeRestrictedComments', $currentUser) === SecurityManager::ALLOWED;
         $showCheckuserComments = $securityManager->allows('RequestData', 'seeCheckuserComments', $currentUser) === SecurityManager::ALLOWED;
 
-        $comments = Comment::getForRequest($requestId, $db, $showRestrictedComments, $showCheckuserComments, $currentUser->getId());
+        $comments = Comment::getForRequest($request->getId(), $db, $showRestrictedComments, $showCheckuserComments, $currentUser->getId());
 
         $items = array_merge($logs, $comments);
 

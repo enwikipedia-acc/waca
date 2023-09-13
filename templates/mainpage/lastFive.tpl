@@ -23,16 +23,18 @@
                         </a>
                     </td>
                     <td>
-                        <form action="{$baseurl}/internal.php/viewRequest/defer" method="post" class="form-row">
-                            {include file="security/csrf.tpl"}
-                            <input class="form-control" type="hidden" name="request" value="{$req.id}"/>
-                            <input class="form-control" type="hidden" name="updateversion"
-                                   value="{$req.updateversion}"/>
-                            <input class="form-control" type="hidden" name="target" value="{$defaultRequestState|escape}"/>
-                            <button class="btn btn-warning btn-sm" type="submit">
-                                <i class="fas fa-sync"></i>&nbsp;Reset
-                            </button>
-                        </form>
+                        {if $defaultRequestState !== null}
+                            <form action="{$baseurl}/internal.php/viewRequest/defer" method="post" class="form-row">
+                                {include file="security/csrf.tpl"}
+                                <input class="form-control" type="hidden" name="request" value="{$req.id}"/>
+                                <input class="form-control" type="hidden" name="updateversion"
+                                       value="{$req.updateversion}"/>
+                                <input class="form-control" type="hidden" name="target" value="{$defaultRequestState|escape}"/>
+                                <button class="btn btn-warning btn-sm" type="submit">
+                                    <i class="fas fa-sync"></i>&nbsp;Reset
+                                </button>
+                            </form>
+                        {/if}
                     </td>
                 </tr>
             {/foreach}

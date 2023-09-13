@@ -50,6 +50,7 @@ class SiteConfiguration
     );
     private $ircNotificationsEnabled = true;
     private $ircNotificationsInstance = 'Development';
+    private $ircNotificationsDefaultTarget = '#wikipedia-en-accounts';
     private $errorLog = 'errorlog';
     private $titleBlacklistEnabled = false;
     /** @var null|string $locationProviderApiKey */
@@ -693,26 +694,6 @@ class SiteConfiguration
     }
 
     /**
-     * @param string $oauthMediaWikiCanonicalServer
-     *
-     * @return SiteConfiguration
-     */
-    public function setOauthMediaWikiCanonicalServer($oauthMediaWikiCanonicalServer)
-    {
-        $this->oauthMediaWikiCanonicalServer = $oauthMediaWikiCanonicalServer;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOauthMediaWikiCanonicalServer()
-    {
-        return $this->oauthMediaWikiCanonicalServer;
-    }
-
-    /**
      * @param string $creationBotUsername
      *
      * @return SiteConfiguration
@@ -1058,5 +1039,17 @@ class SiteConfiguration
     public function getAcceptClientHints(): array
     {
         return $this->acceptClientHints;
+    }
+
+    public function setIrcNotificationsDefaultTarget(string $ircNotificationsDefaultTarget): SiteConfiguration
+    {
+        $this->ircNotificationsDefaultTarget = $ircNotificationsDefaultTarget;
+
+        return $this;
+    }
+
+    public function getIrcNotificationsDefaultTarget(): string
+    {
+        return $this->ircNotificationsDefaultTarget;
     }
 }

@@ -152,7 +152,7 @@ class PageRequestAccount extends PublicInterfacePageBase
      *
      * @return ValidationError[]
      */
-    protected function validateRequest($request)
+    protected function validateRequest(Request $request)
     {
         $validationHelper = $this->getRequestValidationHelper();
 
@@ -193,9 +193,8 @@ class PageRequestAccount extends PublicInterfacePageBase
         $this->assign("hash", $request->getEmailConfirm());
 
         // Sends the confirmation email to the user.
-        // FIXME: domains
         /** @var Domain $domain */
-        $domain = Domain::getById(1, $this->getDatabase());
+        $domain = Domain::getById($request->getDomain(), $this->getDatabase());
         $this->getEmailHelper()->sendMail(
             $domain->getEmailReplyAddress(),
             $request->getEmail(),
@@ -247,7 +246,7 @@ class PageRequestAccount extends PublicInterfacePageBase
         }
 
         return $this->validationHelper;
-}
+    }
 
     /**
      * @param Request $request

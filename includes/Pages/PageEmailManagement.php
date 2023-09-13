@@ -29,10 +29,11 @@ class PageEmailManagement extends InternalPageBase
     {
         $this->setHtmlTitle('Close Emails');
 
+        $domain = Domain::getCurrent($this->getDatabase());
+
         // Get all active email templates
-        // FIXME: domains!
-        $activeTemplates = EmailTemplate::getAllActiveTemplates(null, $this->getDatabase(), 1);
-        $inactiveTemplates = EmailTemplate::getAllInactiveTemplates($this->getDatabase(), 1);
+        $activeTemplates = EmailTemplate::getAllActiveTemplates(null, $this->getDatabase(), $domain->getId());
+        $inactiveTemplates = EmailTemplate::getAllInactiveTemplates($this->getDatabase(), $domain->getId());
 
         $this->assign('activeTemplates', $activeTemplates);
         $this->assign('inactiveTemplates', $inactiveTemplates);
@@ -51,9 +52,8 @@ class PageEmailManagement extends InternalPageBase
         $database = $this->getDatabase();
         $template = $this->getTemplate($database);
 
-        // FIXME: domains!
         /** @var Domain $domain */
-        $domain = Domain::getById(1, $database);
+        $domain = Domain::getCurrent($database);
 
         $this->assign('id', $template->getId());
         $this->assign('emailTemplate', $template);
@@ -89,13 +89,12 @@ class PageEmailManagement extends InternalPageBase
         $database = $this->getDatabase();
         $template = $this->getTemplate($database);
 
-        // FIXME: domains!
         /** @var Domain $domain */
-        $domain = Domain::getById(1, $database);
+        $domain = Domain::getCurrent($database);
 
         $createdId = $domain->getDefaultClose();
 
-        $requestQueues = RequestQueue::getEnabledQueues($database);
+        $requestQueues = RequestQueue::getEnabledQueues($database, $domain->getId());
 
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
@@ -171,8 +170,14 @@ class PageEmailManagement extends InternalPageBase
                 break;
             default:
                 $template->setDefaultAction(EmailTemplate::ACTION_DEFER);
-                // FIXME: domains!
-                $template->setQueue(RequestQueue::getByApiName($this->getDatabase(), WebRequest::postString('defaultaction'), 1)->getId());
+                $database = $this->getDatabase();
+                $domain = Domain::getCurrent($database);
+                $requestQueue = RequestQueue::getByApiName($database, WebRequest::postString('defaultaction'), $domain->getId());
+                if ($requestQueue === false) {
+                    throw new ApplicationLogicException("Cannot find request queue specified");
+                }
+
+                $template->setQueue($requestQueue->getId());
                 break;
         }
 
@@ -185,16 +190,16 @@ class PageEmailManagement extends InternalPageBase
         $this->setHtmlTitle('Close Emails');
 
         $database = $this->getDatabase();
+        $domain = Domain::getCurrent($database);
 
-        $requestQueues = RequestQueue::getEnabledQueues($database);
+        $requestQueues = RequestQueue::getEnabledQueues($database,$domain->getId());
 
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
             $template = new EmailTemplate();
             $template->setDatabase($database);
 
-            // FIXME: domains!
-            $template->setDomain(1);
+            $template->setDomain($domain->getId());
 
             $this->modifyTemplateData($template);
 

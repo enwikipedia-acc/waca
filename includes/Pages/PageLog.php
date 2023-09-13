@@ -8,6 +8,7 @@
 
 namespace Waca\Pages;
 
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\User;
 use Waca\Helpers\LogHelper;
@@ -30,6 +31,7 @@ class PageLog extends PagedInternalPageBase
         $filterObjectId = WebRequest::getInt('filterObjectId');
 
         $database = $this->getDatabase();
+        $domain = Domain::getCurrent($database);
 
         if (!array_key_exists($filterObjectType, LogHelper::getObjectTypes())) {
             $filterObjectType = null;
@@ -37,8 +39,7 @@ class PageLog extends PagedInternalPageBase
 
         $this->addJs("/api.php?action=users&all=true&targetVariable=typeaheaddata");
 
-        // FIXME: domains
-        $logSearch = LogSearchHelper::get($database, 1);
+        $logSearch = LogSearchHelper::get($database, $domain->getId());
 
         if ($filterUser !== null) {
             $userObj = User::getByUsername($filterUser, $database);

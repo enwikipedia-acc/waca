@@ -8,6 +8,7 @@
 
 namespace Waca\Pages;
 
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
 use Waca\Helpers\Logger;
@@ -31,7 +32,8 @@ class PageQueueManagement extends InternalPageBase
         $this->setHtmlTitle('Request Queue Management');
 
         $database = $this->getDatabase();
-        $queues = RequestQueue::getAllQueues($database);
+        $currentDomain = Domain::getCurrent($database);
+        $queues = RequestQueue::getAllQueues($database, $currentDomain->getId());
 
         $this->assign('queues', $queues);
 
@@ -48,10 +50,12 @@ class PageQueueManagement extends InternalPageBase
             $this->validateCSRFToken();
             $database = $this->getDatabase();
 
+            $currentDomain = Domain::getCurrent($database);
+
             $queue = new RequestQueue();
 
             $queue->setDatabase($database);
-            $queue->setDomain(1); // FIXME: domain
+            $queue->setDomain($currentDomain->getId());
 
             $queue->setHeader(WebRequest::postString('header'));
             $queue->setDisplayName(WebRequest::postString('displayName'));
@@ -65,8 +69,7 @@ class PageQueueManagement extends InternalPageBase
 
             $proceed = true;
 
-            if (RequestQueue::getByApiName($database, $queue->getApiName(), 1) !== false) {
-                // FIXME: domain
+            if (RequestQueue::getByApiName($database, $queue->getApiName(), $currentDomain->getId()) !== false) {
                 SessionAlert::error("The chosen API name is already in use. Please choose another.");
                 $proceed = false;
             }
@@ -76,14 +79,12 @@ class PageQueueManagement extends InternalPageBase
                 $proceed = false;
             }
 
-            if (RequestQueue::getByDisplayName($database, $queue->getDisplayName(), 1) !== false) {
-                // FIXME: domain
+            if (RequestQueue::getByDisplayName($database, $queue->getDisplayName(), $currentDomain->getId()) !== false) {
                 SessionAlert::error("The chosen target display name is already in use. Please choose another.");
                 $proceed = false;
             }
 
-            if (RequestQueue::getByHeader($database, $queue->getHeader(), 1) !== false) {
-                // FIXME: domain
+            if (RequestQueue::getByHeader($database, $queue->getHeader(), $currentDomain->getId()) !== false) {
                 SessionAlert::error("The chosen header is already in use. Please choose another.");
                 $proceed = false;
             }
@@ -129,7 +130,6 @@ class PageQueueManagement extends InternalPageBase
             return;
         }
 
-        /** @var RequestQueue $queue */
         $queue = RequestQueue::getById($id, $database);
 
         if (WebRequest::wasPosted()) {
@@ -149,16 +149,14 @@ class PageQueueManagement extends InternalPageBase
 
             $proceed = true;
 
-            $foundRequestQueue = RequestQueue::getByDisplayName($database, $queue->getDisplayName(), 1);
+            $foundRequestQueue = RequestQueue::getByDisplayName($database, $queue->getDisplayName(), $queue->getDomain());
             if ($foundRequestQueue !== false && $foundRequestQueue->getId() !== $queue->getId()) {
-                // FIXME: domain
                 SessionAlert::error("The chosen target display name is already in use. Please choose another.");
                 $proceed = false;
             }
 
-            $foundRequestQueue = RequestQueue::getByHeader($database, $queue->getHeader(), 1);
+            $foundRequestQueue = RequestQueue::getByHeader($database, $queue->getHeader(), $queue->getDomain());
             if ($foundRequestQueue !== false && $foundRequestQueue->getId() !== $queue->getId()) {
-                // FIXME: domain
                 SessionAlert::error("The chosen header is already in use. Please choose another.");
                 $proceed = false;
             }

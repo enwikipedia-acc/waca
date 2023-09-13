@@ -72,7 +72,7 @@ class RequestQueueHelper
     public function isRequestFormTarget(RequestQueue $queue, PdoDatabase $database): bool
     {
         $isTarget = false;
-        $forms = RequestForm::getAllForms($database, 1); // FIXME: domains
+        $forms = RequestForm::getAllForms($database, $queue->getDomain());
         foreach ($forms as $t) {
             if ($t->isEnabled()) {
                 if ($t->getOverrideQueue() === $queue->getId()) {

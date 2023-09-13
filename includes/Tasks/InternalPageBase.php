@@ -10,6 +10,7 @@ namespace Waca\Tasks;
 
 use Exception;
 use PDO;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\SiteNotice;
 use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
@@ -107,6 +108,10 @@ abstract class InternalPageBase extends PageBase
         $database = $this->getDatabase();
         $currentUser = User::getCurrent($database);
 
+        if (!$currentUser->isCommunityUser()) {
+            $this->getCspManager()->setDomain(Domain::getCurrent($database));
+        }
+
         // Load in the badges for the navbar
         $this->setUpNavBarBadges($currentUser, $database);
 
@@ -194,7 +199,7 @@ abstract class InternalPageBase extends PageBase
      * @return bool
      * @category Security-Critical
      */
-    final public function barrierTest($action, User $user, $pageName = null)
+    final public function barrierTest($action, User $user, $pageName = null) : bool
     {
         $page = get_called_class();
         if ($pageName !== null) {

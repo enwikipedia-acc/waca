@@ -8,6 +8,7 @@
 
 namespace Waca\Pages;
 
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
@@ -31,6 +32,7 @@ class PageSearch extends PagedInternalPageBase
 
         $database = $this->getDatabase();
         $currentUser = User::getCurrent($database);
+        $domain = Domain::getCurrent($database);
 
         $this->assign('canSearchByComment', $this->barrierTest('byComment', $currentUser));
         $this->assign('canSearchByEmail', $this->barrierTest('byEmail', $currentUser));
@@ -59,8 +61,7 @@ class PageSearch extends PagedInternalPageBase
                 $formParameters['excludeNonConfirmed'] = true;
             }
 
-            // FIXME: domains
-            $requestSearch = RequestSearchHelper::get($database, 1);
+            $requestSearch = RequestSearchHelper::get($database, $domain->getId());
             $this->setSearchHelper($requestSearch);
             $this->setupLimits();
 

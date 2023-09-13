@@ -10,5 +10,5 @@ namespace Waca\Helpers\Interfaces;
 
 interface IMediaWikiClient
 {
-    function doApiCall($params, $method);
+    function doApiCall($params, string $method, string $apiPath);
 }

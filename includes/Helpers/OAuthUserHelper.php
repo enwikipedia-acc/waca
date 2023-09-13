@@ -11,6 +11,7 @@ namespace Waca\Helpers;
 use DateTimeImmutable;
 use MediaWiki\OAuthClient\Exception;
 use PDOStatement;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\OAuthIdentity;
 use Waca\DataObjects\OAuthToken;
 use Waca\DataObjects\User;
@@ -66,6 +67,8 @@ class OAuthUserHelper implements IMediaWikiClient
     private $siteConfiguration;
 
     private $legacyTokens;
+
+    private array $issuers;
 
     #region Static methods
 
@@ -355,13 +358,13 @@ SQL
         return $this->identity;
     }
 
-    public function doApiCall($params, $method)
+    public function doApiCall($params, string $method, string $apiPath)
     {
         // Ensure we're logged in
         $params['assert'] = 'user';
 
         $token = $this->loadAccessToken();
-        return $this->oauthProtocolHelper->apiCall($params, $token->getToken(), $token->getSecret(), $method);
+        return $this->oauthProtocolHelper->apiCall($params, $token->getToken(), $token->getSecret(), $method, $apiPath);
     }
 
     /**
@@ -372,6 +375,7 @@ SQL
     private function identityIsValid($expiredOk = false)
     {
         $this->loadIdentity();
+        $this->loadTokenIssuers();
 
         if ($this->identity === null) {
             return false;
@@ -408,8 +412,17 @@ SQL
             }
         }
 
-        if ($this->identity->getIssuer() !== $this->siteConfiguration->getOauthMediaWikiCanonicalServer()) {
-            // token not issued by the right person
+        $issuerFound = false;
+        $ticketIssuer = $this->identity->getIssuer();
+        foreach ($this->issuers as $issuer) {
+            if (substr($issuer, 0, strlen($ticketIssuer)) === $ticketIssuer) {
+                $issuerFound = true;
+                break;
+            }
+        }
+
+        if (!$issuerFound) {
+            // Issuer not found in domains
             return false;
         }
 
@@ -480,5 +493,10 @@ SQL
         }
 
         return $this->accessToken;
+    }
+
+    private function loadTokenIssuers()
+    {
+        $this->issuers = array_map( fn(Domain $d): string => $d->getWikiApiPath(), Domain::getAll($this->database));
     }
 }

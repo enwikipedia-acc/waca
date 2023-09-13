@@ -41,7 +41,7 @@ class CachedApiAntispoofProvider implements IAntiSpoofProvider
 
     public function getSpoofs($username)
     {
-        // FIXME: domains!
+        // FIXME: domains! Consider the API path required for antispoof lookups; this could be a config setting.
         /** @var Domain $domain */
         $domain = Domain::getById(1, $this->database);
 

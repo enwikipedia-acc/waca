@@ -8,6 +8,7 @@
 
 namespace Waca\Security;
 
+use Waca\DataObjects\Domain;
 use Waca\SiteConfiguration;
 
 class ContentSecurityPolicyManager
@@ -33,6 +34,7 @@ class ContentSecurityPolicyManager
      * @var SiteConfiguration
      */
     private $configuration;
+    private ?Domain $currentDomain = null;
 
     /**
      * ContentSecurityPolicyManager constructor.
@@ -51,6 +53,11 @@ class ContentSecurityPolicyManager
         }
 
         return $this->nonce;
+    }
+
+    public function setDomain(Domain $domain)
+    {
+        $this->currentDomain = $domain;
     }
 
     public function getHeader(): string
@@ -82,8 +89,14 @@ class ContentSecurityPolicyManager
                             }
                             break;
                         case 'oauth':
-                            $policyIsSet = true;
-                            $constructedPolicy .= "{$this->configuration->getOauthMediaWikiCanonicalServer()} ";
+                            if ($this->currentDomain !== null) {
+                                $policyIsSet = true;
+
+                                $parts = parse_url($this->currentDomain->getWikiApiPath());
+                                $bareHost = "${parts['scheme']}://${parts['host']}";
+
+                                $constructedPolicy .= "{$bareHost} ";
+                            }
                             break;
                         default:
                             $policyIsSet = true;

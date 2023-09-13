@@ -49,13 +49,12 @@ class PageViewRequest extends InternalPageBase
 
         // get some useful objects
         $database = $this->getDatabase();
+        $domain = Domain::getCurrent($database);
         $request = $this->getRequest($database, WebRequest::getInt('id'));
+
         $config = $this->getSiteConfiguration();
         $currentUser = User::getCurrent($database);
 
-        // FIXME: domains!
-        /** @var Domain $domain */
-        $domain = Domain::getById(1, $this->getDatabase());
         $this->assign('mediawikiScriptPath', $domain->getWikiArticlePath());
 
         // Shows a page if the email is not confirmed.
@@ -98,7 +97,8 @@ class PageViewRequest extends InternalPageBase
 
         $this->setupLogData($request, $database);
 
-        $this->addJs("/api.php?action=templates&targetVariable=templateconfirms");
+        $domainId = $domain->getId();
+        $this->addJs("/api.php?action=templates&targetVariable=templateconfirms&d=$domainId");
 
         $this->assign('showRevealLink', false);
         if ($request->getReserved() === $currentUser->getId() ||
@@ -169,11 +169,9 @@ class PageViewRequest extends InternalPageBase
     {
         $this->assign('createAccountReason', 'Requested account at [[WP:ACC]], request #');
 
-        // FIXME: domains
-        /** @var Domain $domain */
-        $domain = Domain::getById(1, $database);
-        $this->assign('defaultRequestState', RequestQueue::getDefaultQueue($database, 1)->getApiName());
-        $this->assign('activeRequestQueues', RequestQueue::getEnabledQueues($database));
+        $domain = Domain::getCurrent($database);
+        $this->assign('defaultRequestState', RequestQueue::getDefaultQueue($database, $domain->getId())->getApiName());
+        $this->assign('activeRequestQueues', RequestQueue::getEnabledQueues($database, $domain->getId()));
 
         /** @var EmailTemplate $createdTemplate */
         $createdTemplate = EmailTemplate::getById($domain->getDefaultClose(), $database);
@@ -224,7 +222,7 @@ class PageViewRequest extends InternalPageBase
     {
         $currentUser = User::getCurrent($database);
 
-        $logs = LogHelper::getRequestLogsWithComments($request->getId(), $database, $this->getSecurityManager());
+        $logs = LogHelper::getRequestLogsWithComments($request, $database, $this->getSecurityManager());
         $requestLogs = array();
 
         /** @var User[] $nameCache */
@@ -310,7 +308,9 @@ class PageViewRequest extends InternalPageBase
      */
     protected function setupUsernameData(Request $request)
     {
-        $blacklistData = $this->getBlacklistHelper()->isBlacklisted($request->getName());
+        $domain = Domain::getCurrent($this->getDatabase());
+
+        $blacklistData = $this->getBlacklistHelper()->isBlacklisted($request->getName(), $domain);
 
         $this->assign('requestIsBlacklisted', $blacklistData !== false);
         $this->assign('requestBlacklist', $blacklistData);

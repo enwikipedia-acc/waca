@@ -62,9 +62,7 @@ class PagePreferences extends InternalPageBase
             $this->assignCSRFToken();
             $this->setTemplate('preferences/prefs.tpl');
 
-            // FIXME: domains!
-            /** @var Domain $domain */
-            $domain = Domain::getById(1, $this->getDatabase());
+            $domain = Domain::getCurrent($this->getDatabase());
             $this->assign('mediawikiScriptPath', $domain->getWikiArticlePath());
 
             $this->assign("enforceOAuth", $enforceOAuth);

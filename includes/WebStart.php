@@ -78,7 +78,10 @@ class WebStart extends ApplicationBase
                 $page->setTypeAheadHelper(new TypeAheadHelper());
 
                 $identificationVerifier = new IdentificationVerifier($page->getHttpHelper(), $siteConfiguration, $database);
-                $page->setSecurityManager(new SecurityManager($identificationVerifier, new RoleConfiguration()));
+
+                $domainAccessManager = new DomainAccessManager();
+                $page->setDomainAccessManager($domainAccessManager);
+                $page->setSecurityManager(new SecurityManager($identificationVerifier, new RoleConfiguration(), $domainAccessManager));
 
                 if ($siteConfiguration->getTitleBlacklistEnabled()) {
                     $page->setBlacklistHelper(new BlacklistHelper($page->getHttpHelper(), $database));
@@ -86,8 +89,6 @@ class WebStart extends ApplicationBase
                 else {
                     $page->setBlacklistHelper(new FakeBlacklistHelper());
                 }
-
-                $page->setDomainAccessManager(new DomainAccessManager($page->getSecurityManager()));
             }
         }
     }

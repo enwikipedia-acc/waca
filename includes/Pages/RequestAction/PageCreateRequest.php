@@ -174,7 +174,7 @@ class PageCreateRequest extends RequestActionBase
         }
 
         $creationTask = new JobQueue();
-        $creationTask->setDomain(1); // FIXME: domains!
+        $creationTask->setDomain($request->getDomain());
         $creationTask->setTask($creationTaskClass);
         $creationTask->setRequest($request->getId());
         $creationTask->setEmailTemplate($template->getId());

@@ -63,9 +63,8 @@ class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
     {
         /** @var Token $requestToken */
 
-        // FIXME: domains!
         /** @var Domain $domain */
-        $domain = Domain::getById(1, $this->database);
+        $domain = Domain::getCurrent($this->database);
 
         list($authUrl, $requestToken) = $this->getClient($domain)->initiate();
         $this->authUrl = $authUrl;
@@ -87,9 +86,8 @@ class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
     {
         $requestToken = new Token($oauthRequestToken, $oauthRequestSecret);
 
-        // FIXME: domains!
         /** @var Domain $domain */
-        $domain = Domain::getById(1, $this->database);
+        $domain = Domain::getCurrent($this->database);
 
         return $this->getClient($domain)->complete($requestToken, $oauthVerifier);
     }
@@ -99,9 +97,8 @@ class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
      */
     public function getIdentityTicket($oauthAccessToken, $oauthAccessSecret)
     {
-        // FIXME: domains!
         /** @var Domain $domain */
-        $domain = Domain::getById(1, $this->database);
+        $domain = Domain::getCurrent($this->database);
 
         return $this->getClient($domain)->identify(new Token($oauthAccessToken, $oauthAccessSecret));
     }
@@ -109,7 +106,7 @@ class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
     /**
      * @inheritDoc
      */
-    public function apiCall($apiParams, $accessToken, $accessSecret, $method = 'GET')
+    public function apiCall($apiParams, $accessToken, $accessSecret, $method = 'GET', string $apiPath)
     {
         $userToken = new Token($accessToken, $accessSecret);
 
@@ -119,11 +116,10 @@ class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
             throw new CurlException("Invalid API call");
         }
 
-        // FIXME: domains!
         /** @var Domain $domain */
-        $domain = Domain::getById(1, $this->database);
+        $domain = Domain::getByApiPath($apiPath, $this->database);
 
-        $url = $domain->getWikiApiPath();
+        $url = $apiPath;
         $isPost = ($method === 'POST');
 
         if ($method === 'GET') {

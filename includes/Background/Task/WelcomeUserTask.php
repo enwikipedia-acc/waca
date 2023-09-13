@@ -9,6 +9,7 @@
 namespace Waca\Background\Task;
 
 use Waca\Background\BackgroundTaskBase;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\DataObjects\WelcomeTemplate;
@@ -27,8 +28,11 @@ class WelcomeUserTask extends BackgroundTaskBase
         $database = $this->getDatabase();
         $this->request = $this->getRequest();
         $user = $this->getTriggerUser();
-        //FIXME: domains
-        $userPrefs = new PreferenceManager($database, $user->getId(), 1);
+
+        /** @var Domain $domain */
+        $domain = Domain::getById($this->getJob()->getDomain(), $database);
+
+        $userPrefs = new PreferenceManager($database, $user->getId(), $this->request->getDomain());
 
         $welcomeTemplate = $userPrefs->getPreference(PreferenceManager::PREF_WELCOMETEMPLATE);
 
@@ -49,7 +53,7 @@ class WelcomeUserTask extends BackgroundTaskBase
 
         $oauth = new OAuthUserHelper($user, $database, $this->getOauthProtocolHelper(),
             $this->getSiteConfiguration());
-        $mediaWikiHelper = new MediaWikiHelper($oauth, $this->getSiteConfiguration());
+        $mediaWikiHelper = new MediaWikiHelper($oauth, $this->getSiteConfiguration(), $domain->getWikiApiPath());
 
         if ($this->request->getStatus() !== RequestStatus::CLOSED) {
             $this->markFailed('Request is currently open');

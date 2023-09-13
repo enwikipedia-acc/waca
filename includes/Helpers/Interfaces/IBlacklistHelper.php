@@ -8,6 +8,8 @@
 
 namespace Waca\Helpers\Interfaces;
 
+use Waca\DataObjects\Domain;
+
 interface IBlacklistHelper
 {
     /**
@@ -17,5 +19,5 @@ interface IBlacklistHelper
      *
      * @return bool
      */
-    public function isBlacklisted($username);
+    public function isBlacklisted($username, Domain $domain);
 }

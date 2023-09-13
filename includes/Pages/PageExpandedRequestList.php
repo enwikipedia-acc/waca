@@ -8,10 +8,12 @@
 
 namespace Waca\Pages;
 
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\RequestQueue;
 use Waca\Fragments\RequestListData;
 use Waca\Helpers\SearchHelpers\RequestSearchHelper;
 use Waca\RequestStatus;
+use Waca\SessionAlert;
 use Waca\SiteConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -34,10 +36,10 @@ class PageExpandedRequestList extends InternalPageBase
 
         $database = $this->getDatabase();
 
-        // FIXME: domains
-        $queue = RequestQueue::getByApiName($database, WebRequest::getString('queue'), 1);
+        $queue = RequestQueue::getByApiName($database, WebRequest::getString('queue'), Domain::getCurrent($database)->getId());
 
         if ($queue === false) {
+            SessionAlert::error("Could not find requested queue.");
             $this->redirect('');
             return;
         }
@@ -49,8 +51,7 @@ class PageExpandedRequestList extends InternalPageBase
 
         $this->assign('queuehelp', $queue->getHelp());
 
-        // FIXME: domains
-        $search = RequestSearchHelper::get($database, 1);
+        $search = RequestSearchHelper::get($database, $queue->getDomain());
         $search->byStatus(RequestStatus::OPEN);
 
         list($defaultSort, $defaultSortDirection) = WebRequest::requestListDefaultSort();

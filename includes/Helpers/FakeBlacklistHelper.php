@@ -8,6 +8,7 @@
 
 namespace Waca\Helpers;
 
+use Waca\DataObjects\Domain;
 use Waca\Helpers\Interfaces\IBlacklistHelper;
 
 class FakeBlacklistHelper implements IBlacklistHelper
@@ -19,7 +20,7 @@ class FakeBlacklistHelper implements IBlacklistHelper
      *
      * @return bool
      */
-    public function isBlacklisted($username)
+    public function isBlacklisted($username, Domain $domain)
     {
         // Short-circuit
         return false;

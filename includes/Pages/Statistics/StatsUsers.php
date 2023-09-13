@@ -163,9 +163,9 @@ SQL
 
         $this->assign('statsPageTitle', 'Account Creation Tool users');
 
-        // FIXME: domains!
-        /** @var Domain $domain */
-        $domain = Domain::getById(1, $this->getDatabase());
+        // FIXME: This is a poor usage, and should fall back to the domain on the request itself.
+        // All requests from all domains should be represented here with the correct wiki.
+        $domain = Domain::getCurrent($this->getDatabase());
         $this->assign('mediawikiScriptPath', $domain->getWikiArticlePath());
 
         $this->setHtmlTitle('{$user->getUsername()|escape} :: Users :: Statistics');

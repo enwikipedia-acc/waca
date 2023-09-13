@@ -10,8 +10,10 @@ namespace Waca\Tests\Security;
 
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit\Framework\TestCase;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\IdentificationVerifier;
+use Waca\Security\DomainAccessManager;
 use Waca\Security\RoleConfiguration;
 use Waca\Security\SecurityManager;
 
@@ -51,7 +53,10 @@ class SecurityManagerTest extends TestCase
         ));
         $roleConfiguration->method('roleNeedsIdentification')->willReturn(false);
 
-        $securityManager = new SecurityManager($this->identificationVerifier, $roleConfiguration);
+        $securityManager = new SecurityManager(
+            $this->identificationVerifier,
+            $roleConfiguration,
+            new DomainAccessManager());
         $this->identificationVerifier->method('isUserIdentified')->willReturn(true);
 
         // act
@@ -76,7 +81,10 @@ class SecurityManagerTest extends TestCase
         ));
         $roleConfiguration->method('roleNeedsIdentification')->willReturn(false);
 
-        $securityManager = new SecurityManager($this->identificationVerifier, $roleConfiguration);
+        $securityManager = new SecurityManager(
+            $this->identificationVerifier,
+            $roleConfiguration,
+            new DomainAccessManager());
         $this->identificationVerifier->method('isUserIdentified')->willReturn(true);
 
         // act

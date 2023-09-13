@@ -11,6 +11,7 @@ namespace Waca\Pages;
 use Exception;
 use SmartyException;
 use Waca\DataObjects\Ban;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
@@ -222,8 +223,8 @@ class PageBan extends InternalPageBase
 
         $ban->setAction($action);
         if ($ban->getAction() === Ban::ACTION_DEFER) {
-            //FIXME: domains
-            $queue = RequestQueue::getByApiName($database, WebRequest::postString('banActionTarget'), 1);
+
+            $queue = RequestQueue::getByApiName($database, WebRequest::postString('banActionTarget'), Domain::getCurrent($database)->getId());
             if ($queue === false) {
                 throw new ApplicationLogicException("Unknown target queue");
             }
@@ -262,7 +263,9 @@ class PageBan extends InternalPageBase
         $user = User::getCurrent($database);
         $this->setupSecurity($user);
 
-        $queues = RequestQueue::getEnabledQueues($database);
+        $domain = Domain::getCurrent($database);
+
+        $queues = RequestQueue::getEnabledQueues($database, $domain->getId());
 
         $this->assign('requestQueues', $queues);
 

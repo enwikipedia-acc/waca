@@ -9,6 +9,7 @@
 namespace Waca\Pages\RequestAction;
 
 use DateTime;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
@@ -34,8 +35,9 @@ class PageDeferRequest extends RequestActionBase
 
         $target = WebRequest::postString('target');
 
-        // FIXME: domains!
-        $requestQueue = RequestQueue::getByApiName($database, $target, 1);
+        $domain = Domain::getCurrent($this->getDatabase());
+
+        $requestQueue = RequestQueue::getByApiName($database, $target, $domain->getId());
 
         if ($requestQueue === false) {
             throw new ApplicationLogicException('Defer target not valid');
@@ -68,8 +70,7 @@ class PageDeferRequest extends RequestActionBase
 
         if ($request->getStatus() === RequestStatus::JOBQUEUE) {
             /** @var JobQueue[] $pendingJobs */
-            // FIXME: domains
-            $pendingJobs = JobQueueSearchHelper::get($database, 1)
+            $pendingJobs = JobQueueSearchHelper::get($database, $request->getDomain())
                 ->byRequest($request->getId())
                 ->statusIn([
                     JobQueue::STATUS_QUEUED,

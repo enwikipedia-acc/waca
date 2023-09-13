@@ -8,6 +8,7 @@
 
 namespace Waca\Fragments;
 
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
@@ -51,12 +52,14 @@ trait RequestData
      */
     protected function getRequest(PdoDatabase $database, $requestId)
     {
+        $domain = Domain::getCurrent($database);
+
         if ($requestId === null) {
             throw new ApplicationLogicException("No request specified");
         }
 
         $request = Request::getById($requestId, $database);
-        if ($request === false || !is_a($request, Request::class)) {
+        if ($request === false || !is_a($request, Request::class) || $request->getDomain() !== $domain->getId()) {
             throw new ApplicationLogicException('Could not load the requested request!');
         }
 

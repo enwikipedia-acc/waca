@@ -9,6 +9,7 @@
 namespace Waca\Background;
 
 use Exception;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\ExceptionHandler;
@@ -111,8 +112,14 @@ abstract class CreationTaskBase extends BackgroundTaskBase
 
     protected function getMediaWikiHelper()
     {
+        /** @var Domain $domain */
+        $domain = Domain::getById($this->getJob()->getDomain(), $this->getDatabase());
+
         if ($this->mwHelper === null) {
-            $this->mwHelper = new MediaWikiHelper($this->getMediaWikiClient(), $this->getSiteConfiguration());
+            $this->mwHelper = new MediaWikiHelper(
+                $this->getMediaWikiClient(),
+                $this->getSiteConfiguration(),
+                $domain->getWikiApiPath());
         }
 
         return $this->mwHelper;
