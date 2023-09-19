@@ -144,6 +144,39 @@ function testStringContains() {
     fi
 }
 
+function run_schema_test() {
+    viewName="schemacheck_${1}"
+    testSql="SELECT COUNT(1) FROM ${viewName} WHERE test_status = 'FAIL'"
+
+    # Run test view into DB
+    mysql --defaults-file="$defaultsFile" "${MySqlSchema}" -N < ./tests/${1}.sql
+
+    result=$(mysql --defaults-file="$defaultsFile" "${MySqlSchema}" -Ne "${testSql}")
+    
+    if [[ "$result" != "0" ]]; then
+        >&2 echo "ERROR: Detected failure in test case"
+        >&2 mysql --defaults-file="$defaultsFile" "${MySqlSchema}" --table -e "SELECT * FROM ${viewName} WHERE test_status = 'FAIL'"
+        testPassStatus=1
+    fi
+}
+
+function database_testsuite() {
+    testPassStatus=0
+
+    log "Starting database test suite"
+
+    for testName in $(find ./tests -name '*.sql' | sed -re 's#\./tests/##' -e 's/\.sql//'); do
+        run_schema_test $testName
+    done
+    
+    if [[ $testPassStatus -ne 0 ]]; then
+        log "Database tests failed."
+        exit 1
+    else
+        log "Database test suite completed."
+    fi
+}
+
 set -e
 
 if [[ $CreateOnly -eq 0 ]]; then
@@ -161,7 +194,11 @@ testStringContains "${sqlMode}" "ONLY_FULL_GROUP_BY"
 testStringContains "${sqlMode}" "ERROR_FOR_DIVISION_BY_ZERO"
 testStringContains "${sqlMode}" "NO_ENGINE_SUBSTITUTION"
 
-mysql --defaults-file="$defaultsFile" -e "SELECT @@version;"
+log "Checking MariaDB version"
+mysql --defaults-file="$defaultsFile" --table -e "SELECT @@version;"
+
+log "Checking system charset/collation"
+mysql --defaults-file="$defaultsFile" --table -e "SELECT @@character_set_server, @@collation_server, @@character_set_connection, @@collation_connection;"
 
 if [[ $MySqlUsername == "root" ]]; then
     log "Forcing SQL mode"
@@ -175,6 +212,9 @@ mysql --defaults-file="$defaultsFile"  -e "DROP DATABASE IF EXISTS ${MySqlSchema
 
 log "Creating database..."
 mysql --defaults-file="$defaultsFile"  -e "CREATE DATABASE ${MySqlSchema};"
+
+log "Checking current database charset/collation"
+mysql --defaults-file="$defaultsFile" "${MySqlSchema}" --table -e "SELECT schema_name, default_character_set_name, default_collation_name FROM information_schema.schemata WHERE schema_name = DATABASE()"
 
 log "Loading initial schema..."
 mysql --defaults-file="$defaultsFile" "${MySqlSchema}" < db-structure.sql
@@ -196,9 +236,11 @@ for f in patches/patch*.sql; do
 done
 
 log "Checking schema version..."
-mysql --defaults-file="$defaultsFile" "${MySqlSchema}" -e 'select * from schemaversion'
+mysql --defaults-file="$defaultsFile" "${MySqlSchema}" --table -e 'select * from schemaversion'
 
 if [[ $CreateOnly -eq 0 ]]; then
+    database_testsuite
+
     log "Dumping schema to file..."
     mysqldump --defaults-file="$defaultsFile" "${MySqlSchema}" --skip-comments > schema.sql
 
@@ -210,6 +252,8 @@ if [[ $CreateOnly -eq 0 ]]; then
 
     log "Reloading database from file..."
     mysql --defaults-file="$defaultsFile" "${MySqlSchema}" < schema.sql
+
+    database_testsuite
 
     log "Dumping schema to file..."
     mysqldump --defaults-file="$defaultsFile" "${MySqlSchema}" --skip-comments > schema2.sql
