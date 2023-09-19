@@ -79,6 +79,9 @@ jobs:
         mysql database: 'waca'
         mysql user: 'waca'
         mysql password: 'waca'
+        # Use a silly charset to make sure problems are spotted.
+        character set server: 'latin1'
+        collation server: 'latin1_swedish_ci'
 
     - name: Wait for MariaDB
       timeout-minutes: 1
