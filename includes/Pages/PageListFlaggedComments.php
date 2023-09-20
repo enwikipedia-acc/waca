@@ -36,15 +36,33 @@ class PageListFlaggedComments extends InternalPageBase
 
         $seeRestrictedComments = $this->barrierTest('seeRestrictedComments', $currentUser, 'RequestData');
         $seeCheckuserComments = $this->barrierTest('seeCheckuserComments', $currentUser, 'RequestData');
+        $alwaysSeePrivateData = $this->barrierTest('alwaysSeePrivateData', $currentUser, 'RequestData');
 
         foreach ($commentObjects as $object) {
             $data = [
                 'id'            => $object->getId(),
                 'visibility'    => $object->getVisibility(),
                 'updateversion' => $object->getUpdateVersion(),
-                'hidden'        => false
+                'hidden'        => false,
+                'unreserved'    => false,
             ];
 
+
+            if (!$alwaysSeePrivateData) {
+                // WHY?!
+                // This is a stupid configuration, but let's account for it anyway.
+
+                /** @var Request $request */
+                $request = Request::getById($object->getRequest(), $database);
+
+                if ($request->getReserved() === $currentUser->getId()){
+                    $this->copyCommentData($object, $data, $database);
+                }
+                else {
+                    $this->copyCommentData($object, $data, $database);
+                    $data['unreserved'] = true;
+                }
+            }
             if ($object->getVisibility() == 'requester' || $object->getVisibility() == 'user') {
                 $this->copyCommentData($object, $data, $database);
             }

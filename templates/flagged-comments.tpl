@@ -78,12 +78,16 @@
                             <td data-value="{$data.time|date}" data-dateformat="YYYY-MM-DD hh:mm:ss" class="text-nowrap">
                                 {$data.time|date}&nbsp;<span class="text-muted">{$data.time|relativedate}</span>
                             </td>
-                            <td>{$data.comment|escape}</td>
+                            {if $data.unreserved}
+                                <td class="text-muted"><del>(redacted)</del></td>
+                            {else}
+                                <td>{$data.comment|escape}</td>
+                            {/if}
                             <td class="table-button-cell text-right">
-                                {if $editComments && ($editOthersComments || $data.userid == $currentUser->getId())}
+                                {if $editComments && !$data.unreserved && ($editOthersComments || $data.userid == $currentUser->getId())}
                                     <a href="{$baseurl}/internal.php/editComment?id={$data.id}&from=flagged" class="btn btn-sm btn-secondary"><i class="fas fa-edit"></i>&nbsp;Edit</a>
                                 {/if}
-                                {if $canUnflag}
+                                {if $canUnflag && !$data.unreserved}
                                 <form action="{$baseurl}/internal.php/flagComment" method="post" class="d-inline-block">
                                     {include file="security/csrf.tpl"}
                                     <input type="hidden" name="comment" value="{$data.id}" />

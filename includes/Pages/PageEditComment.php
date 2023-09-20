@@ -124,6 +124,20 @@ class PageEditComment extends InternalPageBase
             throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
         }
 
+        $restrictedVisibility = $comment->getFlagged()
+            || $comment->getVisibility() === 'admin'
+            || $comment->getVisibility() === 'checkuser';
+
+        if ($restrictedVisibility && !$this->barrierTest('alwaysSeePrivateData', $currentUser, 'RequestData')) {
+            // Restricted visibility comments can only be seen if the user has a request reserved.
+            /** @var Request $request */
+            $request = Request::getById($comment->getRequest(), $comment->getDatabase());
+
+            if ($request->getReserved() !== $currentUser->getId()) {
+                throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
+            }
+        }
+
         if ($comment->getVisibility() === 'admin'
             && !$this->barrierTest('seeRestrictedComments', $currentUser, 'RequestData')
             && $comment->getUser() !== $currentUser->getId()) {
