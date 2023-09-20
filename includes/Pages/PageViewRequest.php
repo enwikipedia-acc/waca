@@ -96,7 +96,7 @@ class PageViewRequest extends InternalPageBase
 
         $this->setupCreationTypes($currentUser);
 
-        $this->setupLogData($request, $database);
+        $this->setupLogData($request, $database, $allowedPrivateData);
 
         $this->addJs("/api.php?action=templates&targetVariable=templateconfirms");
 
@@ -220,7 +220,7 @@ class PageViewRequest extends InternalPageBase
         $this->assign("allOtherReasons", $allOtherReasons);
     }
 
-    private function setupLogData(Request $request, PdoDatabase $database)
+    private function setupLogData(Request $request, PdoDatabase $database, bool $allowedPrivateData)
     {
         $currentUser = User::getCurrent($database);
 
@@ -244,6 +244,26 @@ class PageViewRequest extends InternalPageBase
             }
 
             if ($entry instanceof Comment) {
+                // Determine if the comment contains private information.
+                // Private defined as flagged or restricted visibility, but only when the user isn't allowed
+                // to see private data
+                $commentIsRestricted =
+                    ($entry->getFlagged()
+                        || $entry->getVisibility() == 'admin' || $entry->getVisibility() == 'checkuser')
+                    && !$allowedPrivateData;
+
+                // Only allow comment editing if the user is able to edit comments or this is the user's own comment,
+                // but only when they're allowed to see the comment itself.
+                $commentIsEditable = ($editableComments || $entry->getUser() == $currentUser->getId())
+                    && !$commentIsRestricted;
+
+                // Flagging/unflagging can only be done if you can see the comment
+                $canFlagThisComment = $canFlag
+                    && (
+                        (!$entry->getFlagged() && !$commentIsRestricted)
+                        || ($entry->getFlagged() && $canUnflag && $commentIsEditable)
+                    );
+
                 $requestLogs[] = array(
                     'type'          => 'comment',
                     'security'      => $entry->getVisibility(),
@@ -251,13 +271,14 @@ class PageViewRequest extends InternalPageBase
                     'userid'        => $entry->getUser() == -1 ? null : $entry->getUser(),
                     'entry'         => null,
                     'time'          => $entry->getTime(),
-                    'canedit'       => ($editableComments || $entry->getUser() == $currentUser->getId()),
+                    'canedit'       => $commentIsEditable,
                     'id'            => $entry->getId(),
                     'comment'       => $entry->getComment(),
                     'flagged'       => $entry->getFlagged(),
-                    'canflag'       => $canFlag && (!$entry->getFlagged() || ($entry->getFlagged() && $canUnflag)),
+                    'canflag'       => $canFlagThisComment,
                     'updateversion' => $entry->getUpdateVersion(),
-                    'edited'        => $entry->getEdited()
+                    'edited'        => $entry->getEdited(),
+                    'hidden'        => $commentIsRestricted
                 );
             }
 
