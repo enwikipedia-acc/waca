@@ -10,6 +10,7 @@ namespace Waca\Helpers;
 
 use PDO;
 use Waca\DataObjects\Ban;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Helpers\Interfaces\IBanHelper;
@@ -69,19 +70,26 @@ class BanHelper implements IBanHelper
         return $this->banCache[$request->getId()];
     }
 
-    public function getBansByTarget(?string $name, ?string $email, ?string $ip, ?int $mask, ?string $useragent)
-    {
+    public function getBansByTarget(
+        ?string $name,
+        ?string $email,
+        ?string $ip,
+        ?int $mask,
+        ?string $useragent,
+        int $domain
+    ) {
         /** @noinspection SqlConstantCondition */
         $query = <<<SQL
 SELECT * FROM ban 
 WHERE 1 = 1
-  AND ((name is null and :nname is null) OR name = :name)
-  AND ((email is null and :nemail is null) OR email = :email)
-  AND ((useragent is null and :nuseragent is null) OR useragent = :useragent)
-  AND ((ip is null and :nip is null) OR ip = inet6_aton(:ip))
-  AND ((ipmask is null and :nipmask is null) OR ipmask = :ipmask)
-  AND (duration > UNIX_TIMESTAMP() OR duration is null) 
-  AND active = 1;
+  AND ((name IS NULL AND :nname IS NULL) OR name = :name)
+  AND ((email IS NULL AND :nemail IS NULL) OR email = :email)
+  AND ((useragent IS NULL AND :nuseragent IS NULL) OR useragent = :useragent)
+  AND ((ip IS NULL AND :nip IS NULL) OR ip = INET6_ATON(:ip))
+  AND ((ipmask IS NULL AND :nipmask IS NULL) OR ipmask = :ipmask)
+  AND (duration > UNIX_TIMESTAMP() OR duration IS NULL) 
+  AND active = 1
+  AND (domain IS NULL OR domain = :domain);
 SQL;
 
         $statement = $this->database->prepare($query);
@@ -96,6 +104,7 @@ SQL;
             ':nipmask'    => $mask,
             ':useragent'  => $useragent,
             ':nuseragent' => $useragent,
+            ':domain'     => $domain,
         ]);
 
         $result = array();
@@ -140,6 +149,14 @@ SQL;
         $allowed = $allowed && ($ban->getIp() === null || $this->securityManager->allows('BanType', 'ip', $user) === SecurityManager::ALLOWED);
         $allowed = $allowed && ($ban->getUseragent() === null || $this->securityManager->allows('BanType', 'useragent', $user) === SecurityManager::ALLOWED);
 
+        if ($ban->getDomain() === null) {
+            $allowed &= $this->securityManager->allows('BanType', 'global', $user) === SecurityManager::ALLOWED;
+        }
+        else {
+            $currentDomain = Domain::getCurrent($this->database);
+            $allowed &= $currentDomain->getId() === $ban->getDomain();
+        }
+
         $allowed = $allowed && $this->securityManager->allows('BanVisibility', $ban->getVisibility(), $user) === SecurityManager::ALLOWED;
 
         return $allowed;
@@ -154,24 +171,25 @@ SQL;
     {
         /** @noinspection SqlConstantCondition - included for clarity of code */
         $query = <<<SQL
-select b.* from ban b
-left join netmask n on 1 = 1
-    and n.cidr = b.ipmask
-    and n.protocol = case length(b.ip) when 4 then 4 when 16 then 6 end
-where 1 = 1
-    and coalesce(:name rlike name, true)
-    and coalesce(:email rlike email, true)
-    and coalesce(:useragent rlike useragent, true)
-    and case
-        when length(b.ip) = 4 then
-          (conv(hex(b.ip), 16, 10) & n.maskl) = (conv(hex(inet6_aton(:ip4)), 16, 10) & n.maskl)
-        when length(b.ip) = 16 then
-            (conv(left(hex(b.ip), 16), 16, 10) & n.maskh) = (conv(left(hex(inet6_aton(:ip6h)), 16), 16, 10) & n.maskh)
-            and (conv(right(hex(b.ip), 16), 16, 10) & n.maskl) = (conv(right(hex(inet6_aton(:ip6l)), 16), 16, 10) & n.maskl)
-        when length(b.ip) is null then true
-    end
-    and active = 1
-    and (duration > UNIX_TIMESTAMP() or duration is null)
+SELECT b.* FROM ban b
+LEFT JOIN netmask n ON 1 = 1
+    AND n.cidr = b.ipmask
+    AND n.protocol = CASE LENGTH(b.ip) WHEN 4 THEN 4 WHEN 16 THEN 6 END
+WHERE 1 = 1
+    AND COALESCE(:name RLIKE name, TRUE)
+    AND COALESCE(:email RLIKE email, TRUE)
+    AND COALESCE(:useragent RLIKE useragent, TRUE)
+    AND CASE
+        WHEN LENGTH(b.ip) = 4 THEN
+          (CONV(HEX(b.ip), 16, 10) & n.maskl) = (CONV(HEX(INET6_ATON(:ip4)), 16, 10) & n.maskl)
+        WHEN LENGTH(b.ip) = 16 THEN
+            (CONV(LEFT(HEX(b.ip), 16), 16, 10) & n.maskh) = (CONV(LEFT(HEX(INET6_ATON(:ip6h)), 16), 16, 10) & n.maskh)
+            AND (CONV(RIGHT(HEX(b.ip), 16), 16, 10) & n.maskl) = (CONV(RIGHT(HEX(INET6_ATON(:ip6l)), 16), 16, 10) & n.maskl)
+        WHEN LENGTH(b.ip) IS NULL THEN TRUE
+    END
+    AND active = 1
+    AND (duration > UNIX_TIMESTAMP() OR duration IS NULL)
+    AND (b.domain IS NULL OR b.domain = :domain)
 SQL;
 
         $statement = $this->database->prepare($query);
@@ -181,6 +199,7 @@ SQL;
             ':name'      => $request->getName(),
             ':email'     => $request->getEmail(),
             ':useragent' => $request->getUserAgent(),
+            ':domain'    => $request->getDomain(),
             ':ip4'       => $trustedIp,
             ':ip6h'      => $trustedIp,
             ':ip6l'      => $trustedIp,

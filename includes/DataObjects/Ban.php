@@ -43,23 +43,23 @@ class Ban extends DataObject
     private $action = self::ACTION_BLOCK;
     private $targetqueue;
     private $visibility = 'user';
+    private ?int $domain;
 
     /**
      * Gets all active bans, filtered by the optional target.
      *
-     * @param PdoDatabase $database
-     *
      * @return Ban[]
      */
-    public static function getActiveBans(PdoDatabase $database)
+    public static function getActiveBans(PdoDatabase $database, int $domain)
     {
         $query = <<<SQL
 SELECT * FROM ban 
 WHERE (duration > UNIX_TIMESTAMP() OR duration is null) 
-  AND active = 1;
+    AND active = 1
+    AND (domain IS NULL OR domain = :domain);
 SQL;
         $statement = $database->prepare($query);
-        $statement->execute();
+        $statement->execute([':domain' => $domain]);
         $result = array();
 
         /** @var Ban $v */
@@ -72,22 +72,23 @@ SQL;
     }
 
     /**
-     * Gets a ban by it's ID if it's currently active.
-     *
-     * @param     integer $id
-     * @param PdoDatabase $database
+     * Gets a ban by its ID if it's currently active.
      *
      * @return Ban|false
      */
-    public static function getActiveId($id, PdoDatabase $database)
+    public static function getActiveId($id, PdoDatabase $database, int $domain)
     {
         $statement = $database->prepare(<<<SQL
 SELECT *
 FROM ban
-WHERE id = :id  AND (duration > UNIX_TIMESTAMP() OR duration is null) AND active = 1;
+WHERE id = :id  
+  AND (domain IS NULL OR domain = :domain)
+  AND (duration > UNIX_TIMESTAMP() OR duration is null) 
+  AND active = 1;
 SQL
         );
         $statement->bindValue(":id", $id);
+        $statement->bindValue(":domain", $domain);
 
         $statement->execute();
 
@@ -100,7 +101,7 @@ SQL
         return $resultObject;
     }
 
-    public static function getByIdList($values, PdoDatabase $database)
+    public static function getByIdList($values, PdoDatabase $database, int $domain): array
     {
         if (count($values) === 0) {
             return [];
@@ -112,6 +113,10 @@ SQL
 
         // this is still parameterised! It's using positional parameters instead of named ones.
         $query = 'SELECT * FROM ban WHERE id IN (' . $inSection . ')';
+
+        $query .= ' AND (domain IS NULL OR domain = ?)';
+        $values[] = $domain;
+
         $statement = $database->prepare($query);
 
         // execute the statement with the provided parameter list.
@@ -134,8 +139,8 @@ SQL
         if ($this->isNew()) {
             // insert
             $statement = $this->dbObject->prepare(<<<SQL
-INSERT INTO `ban` (name, email, ip, ipmask, useragent, user, reason, date, duration, active, action, targetqueue, visibility)
-VALUES (:name, :email, :ip, :ipmask, :useragent, :user, :reason, CURRENT_TIMESTAMP(), :duration, :active, :action, :targetqueue, :visibility);
+INSERT INTO `ban` (name, email, ip, ipmask, useragent, user, reason, date, duration, active, action, targetqueue, visibility, domain)
+VALUES (:name, :email, :ip, :ipmask, :useragent, :user, :reason, CURRENT_TIMESTAMP(), :duration, :active, :action, :targetqueue, :visibility, :domain);
 SQL
             );
 
@@ -152,6 +157,7 @@ SQL
             $statement->bindValue(":action", $this->action);
             $statement->bindValue(":targetqueue", $this->targetqueue);
             $statement->bindValue(":visibility", $this->visibility);
+            $statement->bindValue(":domain", $this->domain);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -165,7 +171,7 @@ SQL
             $statement = $this->dbObject->prepare(<<<SQL
 UPDATE `ban`
 SET duration = :duration, active = :active, user = :user, action = :action, visibility = :visibility, 
-    targetqueue = :targetqueue, updateversion = updateversion + 1
+    targetqueue = :targetqueue, domain = :domain, updateversion = updateversion + 1
 WHERE id = :id AND updateversion = :updateversion;
 SQL
             );
@@ -178,6 +184,7 @@ SQL
             $statement->bindValue(":action", $this->action);
             $statement->bindValue(":targetqueue", $this->targetqueue);
             $statement->bindValue(":visibility", $this->visibility);
+            $statement->bindValue(":domain", $this->domain);
 
             if (!$statement->execute()) {
                 throw new Exception($statement->errorInfo());
@@ -403,5 +410,15 @@ SQL
     public function setTargetQueue(?int $targetQueue): void
     {
         $this->targetqueue = $targetQueue;
+    }
+
+    public function setDomain(?int $domain): void
+    {
+        $this->domain = $domain;
+    }
+
+    public function getDomain(): ?int
+    {
+        return $this->domain;
     }
 }

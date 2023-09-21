@@ -168,12 +168,12 @@ SQL
         $this->comment = $comment;
     }
 
-    public function getDomain(): int
+    public function getDomain(): ?int
     {
         return $this->domain;
     }
 
-    public function setDomain(int $domain): void
+    public function setDomain(?int $domain): void
     {
         $this->domain = $domain;
     }

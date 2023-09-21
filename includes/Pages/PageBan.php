@@ -11,6 +11,7 @@ namespace Waca\Pages;
 use Exception;
 use SmartyException;
 use Waca\DataObjects\Ban;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
@@ -33,7 +34,9 @@ class PageBan extends InternalPageBase
         $this->assignCSRFToken();
         $this->setHtmlTitle('Bans');
 
-        $bans = Ban::getActiveBans($this->getDatabase());
+        $database = $this->getDatabase();
+        $currentDomain = Domain::getCurrent($database);
+        $bans = Ban::getActiveBans($database, $currentDomain->getId());
 
         $this->setupBanList($bans);
 
@@ -55,7 +58,9 @@ class PageBan extends InternalPageBase
 
         $idList = explode(',', $rawIdList);
 
-        $bans = Ban::getByIdList($idList, $this->getDatabase());
+        $database = $this->getDatabase();
+        $currentDomain = Domain::getCurrent($database);
+        $bans = Ban::getByIdList($idList, $database, $currentDomain->getId());
 
         $this->setupBanList($bans);
         $this->assign('isFiltered', true);
@@ -177,6 +182,7 @@ class PageBan extends InternalPageBase
         $this->validateCSRFToken();
         $database = $this->getDatabase();
         $user = User::getCurrent($database);
+        $currentDomain = Domain::getCurrent($database);
 
         // Checks whether there is a reason entered for ban.
         $reason = WebRequest::postString('banreason');
@@ -194,6 +200,15 @@ class PageBan extends InternalPageBase
 
         $action = WebRequest::postString('banAction') ?? Ban::ACTION_NONE;
 
+        $global = WebRequest::postBoolean('banGlobal');
+        if (!$this->barrierTest('global', $user, 'BanType')) {
+            $global = false;
+        }
+
+        if ($action === Ban::ACTION_DEFER && $global) {
+            throw new ApplicationLogicException("Cannot set a global ban in defer-to-queue mode.");
+        }
+
         // handle CIDR ranges
         $targetMask = null;
         if ($targetIp !== null) {
@@ -202,7 +217,16 @@ class PageBan extends InternalPageBase
         }
 
         $banHelper = new BanHelper($this->getDatabase(), $this->getXffTrustProvider(), $this->getSecurityManager());
-        if (count($banHelper->getBansByTarget($targetName, $targetEmail, $targetIp, $targetMask, $targetUseragent)) > 0) {
+
+        $bansByTarget = $banHelper->getBansByTarget(
+            $targetName,
+            $targetEmail,
+            $targetIp,
+            $targetMask,
+            $targetUseragent,
+            $currentDomain->getId());
+
+        if (count($bansByTarget) > 0) {
             throw new ApplicationLogicException('This target is already banned!');
         }
 
@@ -219,6 +243,8 @@ class PageBan extends InternalPageBase
         $ban->setReason($reason);
         $ban->setDuration($duration);
         $ban->setVisibility($visibility);
+
+        $ban->setDomain($global ? null : $currentDomain->getId());
 
         $ban->setAction($action);
         if ($ban->getAction() === Ban::ACTION_DEFER) {
@@ -321,7 +347,8 @@ class PageBan extends InternalPageBase
 
         $database = $this->getDatabase();
         $this->setupSecurity(User::getCurrent($database));
-        $ban = Ban::getActiveId($banId, $database);
+        $currentDomain = Domain::getCurrent($database);
+        $ban = Ban::getActiveId($banId, $database, $currentDomain->getId());
 
         if ($ban === false) {
             throw new ApplicationLogicException("The specified ban is not currently active, or doesn't exist.");
@@ -339,6 +366,8 @@ class PageBan extends InternalPageBase
         $this->assign('canSeeNameBan', $this->barrierTest('name', $user, 'BanType'));
         $this->assign('canSeeEmailBan', $this->barrierTest('email', $user, 'BanType'));
         $this->assign('canSeeUseragentBan', $this->barrierTest('useragent', $user, 'BanType'));
+
+        $this->assign('canGlobalBan', $this->barrierTest('global', $user, 'BanType'));
 
         $this->assign('canSeeUserVisibility', $this->barrierTest('user', $user, 'BanVisibility'));
         $this->assign('canSeeAdminVisibility', $this->barrierTest('admin', $user, 'BanVisibility'));
@@ -414,6 +443,17 @@ class PageBan extends InternalPageBase
             },
             $bans);
         $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchMap('username');
+
+        $domainIds = array_unique(array_map(fn(Ban $entry) => $entry->getDomain(), $bans));
+        $domains = [];
+        foreach ($domainIds as $d) {
+            if ($d === null) {
+                continue;
+            }
+            $domains[$d] = Domain::getById($d, $this->getDatabase());
+        }
+
+        $this->assign('domains', $domains);
 
         $user = User::getCurrent($this->getDatabase());
         $this->assign('canSet', $this->barrierTest('set', $user));
@@ -494,5 +534,5 @@ class PageBan extends InternalPageBase
         }
 
         return array($targetName, $targetIp, $targetEmail, $targetUseragent);
-}
+    }
 }
