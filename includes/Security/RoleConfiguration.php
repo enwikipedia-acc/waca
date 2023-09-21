@@ -396,6 +396,7 @@ class RoleConfiguration
                 self::MAIN => self::ACCESS_ALLOW,
                 'set'      => self::ACCESS_ALLOW,
                 'remove'   => self::ACCESS_ALLOW,
+                'replace'  => self::ACCESS_ALLOW,
             ),
             'BanType'                   => array(
                 'ip' => self::ACCESS_ALLOW,

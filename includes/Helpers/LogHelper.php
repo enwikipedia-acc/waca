@@ -154,6 +154,7 @@ class LogHelper
             'FlaggedComment'      => 'flagged a comment',
             'UnflaggedComment'    => 'unflagged a comment',
             'Unbanned'            => 'unbanned',
+            'BanReplaced'         => 'replaced ban',
             'Promoted'            => 'promoted to tool admin',
             'BreakReserve'        => 'forcibly broke the reservation',
             'Prefchange'          => 'changed user preferences',
@@ -230,6 +231,7 @@ class LogHelper
             "Bans" => [
                 'Banned'              => 'banned',
                 'Unbanned'            => 'unbanned',
+                'BanReplaced'         => 'replaced ban',
             ],
             "Site notice" => [
                 'Edited'              => 'edited interface message',

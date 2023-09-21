@@ -88,6 +88,133 @@ class PageBan extends InternalPageBase
         }
         else {
             $this->handleGetMethodForSetBan();
+
+            $user = User::getCurrent($this->getDatabase());
+            $banType = WebRequest::getString('type');
+            $banRequest = WebRequest::getInt('request');
+
+            // if the parameters are null, skip loading a request.
+            if ($banType !== null && $banRequest !== null && $banRequest !== 0) {
+                $this->preloadFormForRequest($banRequest, $banType, $user);
+            }
+        }
+    }
+
+    protected function replace(): void
+    {
+        $this->setHtmlTitle('Bans');
+
+        $database = $this->getDatabase();
+        $domain = Domain::getCurrent($database);
+
+        // dual-mode action
+        if (WebRequest::wasPosted()) {
+            try {
+                $originalBanId = WebRequest::postInt('replaceBanId');
+                $originalBanUpdateVersion = WebRequest::postInt('replaceBanUpdateVersion');
+
+                $originalBan = Ban::getActiveId($originalBanId, $database, $domain->getId());
+
+                if ($originalBan === false) {
+                    throw new ApplicationLogicException("The specified ban is not currently active, or doesn't exist.");
+                }
+
+                // Discard original ban; we're replacing it.
+                $originalBan->setUpdateVersion($originalBanUpdateVersion);
+                $originalBan->setActive(false);
+                $originalBan->save();
+
+                Logger::banReplaced($database, $originalBan);
+
+                // Proceed as normal to save the new ban.
+                $this->handlePostMethodForSetBan();
+            }
+            catch (ApplicationLogicException $ex) {
+                $database->rollback();
+                SessionAlert::error($ex->getMessage());
+                $this->redirect("bans", "set");
+            }
+        }
+        else {
+            $this->handleGetMethodForSetBan();
+
+            $user = User::getCurrent($database);
+            $originalBanId = WebRequest::getString('id');
+
+            $originalBan = Ban::getActiveId($originalBanId, $database, $domain->getId());
+
+            if ($originalBan === false) {
+                throw new ApplicationLogicException("The specified ban is not currently active, or doesn't exist.");
+            }
+
+            if ($originalBan->getName() !== null) {
+                if (!$this->barrierTest('name', $user, 'BanType')) {
+                    SessionAlert::error("You are not allowed to set this type of ban.");
+                    $this->redirect("bans", "set");
+                    return;
+                }
+
+                $this->assign('banName', $originalBan->getName());
+            }
+
+            if ($originalBan->getEmail() !== null) {
+                if (!$this->barrierTest('email', $user, 'BanType')) {
+                    SessionAlert::error("You are not allowed to set this type of ban.");
+                    $this->redirect("bans", "set");
+                    return;
+                }
+
+                $this->assign('banEmail', $originalBan->getEmail());
+            }
+
+            if ($originalBan->getUseragent() !== null) {
+                if (!$this->barrierTest('useragent', $user, 'BanType')) {
+                    SessionAlert::error("You are not allowed to set this type of ban.");
+                    $this->redirect("bans", "set");
+                    return;
+                }
+
+                $this->assign('banUseragent', $originalBan->getUseragent());
+            }
+
+            if ($originalBan->getIp() !== null) {
+                if (!$this->barrierTest('ip', $user, 'BanType')) {
+                    SessionAlert::error("You are not allowed to set this type of ban.");
+                    $this->redirect("bans", "set");
+                    return;
+                }
+
+                $this->assign('banIP', $originalBan->getIp() . '/' . $originalBan->getIpMask());
+            }
+
+            $banIsGlobal = $originalBan->getDomain() === null;
+            if ($banIsGlobal) {
+                if (!$this->barrierTest('global', $user, 'BanType')) {
+                    SessionAlert::error("You are not allowed to set this type of ban.");
+                    $this->redirect("bans", "set");
+                    return;
+                }
+            }
+
+            if (!$this->barrierTest($originalBan->getVisibility(), $user, 'BanVisibility')) {
+                SessionAlert::error("You are not allowed to set this type of ban.");
+                $this->redirect("bans", "set");
+                return;
+            }
+
+            $this->assign('banGlobal', $banIsGlobal);
+            $this->assign('banVisibility', $originalBan->getVisibility());
+
+            if ($originalBan->getDuration() !== null) {
+                $this->assign('banDuration', date('c', $originalBan->getDuration()));
+            }
+
+            $this->assign('banReason', $originalBan->getReason());
+            $this->assign('banAction', $originalBan->getAction());
+            $this->assign('banQueue', $originalBan->getTargetQueue());
+
+            $this->assign('replaceBanId', $originalBan->getId());
+            $this->assign('replaceBanUpdateVersion', $originalBan->getUpdateVersion());
         }
     }
 
@@ -275,7 +402,7 @@ class PageBan extends InternalPageBase
      * Handles the GET method on the set action
      * @throws Exception
      */
-    protected function handleGetMethodForSetBan()
+    private function handleGetMethodForSetBan()
     {
         $this->setTemplate('bans/banform.tpl');
         $this->assignCSRFToken();
@@ -291,47 +418,6 @@ class PageBan extends InternalPageBase
         $queues = RequestQueue::getEnabledQueues($database);
 
         $this->assign('requestQueues', $queues);
-
-        $banType = WebRequest::getString('type');
-        $banRequest = WebRequest::getInt('request');
-
-        // if the parameters are null, skip loading a request.
-        if ($banType === null || $banRequest === null || $banRequest === 0) {
-            return;
-        }
-
-        // Attempt to resolve the correct target
-        /** @var Request|false $request */
-        $request = Request::getById($banRequest, $database);
-        if ($request === false) {
-            $this->assign('bantarget', '');
-
-            return;
-        }
-
-        switch ($banType) {
-            case 'EMail':
-                if ($this->barrierTest('email', $user, 'BanType')) {
-                    $this->assign('banEmail', $request->getEmail());
-                }
-                break;
-            case 'IP':
-                if ($this->barrierTest('ip', $user, 'BanType')) {
-                    $this->assign('banIP', $this->getXffTrustProvider()
-                        ->getTrustedClientIp($request->getIp(), $request->getForwardedIp()));
-                }
-                break;
-            case 'Name':
-                if ($this->barrierTest('name', $user, 'BanType')) {
-                    $this->assign('banName', $request->getName());
-                }
-                break;
-            case 'UA':
-                if ($this->barrierTest('useragent', $user, 'BanType')) {
-                    $this->assign('banUseragent', $request->getEmail());
-                }
-                break;
-        }
     }
 
     /**
@@ -362,7 +448,7 @@ class PageBan extends InternalPageBase
     /**
      * Sets up Smarty variables for access control
      */
-    protected function setupSecurity(User $user): void
+    private function setupSecurity(User $user): void
     {
         $this->assign('canSeeIpBan', $this->barrierTest('ip', $user, 'BanType'));
         $this->assign('canSeeNameBan', $this->barrierTest('name', $user, 'BanType'));
@@ -441,7 +527,7 @@ class PageBan extends InternalPageBase
      *
      * @param Ban[] $bans
      */
-    protected function setupBanList(array $bans): void
+    private function setupBanList(array $bans): void
     {
         $userIds = array_map(fn(Ban $entry) => $entry->getUser(), $bans);
         $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchMap('username');
@@ -541,5 +627,46 @@ class PageBan extends InternalPageBase
         }
 
         return array($targetName, $targetIp, $targetEmail, $targetUseragent);
+    }
+
+    private function preloadFormForRequest(int $banRequest, string $banType, User $user): void
+    {
+        $database = $this->getDatabase();
+
+        // Attempt to resolve the correct target
+        /** @var Request|false $request */
+        $request = Request::getById($banRequest, $database);
+        if ($request === false) {
+            $this->assign('bantarget', '');
+
+            return;
+        }
+
+        switch ($banType) {
+            case 'EMail':
+                if ($this->barrierTest('email', $user, 'BanType')) {
+                    $this->assign('banEmail', $request->getEmail());
+                }
+                break;
+            case 'IP':
+                if ($this->barrierTest('ip', $user, 'BanType')) {
+                    $trustedIp = $this->getXffTrustProvider()->getTrustedClientIp(
+                        $request->getIp(),
+                        $request->getForwardedIp());
+
+                    $this->assign('banIP', $trustedIp);
+                }
+                break;
+            case 'Name':
+                if ($this->barrierTest('name', $user, 'BanType')) {
+                    $this->assign('banName', $request->getName());
+                }
+                break;
+            case 'UA':
+                if ($this->barrierTest('useragent', $user, 'BanType')) {
+                    $this->assign('banUseragent', $request->getEmail());
+                }
+                break;
+        }
     }
 }

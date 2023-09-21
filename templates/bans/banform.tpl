@@ -14,6 +14,13 @@
             <form method="post">
                 {include file="security/csrf.tpl"}
 
+                {if $replaceBanId !== null}
+                    <input type="hidden" name="replaceBanId" value="{$replaceBanId}">
+                    <input type="hidden" name="replaceBanUpdateVersion" value="{$replaceBanUpdateVersion}">
+                    {include file="alert.tpl" alerttype="alert-warning" alertheader="Replacing ban {$replaceBanId}"
+                        alertmessage="By submitting this form, you will unban ban {$replaceBanId} and replace it with a new ban as configured below. The form below is pre-filled with the old ban's details."}
+                {/if}
+
                 <div class="row">
                     <div class="col-lg-6 col-xs-12">
                         <fieldset>
@@ -84,7 +91,7 @@
                                     <label for="banReason" class="col-form-label">Reason:</label>
                                 </div>
                                 <div class="col-sm-8 col-md-9 col-lg-8 col-xl-9">
-                                    <input type="text" class="form-control" id="banReason" name="banreason" required="required"/>
+                                    <input type="text" class="form-control" id="banReason" name="banreason" required="required" {if $banReason != ""}value="{$banReason|escape}"{/if}/>
                                 </div>
                             </div>
 
@@ -98,17 +105,17 @@
                                         <option value="86400">24 Hours</option>
                                         <option value="604800">One Week</option>
                                         <option value="2629743">One Month</option>
-                                        <option value="other">Other</option>
+                                        <option value="other" {if $banDuration != ""}selected{/if}>Other</option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row {if $banDuration == ""}d-none{/if}" id="banCustomDurationSelection">
                                 <div class="col-sm-4 col-md-3 col-lg-4 col-xl-3">
                                     <label for="otherDuration" class="col-form-label">Other duration:</label>
                                 </div>
                                 <div class="col-sm-8 col-md-5 col-lg-8 col-xl-4">
-                                    <input class="form-control" type="text" id="otherDuration" name="otherduration"/>
+                                    <input class="form-control" type="text" id="otherDuration" name="otherduration" {if $banDuration != ""}value="{$banDuration|escape}"{/if}/>
                                 </div>
                             </div>
 
@@ -118,22 +125,30 @@
                                 </div>
                                 <div class="col-sm-8 col-md-5 col-lg-8 col-xl-6">
                                     <select class="form-control" name="banAction" required="required" id="banAction">
-                                        <option value="{Waca\DataObjects\Ban::ACTION_BLOCK}">Block submission of the request</option>
-                                        <option value="{Waca\DataObjects\Ban::ACTION_DROP}">Drop the request silently</option>
-                                        <option value="{Waca\DataObjects\Ban::ACTION_DEFER}">Defer the request to the specified queue</option>
-                                        <option value="{Waca\DataObjects\Ban::ACTION_NONE}">Do nothing - report only</option>
+                                        <option value="{Waca\DataObjects\Ban::ACTION_BLOCK}" {if $banAction === Waca\DataObjects\Ban::ACTION_BLOCK}selected{/if}>
+                                            Block submission of the request
+                                        </option>
+                                        <option value="{Waca\DataObjects\Ban::ACTION_DROP}" {if $banAction === Waca\DataObjects\Ban::ACTION_DROP}selected{/if}>
+                                            Drop the request silently
+                                        </option>
+                                        <option value="{Waca\DataObjects\Ban::ACTION_DEFER}" {if $banAction === Waca\DataObjects\Ban::ACTION_DEFER}selected{/if}>
+                                            Defer the request to the specified queue
+                                        </option>
+                                        <option value="{Waca\DataObjects\Ban::ACTION_NONE}" {if $banAction === Waca\DataObjects\Ban::ACTION_NONE}selected{/if}>
+                                            Do nothing - report only
+                                        </option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="form-group row d-none" id="banDeferTargetSelection">
+                            <div class="form-group row {if $banAction !== Waca\DataObjects\Ban::ACTION_DEFER}d-none{/if}" id="banDeferTargetSelection">
                                 <div class="col-sm-4 col-md-3 col-lg-4 col-xl-3">
                                     <label for="banActionTarget" class="col-form-label">Defer to:</label>
                                 </div>
                                 <div class="col-sm-8 col-md-5 col-lg-8 col-xl-6">
                                     <select class="form-control" name="banActionTarget" required="required" id="banActionTarget">
                                         {foreach $requestQueues as $queue}
-                                            <option value="{$queue->getApiName()|escape}">{$queue->getHeader()|escape}</option>
+                                            <option value="{$queue->getApiName()|escape}" {if $banQueue === $queue->getId()}selected{/if}>{$queue->getHeader()|escape}</option>
                                         {/foreach}
                                     </select>
                                 </div>
@@ -146,13 +161,13 @@
                                 <div class="col-sm-8 col-md-5 col-lg-8 col-xl-6">
                                     <select class="form-control" name="banVisibility" required="required" id="banVisibility">
                                         {if $canSeeUserVisibility}
-                                            <option value="user" selected>All users</option>
+                                            <option value="user" {if $banVisibility == 'user'}selected{/if}>All users</option>
                                         {/if}
                                         {if $canSeeAdminVisibility}
-                                            <option value="admin">Tool admins and CheckUsers</option>
+                                            <option value="admin" {if $banVisibility == 'admin'}selected{/if}>Tool admins and CheckUsers</option>
                                         {/if}
                                         {if $canSeeCheckuserVisibility}
-                                            <option value="checkuser">CheckUsers</option>
+                                            <option value="checkuser" {if $banVisibility == 'checkuser'}selected{/if}>CheckUsers</option>
                                         {/if}
                                     </select>
                                 </div>
@@ -161,7 +176,7 @@
                                 <div class="form-group row">
                                     <div class="offset-sm-4 col-sm-8 offset-md-3 col-md-5 offset-lg-4 col-lg-8 offset-xl-3 col-xl-6">
                                         <div class="custom-control custom-switch">
-                                            <input class="custom-control-input" type="checkbox" id="banGlobal" name="banGlobal">
+                                            <input class="custom-control-input" type="checkbox" id="banGlobal" name="banGlobal" {if $banGlobal}checked{/if}>
                                             <label class="custom-control-label" for="banGlobal">Apply ban across all domains</label>
                                         </div>
                                     </div>
