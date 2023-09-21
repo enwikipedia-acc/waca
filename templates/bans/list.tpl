@@ -4,6 +4,7 @@
     <th>Banned by</th>
     <th>Action</th>
     <th>Reason</th>
+    <th>Domain</th>
     <th data-defaultsort="desc">Time</th>
     <th>Expiry</th>
     {if $canRemove}
@@ -24,6 +25,13 @@
                 {if $ban->getAction() == $ban::ACTION_NONE}<abbr title="Does nothing but flag the request." data-toggle="tooltip">Report only</abbr>{/if}
             </td>
             <td>{include file="bans/banreason.tpl"}</td>
+            <td class="text-nowrap">
+                {if $ban->getDomain() === null}
+                    <span class="badge badge-secondary"><i class="fas fa-globe-europe"></i>Global</span>
+                {else}
+                    {$domains[$ban->getDomain()]->getShortName()}
+                {/if}
+            </td>
             <td class="text-nowrap">{$ban->getDate()} <span class="text-muted">({$ban->getDate()|relativedate})</span></td>
             <td class="text-nowrap">
                 {if $ban->getDuration() === null}Indefinite{else}{date("Y-m-d H:i:s", $ban->getDuration())}{/if}

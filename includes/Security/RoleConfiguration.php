@@ -335,6 +335,7 @@ class RoleConfiguration
             ),
             'BanType'                   => array(
                 'ip-largerange' => self::ACCESS_ALLOW,
+                'global'        => self::ACCESS_ALLOW,
             ),
             PageDomainManagement::class => array(
                 self::MAIN => self::ACCESS_ALLOW,

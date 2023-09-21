@@ -172,10 +172,12 @@ $(".request-table th").click(function() {
 $("#banAction").change(function() {
     var selectedOption = $(this).children("option:selected").val();
 
-    if(selectedOption === 'defer') {
+    if (selectedOption === 'defer') {
         $("#banDeferTargetSelection").removeClass('d-none');
+        $("#banGlobal").prop('checked', false).prop('disabled', true);
     } else {
         $("#banDeferTargetSelection").addClass('d-none');
+        $("#banGlobal").prop('disabled', false);
     }
 })
 

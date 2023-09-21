@@ -157,6 +157,16 @@
                                     </select>
                                 </div>
                             </div>
+                            {if $canGlobalBan}
+                                <div class="form-group row">
+                                    <div class="offset-sm-4 col-sm-8 offset-md-3 col-md-5 offset-lg-4 col-lg-8 offset-xl-3 col-xl-6">
+                                        <div class="custom-control custom-switch">
+                                            <input class="custom-control-input" type="checkbox" id="banGlobal" name="banGlobal">
+                                            <label class="custom-control-label" for="banGlobal">Apply ban across all domains</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            {/if}
                         </fieldset>
                     </div>
                 </div>
