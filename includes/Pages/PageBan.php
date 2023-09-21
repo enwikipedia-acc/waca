@@ -29,7 +29,7 @@ class PageBan extends InternalPageBase
     /**
      * Main function for this page, when no specific actions are called.
      */
-    protected function main()
+    protected function main(): void
     {
         $this->assignCSRFToken();
         $this->setHtmlTitle('Bans');
@@ -44,7 +44,7 @@ class PageBan extends InternalPageBase
         $this->setTemplate('bans/main.tpl');
     }
 
-    protected function show()
+    protected function show(): void
     {
         $this->assignCSRFToken();
         $this->setHtmlTitle('Bans');
@@ -72,7 +72,7 @@ class PageBan extends InternalPageBase
      * @throws SmartyException
      * @throws Exception
      */
-    protected function set()
+    protected function set(): void
     {
         $this->setHtmlTitle('Bans');
 
@@ -98,7 +98,7 @@ class PageBan extends InternalPageBase
      * @throws ApplicationLogicException
      * @throws SmartyException
      */
-    protected function remove()
+    protected function remove(): void
     {
         $this->setHtmlTitle('Bans');
 
@@ -144,9 +144,11 @@ class PageBan extends InternalPageBase
     }
 
     /**
+     * Retrieves the requested ban duration from the WebRequest
+     *
      * @throws ApplicationLogicException
      */
-    private function getBanDuration()
+    private function getBanDuration(): ?int
     {
         $duration = WebRequest::postString('duration');
         if ($duration === "other") {
@@ -165,9 +167,7 @@ class PageBan extends InternalPageBase
             return null;
         }
         else {
-            $duration = WebRequest::postInt('duration') + time();
-
-            return $duration;
+            return WebRequest::postInt('duration') + time();
         }
     }
 
@@ -335,10 +335,12 @@ class PageBan extends InternalPageBase
     }
 
     /**
+     * Finds the Ban object referenced in the WebRequest if it is valid
+     *
      * @return Ban
      * @throws ApplicationLogicException
      */
-    private function getBanForUnban()
+    private function getBanForUnban(): Ban
     {
         $banId = WebRequest::getInt('id');
         if ($banId === null || $banId === 0) {
@@ -358,9 +360,9 @@ class PageBan extends InternalPageBase
     }
 
     /**
-     * @param $user
+     * Sets up Smarty variables for access control
      */
-    protected function setupSecurity($user): void
+    protected function setupSecurity(User $user): void
     {
         $this->assign('canSeeIpBan', $this->barrierTest('ip', $user, 'BanType'));
         $this->assign('canSeeNameBan', $this->barrierTest('name', $user, 'BanType'));
@@ -375,14 +377,16 @@ class PageBan extends InternalPageBase
     }
 
     /**
-     * @param string $targetIp
-     * @param        $targetMask
-     * @param User   $user
-     * @param        $action
+     * Validates that the provided IP is acceptable for a ban of this type
+     *
+     * @param string $targetIp   IP address
+     * @param int    $targetMask CIDR prefix length
+     * @param User   $user       User performing the ban
+     * @param string $action     Ban action to take
      *
      * @throws ApplicationLogicException
      */
-    private function validateIpBan(string $targetIp, $targetMask, User $user, $action): void
+    private function validateIpBan(string $targetIp, int $targetMask, User $user, string $action): void
     {
         // validate this is an IP
         if (!filter_var($targetIp, FILTER_VALIDATE_IP)) {
@@ -433,18 +437,16 @@ class PageBan extends InternalPageBase
     }
 
     /**
-     * @param array $bans
+     * Configures a ban list template for display
+     *
+     * @param Ban[] $bans
      */
     protected function setupBanList(array $bans): void
     {
-        $userIds = array_map(
-            function(Ban $entry) {
-                return $entry->getUser();
-            },
-            $bans);
+        $userIds = array_map(fn(Ban $entry) => $entry->getUser(), $bans);
         $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchMap('username');
 
-        $domainIds = array_unique(array_map(fn(Ban $entry) => $entry->getDomain(), $bans));
+        $domainIds = array_filter(array_unique(array_map(fn(Ban $entry) => $entry->getDomain(), $bans)));
         $domains = [];
         foreach ($domainIds as $d) {
             if ($d === null) {
@@ -469,7 +471,9 @@ class PageBan extends InternalPageBase
     }
 
     /**
-     * @param string $targetIp
+     * Converts a plain IP or CIDR mask into an IP and a CIDR suffix
+     *
+     * @param string $targetIp IP or CIDR range
      *
      * @return array
      */
@@ -481,6 +485,7 @@ class PageBan extends InternalPageBase
             $targetMask = (int)$ipParts[1];
         }
         else {
+            // Default the CIDR range based on the IP type
             $targetMask = filter_var($targetIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? 128 : 32;
         }
 
@@ -488,10 +493,11 @@ class PageBan extends InternalPageBase
 }
 
     /**
-     * @return string|null
+     * Returns the validated ban visibility from WebRequest
+     *
      * @throws ApplicationLogicException
      */
-    private function getBanVisibility()
+    private function getBanVisibility(): string
     {
         $visibility = WebRequest::postString('banVisibility');
         if ($visibility !== 'user' && $visibility !== 'admin' && $visibility !== 'checkuser') {
@@ -502,12 +508,13 @@ class PageBan extends InternalPageBase
     }
 
     /**
-     * @param $user
+     * Returns array of [username, ip, email, ua] as ban targets from WebRequest,
+     * filtered for whether the user is allowed to set bans including those types.
      *
-     * @return array
+     * @return string[]
      * @throws ApplicationLogicException
      */
-    private function getRawBanTargets($user): array
+    private function getRawBanTargets(User $user): array
     {
         $targetName = WebRequest::postString('banName');
         $targetIp = WebRequest::postString('banIP');
