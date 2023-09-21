@@ -181,6 +181,16 @@ $("#banAction").change(function() {
     }
 })
 
+$("#banDuration").change(function() {
+    var selectedOption = $(this).children("option:selected").val();
+
+    if (selectedOption === 'other') {
+        $("#banCustomDurationSelection").removeClass('d-none');
+    } else {
+        $("#banCustomDurationSelection").addClass('d-none');
+    }
+})
+
 $("#commentVisibilityDropdown").on("change", "input[type='radio']", function() {
     if($(this).val() == 'user') {
         $("#commentVisibilityButton").addClass('btn-outline-secondary').removeClass('btn-danger').removeClass('btn-visited');

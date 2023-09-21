@@ -8,7 +8,7 @@
     <th data-defaultsort="desc">Time</th>
     <th>Expiry</th>
     {if $canRemove}
-        <th data-defaultsort="disabled">Unban</th>
+        <th data-defaultsort="disabled"></th>
     {/if}
     </thead>
     <tbody>
@@ -42,6 +42,9 @@
             {if $canRemove}
                 <td class="table-button-cell">
                     {if $banHelper->canUnban($ban)}
+                        <a class="btn btn-secondary btn-sm" href="{$baseurl}/internal.php/bans/replace?id={$ban->getId()}">
+                            <i class="fas fa-pencil"></i><span class="d-none d-lg-inline">&nbsp;Edit</span>
+                        </a>
                         <a class="btn btn-success btn-sm" href="{$baseurl}/internal.php/bans/remove?id={$ban->getId()}">
                             <i class="fas fa-check-circle"></i><span class="d-none d-lg-inline">&nbsp;Unban</span>
                         </a>

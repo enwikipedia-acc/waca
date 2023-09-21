@@ -170,21 +170,14 @@ SQL
             // update
             $statement = $this->dbObject->prepare(<<<SQL
 UPDATE `ban`
-SET duration = :duration, active = :active, user = :user, action = :action, visibility = :visibility, 
-    targetqueue = :targetqueue, domain = :domain, updateversion = updateversion + 1
+SET active = :active, updateversion = updateversion + 1
 WHERE id = :id AND updateversion = :updateversion;
 SQL
             );
             $statement->bindValue(':id', $this->id);
             $statement->bindValue(':updateversion', $this->updateversion);
 
-            $statement->bindValue(':duration', $this->duration);
             $statement->bindValue(':active', $this->active);
-            $statement->bindValue(':user', $this->user);
-            $statement->bindValue(":action", $this->action);
-            $statement->bindValue(":targetqueue", $this->targetqueue);
-            $statement->bindValue(":visibility", $this->visibility);
-            $statement->bindValue(":domain", $this->domain);
 
             if (!$statement->execute()) {
                 throw new Exception($statement->errorInfo());

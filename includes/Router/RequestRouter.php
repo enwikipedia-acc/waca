@@ -173,7 +173,7 @@ class RequestRouter implements IRequestRouter
         'bans'                        =>
             array(
                 'class'   => PageBan::class,
-                'actions' => array('set', 'remove', 'show'),
+                'actions' => array('set', 'remove', 'show', 'replace'),
             ),
         'userManagement'              =>
             array(

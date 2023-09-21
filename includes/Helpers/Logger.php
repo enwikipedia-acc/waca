@@ -251,6 +251,11 @@ class Logger
         self::createLogEntry($database, $object, "Unbanned", $reason);
     }
 
+    public static function banReplaced(PdoDatabase $database, Ban $object)
+    {
+        self::createLogEntry($database, $object, "BanReplaced");
+    }
+
     #endregion
 
     #region Requests
