@@ -8,10 +8,13 @@
 
 namespace Waca\Pages;
 
+use Exception;
+use SmartyException;
 use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\DataObjects\UserRole;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Helpers\Logger;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\PreferenceManager;
@@ -106,15 +109,20 @@ class PageUserManagement extends InternalPageBase
 
     /**
      * Action target for editing the roles assigned to a user
+     *
+     * @throws ApplicationLogicException
+     * @throws SmartyException
+     * @throws OptimisticLockFailedException
+     * @throws Exception
      */
-    protected function editRoles()
+    protected function editRoles(): void
     {
         $this->setHtmlTitle('User Management');
         $database = $this->getDatabase();
         $domain = Domain::getCurrent($database);
         $userId = WebRequest::getInt('user');
 
-        /** @var User $user */
+        /** @var User|false $user */
         $user = User::getById($userId, $database);
 
         if ($user === false || $user->isCommunityUser()) {
@@ -225,8 +233,6 @@ class PageUserManagement extends InternalPageBase
             SessionAlert::quick('Roles changed for user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
 
             $this->redirect('statistics/users', 'detail', array('user' => $user->getId()));
-
-            return;
         }
         else {
             $this->assignCSRFToken();
