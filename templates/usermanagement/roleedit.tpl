@@ -21,7 +21,7 @@
             <div class="d-none d-md-block col-md-3 col-lg-2">
                 <span class="col-form-label">Editable roles:</span>
             </div>
-            <div class="col-md-9 col-lg-10">
+            <div class="col-md-9 col-lg-10 border-bottom">
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
                     {foreach from=$roleData key='role' item='data'}
                         {if $data['allowEdit'] === 1}
@@ -30,6 +30,7 @@
                                 <input class="custom-control-input" type="checkbox" name="role-{$role|escape}" id="role-{$role|escape}" {if $data['allowEdit'] === 0}disabled="disabled"{/if} {if $data['active'] === 1}checked="checked"{/if} />
                                 <label class="custom-control-label" for="role-{$role|escape}">
                                     <code>{$role|escape}</code>
+                                    {if $data['globalOnly']}<span class="badge badge-dark">Global role</span>{/if}
                                     <span class="form-text text-muted">{$data['description']|escape}</span>
                                 </label>
                             </div>
@@ -52,6 +53,7 @@
                                 <input class="custom-control-input" type="checkbox" name="role-{$role|escape}" id="role-{$role|escape}" disabled="disabled" {if $data['active'] === 1}checked="checked"{/if} />
                                 <label class="custom-control-label" for="role-{$role|escape}">
                                     <code>{$role|escape}</code>
+                                    {if $data['globalOnly']}<span class="badge badge-dark">Global role</span>{/if}
                                     <span class="form-text text-muted">{$data['description']|escape}</span>
                                 </label>
                             </div>
