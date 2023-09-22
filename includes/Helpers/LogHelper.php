@@ -146,6 +146,7 @@ class LogHelper
             'Approved'            => 'approved',
             'Suspended'           => 'suspended',
             'RoleChange'          => 'changed roles',
+            'GlobalRoleChange'    => 'changed global roles',
             'Banned'              => 'banned',
             'Edited'              => 'edited interface message',
             'Declined'            => 'declined',
@@ -221,6 +222,7 @@ class LogHelper
                 'Approved'            => 'approved',
                 'Suspended'           => 'suspended',
                 'RoleChange'          => 'changed roles',
+                'GlobalRoleChange'    => 'changed global roles',
                 'Declined'            => 'declined',
                 'Prefchange'          => 'changed user preferences',
                 'Renamed'             => 'renamed',
@@ -498,6 +500,7 @@ HTML;
                     $comment = 'Renamed \'' . $oldName . '\' to \'' . $newName . '\'.';
                     break;
                 case 'RoleChange':
+                case 'GlobalRoleChange':
                     $roleChangeData = unserialize($logEntry->getComment());
 
                     $removed = array();

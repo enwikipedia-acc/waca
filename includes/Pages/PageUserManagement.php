@@ -111,6 +111,7 @@ class PageUserManagement extends InternalPageBase
     {
         $this->setHtmlTitle('User Management');
         $database = $this->getDatabase();
+        $domain = Domain::getCurrent($database);
         $userId = WebRequest::getInt('user');
 
         /** @var User $user */
@@ -120,7 +121,7 @@ class PageUserManagement extends InternalPageBase
             throw new ApplicationLogicException('Sorry, the user you are trying to edit could not be found.');
         }
 
-        $roleData = $this->getRoleData(UserRole::getForUser($user->getId(), $database, 1)); // FIXME: domains
+        $roleData = $this->getRoleData(UserRole::getForUser($user->getId(), $database, $domain->getId()));
 
         // Dual-mode action
         if (WebRequest::wasPosted()) {
@@ -133,8 +134,13 @@ class PageUserManagement extends InternalPageBase
 
             /** @var UserRole[] $delete */
             $delete = array();
-            /** @var string[] $delete */
+            /** @var string[] $add */
             $add = array();
+
+            /** @var UserRole[] $globalDelete */
+            $globalDelete = array();
+            /** @var string[] $globalAdd */
+            $globalAdd = array();
 
             foreach ($roleData as $name => $r) {
                 if ($r['allowEdit'] !== 1) {
@@ -145,17 +151,27 @@ class PageUserManagement extends InternalPageBase
                 $newValue = WebRequest::postBoolean('role-' . $name) ? 1 : 0;
                 if ($newValue !== $r['active']) {
                     if ($newValue === 0) {
-                        $delete[] = $r['object'];
+                        if ($r['globalOnly']) {
+                            $globalDelete[] = $r['object'];
+                        }
+                        else {
+                            $delete[] = $r['object'];
+                        }
                     }
 
                     if ($newValue === 1) {
-                        $add[] = $name;
+                        if ($r['globalOnly']) {
+                            $globalAdd[] = $name;
+                        }
+                        else {
+                            $add[] = $name;
+                        }
                     }
                 }
             }
 
             // Check there's something to do
-            if ((count($add) + count($delete)) === 0) {
+            if ((count($add) + count($delete) + count($globalAdd) + count($globalDelete)) === 0) {
                 $this->redirect('statistics/users', 'detail', array('user' => $user->getId()));
                 SessionAlert::warning('No changes made to roles.');
 
@@ -163,10 +179,15 @@ class PageUserManagement extends InternalPageBase
             }
 
             $removed = array();
+            $globalRemoved = array();
 
-            /** @var UserRole $d */
             foreach ($delete as $d) {
                 $removed[] = $d->getRole();
+                $d->delete();
+            }
+
+            foreach ($globalDelete as $d) {
+                $globalRemoved[] = $d->getRole();
                 $d->delete();
             }
 
@@ -174,12 +195,27 @@ class PageUserManagement extends InternalPageBase
                 $a = new UserRole();
                 $a->setUser($user->getId());
                 $a->setRole($x);
-                $a->setDomain(1); // FIXME: domains
+                $a->setDomain($domain->getId());
                 $a->setDatabase($database);
                 $a->save();
             }
 
-            Logger::userRolesEdited($database, $user, $reason, $add, $removed, 1); // FIXME: domains
+            foreach ($globalAdd as $x) {
+                $a = new UserRole();
+                $a->setUser($user->getId());
+                $a->setRole($x);
+                $a->setDomain(null);
+                $a->setDatabase($database);
+                $a->save();
+            }
+
+            if ((count($add) + count($delete)) > 0) {
+                Logger::userRolesEdited($database, $user, $reason, $add, $removed, $domain->getId());
+            }
+
+            if ((count($globalAdd) + count($globalDelete)) > 0) {
+                Logger::userGlobalRolesEdited($database, $user, $reason, $globalAdd, $globalRemoved);
+            }
 
             // dummy save for optimistic locking. If this fails, the entire txn will roll back.
             $user->setUpdateVersion(WebRequest::postInt('updateversion'));
@@ -605,6 +641,7 @@ class PageUserManagement extends InternalPageBase
             $roleData[$role] = $initialValue;
             $roleData[$role]['allowEdit'] = count($intersection) > 0 ? 1 : 0;
             $roleData[$role]['description'] = $data['description'];
+            $roleData[$role]['globalOnly'] = $data['globalOnly'];
         }
 
         foreach ($activeRoles as $role) {

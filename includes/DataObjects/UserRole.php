@@ -20,7 +20,7 @@ class UserRole extends DataObject
     /** @var string */
     private $role;
     /** @var int */
-    private $domain;
+    private ?int $domain;
 
     /**
      * @param int         $user
@@ -31,7 +31,7 @@ class UserRole extends DataObject
      */
     public static function getForUser(int $user, PdoDatabase $database, int $domain)
     {
-        $sql = 'SELECT * FROM userrole WHERE user = :user AND domain = :domain';
+        $sql = 'SELECT * FROM userrole WHERE user = :user AND (domain IS NULL OR domain = :domain)';
         $statement = $database->prepare($sql);
         $statement->bindValue(':user', $user);
         $statement->bindValue(':domain', $domain);
@@ -109,12 +109,12 @@ class UserRole extends DataObject
         $this->role = $role;
     }
 
-    public function getDomain(): int
+    public function getDomain(): ?int
     {
         return $this->domain;
     }
 
-    public function setDomain(int $domain): void
+    public function setDomain(?int $domain): void
     {
         $this->domain = $domain;
     }
