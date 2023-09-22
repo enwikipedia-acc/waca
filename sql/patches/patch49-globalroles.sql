@@ -42,10 +42,8 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
         -- this one prevents the same role being granted multiple times globally.
         ADD CONSTRAINT userrole_uidx_user_role_global UNIQUE (user, role, global);
         -- the case to prevent a role being granted locally *and* globally can't be easily done
-        -- in the database, so we'll handle that in the application.
-
-    ALTER TABLE userrole
-        ALTER COLUMN domain DROP DEFAULT;
+        -- in the database, so we handle that in the application by forcing a role to either be
+        -- global OR local, not both.
 
     -- -------------------------------------------------------------------------
     -- finally, update the schema version to indicate success

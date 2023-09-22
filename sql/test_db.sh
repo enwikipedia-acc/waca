@@ -260,6 +260,7 @@ if [[ $CreateOnly -eq 0 ]]; then
 
     log "Comparing dumps..."
     if ! diff -q schema.sql schema2.sql; then
+        diff -bu schema.sql schema2.sql;
         log "Difference detected!"
         exit 1
     fi
