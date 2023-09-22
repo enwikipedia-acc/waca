@@ -187,6 +187,17 @@ class Logger
         self::createLogEntry($database, $object, "RoleChange", $logData, null, $domain);
     }
 
+    public static function userGlobalRolesEdited(PdoDatabase $database, User $object, $reason, $added, $removed)
+    {
+        $logData = serialize(array(
+            'added'   => $added,
+            'removed' => $removed,
+            'reason'  => $reason,
+        ));
+
+        self::createLogEntry($database, $object, "GlobalRoleChange", $logData);
+    }
+
     #endregion
 
     /**

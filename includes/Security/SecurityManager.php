@@ -8,6 +8,7 @@
 
 namespace Waca\Security;
 
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\DataObjects\UserRole;
 use Waca\IdentificationVerifier;
@@ -179,7 +180,8 @@ final class SecurityManager
             $userRoles[] = 'loggedIn';
 
             if ($user->isActive()) {
-                $ur = UserRole::getForUser($user->getId(), $user->getDatabase(), 1); // FIXME: domains
+                $domain = Domain::getCurrent($user->getDatabase());
+                $ur = UserRole::getForUser($user->getId(), $user->getDatabase(), $domain->getId());
 
                 // NOTE: public is still in this array.
                 foreach ($ur as $r) {

@@ -60,13 +60,14 @@ class RoleConfiguration
     const ACCESS_DEFAULT = 0;
     const MAIN = 'main';
     const ALL = '*';
+
     /**
      * A map of roles to rights
      *
      * For example:
      *
      * array(
-     *   'myrole' => array(
+     *   'myRole' => array(
      *       PageMyPage::class => array(
      *           'edit' => self::ACCESS_ALLOW,
      *           'create' => self::ACCESS_DENY,
@@ -88,7 +89,7 @@ class RoleConfiguration
      *
      * @var array
      */
-    private $roleConfig = array(
+    private array $roleConfig = array(
         'public'            => array(
             /*
              * THIS ROLE IS GRANTED TO ALL LOGGED *OUT* USERS IMPLICITLY.
@@ -108,7 +109,7 @@ class RoleConfiguration
         ),
         'loggedIn'          => array(
             /*
-             * THIS ROLE IS GRANTED TO ALL LOGGED IN USERS IMPLICITLY.
+             * THIS ROLE IS GRANTED TO ALL LOGGED-IN USERS IMPLICITLY.
              *
              * USERS IN THIS ROLE DO NOT HAVE TO BE IDENTIFIED TO GET THE RIGHTS CONFERRED HERE.
              * DO NOT ADD ANY SECURITY-SENSITIVE RIGHTS HERE.
@@ -305,7 +306,7 @@ class RoleConfiguration
         ),
         'checkuser'         => array(
             '_description'            => 'A user with CheckUser access',
-            '_editableBy'             => array('checkuser', 'toolRoot'),
+            '_editableBy'             => array('checkuser', 'steward', 'toolRoot'),
             '_childRoles'             => array(
                 'user',
                 'requestAdminTools',
@@ -327,9 +328,23 @@ class RoleConfiguration
                 'checkuser' => self::ACCESS_ALLOW,
             ),
         ),
+        'steward'         => array(
+            '_description'  => 'A user with Steward access',
+            '_editableBy'   => array('steward', 'toolRoot'),
+            '_globalOnly'   => true,
+            '_childRoles'   => array(
+                'user',
+                'checkuser',
+            ),
+            'BanType'                   => array(
+                'ip-largerange' => self::ACCESS_ALLOW,
+                'global'        => self::ACCESS_ALLOW,
+            ),
+        ),
         'toolRoot'          => array(
             '_description' => 'A user with shell access to the servers running the tool',
             '_editableBy'  => array('toolRoot'),
+            '_globalOnly'  => true,
             '_childRoles'  => array(
                 'admin',
             ),
@@ -350,6 +365,7 @@ class RoleConfiguration
             ),
         ),
         'botCreation'       => array(
+            '_hidden'         => true,
             '_description'    => 'A user allowed to use the bot to perform account creations',
             '_editableBy'     => array('admin', 'toolRoot'),
             '_childRoles'     => array(),
@@ -430,6 +446,7 @@ class RoleConfiguration
             ),
         ),
     );
+
     /** @var array
      * List of roles which are *exempt* from the identification requirements
      *
@@ -437,13 +454,13 @@ class RoleConfiguration
      *
      * @category Security-Critical
      */
-    private $identificationExempt = array('public', 'loggedIn');
+    private array $identificationExempt = array('public', 'loggedIn');
 
     /**
      * RoleConfiguration constructor.
      *
-     * @param array $roleConfig           Set to non-null to override the default configuration.
-     * @param array $identificationExempt Set to non-null to override the default configuration.
+     * @param ?array $roleConfig           Set to non-null to override the default configuration.
+     * @param ?array $identificationExempt Set to non-null to override the default configuration.
      */
     public function __construct(array $roleConfig = null, array $identificationExempt = null)
     {
@@ -458,10 +475,8 @@ class RoleConfiguration
 
     /**
      * @param array $roles The roles to check
-     *
-     * @return array
      */
-    public function getApplicableRoles(array $roles)
+    public function getApplicableRoles(array $roles): array
     {
         $available = array();
 
@@ -490,7 +505,7 @@ class RoleConfiguration
         return $available;
     }
 
-    public function getAvailableRoles()
+    public function getAvailableRoles(): array
     {
         $possible = array_diff(array_keys($this->roleConfig), array('public', 'loggedIn'));
 
@@ -501,6 +516,7 @@ class RoleConfiguration
                 $actual[$role] = array(
                     'description' => $this->roleConfig[$role]['_description'],
                     'editableBy'  => $this->roleConfig[$role]['_editableBy'],
+                    'globalOnly'  => isset($this->roleConfig[$role]['_globalOnly']) && $this->roleConfig[$role]['_globalOnly'],
                 );
             }
         }
@@ -508,12 +524,7 @@ class RoleConfiguration
         return $actual;
     }
 
-    /**
-     * @param string $role
-     *
-     * @return bool
-     */
-    public function roleNeedsIdentification($role)
+    public function roleNeedsIdentification(string $role): bool
     {
         if (in_array($role, $this->identificationExempt)) {
             return false;
