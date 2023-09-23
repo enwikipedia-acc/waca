@@ -281,15 +281,18 @@ class RequestValidationHelper
         }
         catch (Exception $ex) {
             $skippable = [
-                'Encountered error while getting result: Contains unassigned character',
-                'Encountered error while getting result: Contains incompatible mixed scripts',
-                'Encountered error while getting result: Does not contain any letters'
+                'Contains unassigned character',
+                'Contains incompatible mixed scripts',
+                'Does not contain any letters',
+                'Usernames must contain one or more characters',
+                'Usernames cannot contain characters from different writing systems',
+                'Usernames cannot contain the character'
             ];
 
             $skip = false;
 
             foreach ($skippable as $s) {
-                if (strpos($ex->getMessage(), $s) !== false) {
+                if (strpos($ex->getMessage(), 'Encountered error while getting result: ' . $s) !== false) {
                     $skip = true;
                     break;
                 }
