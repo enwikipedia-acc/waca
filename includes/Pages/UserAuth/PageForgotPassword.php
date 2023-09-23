@@ -198,8 +198,8 @@ class PageForgotPassword extends InternalPageBase
      */
     private function doReset(User $user)
     {
-        $pw = WebRequest::postString('pw');
-        $pw2 = WebRequest::postString('pw2');
+        $pw = WebRequest::postString('newpassword');
+        $pw2 = WebRequest::postString('newpasswordconfirm');
 
         if ($pw !== $pw2) {
             throw new ApplicationLogicException('Passwords do not match!');

@@ -172,7 +172,7 @@ abstract class PageRegisterBase extends InternalPageBase
             throw new ApplicationLogicException('Your email address appears to be invalid!');
         }
 
-        if ($password !== WebRequest::postString('pass2')) {
+        if ($password !== WebRequest::postString('newpasswordconfirm')) {
             throw new ApplicationLogicException('Your passwords did not match, please try again.');
         }
 
@@ -191,7 +191,7 @@ abstract class PageRegisterBase extends InternalPageBase
     {
         // Get the data
         $emailAddress = WebRequest::postEmail('email');
-        $password = WebRequest::postString('pass');
+        $password = WebRequest::postString('newpassword');
         $username = WebRequest::postString('name');
 
         // Only set if OAuth is disabled

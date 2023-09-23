@@ -21,7 +21,7 @@
 
                         <div class="form-group">
                             <label class="col-form-label" for="inputOldpassword">Your old password</label>
-                            <input class="form-control" type="password" id="inputOldpassword" name="oldpassword" required="required" autocomplete="password"/>
+                            <input class="form-control" type="password" id="inputOldpassword" name="password" required="required" autocomplete="password"/>
                         </div>
                         <div class="form-group">
                             <label class="col-form-label" for="inputNewpassword">Your new password</label>

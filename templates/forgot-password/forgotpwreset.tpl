@@ -14,8 +14,8 @@
                     {include file="security/csrf.tpl"}
                     <div class="form-group row">
                         <div class="col-md-10 offset-md-1">
-                            <label for="password" class="sr-only">New password</label>
-                            <input type="password" id="password" name="pw" placeholder="Password" class="form-control password-strength" required="required" autocomplete="new-password"/>
+                            <label for="newpassword" class="sr-only">New password</label>
+                            <input type="password" id="newpassword" name="newpassword" placeholder="Password" class="form-control password-strength" required="required" autocomplete="new-password"/>
                             <div class="progress password-strength-progress">
                                 <div class="progress-bar" id="password-strength-bar"></div>
                             </div>
@@ -24,8 +24,8 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-md-10 offset-md-1">
-                            <label for="pw2" class="sr-only">Confirm password</label>
-                            <input type="password" id="pw2" name="pw2" placeholder="Confirm password" class="form-control" required="required" autocomplete="new-password"/>
+                            <label for="newpasswordconfirm" class="sr-only">Confirm password</label>
+                            <input type="password" id="newpasswordconfirm" name="newpasswordconfirm" placeholder="Confirm password" class="form-control" required="required" autocomplete="new-password"/>
                         </div>
                     </div>
 

@@ -40,10 +40,10 @@
 
                 <div class="form-group row">
                     <div class="offset-md-2 offset-xl-3 col-sm-4 col-md-3 col-xl-2">
-                        <label for="pass" class="col-form-label">Choose a password:</label>
+                        <label for="newpassword" class="col-form-label">Choose a password:</label>
                     </div>
                     <div class="col-sm-8 col-md-5 col-xl-4">
-                        <input class="form-control password-strength" id="pass" type="password" name="pass" required="required" aria-describedby="passHelp" autocomplete="new-password"/>
+                        <input class="form-control password-strength" id="newpassword" type="password" name="newpassword" required="required" aria-describedby="passHelp" autocomplete="new-password"/>
                         <div class="progress password-strength-progress">
                             <div class="progress-bar" id="password-strength-bar"></div>
                         </div>
@@ -54,10 +54,10 @@
 
                 <div class="form-group row">
                     <div class="offset-md-2 offset-xl-3 col-sm-4 col-md-3 col-xl-2">
-                        <label for="pass2" class="col-form-label">Confirm password:</label>
+                        <label for="newpasswordconfirm" class="col-form-label">Confirm password:</label>
                     </div>
                     <div class="col-sm-8 col-md-5 col-xl-4">
-                        <input class="form-control" id="pass2" type="password" name="pass2" required="required" autocomplete="new-password"/>
+                        <input class="form-control" id="newpasswordconfirm" type="password" name="newpasswordconfirm" required="required" autocomplete="new-password"/>
                     </div>
                 </div>
 
