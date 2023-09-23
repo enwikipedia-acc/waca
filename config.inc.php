@@ -187,7 +187,7 @@ $cDatabaseConfig = array(
         "dsrcname" => "mysql:host=" . $toolserver_host . ";dbname=" . $toolserver_database,
         "username" => $toolserver_username,
         "password" => $toolserver_password,
-        "options"  => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4'),
+        "options"  => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4 COLLATE utf8mb4_unicode_520_ci'),
     ),
 );
 
