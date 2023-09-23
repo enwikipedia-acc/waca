@@ -28,7 +28,7 @@ class PageChangePassword extends InternalPageBase
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
             try {
-                $oldPassword = WebRequest::postString('oldpassword');
+                $oldPassword = WebRequest::postString('password');
                 $newPassword = WebRequest::postString('newpassword');
                 $newPasswordConfirmation = WebRequest::postString('newpasswordconfirm');
 

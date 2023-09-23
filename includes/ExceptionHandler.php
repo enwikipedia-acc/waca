@@ -116,13 +116,6 @@ HTML;
         return $array;
     }
 
-    /**
-     * @param Throwable         $exception
-     * @param SiteConfiguration $siteConfiguration
-     * @param bool              $fromGlobalHandler
-     *
-     * @return array
-     */
     public static function logExceptionToDisk(
         Throwable $exception,
         SiteConfiguration $siteConfiguration,
@@ -132,6 +125,13 @@ HTML;
         $errorData['server'] = $_SERVER;
         $errorData['get'] = $_GET;
         $errorData['post'] = $_POST;
+
+        $redactions = ['password', 'newpassword', 'newpasswordconfirm', 'otp'];
+        foreach ($redactions as $redaction) {
+            if (isset($errorData['post'][$redaction])) {
+                $errorData['post'][$redaction] = '<redacted>';
+            }
+        }
 
         if ($fromGlobalHandler) {
             $errorData['globalHandler'] = true;
