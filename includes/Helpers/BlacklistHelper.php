@@ -18,8 +18,7 @@ use Waca\SiteConfiguration;
 
 class BlacklistHelper implements IBlacklistHelper
 {
-    /** @var HttpHelper */
-    private $httpHelper;
+    private HttpHelper $httpHelper;
 
     /**
      * Cache of previously requested usernames
@@ -27,19 +26,14 @@ class BlacklistHelper implements IBlacklistHelper
      */
     private $cache = array();
 
-    /** @var PdoDatabase */
-    private $database;
+    private PdoDatabase $database;
+    private SiteConfiguration $siteConfiguration;
 
-    /**
-     * BlacklistHelper constructor.
-     *
-     * @param HttpHelper  $httpHelper
-     * @param PdoDatabase $database
-     */
-    public function __construct(HttpHelper $httpHelper, PdoDatabase $database)
+    public function __construct(HttpHelper $httpHelper, PdoDatabase $database, SiteConfiguration $siteConfiguration)
     {
         $this->httpHelper = $httpHelper;
         $this->database = $database;
+        $this->siteConfiguration = $siteConfiguration;
     }
 
     /**
@@ -64,7 +58,7 @@ class BlacklistHelper implements IBlacklistHelper
             $result = $this->performWikiLookup($username);
         }
         catch (CurlException $ex) {
-            // LOGME log this, but fail gracefully.
+            // log this, but fail gracefully.
             ExceptionHandler::logExceptionToDisk($ex, $this->siteConfiguration);
             return false;
         }
