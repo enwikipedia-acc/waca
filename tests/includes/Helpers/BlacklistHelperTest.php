@@ -12,6 +12,7 @@ use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit\Framework\TestCase;
 use Waca\Helpers\BlacklistHelper;
 use Waca\Helpers\HttpHelper;
+use Waca\SiteConfiguration;
 
 class BlacklistHelperTest extends TestCase
 {
@@ -48,7 +49,7 @@ class BlacklistHelperTest extends TestCase
             ->method('get')
             ->willReturn(serialize($apiResult));
 
-        $blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1");
+        $blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1", new SiteConfiguration());
 
         // act
         $result = $blh->isBlacklisted("badname");
@@ -80,7 +81,7 @@ class BlacklistHelperTest extends TestCase
             ->method('get')
             ->willReturn(serialize($apiResult));
 
-        $blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1");
+        $blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1", new SiteConfiguration());
 
         // act
         $blh->isBlacklisted("badname");
@@ -99,7 +100,7 @@ class BlacklistHelperTest extends TestCase
             ->method("get")
             ->willReturn("a:1:{s:14:\"titleblacklist\";a:1:{s:6:\"result\";s:2:\"ok\";}}");
 
-        $blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1");
+        $blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1", new SiteConfiguration());
 
         $result = $blh->isBlacklisted("poop");
 
@@ -118,7 +119,7 @@ class BlacklistHelperTest extends TestCase
             ->method("get")
             ->willReturn("a:1:{s:14:\"titleblacklist\";a:1:{s:6:\"result\";s:2:\"ok\";}}");
 
-        $blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1");
+        $blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1", new SiteConfiguration());
 
         // act
         $result = $blh->isBlacklisted("poop");
