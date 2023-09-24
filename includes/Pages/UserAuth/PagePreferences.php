@@ -39,6 +39,7 @@ class PagePreferences extends InternalPageBase
 
             $this->setPreference($preferencesManager,PreferenceManager::PREF_EMAIL_SIGNATURE, 'emailSignature');
             $this->setPreferenceWithValue($preferencesManager,PreferenceManager::PREF_SKIP_JS_ABORT, 'skipJsAbort', WebRequest::postBoolean('skipJsAbort') ? 1 : 0);
+            $this->setPreferenceWithValue($preferencesManager,PreferenceManager::PREF_QUEUE_HELP, 'showQueueHelp', WebRequest::postBoolean('showQueueHelp') ? 1 : 0);
             $this->setCreationMode($user, $preferencesManager);
             $this->setSkin($preferencesManager);
             $preferencesManager->setGlobalPreference(PreferenceManager::PREF_DEFAULT_DOMAIN, WebRequest::postInt('defaultDomain'));
