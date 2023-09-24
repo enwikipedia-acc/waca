@@ -74,7 +74,7 @@ class PagePreferences extends InternalPageBase
             $this->assignPreference($preferencesManager, PreferenceManager::PREF_CREATION_MODE, 'creationMode', false);
             $this->assignPreference($preferencesManager, PreferenceManager::PREF_SKIN, 'skin', true);
             $this->assignPreference($preferencesManager, PreferenceManager::PREF_SKIP_JS_ABORT, 'skipJsAbort', false);
-            $this->assignPreference($preferencesManager, PreferenceManager::PREF_QUEUE_HELP, 'showQueueHelp', false);
+            $this->assignPreference($preferencesManager, PreferenceManager::PREF_QUEUE_HELP, 'showQueueHelp', false, true);
             $this->assignPreference($preferencesManager, PreferenceManager::PREF_DEFAULT_DOMAIN, 'defaultDomain', true);
 
             $this->assign('canManualCreate',
@@ -102,9 +102,10 @@ class PagePreferences extends InternalPageBase
         PreferenceManager $preferencesManager,
         string $preference,
         string $fieldName,
-        bool $defaultGlobal
+        bool $defaultGlobal,
+        mixed $defaultValue = null
     ): void {
-        $this->assign($fieldName, $preferencesManager->getPreference($preference));
+        $this->assign($fieldName, $preferencesManager->getPreference($preference) ?? $defaultValue);
         $this->assign($fieldName . 'Global', $preferencesManager->isGlobalPreference($preference) ?? $defaultGlobal);
     }
 
