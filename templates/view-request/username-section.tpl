@@ -30,8 +30,8 @@
         Global username list
     </a>
     <a id="UsernameMainspaceSearch" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
-       href="https://en.wikipedia.org/w/index.php?title=Special%3ASearch&amp;profile=advanced&amp;search={$requestName|escape:'url'}&amp;fulltext=Search&amp;ns0=1&amp;redirs=1&amp;profile=advanced">
-        Wikipedia mainspace search
+       href="https://en.wikipedia.org/w/index.php?title=Special%3ASearch&amp;search={$requestName|escape:'url'}">
+        Wikipedia search
     </a>
     <a id="UsernameGoogleSearch" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
        href="{$baseurl}/redir.php?tool=google&amp;data={$requestName|escape:'url'}">
