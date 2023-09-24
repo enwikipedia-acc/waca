@@ -12,6 +12,7 @@ use PDO;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
+use Waca\Helpers\PreferenceManager;
 use Waca\Fragments\RequestListData;
 use Waca\Helpers\SearchHelpers\RequestSearchHelper;
 use Waca\PdoDatabase;
@@ -34,6 +35,7 @@ class PageMain extends InternalPageBase
         $config = $this->getSiteConfiguration();
         $database = $this->getDatabase();
         $currentUser = User::getCurrent($database);
+        $preferencesManager = PreferenceManager::getForCurrent($database);
 
         // general template configuration
         // FIXME: domains!
@@ -46,6 +48,8 @@ class PageMain extends InternalPageBase
         list($defaultSort, $defaultSortDirection) = WebRequest::requestListDefaultSort();
         $this->assign('defaultSort', $defaultSort);
         $this->assign('defaultSortDirection', $defaultSortDirection);
+        $showQueueHelp = $preferencesManager->getPreference(PreferenceManager::PREF_QUEUE_HELP) ?? true;
+        $this->assign('showQueueHelp', $showQueueHelp);
 
         // Fetch request data
         $requestSectionData = array();

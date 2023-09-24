@@ -39,6 +39,7 @@ class PagePreferences extends InternalPageBase
 
             $this->setPreference($preferencesManager,PreferenceManager::PREF_EMAIL_SIGNATURE, 'emailSignature');
             $this->setPreferenceWithValue($preferencesManager,PreferenceManager::PREF_SKIP_JS_ABORT, 'skipJsAbort', WebRequest::postBoolean('skipJsAbort') ? 1 : 0);
+            $this->setPreferenceWithValue($preferencesManager,PreferenceManager::PREF_QUEUE_HELP, 'showQueueHelp', WebRequest::postBoolean('showQueueHelp') ? 1 : 0);
             $this->setCreationMode($user, $preferencesManager);
             $this->setSkin($preferencesManager);
             $preferencesManager->setGlobalPreference(PreferenceManager::PREF_DEFAULT_DOMAIN, WebRequest::postInt('defaultDomain'));
@@ -73,6 +74,7 @@ class PagePreferences extends InternalPageBase
             $this->assignPreference($preferencesManager, PreferenceManager::PREF_CREATION_MODE, 'creationMode', false);
             $this->assignPreference($preferencesManager, PreferenceManager::PREF_SKIN, 'skin', true);
             $this->assignPreference($preferencesManager, PreferenceManager::PREF_SKIP_JS_ABORT, 'skipJsAbort', false);
+            $this->assignPreference($preferencesManager, PreferenceManager::PREF_QUEUE_HELP, 'showQueueHelp', false, true);
             $this->assignPreference($preferencesManager, PreferenceManager::PREF_DEFAULT_DOMAIN, 'defaultDomain', true);
 
             $this->assign('canManualCreate',
@@ -100,9 +102,10 @@ class PagePreferences extends InternalPageBase
         PreferenceManager $preferencesManager,
         string $preference,
         string $fieldName,
-        bool $defaultGlobal
+        bool $defaultGlobal,
+        $defaultValue = null
     ): void {
-        $this->assign($fieldName, $preferencesManager->getPreference($preference));
+        $this->assign($fieldName, $preferencesManager->getPreference($preference) ?? $defaultValue);
         $this->assign($fieldName . 'Global', $preferencesManager->isGlobalPreference($preference) ?? $defaultGlobal);
     }
 

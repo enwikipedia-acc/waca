@@ -53,6 +53,19 @@
 
                     <div class="form-group row mb-5">
                         <div class="col-md-2 col-lg-3">
+                            <span class="col-form-label">Queue Help Text</span>
+                        </div>
+                        <div class="col-md-8 col-lg-7 col-xl-6">
+                            <div class="custom-control custom-switch">
+                                <input class="custom-control-input" type="checkbox" id="showQueueHelp" name="showQueueHelp"{if $showQueueHelp} checked{/if}>
+                                <label class="custom-control-label" for="showQueueHelp">Show help text on queues</label>
+                            </div>
+                        </div>
+                        {include file="preferences/globalcheck.tpl" settingName="showQueueHelp" settingState=$showQueueHelpGlobal settingAvailable=true}
+                    </div>
+
+                    <div class="form-group row mb-5">
+                        <div class="col-md-2 col-lg-3">
                             <label class="col-form-label">Account Creation Mode</label>
                         </div>
                         <div class="col-md-8 col-lg-7 col-xl-6">
