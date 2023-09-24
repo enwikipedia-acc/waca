@@ -61,7 +61,7 @@
                                 <label class="custom-control-label" for="showQueueHelp">Show help text on queues</label>
                             </div>
                         </div>
-                        {include file="preferences/globalcheck.tpl" settingName="showQueueHelp" settingState=$showQueueHelpGlobal settingAvailable=false}
+                        {include file="preferences/globalcheck.tpl" settingName="showQueueHelp" settingState=$showQueueHelpGlobal settingAvailable=true}
                     </div>
 
                     <div class="form-group row mb-5">
