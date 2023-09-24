@@ -103,7 +103,7 @@ class PagePreferences extends InternalPageBase
         string $preference,
         string $fieldName,
         bool $defaultGlobal,
-        mixed $defaultValue = null
+        $defaultValue = null
     ): void {
         $this->assign($fieldName, $preferencesManager->getPreference($preference) ?? $defaultValue);
         $this->assign($fieldName . 'Global', $preferencesManager->isGlobalPreference($preference) ?? $defaultGlobal);
