@@ -16,7 +16,7 @@
     </div>
     <div id="collapse{$section.api|escape}" class="collapse" data-parent="#requestListAccordion">
         <div class="card-body">
-            {if $section.help !== null}
+            {if $section.help !== null && $showQueueHelp}
                 <div class="alert alert-info alert-accordion prewrap">{$section.help|escape}</div>
             {/if}
             {include file="mainpage/requestlist.tpl" showStatus={$section.special !== null}}
