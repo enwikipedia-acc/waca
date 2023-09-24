@@ -1,5 +1,5 @@
 ## Wikipedia's Account Creation Tool interface
-[![Build Status](https://travis-ci.org/enwikipedia-acc/waca.svg?branch=master)](https://travis-ci.org/enwikipedia-acc/waca)
+![Build Status](https://github.com/enwikipedia-acc/waca/actions/workflows/ci.yml/badge.svg)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/enwikipedia-acc/waca/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/enwikipedia-acc/waca/?branch=master)
 
 This is enwiki's ACC tool.
