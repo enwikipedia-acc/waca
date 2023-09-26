@@ -100,17 +100,11 @@ class PageEmailManagement extends InternalPageBase
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
 
-            $this->modifyTemplateData($template);
+            $this->modifyTemplateData($template, $template->getId() === $createdId);
 
             $other = EmailTemplate::getByName($template->getName(), $database, $domain->getId());
             if ($other !== false && $other->getId() !== $template->getId()) {
                 throw new ApplicationLogicException('A template with this name already exists');
-            }
-
-            if ($template->getId() === $createdId) {
-                $template->setDefaultAction(EmailTemplate::ACTION_CREATED);
-                $template->setActive(true);
-                $template->setPreloadOnly(false);
             }
 
             // optimistically lock on load of edit form
@@ -136,11 +130,9 @@ class PageEmailManagement extends InternalPageBase
     }
 
     /**
-     * @param EmailTemplate $template
-     *
      * @throws ApplicationLogicException
      */
-    private function modifyTemplateData(EmailTemplate $template)
+    private function modifyTemplateData(EmailTemplate $template, bool $isDefaultTemplate): void
     {
         $name = WebRequest::postString('name');
         if ($name === null || $name === '') {
@@ -162,22 +154,31 @@ class PageEmailManagement extends InternalPageBase
         }
         $template->setJsquestion($jsquestion);
 
-        switch (WebRequest::postString('defaultaction')) {
-            case EmailTemplate::ACTION_NONE:
-            case EmailTemplate::ACTION_CREATED:
-            case EmailTemplate::ACTION_NOT_CREATED:
-                $template->setDefaultAction(WebRequest::postString('defaultaction'));
-                $template->setQueue(null);
-                break;
-            default:
-                $template->setDefaultAction(EmailTemplate::ACTION_DEFER);
-                // FIXME: domains!
-                $template->setQueue(RequestQueue::getByApiName($this->getDatabase(), WebRequest::postString('defaultaction'), 1)->getId());
-                break;
+        if ($isDefaultTemplate) {
+            $template->setDefaultAction(EmailTemplate::ACTION_CREATED);
+            $template->setActive(true);
+            $template->setPreloadOnly(false);
         }
+        else {
+            $defaultAction = WebRequest::postString('defaultaction');
+            switch ($defaultAction) {
+                case EmailTemplate::ACTION_NONE:
+                case EmailTemplate::ACTION_CREATED:
+                case EmailTemplate::ACTION_NOT_CREATED:
+                    $template->setDefaultAction($defaultAction);
+                    $template->setQueue(null);
+                    break;
+                default:
+                    $template->setDefaultAction(EmailTemplate::ACTION_DEFER);
+                    // FIXME: domains!
+                    $queue = RequestQueue::getByApiName($this->getDatabase(), $defaultAction, 1);
+                    $template->setQueue($queue->getId());
+                    break;
+            }
 
-        $template->setActive(WebRequest::postBoolean('active'));
-        $template->setPreloadOnly(WebRequest::postBoolean('preloadonly'));
+            $template->setActive(WebRequest::postBoolean('active'));
+            $template->setPreloadOnly(WebRequest::postBoolean('preloadonly'));
+        }
     }
 
     protected function create()
@@ -196,7 +197,7 @@ class PageEmailManagement extends InternalPageBase
             // FIXME: domains!
             $template->setDomain(1);
 
-            $this->modifyTemplateData($template);
+            $this->modifyTemplateData($template, false);
 
             $other = EmailTemplate::getByName($template->getName(), $database, $template->getDomain());
             if ($other !== false) {
