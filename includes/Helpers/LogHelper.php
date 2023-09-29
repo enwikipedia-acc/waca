@@ -438,7 +438,9 @@ HTML;
             case 'Comment':
                 /** @var Comment $comment */
                 $comment = Comment::getById($objectId, $database);
-                $requestName = htmlentities(Request::getById($comment->getRequest(), $database)->getName(), ENT_COMPAT, 'UTF-8');
+                /** @var Request $request */
+                $request = Request::getById($comment->getRequest(), $database);
+                $requestName = htmlentities($request->getName(), ENT_COMPAT, 'UTF-8');
 
                 return "<a href=\"{$baseurl}/internal.php/editComment?id={$objectId}\">Comment {$objectId}</a> on request <a href=\"{$baseurl}/internal.php/viewRequest?id={$comment->getRequest()}#comment-{$objectId}\">#{$comment->getRequest()} ({$requestName})</a>";
             default:

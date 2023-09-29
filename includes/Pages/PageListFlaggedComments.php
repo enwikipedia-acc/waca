@@ -40,35 +40,39 @@ class PageListFlaggedComments extends InternalPageBase
 
         foreach ($commentObjects as $object) {
             $data = [
-                'id'            => $object->getId(),
                 'visibility'    => $object->getVisibility(),
-                'updateversion' => $object->getUpdateVersion(),
                 'hidden'        => false,
-                'unreserved'    => false,
+                'hiddenText'    => false,
             ];
 
-
             if (!$alwaysSeePrivateData) {
-                // WHY?!
-                // This is a stupid configuration, but let's account for it anyway.
+                // tl;dr: This is a stupid configuration, but let's account for it anyway.
+                //
+                // Flagged comments are treated as private data. If you don't have the privilege
+                // RequestData::alwaysSeePrivateData, then we can't show you the content of the comments here.
+                // This page is forced to degrade into basically a list of requests, seriously hampering the usefulness
+                // of this page. Still, we need to handle the case where we have access to this page, but not access
+                // to private data.
+                // At the time of writing, this case does not exist in the current role configuration, but for the role
+                // configuration to be free of assumptions, we need this code.
 
                 /** @var Request $request */
                 $request = Request::getById($object->getRequest(), $database);
 
-                if ($request->getReserved() === $currentUser->getId()){
-                    $this->copyCommentData($object, $data, $database);
+                if ($request->getReserved() === $currentUser->getId()) {
+                    $data['hiddenText'] = false;
                 }
                 else {
-                    $this->copyCommentData($object, $data, $database);
-                    $data['unreserved'] = true;
+                    $data['hiddenText'] = true;
                 }
             }
+
             if ($object->getVisibility() == 'requester' || $object->getVisibility() == 'user') {
-                $this->copyCommentData($object, $data, $database);
+                $data['hidden'] = false;
             }
             elseif ($object->getVisibility() == 'admin') {
                 if ($seeRestrictedComments) {
-                    $this->copyCommentData($object, $data, $database);
+                    $data['hidden'] = false;
                 }
                 else {
                     $data['hidden'] = true;
@@ -76,12 +80,14 @@ class PageListFlaggedComments extends InternalPageBase
             }
             elseif ($object->getVisibility() == 'checkuser') {
                 if ($seeCheckuserComments) {
-                    $this->copyCommentData($object, $data, $database);
+                    $data['hidden'] = false;
                 }
                 else {
                     $data['hidden'] = true;
                 }
             }
+
+            $this->copyCommentData($object, $data, $database);
 
             $comments[] = $data;
         }
@@ -95,11 +101,23 @@ class PageListFlaggedComments extends InternalPageBase
         $this->assign('canUnflag', $this->barrierTest('unflag', $currentUser, PageFlagComment::class) && $this->barrierTest(RoleConfiguration::MAIN, $currentUser, PageFlagComment::class));
     }
 
-    protected function copyCommentData(Comment $object, array &$data, PdoDatabase $database): void
+    private function copyCommentData(Comment $object, array &$data, PdoDatabase $database): void
     {
+        if ($data['hidden']) {
+            // All details hidden, so don't copy anything.
+            return;
+        }
+
+        /** @var Request $request */
         $request = Request::getById($object->getRequest(), $database);
 
-        $data['comment'] = $object->getComment();
+        if (!$data['hiddenText']) {
+            // Comment text is hidden, but presence of the comment is visible.
+            $data['comment'] = $object->getComment();
+        }
+
+        $data['id'] = $object->getId();
+        $data['updateversion'] = $object->getUpdateVersion();
         $data['time'] = $object->getTime();
         $data['requestid'] = $object->getRequest();
         $data['request'] = $request->getName();
