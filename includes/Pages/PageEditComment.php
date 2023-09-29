@@ -60,8 +60,8 @@ class PageEditComment extends InternalPageBase
             $visibility = WebRequest::postString('visibility');
             $doUnflag = WebRequest::postBoolean('unflag');
 
-            if ($newComment === null || $newComment === "") {
-                throw new ApplicationLogicException("Comment cannot be empty!");
+            if ($newComment === null || $newComment === '') {
+                throw new ApplicationLogicException('Comment cannot be empty!');
             }
 
             $commentDataUnchanged = $newComment === $comment->getComment()
@@ -71,6 +71,7 @@ class PageEditComment extends InternalPageBase
             if ($commentDataUnchanged && $flagStatusUnchanged) {
                 // No change was made; redirect back.
                 $this->redirectBack($comment->getRequest());
+
                 return;
             }
 
@@ -98,7 +99,7 @@ class PageEditComment extends InternalPageBase
                 Logger::unflaggedComment($database, $comment, $request->getDomain());
             }
 
-            SessionAlert::success("Comment has been saved successfully");
+            SessionAlert::success('Comment has been saved successfully');
             $this->redirectBack($comment->getRequest());
         }
         else {
@@ -112,13 +113,9 @@ class PageEditComment extends InternalPageBase
     }
 
     /**
-     * @param $comment
-     * @param $currentUser
-     *
-     * @return void
      * @throws AccessDeniedException
      */
-    protected function checkCommentAccess($comment, $currentUser): void
+    private function checkCommentAccess(Comment $comment, User $currentUser): void
     {
         if ($comment->getUser() !== $currentUser->getId() && !$this->barrierTest('editOthers', $currentUser)) {
             throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
@@ -152,13 +149,9 @@ class PageEditComment extends InternalPageBase
     }
 
     /**
-     * @param             $comment
-     * @param string|null $visibility
-     * @param             $newComment
-     *
      * @throws ApplicationLogicException
      */
-    protected function updateCommentData(Comment $comment, ?string $visibility, string $newComment): void
+    private function updateCommentData(Comment $comment, ?string $visibility, string $newComment): void
     {
         if ($comment->getVisibility() !== 'requester') {
             if ($visibility !== 'user' && $visibility !== 'admin' && $visibility !== 'checkuser') {
@@ -172,13 +165,14 @@ class PageEditComment extends InternalPageBase
         $comment->touchEdited();
     }
 
-    protected function redirectBack(int $requestId): void
+    private function redirectBack(int $requestId): void
     {
-        $source = WebRequest::getString("from");
+        $source = WebRequest::getString('from');
 
-        if ($source == "flagged") {
+        if ($source == 'flagged') {
             $this->redirect('flaggedComments');
-        } else {
+        }
+        else {
             $this->redirect('viewRequest', null, array('id' => $requestId));
         }
     }
