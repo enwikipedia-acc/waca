@@ -33,9 +33,7 @@ class CommunityUser extends User
      */
     public function getUsername()
     {
-        global $communityUsername;
-
-        return $communityUsername;
+        return '[Community]';
     }
 
     public function setUsername($username)
