@@ -26,6 +26,8 @@ class User extends DataObject
     const STATUS_DECLINED = 'Declined';
     const STATUS_NEW = 'New';
 
+    private static CommunityUser $community;
+
     private $username;
     private $email;
     private $status = self::STATUS_NEW;
@@ -93,12 +95,13 @@ class User extends DataObject
         return $user;
     }
 
-    /**
-     * @return CommunityUser
-     */
-    public static function getCommunity()
+    public static function getCommunity(): CommunityUser
     {
-        return new CommunityUser();
+        if (!isset(self::$community)) {
+            self::$community = new CommunityUser();
+        }
+
+        return self::$community;
     }
 
     /**
@@ -111,8 +114,7 @@ class User extends DataObject
      */
     public static function getByUsername($username, PdoDatabase $database)
     {
-        global $communityUsername;
-        if ($username == $communityUsername) {
+        if ($username === self::getCommunity()->getUsername()) {
             return new CommunityUser();
         }
 

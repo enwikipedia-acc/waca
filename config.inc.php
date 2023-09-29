@@ -78,8 +78,6 @@ $forceIdentification = true;
 // Time to cache positive automatic identification results, as a MySQL time interval
 $identificationCacheExpiry = "1 DAY";
 
-$communityUsername = "[Community]";
-
 /************************************
  * OAuth Configuration
  */
