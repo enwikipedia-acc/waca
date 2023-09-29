@@ -19,43 +19,33 @@ class PdoDatabase extends PDO
     public const ISOLATION_READ_COMMITTED = 'READ COMMITTED';
     public const ISOLATION_READ_ONLY = 'READ ONLY';
 
-    /**
-     * @var PdoDatabase[]
-     */
-    private static $connections = array();
+    private static ?PdoDatabase $connection = null;
     /**
      * @var bool True if a transaction is active
      */
-    protected $hasActiveTransaction = false;
+    protected bool $hasActiveTransaction = false;
 
     /**
      * Unless you're doing low-level work, this is not the function you want.
      *
-     * @param string $connectionName
-     *
-     * @return PdoDatabase
      * @throws Exception
      */
-    public static function getDatabaseConnection($connectionName)
+    public static function getDatabaseConnection(SiteConfiguration $configuration): PdoDatabase
     {
-        if (!isset(self::$connections[$connectionName])) {
-            global $cDatabaseConfig;
-
-            if (!array_key_exists($connectionName, $cDatabaseConfig)) {
-                throw new Exception("Database configuration not found for alias $connectionName");
-            }
+        if (self::$connection === null) {
+            $dbConfig = $configuration->getDatabaseConfig();
 
             try {
                 $databaseObject = new PdoDatabase(
-                    $cDatabaseConfig[$connectionName]["dsrcname"],
-                    $cDatabaseConfig[$connectionName]["username"],
-                    $cDatabaseConfig[$connectionName]["password"],
-                    $cDatabaseConfig[$connectionName]["options"]
+                    $dbConfig['datasource'],
+                    $dbConfig['username'],
+                    $dbConfig['password'],
+                    [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4 COLLATE utf8mb4_unicode_520_ci']
                 );
             }
             catch (PDOException $ex) {
                 // wrap around any potential stack traces which may include passwords
-                throw new EnvironmentException("Error connecting to database '$connectionName': " . $ex->getMessage());
+                throw new EnvironmentException('Error connecting to database: ' . $ex->getMessage());
             }
 
             $databaseObject->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -65,31 +55,31 @@ class PdoDatabase extends PDO
             // however, our version of PDO doesn't seem to understand parameter types when emulating
             // the prepared statements, so we're forced to turn this off for now.
             // -- stw 2014-02-11
+            //
+            // and that's not the only problem with emulated prepares. We've now got code that relies
+            // on real prepares.
+            // -- stw 2023-09-30
             $databaseObject->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
             // Set the default transaction mode
-            $databaseObject->exec("SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;");
+            $databaseObject->exec('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;');
 
-            self::$connections[$connectionName] = $databaseObject;
+            self::$connection = $databaseObject;
         }
 
-        return self::$connections[$connectionName];
+        return self::$connection;
     }
 
     /**
      * Determines if this connection has a transaction in progress or not
      * @return boolean true if there is a transaction in progress.
      */
-    public function hasActiveTransaction()
+    public function hasActiveTransaction(): bool
     {
         return $this->hasActiveTransaction;
     }
 
-    /**
-     * Summary of beginTransaction
-     * @return bool
-     */
-    public function beginTransaction(string $isolationLevel = self::ISOLATION_READ_COMMITTED)
+    public function beginTransaction(string $isolationLevel = self::ISOLATION_READ_COMMITTED): bool
     {
         // Override the pre-existing method, which doesn't stop you from
         // starting transactions within transactions - which doesn't work and
@@ -110,7 +100,7 @@ class PdoDatabase extends PDO
                     $accessMode = 'READ ONLY';
                     break;
                 default:
-                    throw new Exception("Invalid transaction isolation level");
+                    throw new Exception('Invalid transaction isolation level');
             }
 
             // set the transaction isolation level for every transaction.
@@ -127,7 +117,7 @@ class PdoDatabase extends PDO
     /**
      * Commits the active transaction
      */
-    public function commit()
+    public function commit(): void
     {
         if ($this->hasActiveTransaction) {
             parent::commit();
@@ -138,7 +128,7 @@ class PdoDatabase extends PDO
     /**
      * Rolls back a transaction
      */
-    public function rollBack()
+    public function rollBack(): void
     {
         if ($this->hasActiveTransaction) {
             parent::rollback();

@@ -181,12 +181,10 @@ $acceptClientHints = [];
 require_once('config.local.inc.php');
 
 $cDatabaseConfig = array(
-    "acc"           => array(
-        "dsrcname" => "mysql:host=" . $toolserver_host . ";dbname=" . $toolserver_database,
-        "username" => $toolserver_username,
-        "password" => $toolserver_password,
-        "options"  => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4 COLLATE utf8mb4_unicode_520_ci'),
-    ),
+    'dsrcname' => 'mysql:host=' . $toolserver_host . ';dbname=' . $toolserver_database,
+    'username' => $toolserver_username,
+    'password' => $toolserver_password,
+    'options'  => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4 COLLATE utf8mb4_unicode_520_ci'),
 );
 
 // //Keep the included files from being executed.
