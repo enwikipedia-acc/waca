@@ -76,7 +76,11 @@ class SiteConfiguration
     private string $cookiePath = '/';
     private string $cookieSessionName = 'ACC';
     private array $offline = ['offline' => false, 'reason' => '', 'culprit' => ''];
-
+    private array $databaseConfig = [
+        'datasource' => 'mysql:host=localhost;dbname=waca',
+        'username' => 'waca',
+        'password' => 'waca'
+    ];
 
     /**
      * Gets the base URL of the tool
@@ -1097,5 +1101,17 @@ class SiteConfiguration
     public function getOffline(): array
     {
         return $this->offline;
+    }
+
+    public function setDatabaseConfig(array $databaseConfig): SiteConfiguration
+    {
+        $this->databaseConfig = $databaseConfig;
+
+        return $this;
+    }
+
+    public function getDatabaseConfig(): array
+    {
+        return $this->databaseConfig;
     }
 }

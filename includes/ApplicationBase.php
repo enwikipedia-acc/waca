@@ -68,21 +68,20 @@ abstract class ApplicationBase
     }
 
     /**
-     * @return PdoDatabase
+     * Checks the database is connectable and at the correct version
+     *
      * @throws EnvironmentException
      * @throws Exception
      */
-    protected function setupDatabase()
+    private function setupDatabase(): void
     {
         // check the schema version
-        $database = PdoDatabase::getDatabaseConnection('acc');
+        $database = PdoDatabase::getDatabaseConnection($this->getConfiguration());
 
         $actualVersion = (int)$database->query('SELECT version FROM schemaversion')->fetchColumn();
         if ($actualVersion !== $this->getConfiguration()->getSchemaVersion()) {
             throw new EnvironmentException('Database schema is wrong version! Please either update configuration or database.');
         }
-
-        return $database;
     }
 
     /**

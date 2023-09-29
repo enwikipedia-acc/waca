@@ -175,7 +175,7 @@ class WebStart extends ApplicationBase
         $page = $this->requestRouter->route();
 
         $siteConfiguration = $this->getConfiguration();
-        $database = PdoDatabase::getDatabaseConnection('acc');
+        $database = PdoDatabase::getDatabaseConnection($this->getConfiguration());
 
         $this->setupHelpers($page, $siteConfiguration, $database);
 
@@ -201,7 +201,7 @@ class WebStart extends ApplicationBase
 
     private function checkForceLogout()
     {
-        $database = PdoDatabase::getDatabaseConnection('acc');
+        $database = PdoDatabase::getDatabaseConnection($this->getConfiguration());
 
         $sessionUserId = WebRequest::getSessionUserId();
         iF ($sessionUserId === null) {
