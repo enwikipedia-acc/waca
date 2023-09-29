@@ -11,6 +11,7 @@ namespace Waca\Tests;
 use PHPUnit\Framework\TestCase;
 use Waca\Exceptions\EnvironmentException;
 use Waca\PdoDatabase;
+use Waca\SiteConfiguration;
 
 class PdoDatabaseTest extends TestCase
 {
@@ -25,16 +26,14 @@ class PdoDatabaseTest extends TestCase
 
     public function testGetDatabaseConnection()
     {
-
         global $cDatabaseConfig;
-        $connectionName = "test";
 
-        $cDatabaseConfig[$connectionName]["dsrcname"] = "testing";
-        $cDatabaseConfig[$connectionName]["username"] = "one_crazy_guy";
-        $cDatabaseConfig[$connectionName]["password"] = "iDidn'tDoIt123";
+        $cDatabaseConfig["dsrcname"] = "testing";
+        $cDatabaseConfig["username"] = "one_crazy_guy";
+        $cDatabaseConfig["password"] = "iDidn'tDoIt123";
 
         try {
-            $this->pdb->getDatabaseConnection("TotallyDoesntExist");
+            $this->pdb->getDatabaseConnection(new SiteConfiguration());
         }
         catch(EnvironmentException $e) {
             $this->assertEquals($e->getMessage(), "Database configuration not found for alias TotallyDoesn'tExist");

@@ -57,7 +57,7 @@ class ConsoleStart extends ApplicationBase
      */
     protected function main()
     {
-        $database = PdoDatabase::getDatabaseConnection('acc');
+        $database = PdoDatabase::getDatabaseConnection($this->getConfiguration());
 
         $this->setupHelpers($this->consoleTask, $this->getConfiguration(), $database);
 

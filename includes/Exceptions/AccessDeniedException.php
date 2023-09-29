@@ -55,7 +55,7 @@ class AccessDeniedException extends ReadableException
         $this->setUpSmarty();
 
         // uck. We should still be able to access the database in this situation though.
-        $database = PdoDatabase::getDatabaseConnection('acc');
+        $database = PdoDatabase::getDatabaseConnection($this->getSiteConfiguration());
         $currentUser = User::getCurrent($database);
         $this->assign('skin', PreferenceManager::getForCurrent($database)->getPreference(PreferenceManager::PREF_SKIN));
         $this->assign('currentUser', $currentUser);
