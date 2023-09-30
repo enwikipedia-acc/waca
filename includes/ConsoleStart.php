@@ -41,6 +41,10 @@ class ConsoleStart extends ApplicationBase
             throw new EnvironmentException('This is a console task, which cannot be executed via the web.');
         }
 
+        if (Offline::isOffline($this->getConfiguration())) {
+            throw new EnvironmentException('The tool is currently disabled.');
+        }
+
         return parent::setupEnvironment();
     }
 

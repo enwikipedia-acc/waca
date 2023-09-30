@@ -41,7 +41,7 @@ class WebStart extends ApplicationBase
     /**
      * @var bool $isPublic Determines whether to use public interface objects or internal interface objects
      */
-    private $isPublic = false;
+    private bool $isPublic = false;
 
     /**
      * WebStart constructor.
@@ -106,7 +106,7 @@ class WebStart extends ApplicationBase
         }
         catch (EnvironmentException $ex) {
             ob_end_clean();
-            print Offline::getOfflineMessage($this->isPublic(), $ex->getMessage());
+            print Offline::getOfflineMessage($this->isPublic(), $this->getConfiguration(), $ex->getMessage());
         }
             /** @noinspection PhpRedundantCatchClauseInspection */
         catch (ReadableException $ex) {
@@ -141,8 +141,8 @@ class WebStart extends ApplicationBase
         // initialise super-global providers
         WebRequest::setGlobalStateProvider(new GlobalStateProvider());
 
-        if (Offline::isOffline()) {
-            print Offline::getOfflineMessage($this->isPublic());
+        if (Offline::isOffline($this->getConfiguration())) {
+            print Offline::getOfflineMessage($this->isPublic(), $this->getConfiguration());
             ob_end_flush();
 
             return false;
@@ -226,12 +226,12 @@ class WebStart extends ApplicationBase
         }
     }
 
-    public function isPublic()
+    public function isPublic(): bool
     {
         return $this->isPublic;
     }
 
-    public function setPublic($isPublic)
+    public function setPublic(bool $isPublic): void
     {
         $this->isPublic = $isPublic;
     }

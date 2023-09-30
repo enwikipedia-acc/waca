@@ -75,6 +75,7 @@ class SiteConfiguration
     private $acceptClientHints = [];
     private string $cookiePath = '/';
     private string $cookieSessionName = 'ACC';
+    private array $offline = ['offline' => false, 'reason' => '', 'culprit' => ''];
 
 
     /**
@@ -1084,5 +1085,17 @@ class SiteConfiguration
     public function getCookieSessionName(): string
     {
         return $this->cookieSessionName;
+    }
+
+    public function setOffline(array $offline): SiteConfiguration
+    {
+        $this->offline = $offline;
+
+        return $this;
+    }
+
+    public function getOffline(): array
+    {
+        return $this->offline;
     }
 }

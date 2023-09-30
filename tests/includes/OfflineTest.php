@@ -29,29 +29,18 @@ class OfflineTest extends TestCase
 
     public function testIsOffline()
     {
-        global $dontUseDb;
+        global $siteConfiguration;
 
         $offline = new Offline();
 
-        $dontUseDb = true;
+        $siteConfiguration->setOffline(['offline' => true]);
 
-        $this->assertEquals($offline->isOffline(), $dontUseDb);
-        $this->assertNotEquals($offline->isOffline(), !$dontUseDb);
+        $this->assertEquals($offline->isOffline($siteConfiguration), true);
 
-        $dontUseDb = false;
+        $siteConfiguration->setOffline(['offline' => false]);
 
-        $this->assertEquals($offline->isOffline(), $dontUseDb);
-        $this->assertNotEquals($offline->isOffline(), !$dontUseDb);
+        $this->assertEquals($offline->isOffline($siteConfiguration), false);
 
-        $dontUseDb = true;
-
-        $this->assertEquals($offline->isOffline(), $dontUseDb);
-        $this->assertNotEquals($offline->isOffline(), !$dontUseDb);
-
-        $dontUseDb = false;
-
-        $this->assertEquals($offline->isOffline(), $dontUseDb);
-        $this->assertNotEquals($offline->isOffline(), !$dontUseDb);
     }
 
     public function testGetOfflineMessage()
