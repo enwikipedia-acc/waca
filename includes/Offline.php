@@ -21,25 +21,21 @@ class Offline
      * Determines if the tool is offline
      * @return bool
      */
-    public static function isOffline()
+    public static function isOffline(SiteConfiguration $configuration): bool
     {
-        global $dontUseDb;
-
-        return (bool)$dontUseDb;
+        return (bool)$configuration->getOffline()['offline'];
     }
 
     /**
      * Gets the offline message
      *
-     * @param bool        $external
-     * @param null|string $message
-     *
-     * @return string
      * @throws SmartyException
      */
-    public static function getOfflineMessage($external, $message = null)
+    public static function getOfflineMessage(bool $external, SiteConfiguration $configuration, ?string $message = null): string
     {
-        global $dontUseDbCulprit, $dontUseDbReason, $baseurl;
+        $baseurl = $configuration->getBaseUrl();
+        $culprit = $configuration->getOffline()['culprit'];
+        $reason = $configuration->getOffline()['reason'];
 
         $smarty = new Smarty();
         $smarty->assign("baseurl", $baseurl);
@@ -60,13 +56,13 @@ class Offline
             // Use the provided message if possible
             if ($message === null) {
                 $hideCulprit = false;
-                $message = $dontUseDbReason;
+                $message = $reason;
             }
 
             $smarty->assign("hideCulprit", $hideCulprit);
-            $smarty->assign("dontUseDbCulprit", $dontUseDbCulprit);
+            $smarty->assign("dontUseDbCulprit", $culprit);
             $smarty->assign("dontUseDbReason", $message);
-            $smarty->assign("alerts", array());
+            $smarty->assign("alerts", []);
             $smarty->assign('currentUser', User::getCommunity());
             $smarty->assign('skin', 'main');
             $smarty->assign('currentDomain', null);
