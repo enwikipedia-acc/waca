@@ -277,4 +277,6 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setEmailSender($emailSender)
     ->setIdentificationNoticeboardPage($identificationNoticeboardPage)
     ->setIdentificationNoticeboardWebserviceEndpoint($identificationNoticeboardApi)
-    ->setAcceptClientHints($acceptClientHints);
+    ->setAcceptClientHints($acceptClientHints)
+    ->setOffline(['offline' => $dontUseDb == 1, 'reason' => $dontUseDbReason, 'culprit' => $dontUseDbCulprit])
+;
