@@ -97,7 +97,7 @@ class User extends DataObject
 
     public static function getCommunity(): CommunityUser
     {
-        if (self::$community === null) {
+        if (!self::$community instanceof CommunityUser) {
             self::$community = new CommunityUser();
         }
 
