@@ -17,18 +17,18 @@ namespace Waca;
  */
 class SiteConfiguration
 {
-    private $baseUrl;
-    private $filePath;
+    private $baseUrl = 'https://accounts.wmflabs.org';
+    private $filePath = __DIR__ . '/..';
     private $schemaVersion = 49;
-    private $debuggingTraceEnabled;
-    private $debuggingCssBreakpointsEnabled;
+    private $debuggingTraceEnabled = false;
+    private $debuggingCssBreakpointsEnabled = false;
     private $dataClearIp = '127.0.0.1';
     private $dataClearEmail = 'acc@toolserver.org';
     private $dataClearInterval = '15 DAY';
     private $forceIdentification = true;
     private $identificationCacheExpiry = '1 DAY';
     private $metaWikimediaWebServiceEndpoint = 'https://meta.wikimedia.org/w/api.php';
-    private $enforceOAuth = true;
+    private $enforceOAuth = false;
     private $emailConfirmationEnabled = true;
     private $emailConfirmationExpiryDays = 7;
     private $miserModeLimit = 25;
@@ -57,7 +57,7 @@ class SiteConfiguration
     private $torExitPaths = array();
     private $creationBotUsername = '';
     private $creationBotPassword = '';
-    private $curlCookieJar = null;
+    private $curlCookieJar = __DIR__ . '/../../cookies.txt';
     private $yubicoApiId = 0;
     private $yubicoApiKey = "";
     private $totpEncryptionKey = "1234";
@@ -66,13 +66,15 @@ class SiteConfiguration
     private $registrationAllowed = true;
     private $cspReportUri = null;
     private $resourceCacheEpoch = 1;
-    private $commonEmailDomains = [];
+    private $commonEmailDomains = ['gmail.com', 'hotmail.com', 'outlook.com'];
     private $banMaxIpBlockRange = [4 => 20, 6 => 48];
     private $banMaxIpRange = [4 => 16, 6 => 32];
     private $jobQueueBatchSize = 10;
-    private $amqpConfiguration = ['host' => 'localhost', 'port' => 5672, 'user' => 'guest', 'password' => 'guest', 'exchange' => ''];
+    private $amqpConfiguration = ['host' => 'localhost', 'port' => 5672, 'user' => 'guest', 'password' => 'guest', 'vhost' => '/', 'exchange' => '', 'tls' => false];
     private $emailSender = 'accounts@wmflabs.org';
     private $acceptClientHints = [];
+    private string $cookiePath = '/';
+    private string $cookieSessionName = 'ACC';
 
 
     /**
@@ -1058,5 +1060,29 @@ class SiteConfiguration
     public function getAcceptClientHints(): array
     {
         return $this->acceptClientHints;
+    }
+
+    public function setCookiePath(string $cookiePath): SiteConfiguration
+    {
+        $this->cookiePath = $cookiePath;
+
+        return $this;
+    }
+
+    public function getCookiePath(): string
+    {
+        return $this->cookiePath;
+    }
+
+    public function setCookieSessionName(string $cookieSessionName): SiteConfiguration
+    {
+        $this->cookieSessionName = $cookieSessionName;
+
+        return $this;
+    }
+
+    public function getCookieSessionName(): string
+    {
+        return $this->cookieSessionName;
     }
 }
