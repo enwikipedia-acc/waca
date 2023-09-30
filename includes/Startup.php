@@ -8,17 +8,12 @@
 
 namespace Waca;
 
-use Waca\Router\RequestRouter;
+chdir(__DIR__ . '/..');
 
-/*
- * Internal interface script
- *
- * THIS IS AN ENTRY POINT
- */
+require_once 'includes/AutoLoader.php';
+spl_autoload_register('Waca\\AutoLoader::load');
+require_once 'vendor/autoload.php';
 
-require_once('includes/Startup.php');
+$siteConfiguration = new SiteConfiguration();
 
-global $siteConfiguration;
-$application = new WebStart($siteConfiguration, new RequestRouter());
-
-$application->run();
+require_once 'config.inc.php';

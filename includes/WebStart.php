@@ -154,6 +154,8 @@ class WebStart extends ApplicationBase
         }
 
         // Start up sessions
+        ini_set('session.cookie_path', $this->getConfiguration()->getCookiePath());
+        ini_set('session.name', $this->getConfiguration()->getCookieSessionName());
         Session::start();
 
         // Check the user is allowed to be logged in still. This must be before we call any user-loading functions and

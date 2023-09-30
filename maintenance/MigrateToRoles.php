@@ -10,10 +10,7 @@ namespace Waca;
 
 use Waca\ConsoleTasks\MigrateToRoles;
 
-chdir(__DIR__);
-chdir('..');
-
-require_once('config.inc.php');
+require_once(__DIR__ . '/../includes/Startup.php');
 
 global $siteConfiguration;
 

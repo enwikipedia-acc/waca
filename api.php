@@ -16,7 +16,7 @@ use Waca\Router\ApiRequestRouter;
  * THIS IS AN ENTRY POINT
  */
 
-require_once('config.inc.php');
+require_once('includes/Startup.php');
 
 global $siteConfiguration;
 $application = new WebStart($siteConfiguration, new ApiRequestRouter());

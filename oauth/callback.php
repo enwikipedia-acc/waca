@@ -16,10 +16,7 @@ use Waca\Router\OAuthRequestRouter;
  * THIS IS AN ENTRY POINT
  */
 
-// Change directory so we load files from the right place.
-chdir("..");
-
-require_once('config.inc.php');
+require_once(__DIR__ . '/../includes/Startup.php');
 
 global $siteConfiguration;
 $application = new WebStart($siteConfiguration, new OAuthRequestRouter());

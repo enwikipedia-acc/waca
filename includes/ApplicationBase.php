@@ -62,6 +62,23 @@ abstract class ApplicationBase
      */
     protected function setupEnvironment()
     {
+        foreach ([
+            'mbstring', // unicode and stuff
+            'pdo',
+            'pdo_mysql', // new database module
+            'session',
+            'date',
+            'pcre', // core stuff
+            'curl', // mediawiki api access etc
+            'openssl', // token generation
+        ] as $x) {
+            if (!extension_loaded($x)) {
+                throw new EnvironmentException("PHP extension `$x` is required.");
+            }
+        }
+
+        ini_set('user_agent', $this->getConfiguration()->getUserAgent());
+
         $this->setupDatabase();
 
         return true;
