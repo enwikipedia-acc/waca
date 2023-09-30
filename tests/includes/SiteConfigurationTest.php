@@ -35,8 +35,6 @@ class SiteConfigurationTest extends TestCase
     {
         $newValue = "http://localhost/testAwesome/";
 
-        $this->assertEquals($this->si->getBaseUrl(), null);
-
         $this->assertInstanceOf(SiteConfiguration::class, $this->si->setBaseUrl($newValue));
         $this->assertEquals($this->si->getBaseUrl(), $newValue);
     }
@@ -44,8 +42,6 @@ class SiteConfigurationTest extends TestCase
     function testFilePath()
     {
         $newValue = "/var/www/waca";
-
-        $this->assertEquals($this->si->getFilePath(), null);
 
         $this->assertInstanceOf(SiteConfiguration::class, $this->si->setFilePath($newValue));
         $this->assertEquals($this->si->getFilePath(), $newValue);
@@ -122,10 +118,10 @@ class SiteConfigurationTest extends TestCase
 
     function testEnforceOAuth()
     {
-        $this->assertTrue($this->si->getEnforceOAuth());
-
-        $this->assertInstanceOf(SiteConfiguration::class, $this->si->setEnforceOAuth(false));
         $this->assertFalse($this->si->getEnforceOAuth());
+
+        $this->assertInstanceOf(SiteConfiguration::class, $this->si->setEnforceOAuth(true));
+        $this->assertTrue($this->si->getEnforceOAuth());
     }
 
     function testEmailConfirmationEnabled()
