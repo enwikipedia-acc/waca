@@ -177,60 +177,11 @@ $acceptClientHints = [];
  **     THEY WILL NOT BE CHANGABLE BY THE LOCAL CONFIGURATION FILE.       **
  ***************************************************************************/
 
-// Retriving the local configuration file.
+// Retrieving the local configuration file.
 require_once('config.local.inc.php');
 
-$cDatabaseConfig = array(
-    'dsrcname' => 'mysql:host=' . $toolserver_host . ';dbname=' . $toolserver_database,
-    'username' => $toolserver_username,
-    'password' => $toolserver_password,
-    'options'  => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4 COLLATE utf8mb4_unicode_520_ci'),
-);
-
-// //Keep the included files from being executed.
-define("ACC", 1);
-
-// Sets the values of the cookie configuration options.
-ini_set('session.cookie_path', $cookiepath);
-ini_set('session.name', $sessionname);
-ini_set('user_agent', $toolUserAgent);
-
-foreach (array(
-    "mbstring", // unicode and stuff
-    "pdo",
-    "pdo_mysql", // new database module
-    "session",
-    "date",
-    "pcre", // core stuff
-    "curl", // mediawiki api access etc
-    "openssl", // token generation
-) as $x) {
-    if (!extension_loaded($x)) {
-        die("extension $x is required.");
-    }
-}
-
-// Set up the AutoLoader
-require_once(__DIR__ . "/includes/AutoLoader.php");
-spl_autoload_register('Waca\\AutoLoader::load');
-require_once(__DIR__ . '/vendor/autoload.php');
-
-// Crap that's needed for libraries. >:(
-/**
- * Don't use me. I'm only here because the MediaWiki OAuth library we're using requires it.
- *
- * @param $section
- * @param $message
- * @scrutinizer ignore-unused
- */
-function wfDebugLog($section, $message)
-{
-}
-
 // Initialise the site configuration object
-/** @noinspection PhpFullyQualifiedNameUsageInspection */
-$siteConfiguration = new \Waca\SiteConfiguration();
-
+global $siteConfiguration;
 $siteConfiguration->setBaseUrl($baseurl)
     ->setFilePath(__DIR__)
     ->setDebuggingTraceEnabled($enableErrorTrace)
@@ -277,4 +228,11 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setIdentificationNoticeboardWebserviceEndpoint($identificationNoticeboardApi)
     ->setAcceptClientHints($acceptClientHints)
     ->setOffline(['offline' => $dontUseDb == 1, 'reason' => $dontUseDbReason, 'culprit' => $dontUseDbCulprit])
+    ->setDatabaseConfig([
+        'datasource' => 'mysql:host=' . $toolserver_host . ';dbname=' . $toolserver_database,
+        'username' => $toolserver_username,
+        'password' => $toolserver_password,
+    ])
+    ->setCookiePath($cookiepath)
+    ->setCookieSessionName($sessionname)
 ;

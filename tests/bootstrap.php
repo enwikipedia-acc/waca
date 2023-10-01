@@ -22,7 +22,7 @@ if (!file_exists($localconf)) {
 // Load the config file for the autoloader.
 
 require_once __DIR__ . '/../includes/SiteConfiguration.php';
-require_once __DIR__ . '/../config.inc.php';
+require_once __DIR__ . '/../includes/Startup.php';
 require_once __DIR__ . '/../includes/PdoDatabase.php';
 require_once __DIR__ . '/../smarty-plugins/modifier.timespan.php';
 
