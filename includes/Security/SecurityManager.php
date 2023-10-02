@@ -168,6 +168,9 @@ final class SecurityManager
             $userRoles[] = 'loggedIn';
 
             if ($user->isActive()) {
+                // All active users get +user
+                $userRoles[] = 'user';
+
                 $domain = Domain::getCurrent($user->getDatabase());
                 $ur = UserRole::getForUser($user->getId(), $user->getDatabase(), $domain->getId());
 
