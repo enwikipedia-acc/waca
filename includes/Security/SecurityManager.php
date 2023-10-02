@@ -17,13 +17,13 @@ use Waca\IIdentificationVerifier;
 final class SecurityManager implements ISecurityManager
 {
     private IIdentificationVerifier $identificationVerifier;
-    private RoleConfiguration $roleConfiguration;
+    private RoleConfigurationBase $roleConfiguration;
 
     private array $cache = [];
 
     public function __construct(
         IIdentificationVerifier $identificationVerifier,
-        RoleConfiguration $roleConfiguration
+        RoleConfigurationBase $roleConfiguration
     ) {
         $this->identificationVerifier = $identificationVerifier;
         $this->roleConfiguration = $roleConfiguration;
@@ -41,7 +41,7 @@ final class SecurityManager implements ISecurityManager
     {
         $this->getCachedActiveRoles($user, $activeRoles, $inactiveRoles);
 
-        $availableRights = $this->flattenRoles($activeRoles);
+        $availableRights = $this->roleConfiguration->getResultantRole($activeRoles);
         $testResult = $this->findResult($availableRights, $page, $route);
 
         if ($testResult !== null) {
@@ -50,7 +50,7 @@ final class SecurityManager implements ISecurityManager
         }
 
         // No firm result yet, so continue testing the inactive roles so we can give a better error.
-        $inactiveRights = $this->flattenRoles($inactiveRoles);
+        $inactiveRights = $this->roleConfiguration->getResultantRole($inactiveRoles);
         $testResult = $this->findResult($inactiveRights, $page, $route);
 
         if ($testResult === self::ALLOWED) {
@@ -75,26 +75,26 @@ final class SecurityManager implements ISecurityManager
     {
         if (isset($pseudoRole[$page])) {
             // check for deny on catch-all route
-            if (isset($pseudoRole[$page][RoleConfiguration::ALL])) {
-                if ($pseudoRole[$page][RoleConfiguration::ALL] === RoleConfiguration::ACCESS_DENY) {
+            if (isset($pseudoRole[$page][RoleConfigurationBase::ALL])) {
+                if ($pseudoRole[$page][RoleConfigurationBase::ALL] === RoleConfigurationBase::ACCESS_DENY) {
                     return self::ERROR_DENIED;
                 }
             }
 
             // check normal route
             if (isset($pseudoRole[$page][$route])) {
-                if ($pseudoRole[$page][$route] === RoleConfiguration::ACCESS_DENY) {
+                if ($pseudoRole[$page][$route] === RoleConfigurationBase::ACCESS_DENY) {
                     return self::ERROR_DENIED;
                 }
 
-                if ($pseudoRole[$page][$route] === RoleConfiguration::ACCESS_ALLOW) {
+                if ($pseudoRole[$page][$route] === RoleConfigurationBase::ACCESS_ALLOW) {
                     return self::ALLOWED;
                 }
             }
 
             // check for allowed on catch-all route
-            if (isset($pseudoRole[$page][RoleConfiguration::ALL])) {
-                if ($pseudoRole[$page][RoleConfiguration::ALL] === RoleConfiguration::ACCESS_ALLOW) {
+            if (isset($pseudoRole[$page][RoleConfigurationBase::ALL])) {
+                if ($pseudoRole[$page][RoleConfigurationBase::ALL] === RoleConfigurationBase::ACCESS_ALLOW) {
                     return self::ALLOWED;
                 }
             }
@@ -102,44 +102,6 @@ final class SecurityManager implements ISecurityManager
 
         // return indeterminate result
         return null;
-    }
-
-    /**
-     * Takes an array of roles and flattens the values to a single set.
-     */
-    private function flattenRoles(array $activeRoles): array
-    {
-        $result = array();
-
-        $roleConfig = $this->roleConfiguration->getApplicableRoles($activeRoles);
-
-        // Iterate over every page in every role
-        foreach ($roleConfig as $role) {
-            foreach ($role as $page => $pageRights) {
-                // Create holder in result for this page
-                if (!isset($result[$page])) {
-                    $result[$page] = array();
-                }
-
-                foreach ($pageRights as $action => $permission) {
-                    // Deny takes precedence, so if it's set, don't change it.
-                    if (isset($result[$page][$action])) {
-                        if ($result[$page][$action] === RoleConfiguration::ACCESS_DENY) {
-                            continue;
-                        }
-                    }
-
-                    if ($permission === RoleConfiguration::ACCESS_DEFAULT) {
-                        // Configured to do precisely nothing.
-                        continue;
-                    }
-
-                    $result[$page][$action] = $permission;
-                }
-            }
-        }
-
-        return $result;
     }
 
     public function getActiveRoles(User $user, ?array &$activeRoles, ?array &$inactiveRoles)
@@ -199,7 +161,7 @@ final class SecurityManager implements ISecurityManager
         $inactiveRoles = $this->cache[$user->getId()]['inactive'];
     }
 
-    public function getRoleConfiguration()
+    public function getRoleConfiguration(): RoleConfigurationBase
     {
         return $this->roleConfiguration;
     }

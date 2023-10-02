@@ -13,7 +13,7 @@ use Waca\DataObjects\Comment;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\PdoDatabase;
-use Waca\Security\RoleConfiguration;
+use Waca\Security\RoleConfigurationBase;
 use Waca\Tasks\InternalPageBase;
 
 class PageListFlaggedComments extends InternalPageBase
@@ -98,8 +98,8 @@ class PageListFlaggedComments extends InternalPageBase
         $this->assign('seeCheckuserComments', $seeCheckuserComments);
 
         $this->assign('editOthersComments', $this->barrierTest('editOthers', $currentUser, PageEditComment::class));
-        $this->assign('editComments', $this->barrierTest(RoleConfiguration::MAIN, $currentUser, PageEditComment::class));
-        $this->assign('canUnflag', $this->barrierTest('unflag', $currentUser, PageFlagComment::class) && $this->barrierTest(RoleConfiguration::MAIN, $currentUser, PageFlagComment::class));
+        $this->assign('editComments', $this->barrierTest(RoleConfigurationBase::MAIN, $currentUser, PageEditComment::class));
+        $this->assign('canUnflag', $this->barrierTest('unflag', $currentUser, PageFlagComment::class) && $this->barrierTest(RoleConfigurationBase::MAIN, $currentUser, PageFlagComment::class));
     }
 
     private function copyCommentData(Comment $object, array &$data, PdoDatabase $database): void
