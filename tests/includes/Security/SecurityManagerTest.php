@@ -11,7 +11,7 @@ namespace Waca\Tests\Security;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit\Framework\TestCase;
 use Waca\DataObjects\User;
-use Waca\IdentificationVerifier;
+use Waca\IIdentificationVerifier;
 use Waca\Security\RoleConfiguration;
 use Waca\Security\SecurityManager;
 use Waca\Security\ISecurityManager;
@@ -32,7 +32,7 @@ class SecurityManagerTest extends TestCase
     {
         $this->user = $this->getMockBuilder(User::class)->getMock();
 
-        $this->identificationVerifier = $this->getMockBuilder(IdentificationVerifier::class)
+        $this->identificationVerifier = $this->getMockBuilder(IIdentificationVerifier::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
