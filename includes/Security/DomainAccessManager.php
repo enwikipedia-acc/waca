@@ -13,21 +13,12 @@ use Waca\DataObject;
 use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
+use Waca\Exceptions\DomainSwitchNotAllowedException;
 use Waca\Helpers\PreferenceManager;
 use Waca\WebRequest;
 
-class DomainAccessManager
+class DomainAccessManager implements IDomainAccessManager
 {
-    /**
-     * @var SecurityManager
-     */
-    private $securityManager;
-
-    public function __construct(SecurityManager $securityManager)
-    {
-        $this->securityManager = $securityManager;
-    }
-
     /**
      * @param User $user
      *
@@ -54,7 +45,7 @@ class DomainAccessManager
             WebRequest::setActiveDomain($newDomain);
         }
         else {
-            throw new AccessDeniedException($this->securityManager, $this);
+            throw new DomainSwitchNotAllowedException();
         }
     }
 

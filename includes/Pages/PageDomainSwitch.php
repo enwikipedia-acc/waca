@@ -11,6 +11,8 @@ namespace Waca\Pages;
 
 use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
+use Waca\Exceptions\AccessDeniedException;
+use Waca\Exceptions\DomainSwitchNotAllowedException;
 use Waca\Router\RequestRouter;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -40,7 +42,12 @@ class PageDomainSwitch extends InternalPageBase
             return;
         }
 
-        $this->getDomainAccessManager()->switchDomain($currentUser, $newDomain);
+        try {
+            $this->getDomainAccessManager()->switchDomain($currentUser, $newDomain);
+        }
+        catch(DomainSwitchNotAllowedException $ex){
+            throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
+        }
 
         // try to stay on the same page if possible.
         // This only checks basic ACLs and not domain privileges, so this may still result in a 403.

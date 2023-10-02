@@ -15,6 +15,7 @@ use Waca\DataObjects\User;
 use Waca\IdentificationVerifier;
 use Waca\Security\RoleConfiguration;
 use Waca\Security\SecurityManager;
+use Waca\Security\ISecurityManager;
 
 /**
  * Class SecurityManagerTest
@@ -59,7 +60,7 @@ class SecurityManagerTest extends TestCase
         $result = $securityManager->allows($page, 'main', User::getCommunity());
 
         // assert
-        $this->assertEquals(SecurityManager::ALLOWED, $result);
+        $this->assertEquals(ISecurityManager::ALLOWED, $result);
     }
 
     public function testPublicAccessDenied()
@@ -84,6 +85,6 @@ class SecurityManagerTest extends TestCase
         $result = $securityManager->allows($page, 'main', User::getCommunity());
 
         // assert
-        $this->assertEquals(SecurityManager::ERROR_DENIED, $result);
+        $this->assertEquals(ISecurityManager::ERROR_DENIED, $result);
     }
 }
