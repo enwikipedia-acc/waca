@@ -20,13 +20,16 @@ final class SecurityManager implements ISecurityManager
     private RoleConfigurationBase $roleConfiguration;
 
     private array $cache = [];
+    private IUserRoleLoader $userRoleLoader;
 
     public function __construct(
         IIdentificationVerifier $identificationVerifier,
-        RoleConfigurationBase $roleConfiguration
+        RoleConfigurationBase $roleConfiguration,
+        IUserRoleLoader $userRoleLoader
     ) {
         $this->identificationVerifier = $identificationVerifier;
         $this->roleConfiguration = $roleConfiguration;
+        $this->userRoleLoader = $userRoleLoader;
     }
 
     /**
@@ -60,6 +63,65 @@ final class SecurityManager implements ISecurityManager
 
         // Other options from the secondary test are denied and inconclusive, which at this point defaults to denied.
         return self::ERROR_DENIED;
+    }
+
+    public function getActiveRoles(User $user, ?array &$activeRoles, ?array &$inactiveRoles)
+    {
+        // Default to the community user here, because the main user is logged out
+        $identified = false;
+        $userRoles = array('public');
+
+        // if we're not the community user, get our real rights.
+        if (!$user->isCommunityUser()) {
+            // Check the user's status - only active users are allowed the effects of roles
+
+            $userRoles[] = 'loggedIn';
+
+            if ($user->isActive()) {
+                // All active users get +user
+                $userRoles[] = 'user';
+
+                $loadedRoles = $this->userRoleLoader->loadRolesForUser($user);
+
+                // NOTE: public is still in this array.
+                $userRoles = array_merge($userRoles, $loadedRoles);
+
+                $identified = $user->isIdentified($this->identificationVerifier);
+            }
+        }
+
+        $activeRoles = array();
+        $inactiveRoles = array();
+
+        foreach ($userRoles as $v) {
+            if ($this->roleConfiguration->roleNeedsIdentification($v)) {
+                if ($identified) {
+                    $activeRoles[] = $v;
+                }
+                else {
+                    $inactiveRoles[] = $v;
+                }
+            }
+            else {
+                $activeRoles[] = $v;
+            }
+        }
+    }
+
+    public function getCachedActiveRoles(User $user, ?array &$activeRoles, ?array &$inactiveRoles): void
+    {
+        if (!array_key_exists($user->getId(), $this->cache)) {
+            $this->getActiveRoles($user, $retrievedActiveRoles, $retrievedInactiveRoles);
+            $this->cache[$user->getId()] = ['active' => $retrievedActiveRoles, 'inactive' => $retrievedInactiveRoles];
+        }
+
+        $activeRoles = $this->cache[$user->getId()]['active'];
+        $inactiveRoles = $this->cache[$user->getId()]['inactive'];
+    }
+
+    public function getAvailableRoles(): array
+    {
+        return $this->roleConfiguration->getAvailableRoles();
     }
 
     /**
@@ -102,67 +164,5 @@ final class SecurityManager implements ISecurityManager
 
         // return indeterminate result
         return null;
-    }
-
-    public function getActiveRoles(User $user, ?array &$activeRoles, ?array &$inactiveRoles)
-    {
-        // Default to the community user here, because the main user is logged out
-        $identified = false;
-        $userRoles = array('public');
-
-        // if we're not the community user, get our real rights.
-        if (!$user->isCommunityUser()) {
-            // Check the user's status - only active users are allowed the effects of roles
-
-            $userRoles[] = 'loggedIn';
-
-            if ($user->isActive()) {
-                // All active users get +user
-                $userRoles[] = 'user';
-
-                $domain = Domain::getCurrent($user->getDatabase());
-                $ur = UserRole::getForUser($user->getId(), $user->getDatabase(), $domain->getId());
-
-                // NOTE: public is still in this array.
-                foreach ($ur as $r) {
-                    $userRoles[] = $r->getRole();
-                }
-
-                $identified = $user->isIdentified($this->identificationVerifier);
-            }
-        }
-
-        $activeRoles = array();
-        $inactiveRoles = array();
-
-        foreach ($userRoles as $v) {
-            if ($this->roleConfiguration->roleNeedsIdentification($v)) {
-                if ($identified) {
-                    $activeRoles[] = $v;
-                }
-                else {
-                    $inactiveRoles[] = $v;
-                }
-            }
-            else {
-                $activeRoles[] = $v;
-            }
-        }
-    }
-
-    public function getCachedActiveRoles(User $user, ?array &$activeRoles, ?array &$inactiveRoles): void
-    {
-        if (!array_key_exists($user->getId(), $this->cache)) {
-            $this->getActiveRoles($user, $retrievedActiveRoles, $retrievedInactiveRoles);
-            $this->cache[$user->getId()] = ['active' => $retrievedActiveRoles, 'inactive' => $retrievedInactiveRoles];
-        }
-
-        $activeRoles = $this->cache[$user->getId()]['active'];
-        $inactiveRoles = $this->cache[$user->getId()]['inactive'];
-    }
-
-    public function getRoleConfiguration(): RoleConfigurationBase
-    {
-        return $this->roleConfiguration;
     }
 }

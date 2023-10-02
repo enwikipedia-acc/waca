@@ -636,7 +636,7 @@ class PageUserManagement extends InternalPageBase
      */
     private function getRoleData($activeRoles)
     {
-        $availableRoles = $this->getSecurityManager()->getRoleConfiguration()->getAvailableRoles();
+        $availableRoles = $this->getSecurityManager()->getAvailableRoles();
 
         $currentUser = User::getCurrent($this->getDatabase());
         $this->getSecurityManager()->getActiveRoles($currentUser, $userRoles, $inactiveRoles);

@@ -23,6 +23,7 @@ use Waca\Security\DomainAccessManager;
 use Waca\Security\RoleConfiguration;
 use Waca\Security\SecurityManager;
 use Waca\Security\TokenManager;
+use Waca\Security\UserRoleLoader;
 use Waca\Tasks\ITask;
 use Waca\Tasks\InternalPageBase;
 use Waca\Tasks\PageBase;
@@ -79,7 +80,8 @@ class WebStart extends ApplicationBase
                 $page->setTypeAheadHelper(new TypeAheadHelper());
 
                 $identificationVerifier = new IdentificationVerifier($page->getHttpHelper(), $siteConfiguration, $database);
-                $page->setSecurityManager(new SecurityManager($identificationVerifier, new RoleConfiguration()));
+                $page->setSecurityManager(
+                    new SecurityManager($identificationVerifier, new RoleConfiguration(), new UserRoleLoader()));
 
                 if ($siteConfiguration->getTitleBlacklistEnabled()) {
                     $page->setBlacklistHelper(new BlacklistHelper($page->getHttpHelper(), $database, $siteConfiguration));

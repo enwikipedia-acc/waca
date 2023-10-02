@@ -12,7 +12,6 @@ namespace Waca\Security;
 use Waca\DataObject;
 use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
-use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\DomainSwitchNotAllowedException;
 use Waca\Helpers\PreferenceManager;
 use Waca\WebRequest;
@@ -39,7 +38,7 @@ class DomainAccessManager implements IDomainAccessManager
             return $object->getId();
         };
 
-        $allowed = in_array($newDomain->getId(), array_map($mapToId, self::getAllowedDomains($user)));
+        $allowed = in_array($newDomain->getId(), array_map($mapToId, $this->getAllowedDomains($user)));
 
         if ($allowed) {
             WebRequest::setActiveDomain($newDomain);
