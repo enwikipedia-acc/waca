@@ -106,7 +106,11 @@ class AccessDeniedException extends ReadableException
             ->limit(1)
             ->fetch();
 
-        return $logs[0]->getComment();
+        if (count($logs) > 0) {
+            return $logs[0]->getComment();
+        }
+
+        return null;
     }
 
     protected function getSecurityManager(): SecurityManager

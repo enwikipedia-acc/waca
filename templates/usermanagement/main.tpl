@@ -46,7 +46,7 @@
                 <div class="card">
                     <div class="card-header position-relative py-0">
                         <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#userListAccordion" data-target="#collapseUsers">
-                            Users
+                            All users
                         </button>
                     </div>
                     <div id="collapseUsers" class="collapse" data-parent="#userListAccordion">
