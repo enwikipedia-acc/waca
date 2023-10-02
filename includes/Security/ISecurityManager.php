@@ -36,5 +36,5 @@ interface ISecurityManager
 
     public function getCachedActiveRoles(User $user, ?array &$activeRoles, ?array &$inactiveRoles): void;
 
-    public function getRoleConfiguration(): RoleConfigurationBase;
+    public function getAvailableRoles(): array;
 }
