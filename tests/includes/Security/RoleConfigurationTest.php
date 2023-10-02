@@ -10,96 +10,448 @@
 namespace Waca\Tests\Security;
 
 use PHPUnit\Framework\TestCase;
-use Waca\Security\RoleConfiguration;
+use Waca\Security\RoleConfigurationBase;
 
 class RoleConfigurationTest extends TestCase
 {
-    public function testReturnsOnlyApplicableRoles()
+    private array $roleConfig;
+
+    protected function setUp(): void
     {
-        // arrange
-        $roleConfiguration = new RoleConfiguration(
-            array(
-                'public'    => array(),
-                'user'      => array(),
-                'admin'     => array(),
-                'checkuser' => array(),
-            ),
-            array('public'));
-
-        // act
-        $result = $roleConfiguration->getApplicableRoles(array('public', 'user', 'admin'));
-
-        // assert
-        $this->assertEquals(array('public', 'user', 'admin'), array_keys($result));
+        // Reset roleConfig
+        $this->roleConfig = [
+            'public'   => [
+                'PageA' => [
+                    'main' => RoleConfigurationBase::ACCESS_ALLOW,
+                ],
+            ],
+            'loggedIn' => [
+                'PageB' => [
+                    'main' => RoleConfigurationBase::ACCESS_ALLOW,
+                ],
+            ],
+            'user'     => [
+                'PageC' => [
+                    'main' => RoleConfigurationBase::ACCESS_ALLOW,
+                ],
+            ],
+        ];
     }
 
-    public function testReturnsOnlyApplicableRolesWithNonexistent()
+    public function testGetAvailableRoles()
     {
         // arrange
-        $roleConfiguration = new RoleConfiguration(
-            array(
-                'public'    => array(),
-                'user'      => array(),
-                'admin'     => array(),
-                'checkuser' => array(),
-            ),
-            array('public'));
+        $roleConfig = $this->roleConfig;
+        $roleConfig['admin'] = [
+            '_description' => 'example role',
+            '_editableBy'  => [],
+            'PageAdmin'    => [
+                'main' => RoleConfigurationBase::ACCESS_ALLOW,
+            ],
+        ];
+
+        $roleConfig['example'] = [
+            '_description' => 'example role',
+            '_editableBy'  => [],
+            '_hidden'      => true,
+            'PageHidden'   => [
+                'main' => RoleConfigurationBase::ACCESS_ALLOW,
+            ],
+        ];
+
+        $idExempt = [];
+
+        $roleConfig = new class($roleConfig, $idExempt) extends RoleConfigurationBase {
+            public function __construct($r, $i)
+            {
+                parent::__construct($r, $i);
+            }
+        };
 
         // act
-        $result = $roleConfiguration->getApplicableRoles(array('public', 'user', 'blargh'));
+        $availableRoles = $roleConfig->getAvailableRoles();
 
         // assert
-        $this->assertEquals(array('public', 'user'), array_keys($result));
+        $this->assertCount(1, $availableRoles);
+        $this->assertArrayHasKey('admin', $availableRoles);
+
+        // shouldn't return a hidden role
+        $this->assertArrayNotHasKey('example', $availableRoles);
+
+        // shouldn't return an implicit role
+        $this->assertArrayNotHasKey('user', $availableRoles);
+        $this->assertArrayNotHasKey('public', $availableRoles);
+        $this->assertArrayNotHasKey('loggedIn', $availableRoles);
     }
 
-    public function testReturnsChildRolesToo()
+    public function testIdentificationExemptRole()
     {
         // arrange
-        $roleConfiguration = new RoleConfiguration(
-            array(
-                'public'    => array(),
-                'user'      => array(),
-                'admin'     => array(),
-                'checkuser' => array(
-                    '_childRoles' => array('admin'),
-                ),
-            ),
-            array('public'));
+        $idExempt = ['public', 'loggedIn'];
 
-        // act
-        $result = $roleConfiguration->getApplicableRoles(array('public', 'user', 'checkuser'));
+        $roleConfig = new class($this->roleConfig, $idExempt) extends RoleConfigurationBase {
+            public function __construct($r, $i)
+            {
+                parent::__construct($r, $i);
+            }
+        };
 
-        // assert
-        $this->assertEquals(array('public', 'user', 'checkuser', 'admin'), array_keys($result));
+        // act; assert
+        // exempt roles from above
+        $this->assertFalse($roleConfig->roleNeedsIdentification('public'));
+        $this->assertFalse($roleConfig->roleNeedsIdentification('loggedIn'));
+
+        // non-exempt role not listed
+        $this->assertTrue($roleConfig->roleNeedsIdentification('user'));
+
+        // non-existent role still needs identification
+        $this->assertTrue($roleConfig->roleNeedsIdentification('nonExistent'));
     }
 
-    public function testAvailableRoles()
+    public function testResultantRoleBasic()
     {
-        $roleConfiguration = new RoleConfiguration(
-            array(
-                'public' => array(),
-                'loggedIn' => array(),
-                'user'   => array(
-                    '_description' => 'users',
-                    '_editableBy' => array(),),
-                'admin'  => array(
-                    '_childRoles' => array('foo'),
-                    '_description' => 'admins',
-                    '_editableBy' => array(),
-                ),
-                'foo'    => array(
-                    '_hidden' => true,
-                ),
-                'bar'    => array(
-                    '_hidden' => true,
-                ),
-            ),
-            array('public'));
+        // arrange
+        $roleConfig = $this->roleConfig;
+        $roleConfig['admin'] = [
+            '_description' => 'example role',
+            '_editableBy'  => [],
+            'PageAdmin'    => [
+                'main' => RoleConfigurationBase::ACCESS_ALLOW,
+            ],
+        ];
+
+        $roleConfig['example'] = [
+            '_description' => 'example role',
+            '_editableBy'  => [],
+            '_hidden'      => true,
+            'PageHidden'   => [
+                'main' => RoleConfigurationBase::ACCESS_ALLOW,
+            ],
+        ];
+
+        $roleConfig = new class($roleConfig) extends RoleConfigurationBase {
+            public function __construct($r)
+            {
+                parent::__construct($r, []);
+            }
+        };
 
         // act
-        $result = $roleConfiguration->getAvailableRoles();
+        $resultantRole = $roleConfig->getResultantRole(['public']);
 
         // assert
-        $this->assertEquals(array('user', 'admin'), array_keys($result));
+        $this->assertArrayHasKey('PageA', $resultantRole);
+        $this->assertArrayNotHasKey('PageB', $resultantRole);
+        $this->assertArrayNotHasKey('PageC', $resultantRole);
+        $this->assertArrayNotHasKey('PageAdmin', $resultantRole);
+        $this->assertArrayNotHasKey('PageHidden', $resultantRole);
+    }
+
+    public function testResultantRoleDualImplicit()
+    {
+        // arrange
+        $roleConfig = $this->roleConfig;
+        $roleConfig['admin'] = [
+            '_description' => 'example role',
+            '_editableBy'  => [],
+            'PageAdmin'    => [
+                'main' => RoleConfigurationBase::ACCESS_ALLOW,
+            ],
+        ];
+
+        $roleConfig['example'] = [
+            '_description' => 'example role',
+            '_editableBy'  => [],
+            '_hidden'      => true,
+            'PageHidden'   => [
+                'main' => RoleConfigurationBase::ACCESS_ALLOW,
+            ],
+        ];
+
+        $roleConfig = new class($roleConfig) extends RoleConfigurationBase {
+            public function __construct($r)
+            {
+                parent::__construct($r, []);
+            }
+        };
+
+        // act
+        $resultantRole = $roleConfig->getResultantRole(['public', 'loggedIn']);
+
+        // assert
+        $this->assertArrayHasKey('PageA', $resultantRole);
+        $this->assertArrayHasKey('PageB', $resultantRole);
+        $this->assertArrayNotHasKey('PageC', $resultantRole);
+        $this->assertArrayNotHasKey('PageAdmin', $resultantRole);
+        $this->assertArrayNotHasKey('PageHidden', $resultantRole);
+    }
+
+    public function testResultantRoleAllImplicitAndExplicit()
+    {
+        // arrange
+        $roleConfig = $this->roleConfig;
+        $roleConfig['admin'] = [
+            '_description' => 'example role',
+            '_editableBy'  => [],
+            'PageAdmin'    => [
+                'main' => RoleConfigurationBase::ACCESS_ALLOW,
+            ],
+        ];
+
+        $roleConfig['example'] = [
+            '_description' => 'example role',
+            '_editableBy'  => [],
+            '_hidden'      => true,
+            'PageHidden'   => [
+                'main' => RoleConfigurationBase::ACCESS_ALLOW,
+            ],
+        ];
+
+        $roleConfig = new class($roleConfig) extends RoleConfigurationBase {
+            public function __construct($r)
+            {
+                parent::__construct($r, []);
+            }
+        };
+
+        // act
+        $resultantRole = $roleConfig->getResultantRole(['public', 'loggedIn', 'user', 'admin']);
+
+        // assert
+        $this->assertArrayHasKey('PageA', $resultantRole);
+        $this->assertArrayHasKey('PageB', $resultantRole);
+        $this->assertArrayHasKey('PageC', $resultantRole);
+        $this->assertArrayHasKey('PageAdmin', $resultantRole);
+        $this->assertArrayNotHasKey('PageHidden', $resultantRole);
+    }
+
+    public function testResultantRoleChildRole()
+    {
+        // arrange
+        $roleConfig = $this->roleConfig;
+        $roleConfig['admin'] = [
+            '_description' => 'example role',
+            '_editableBy'  => [],
+            '_childRoles'  => ['example'],
+            'PageAdmin'    => [
+                'main' => RoleConfigurationBase::ACCESS_ALLOW,
+            ],
+        ];
+
+        $roleConfig['example'] = [
+            '_description' => 'example role',
+            '_editableBy'  => [],
+            '_hidden'      => true,
+            'PageHidden'   => [
+                'main' => RoleConfigurationBase::ACCESS_ALLOW,
+            ],
+        ];
+
+        $roleConfig = new class($roleConfig) extends RoleConfigurationBase {
+            public function __construct($r)
+            {
+                parent::__construct($r, []);
+            }
+        };
+
+        // act
+        $resultantRole = $roleConfig->getResultantRole(['admin']);
+
+        // assert
+        $this->assertArrayNotHasKey('PageA', $resultantRole);
+        $this->assertArrayNotHasKey('PageB', $resultantRole);
+        $this->assertArrayNotHasKey('PageC', $resultantRole);
+        $this->assertArrayHasKey('PageAdmin', $resultantRole);
+        $this->assertArrayHasKey('PageHidden', $resultantRole);
+    }
+
+    public function testResultantRoleDeepChildRole()
+    {
+        // arrange
+        $roleConfig = $this->roleConfig;
+        $roleConfig['admin'] = [
+            '_description' => 'example role',
+            '_editableBy'  => [],
+            '_childRoles'  => ['example'],
+            'PageAdmin'    => [
+                'main' => RoleConfigurationBase::ACCESS_ALLOW,
+            ],
+        ];
+
+        $roleConfig['example'] = [
+            '_description' => 'example role',
+            '_editableBy'  => [],
+            '_hidden'      => true,
+            'PageHidden'   => [
+                'main' => RoleConfigurationBase::ACCESS_ALLOW,
+            ],
+        ];
+
+        $roleConfig['user']['_childRoles'] = ['admin'];
+        $roleConfig['loggedIn']['_childRoles'] = ['user'];
+
+        $roleConfig = new class($roleConfig) extends RoleConfigurationBase {
+            public function __construct($r)
+            {
+                parent::__construct($r, []);
+            }
+        };
+
+        // act
+        $resultantRole = $roleConfig->getResultantRole(['loggedIn']);
+
+        // assert
+        $this->assertArrayNotHasKey('PageA', $resultantRole);
+        $this->assertArrayHasKey('PageB', $resultantRole);
+        $this->assertArrayHasKey('PageC', $resultantRole);
+        $this->assertArrayHasKey('PageAdmin', $resultantRole);
+        $this->assertArrayHasKey('PageHidden', $resultantRole);
+    }
+
+    public function testResultantRoleChildMultipleInheritance()
+    {
+        // arrange
+        $roleConfig = $this->roleConfig;
+        $roleConfig['admin'] = [
+            '_description' => 'example role',
+            '_editableBy'  => [],
+            '_childRoles'  => ['example'],
+            'PageAdmin'    => [
+                'main' => RoleConfigurationBase::ACCESS_ALLOW,
+            ],
+        ];
+
+        $roleConfig['example'] = [
+            '_description' => 'example role',
+            '_editableBy'  => [],
+            '_hidden'      => true,
+            'PageHidden'   => [
+                'main' => RoleConfigurationBase::ACCESS_ALLOW,
+            ],
+        ];
+
+        $roleConfig['user']['_childRoles'] = ['admin', 'example'];
+        $roleConfig['loggedIn']['_childRoles'] = ['user', 'admin', 'example'];
+
+        $roleConfig = new class($roleConfig) extends RoleConfigurationBase {
+            public function __construct($r)
+            {
+                parent::__construct($r, []);
+            }
+        };
+
+        // act
+        $resultantRole = $roleConfig->getResultantRole(['loggedIn']);
+
+        // assert
+        $this->assertArrayNotHasKey('PageA', $resultantRole);
+        $this->assertArrayHasKey('PageB', $resultantRole);
+        $this->assertArrayHasKey('PageC', $resultantRole);
+        $this->assertArrayHasKey('PageAdmin', $resultantRole);
+        $this->assertArrayHasKey('PageHidden', $resultantRole);
+    }
+
+    public function testResultantRoleWithMissingRole()
+    {
+        // arrange
+        $roleConfig = $this->roleConfig;
+        $roleConfig['admin'] = [
+            '_description' => 'example role',
+            '_editableBy'  => [],
+            'PageAdmin'    => [
+                'main' => RoleConfigurationBase::ACCESS_ALLOW,
+            ],
+        ];
+
+        $roleConfig = new class($roleConfig) extends RoleConfigurationBase {
+            public function __construct($r)
+            {
+                parent::__construct($r, []);
+            }
+        };
+
+        // act
+        $resultantRole = $roleConfig->getResultantRole(['loggedIn', 'example']);
+
+        // assert
+        $this->assertArrayNotHasKey('PageA', $resultantRole);
+        $this->assertArrayHasKey('PageB', $resultantRole);
+        $this->assertArrayNotHasKey('PageC', $resultantRole);
+        $this->assertArrayNotHasKey('PageAdmin', $resultantRole);
+        $this->assertArrayNotHasKey('PageHidden', $resultantRole);
+    }
+
+    public function testResultantRoleWithDefaultDeny()
+    {
+        // arrange
+        $roleConfig = $this->roleConfig;
+        $roleConfig['admin'] = [
+            '_description' => 'example role',
+            '_editableBy'  => [],
+            'PageDenied'   => [
+                'main' => RoleConfigurationBase::ACCESS_DENY,
+            ],
+            'PageDefault'  => [
+                'main' => RoleConfigurationBase::ACCESS_DEFAULT,
+            ],
+        ];
+
+        $roleConfig['user']['PageDenied'] = [
+            'main' => RoleConfigurationBase::ACCESS_ALLOW,
+        ];
+
+        $roleConfig = new class($roleConfig) extends RoleConfigurationBase {
+            public function __construct($r)
+            {
+                parent::__construct($r, []);
+            }
+        };
+
+        // act
+        $resultantRole = $roleConfig->getResultantRole(['user', 'admin']);
+
+        // assert
+        $this->assertArrayHasKey('PageDenied', $resultantRole);
+        $this->assertArrayHasKey('PageDefault', $resultantRole);
+
+        // a deny action should override an allow action
+        $this->assertEquals(RoleConfigurationBase::ACCESS_DENY, $resultantRole['PageDenied']['main']);
+
+        // default actions by definition do nothing.
+        $this->assertArrayNotHasKey('main', $resultantRole['PageDefault']);
+
+        // order of roles shouldn't matter
+        $reversedRole = $roleConfig->getResultantRole(['admin', 'user']);
+        $this->assertEquals(RoleConfigurationBase::ACCESS_DENY, $reversedRole['PageDenied']['main']);
+    }
+
+    public function testResultantRoleWithMultipleActions()
+    {
+        // arrange
+        $roleConfig = $this->roleConfig;
+
+        $roleConfig['user']['PageA'] = [
+            'create' => RoleConfigurationBase::ACCESS_ALLOW,
+            'edit' => RoleConfigurationBase::ACCESS_ALLOW,
+            'delete' => RoleConfigurationBase::ACCESS_ALLOW,
+        ];
+
+        $roleConfig = new class($roleConfig) extends RoleConfigurationBase {
+            public function __construct($r)
+            {
+                parent::__construct($r, []);
+            }
+        };
+
+        // act
+        $resultantRole = $roleConfig->getResultantRole(['public', 'user']);
+
+        // assert
+        $this->assertArrayHasKey('PageA', $resultantRole);
+
+        $this->assertEquals(RoleConfigurationBase::ACCESS_ALLOW, $resultantRole['PageA']['main']);
+        $this->assertEquals(RoleConfigurationBase::ACCESS_ALLOW, $resultantRole['PageA']['create']);
+        $this->assertEquals(RoleConfigurationBase::ACCESS_ALLOW, $resultantRole['PageA']['edit']);
+        $this->assertEquals(RoleConfigurationBase::ACCESS_ALLOW, $resultantRole['PageA']['delete']);
     }
 }
