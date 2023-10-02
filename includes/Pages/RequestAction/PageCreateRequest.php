@@ -21,7 +21,7 @@ use Waca\Helpers\Logger;
 use Waca\Helpers\PreferenceManager;
 use Waca\PdoDatabase;
 use Waca\RequestStatus;
-use Waca\Security\SecurityManager;
+use Waca\Security\ISecurityManager;
 use Waca\SessionAlert;
 use Waca\WebRequest;
 
@@ -54,12 +54,12 @@ class PageCreateRequest extends RequestActionBase
         $preferencesManager = PreferenceManager::getForCurrent($database);
 
         $secMgr = $this->getSecurityManager();
-        if ($secMgr->allows('RequestCreation', PreferenceManager::CREATION_BOT, $user) !== SecurityManager::ALLOWED
+        if ($secMgr->allows('RequestCreation', PreferenceManager::CREATION_BOT, $user) !== ISecurityManager::ALLOWED
             && $creationMode === 'bot'
         ) {
             throw new AccessDeniedException($secMgr, $this->getDomainAccessManager());
         }
-        elseif ($secMgr->allows('RequestCreation', PreferenceManager::CREATION_OAUTH, $user) !== SecurityManager::ALLOWED
+        elseif ($secMgr->allows('RequestCreation', PreferenceManager::CREATION_OAUTH, $user) !== ISecurityManager::ALLOWED
             && $creationMode === 'oauth'
         ) {
             throw new AccessDeniedException($secMgr, $this->getDomainAccessManager());

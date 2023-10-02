@@ -17,7 +17,7 @@ use Waca\DataObjects\User;
 use Waca\Helpers\Interfaces\IBanHelper;
 use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\IXffTrustProvider;
-use Waca\Security\SecurityManager;
+use Waca\Security\ISecurityManager;
 
 class BanHelper implements IBanHelper
 {
@@ -27,15 +27,13 @@ class BanHelper implements IBanHelper
     private $xffTrustProvider;
     /** @var Ban[][] */
     private $banCache = [];
-    /**
-     * @var null|SecurityManager
-     */
-    private $securityManager;
+
+    private ?ISecurityManager $securityManager;
 
     public function __construct(
         PdoDatabase $database,
         IXffTrustProvider $xffTrustProvider,
-        ?SecurityManager $securityManager
+        ?ISecurityManager $securityManager
     ) {
         $this->database = $database;
         $this->xffTrustProvider = $xffTrustProvider;
@@ -145,20 +143,20 @@ SQL;
         $user = User::getCurrent($this->database);
 
         $allowed = true;
-        $allowed = $allowed && ($ban->getName() === null || $this->securityManager->allows('BanType', 'name', $user) === SecurityManager::ALLOWED);
-        $allowed = $allowed && ($ban->getEmail() === null || $this->securityManager->allows('BanType', 'email', $user) === SecurityManager::ALLOWED);
-        $allowed = $allowed && ($ban->getIp() === null || $this->securityManager->allows('BanType', 'ip', $user) === SecurityManager::ALLOWED);
-        $allowed = $allowed && ($ban->getUseragent() === null || $this->securityManager->allows('BanType', 'useragent', $user) === SecurityManager::ALLOWED);
+        $allowed = $allowed && ($ban->getName() === null || $this->securityManager->allows('BanType', 'name', $user) === ISecurityManager::ALLOWED);
+        $allowed = $allowed && ($ban->getEmail() === null || $this->securityManager->allows('BanType', 'email', $user) === ISecurityManager::ALLOWED);
+        $allowed = $allowed && ($ban->getIp() === null || $this->securityManager->allows('BanType', 'ip', $user) === ISecurityManager::ALLOWED);
+        $allowed = $allowed && ($ban->getUseragent() === null || $this->securityManager->allows('BanType', 'useragent', $user) === ISecurityManager::ALLOWED);
 
         if ($ban->getDomain() === null) {
-            $allowed &= $this->securityManager->allows('BanType', 'global', $user) === SecurityManager::ALLOWED;
+            $allowed &= $this->securityManager->allows('BanType', 'global', $user) === ISecurityManager::ALLOWED;
         }
         else {
             $currentDomain = Domain::getCurrent($this->database);
             $allowed &= $currentDomain->getId() === $ban->getDomain();
         }
 
-        $allowed = $allowed && $this->securityManager->allows('BanVisibility', $ban->getVisibility(), $user) === SecurityManager::ALLOWED;
+        $allowed = $allowed && $this->securityManager->allows('BanVisibility', $ban->getVisibility(), $user) === ISecurityManager::ALLOWED;
 
         return $allowed;
     }

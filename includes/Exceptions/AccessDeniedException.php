@@ -16,8 +16,8 @@ use Waca\Fragments\NavigationMenuAccessControl;
 use Waca\Helpers\PreferenceManager;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
 use Waca\PdoDatabase;
-use Waca\Security\DomainAccessManager;
-use Waca\Security\SecurityManager;
+use Waca\Security\IDomainAccessManager;
+use Waca\Security\ISecurityManager;
 
 /**
  * Class AccessDeniedException
@@ -30,18 +30,16 @@ class AccessDeniedException extends ReadableException
 {
     use NavigationMenuAccessControl;
 
-    /** @var SecurityManager */
-    private $securityManager;
-    /** @var DomainAccessManager */
-    private $domainAccessManager;
+    private ISecurityManager $securityManager;
+    private IDomainAccessManager $domainAccessManager;
 
     /**
      * AccessDeniedException constructor.
      *
-     * @param SecurityManager     $securityManager
-     * @param DomainAccessManager $domainAccessManager
+     * @param ISecurityManager     $securityManager
+     * @param IDomainAccessManager $domainAccessManager
      */
-    public function __construct(SecurityManager $securityManager, DomainAccessManager $domainAccessManager)
+    public function __construct(ISecurityManager $securityManager, IDomainAccessManager $domainAccessManager)
     {
         $this->securityManager = $securityManager;
         $this->domainAccessManager = $domainAccessManager;
@@ -62,9 +60,7 @@ class AccessDeniedException extends ReadableException
         $this->assign('currentUser', $currentUser);
         $this->assign('currentDomain', Domain::getCurrent($database));
 
-        if ($this->securityManager !== null) {
-            $this->setupNavMenuAccess($currentUser);
-        }
+        $this->setupNavMenuAccess($currentUser);
 
         if ($currentUser->isDeclined()) {
             $this->assign('htmlTitle', 'Account Declined');
@@ -113,12 +109,12 @@ class AccessDeniedException extends ReadableException
         return null;
     }
 
-    protected function getSecurityManager(): SecurityManager
+    protected function getSecurityManager(): ISecurityManager
     {
         return $this->securityManager;
     }
 
-    public function getDomainAccessManager(): DomainAccessManager
+    public function getDomainAccessManager(): IDomainAccessManager
     {
         return $this->domainAccessManager;
     }

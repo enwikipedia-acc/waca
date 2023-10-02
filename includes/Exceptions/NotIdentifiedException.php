@@ -14,25 +14,17 @@ use Waca\DataObjects\User;
 use Waca\Fragments\NavigationMenuAccessControl;
 use Waca\Helpers\PreferenceManager;
 use Waca\PdoDatabase;
-use Waca\Security\DomainAccessManager;
-use Waca\Security\SecurityManager;
+use Waca\Security\IDomainAccessManager;
+use Waca\Security\ISecurityManager;
 
 class NotIdentifiedException extends ReadableException
 {
     use NavigationMenuAccessControl;
 
-    /** @var SecurityManager */
-    private $securityManager;
-    /** @var DomainAccessManager */
-    private $domainAccessManager;
+    private ISecurityManager $securityManager;
+    private IDomainAccessManager $domainAccessManager;
 
-    /**
-     * NotIdentifiedException constructor.
-     *
-     * @param SecurityManager     $securityManager
-     * @param DomainAccessManager $domainAccessManager
-     */
-    public function __construct(SecurityManager $securityManager, DomainAccessManager $domainAccessManager)
+    public function __construct(ISecurityManager $securityManager, IDomainAccessManager $domainAccessManager)
     {
         $this->securityManager = $securityManager;
         $this->domainAccessManager = $domainAccessManager;
@@ -64,12 +56,12 @@ class NotIdentifiedException extends ReadableException
         return $this->fetchTemplate("exception/not-identified.tpl");
     }
 
-    protected function getSecurityManager(): SecurityManager
+    protected function getSecurityManager(): ISecurityManager
     {
         return $this->securityManager;
     }
 
-    public function getDomainAccessManager(): DomainAccessManager
+    public function getDomainAccessManager(): IDomainAccessManager
     {
         return $this->domainAccessManager;
     }

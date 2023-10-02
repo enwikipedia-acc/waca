@@ -14,22 +14,13 @@ use Waca\DataObjects\User;
 use Waca\DataObjects\UserRole;
 use Waca\IdentificationVerifier;
 
-final class SecurityManager
+final class SecurityManager implements ISecurityManager
 {
-    const ALLOWED = 1;
-    const ERROR_NOT_IDENTIFIED = 2;
-    const ERROR_DENIED = 3;
     private IdentificationVerifier $identificationVerifier;
     private RoleConfiguration $roleConfiguration;
 
     private array $cache = [];
 
-    /**
-     * SecurityManager constructor.
-     *
-     * @param IdentificationVerifier $identificationVerifier
-     * @param RoleConfiguration      $roleConfiguration
-     */
     public function __construct(
         IdentificationVerifier $identificationVerifier,
         RoleConfiguration $roleConfiguration
@@ -44,15 +35,9 @@ final class SecurityManager
      * This method should form a hard, deterministic security barrier, and only return true if it is absolutely sure
      * that a user should have access to something.
      *
-     * @param string $page
-     * @param string $route
-     * @param User   $user
-     *
-     * @return int
-     *
      * @category Security-Critical
      */
-    public function allows($page, $route, User $user)
+    public function allows(string $page, string $route, User $user): int
     {
         $this->getCachedActiveRoles($user, $activeRoles, $inactiveRoles);
 
@@ -78,6 +63,8 @@ final class SecurityManager
     }
 
     /**
+     * Tests a role for an ACL decision on a specific page/route
+     *
      * @param array  $pseudoRole The role (flattened) to check
      * @param string $page       The page class to check
      * @param string $route      The page route to check
