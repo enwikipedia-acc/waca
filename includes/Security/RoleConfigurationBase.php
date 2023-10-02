@@ -19,7 +19,7 @@ abstract class RoleConfigurationBase
     protected array $roleConfig;
     protected array $identificationExempt;
 
-    protected function __construct(array $roleConfig = null, array $identificationExempt = null)
+    protected function __construct(array $roleConfig, array $identificationExempt)
     {
         $this->roleConfig = $roleConfig;
         $this->identificationExempt = $identificationExempt;
