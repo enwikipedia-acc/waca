@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Waca\DataObjects\User;
 use Waca\IIdentificationVerifier;
 use Waca\Security\ISecurityManager;
-use Waca\Security\IUserRoleLoader;
+use Waca\Security\IUserAccessLoader;
 use Waca\Security\RoleConfigurationBase;
 use Waca\Security\SecurityManager;
 
@@ -28,7 +28,7 @@ class SecurityManagerTest extends TestCase
 
     private IIdentificationVerifier $identificationVerifier;
     private RoleConfigurationBase $roleConfig;
-    private IUserRoleLoader $userRoleLoader;
+    private IUserAccessLoader $userAccessLoader;
     private Closure $needsIdCallback;
 
     public function setUp() : void
@@ -43,7 +43,7 @@ class SecurityManagerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->userRoleLoader = $this->getMockBuilder(IUserRoleLoader::class)
+        $this->userAccessLoader = $this->getMockBuilder(IUserAccessLoader::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -65,7 +65,7 @@ class SecurityManagerTest extends TestCase
 
         $this->roleConfig->method('getAvailableRoles')->willReturn($availableRolesData);
 
-        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userRoleLoader);
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
 
         // act
         $availableRoles = $secMan->getAvailableRoles();
@@ -76,12 +76,12 @@ class SecurityManagerTest extends TestCase
 
     public function testGetActiveRoles() {
         // arrange
-        $this->userRoleLoader->method('loadRolesForUser')->willReturn(['admin']);
+        $this->userAccessLoader->method('loadRolesForUser')->willReturn(['admin']);
         $this->user->method('isActive')->willReturn(true);
         $this->user->method('isIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
 
-        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userRoleLoader);
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
 
         // act
         $secMan->getActiveRoles($this->user, $retrievedActiveRoles, $retrievedInactiveRoles);
@@ -103,12 +103,12 @@ class SecurityManagerTest extends TestCase
 
     public function testGetActiveRolesInactiveUser() {
         // arrange
-        $this->userRoleLoader->method('loadRolesForUser')->willReturn(['admin']);
+        $this->userAccessLoader->method('loadRolesForUser')->willReturn(['admin']);
         $this->user->method('isActive')->willReturn(false);
         $this->user->method('isIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
 
-        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userRoleLoader);
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
 
         // act
         $secMan->getActiveRoles($this->user, $retrievedActiveRoles, $retrievedInactiveRoles);
@@ -128,12 +128,12 @@ class SecurityManagerTest extends TestCase
 
     public function testGetActiveRolesNonIDUser() {
         // arrange
-        $this->userRoleLoader->method('loadRolesForUser')->willReturn(['admin']);
+        $this->userAccessLoader->method('loadRolesForUser')->willReturn(['admin']);
         $this->user->method('isActive')->willReturn(true);
         $this->user->method('isIdentified')->willReturn(false);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
 
-        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userRoleLoader);
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
 
         // act
         $secMan->getActiveRoles($this->user, $retrievedActiveRoles, $retrievedInactiveRoles);
@@ -155,12 +155,12 @@ class SecurityManagerTest extends TestCase
 
     public function testGetActiveRolesImplicitOnly() {
         // arrange
-        $this->userRoleLoader->method('loadRolesForUser')->willReturn([]);
+        $this->userAccessLoader->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
         $this->user->method('isIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
 
-        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userRoleLoader);
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
 
         // act
         $secMan->getActiveRoles($this->user, $retrievedActiveRoles, $retrievedInactiveRoles);
@@ -179,11 +179,11 @@ class SecurityManagerTest extends TestCase
 
     public function testGetActiveRolesCommunityUser() {
         // arrange
-        $this->userRoleLoader->method('loadRolesForUser')->willReturn([]);
+        $this->userAccessLoader->method('loadRolesForUser')->willReturn([]);
 
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
 
-        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userRoleLoader);
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
 
         // act
         $secMan->getActiveRoles(User::getCommunity(), $retrievedActiveRoles, $retrievedInactiveRoles);
@@ -200,12 +200,12 @@ class SecurityManagerTest extends TestCase
 
     public function testCaching() {
         // arrange
-        $this->userRoleLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
+        $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
         $this->user->method('isIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
 
-        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userRoleLoader);
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
 
         // act
         $secMan->getCachedActiveRoles($this->user, $retrievedActiveRoles, $retrievedInactiveRoles);
@@ -215,13 +215,13 @@ class SecurityManagerTest extends TestCase
         $this->assertEquals($retrievedInactiveRoles, $cachedInactiveRoles);
         $this->assertEquals($retrievedActiveRoles, $cachedActiveRoles);
 
-        $this->userRoleLoader->method('loadRolesForUser');
+        $this->userAccessLoader->method('loadRolesForUser');
     }
 
     public function testAllowsAllowed()
     {
         // arrange
-        $this->userRoleLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
+        $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
         $this->user->method('isIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
@@ -232,7 +232,7 @@ class SecurityManagerTest extends TestCase
             ],
         ]);
 
-        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userRoleLoader);
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
 
         // act
         $result = $secMan->allows('PageA', RoleConfigurationBase::MAIN, $this->user);
@@ -244,7 +244,7 @@ class SecurityManagerTest extends TestCase
     public function testAllowsDenied()
     {
         // arrange
-        $this->userRoleLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
+        $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
         $this->user->method('isIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
@@ -255,7 +255,7 @@ class SecurityManagerTest extends TestCase
             ],
         ]);
 
-        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userRoleLoader);
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
 
         // act
         $result = $secMan->allows('PageA', 'private', $this->user);
@@ -267,7 +267,7 @@ class SecurityManagerTest extends TestCase
     public function testAllowsNotKnown()
     {
         // arrange
-        $this->userRoleLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
+        $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
         $this->user->method('isIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
@@ -278,7 +278,7 @@ class SecurityManagerTest extends TestCase
             ],
         ]);
 
-        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userRoleLoader);
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
 
         // act
         $result = $secMan->allows('PageNonExistent', RoleConfigurationBase::MAIN, $this->user);
@@ -290,7 +290,7 @@ class SecurityManagerTest extends TestCase
     public function testAllowsDefault()
     {
         // arrange
-        $this->userRoleLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
+        $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
         $this->user->method('isIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
@@ -300,7 +300,7 @@ class SecurityManagerTest extends TestCase
             ],
         ]);
 
-        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userRoleLoader);
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
 
         // act
         $result = $secMan->allows('PageA', RoleConfigurationBase::MAIN, $this->user);
@@ -312,7 +312,7 @@ class SecurityManagerTest extends TestCase
     public function testAllowsNotID()
     {
         // arrange
-        $this->userRoleLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
+        $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
         $this->user->method('isIdentified')->willReturn(false);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
@@ -330,7 +330,7 @@ class SecurityManagerTest extends TestCase
             ]
         );
 
-        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userRoleLoader);
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
 
         // act
         $result = $secMan->allows('PageA', 'private', $this->user);
@@ -342,7 +342,7 @@ class SecurityManagerTest extends TestCase
     public function testAllowsWithAllDeny()
     {
         // arrange
-        $this->userRoleLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
+        $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
         $this->user->method('isIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
@@ -355,7 +355,7 @@ class SecurityManagerTest extends TestCase
             ]
         );
 
-        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userRoleLoader);
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
 
         // act
         $result = $secMan->allows('PageA', RoleConfigurationBase::MAIN, $this->user);
@@ -368,7 +368,7 @@ class SecurityManagerTest extends TestCase
     public function testAllowsWithSpecificDeny()
     {
         // arrange
-        $this->userRoleLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
+        $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
         $this->user->method('isIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
@@ -381,7 +381,7 @@ class SecurityManagerTest extends TestCase
             ]
         );
 
-        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userRoleLoader);
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
 
         // act
         $result = $secMan->allows('PageA', RoleConfigurationBase::MAIN, $this->user);
@@ -394,7 +394,7 @@ class SecurityManagerTest extends TestCase
     public function testAllowsWithAllAllow()
     {
         // arrange
-        $this->userRoleLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
+        $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
         $this->user->method('isIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
@@ -406,7 +406,7 @@ class SecurityManagerTest extends TestCase
             ]
         );
 
-        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userRoleLoader);
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
 
         // act
         $result = $secMan->allows('PageA', 'nonExistent', $this->user);
