@@ -13,7 +13,7 @@ use Waca\DataObjects\User;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\PreferenceManager;
 use Waca\Pages\PageMain;
-use Waca\Security\RoleConfiguration;
+use Waca\Security\RoleConfigurationBase;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -52,7 +52,7 @@ class PagePreferences extends InternalPageBase
             $user->save();
             SessionAlert::success("Preferences updated!");
 
-            if ($this->barrierTest(RoleConfiguration::MAIN, $user, PageMain::class)) {
+            if ($this->barrierTest(RoleConfigurationBase::MAIN, $user, PageMain::class)) {
                 $this->redirect('');
             }
             else {
