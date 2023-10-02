@@ -18,7 +18,19 @@ use Waca\WebRequest;
 
 class DomainAccessManager implements IDomainAccessManager
 {
+    private IUserAccessLoader $userAccessLoader;
+
+    public function __construct(IUserAccessLoader $userAccessLoader)
+    {
+        $this->userAccessLoader = $userAccessLoader;
+    }
+
     /**
+     * Returns the domains the user is a member of.
+     *
+     * Note - this *does not* determine the access rights that a user has in any
+     * specific domain. Permissions checks still need to be performed.
+     *
      * @param User $user
      *
      * @return Domain[]
@@ -29,7 +41,7 @@ class DomainAccessManager implements IDomainAccessManager
             return [];
         }
 
-        return Domain::getDomainByUser($user->getDatabase(), $user, true);
+        return $this->userAccessLoader->loadDomainsForUser($user);
     }
 
     public function switchDomain(User $user, Domain $newDomain): void
