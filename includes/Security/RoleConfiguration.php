@@ -142,8 +142,9 @@ class RoleConfiguration
             )
         ),
         'user'              => array(
-            '_description'                       => 'A standard tool user.',
-            '_editableBy'                        => array('admin', 'toolRoot'),
+            /*
+             * THIS ROLE IS GRANTED TO APPROVED AND IDENTIFIED LOGGED-IN USERS IMPLICITLY.
+             */
             '_childRoles'                        => array(
                 'internalStats',
             ),
@@ -507,7 +508,8 @@ class RoleConfiguration
 
     public function getAvailableRoles(): array
     {
-        $possible = array_diff(array_keys($this->roleConfig), array('public', 'loggedIn'));
+        // remove the implicit roles
+        $possible = array_diff(array_keys($this->roleConfig), array('public', 'loggedIn', 'user'));
 
         $actual = array();
 
