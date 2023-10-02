@@ -25,7 +25,7 @@ use Waca\Helpers\HttpHelper;
  * @author   Andrew "FastLizard4" Adams
  * @category Security-Critical
  */
-class IdentificationVerifier
+class IdentificationVerifier implements IIdentificationVerifier
 {
     /**
      * This field is an array of parameters, in key => value format, that should be appended to the Meta Wikimedia
@@ -44,12 +44,10 @@ class IdentificationVerifier
         // Username of the user to be checked, with User: prefix, goes here!  Set in isIdentifiedOnWiki()
         'pltitles' => '',
     );
-    /** @var HttpHelper */
-    private $httpHelper;
-    /** @var SiteConfiguration */
-    private $siteConfiguration;
-    /** @var PdoDatabase */
-    private $dbObject;
+
+    private HttpHelper $httpHelper;
+    private SiteConfiguration $siteConfiguration;
+    private PdoDatabase $dbObject;
 
     /**
      * IdentificationVerifier constructor.
@@ -70,11 +68,10 @@ class IdentificationVerifier
      *
      * @param string $onWikiName The Wikipedia username of the user
      *
-     * @return bool
      * @category Security-Critical
      * @throws EnvironmentException
      */
-    public function isUserIdentified($onWikiName)
+    public function isUserIdentified(string $onWikiName): bool
     {
         if ($this->checkIdentificationCache($onWikiName)) {
             return true;
@@ -96,18 +93,17 @@ class IdentificationVerifier
      *
      * @param string $onWikiName The Wikipedia username of the user
      *
-     * @return bool
      * @category Security-Critical
      */
-    private function checkIdentificationCache($onWikiName)
+    private function checkIdentificationCache(string $onWikiName): bool
     {
         $interval = $this->siteConfiguration->getIdentificationCacheExpiry();
 
         $query = <<<SQL
-			SELECT COUNT(`id`)
-			FROM `idcache`
-			WHERE `onwikiusername` = :onwikiname
-				AND DATE_ADD(`checktime`, INTERVAL {$interval}) >= NOW();
+            SELECT COUNT(`id`)
+            FROM `idcache`
+            WHERE `onwikiusername` = :onwikiname
+                AND DATE_ADD(`checktime`, INTERVAL {$interval}) >= NOW();
 SQL;
         $stmt = $this->dbObject->prepare($query);
         $stmt->bindValue(':onwikiname', $onWikiName, PDO::PARAM_STR);
@@ -134,10 +130,7 @@ SQL;
     {
         $interval = $siteConfiguration->getIdentificationCacheExpiry();
 
-        $query = <<<SQL
-			DELETE FROM `idcache`
-			WHERE DATE_ADD(`checktime`, INTERVAL {$interval}) < NOW();
-SQL;
+        $query = "DELETE FROM idcache WHERE DATE_ADD(checktime, INTERVAL {$interval}) < NOW();";
         $dbObject->prepare($query)->execute();
     }
 
@@ -148,19 +141,16 @@ SQL;
      *
      * @param string $onWikiName The Wikipedia username of the user
      *
-     * @return void
      * @category Security-Critical
      */
-    private function cacheIdentificationStatus($onWikiName)
+    private function cacheIdentificationStatus(string $onWikiName): void
     {
         $query = <<<SQL
-			INSERT INTO `idcache`
-				(`onwikiusername`)
-			VALUES
-				(:onwikiname)
-			ON DUPLICATE KEY UPDATE
-				`onwikiusername` = VALUES(`onwikiusername`),
-				`checktime` = CURRENT_TIMESTAMP;
+            INSERT INTO idcache (onwikiusername)
+            VALUES (:onwikiname)
+            ON DUPLICATE KEY UPDATE
+                onwikiusername = VALUES(onwikiusername),
+                checktime = CURRENT_TIMESTAMP;
 SQL;
         $stmt = $this->dbObject->prepare($query);
         $stmt->bindValue(':onwikiname', $onWikiName, PDO::PARAM_STR);
@@ -172,11 +162,10 @@ SQL;
      *
      * @param string $onWikiName The Wikipedia username of the user
      *
-     * @return bool
      * @throws EnvironmentException
      * @category Security-Critical
      */
-    private function isIdentifiedOnWiki($onWikiName)
+    private function isIdentifiedOnWiki(string $onWikiName): bool
     {
         $strings = new StringFunctions();
 
@@ -184,7 +173,7 @@ SQL;
         $onWikiName = $strings->upperCaseFirst($onWikiName);
 
         $parameters = self::$apiQueryParameters;
-        $parameters['pltitles'] = "User:" . $onWikiName;
+        $parameters['pltitles'] = 'User:' . $onWikiName;
         $parameters['titles'] = $this->siteConfiguration->getIdentificationNoticeboardPage();
 
         try {
@@ -202,6 +191,6 @@ SQL;
 
         $page = @array_pop($response['query']['pages']);
 
-        return @$page['links'][0]['title'] === "User:" . $onWikiName;
+        return @$page['links'][0]['title'] === 'User:' . $onWikiName;
     }
 }

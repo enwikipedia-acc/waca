@@ -12,17 +12,17 @@ namespace Waca\Security;
 use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\DataObjects\UserRole;
-use Waca\IdentificationVerifier;
+use Waca\IIdentificationVerifier;
 
 final class SecurityManager implements ISecurityManager
 {
-    private IdentificationVerifier $identificationVerifier;
+    private IIdentificationVerifier $identificationVerifier;
     private RoleConfiguration $roleConfiguration;
 
     private array $cache = [];
 
     public function __construct(
-        IdentificationVerifier $identificationVerifier,
+        IIdentificationVerifier $identificationVerifier,
         RoleConfiguration $roleConfiguration
     ) {
         $this->identificationVerifier = $identificationVerifier;

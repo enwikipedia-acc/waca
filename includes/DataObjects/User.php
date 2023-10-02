@@ -13,7 +13,7 @@ use DateTime;
 use Exception;
 use Waca\DataObject;
 use Waca\Exceptions\OptimisticLockFailedException;
-use Waca\IdentificationVerifier;
+use Waca\IIdentificationVerifier;
 use Waca\PdoDatabase;
 use Waca\WebRequest;
 
@@ -382,16 +382,12 @@ SQL
 
     /**
      * Tests if the user is identified
-     *
-     * @param IdentificationVerifier $iv
-     *
-     * @return bool
      * @todo     Figure out what on earth is going on with PDO's typecasting here.  Apparently, it returns string("0") for
      *       the force-unidentified case, and int(1) for the identified case?!  This is quite ugly, but probably needed
      *       to play it safe for now.
      * @category Security-Critical
      */
-    public function isIdentified(IdentificationVerifier $iv)
+    public function isIdentified(IIdentificationVerifier $iv): bool
     {
         if ($this->forceidentified === 0 || $this->forceidentified === "0") {
             // User forced to unidentified in the database.
