@@ -20,16 +20,16 @@ final class SecurityManager implements ISecurityManager
     private RoleConfigurationBase $roleConfiguration;
 
     private array $cache = [];
-    private IUserRoleLoader $userRoleLoader;
+    private IUserAccessLoader $userAccessLoader;
 
     public function __construct(
         IIdentificationVerifier $identificationVerifier,
         RoleConfigurationBase $roleConfiguration,
-        IUserRoleLoader $userRoleLoader
+        IUserAccessLoader $userAccessLoader
     ) {
         $this->identificationVerifier = $identificationVerifier;
         $this->roleConfiguration = $roleConfiguration;
-        $this->userRoleLoader = $userRoleLoader;
+        $this->userAccessLoader = $userAccessLoader;
     }
 
     /**
@@ -81,7 +81,7 @@ final class SecurityManager implements ISecurityManager
                 // All active users get +user
                 $userRoles[] = 'user';
 
-                $loadedRoles = $this->userRoleLoader->loadRolesForUser($user);
+                $loadedRoles = $this->userAccessLoader->loadRolesForUser($user);
 
                 // NOTE: public is still in this array.
                 $userRoles = array_merge($userRoles, $loadedRoles);
