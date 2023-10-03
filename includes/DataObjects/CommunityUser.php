@@ -109,11 +109,6 @@ class CommunityUser extends User
 
     #region user access checks
 
-    public function isIdentified(IIdentificationVerifier $iv): bool
-    {
-        return false;
-    }
-
     public function isSuspended()
     {
         return false;

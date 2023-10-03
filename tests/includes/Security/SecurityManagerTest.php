@@ -78,7 +78,7 @@ class SecurityManagerTest extends TestCase
         // arrange
         $this->userAccessLoader->method('loadRolesForUser')->willReturn(['admin']);
         $this->user->method('isActive')->willReturn(true);
-        $this->user->method('isIdentified')->willReturn(true);
+        $this->user->method('getForceIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
 
         $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
@@ -105,7 +105,7 @@ class SecurityManagerTest extends TestCase
         // arrange
         $this->userAccessLoader->method('loadRolesForUser')->willReturn(['admin']);
         $this->user->method('isActive')->willReturn(false);
-        $this->user->method('isIdentified')->willReturn(true);
+        $this->user->method('getForceIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
 
         $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
@@ -130,7 +130,7 @@ class SecurityManagerTest extends TestCase
         // arrange
         $this->userAccessLoader->method('loadRolesForUser')->willReturn(['admin']);
         $this->user->method('isActive')->willReturn(true);
-        $this->user->method('isIdentified')->willReturn(false);
+        $this->user->method('getForceIdentified')->willReturn(false);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
 
         $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
@@ -157,7 +157,7 @@ class SecurityManagerTest extends TestCase
         // arrange
         $this->userAccessLoader->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
-        $this->user->method('isIdentified')->willReturn(true);
+        $this->user->method('getForceIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
 
         $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
@@ -202,7 +202,7 @@ class SecurityManagerTest extends TestCase
         // arrange
         $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
-        $this->user->method('isIdentified')->willReturn(true);
+        $this->user->method('getForceIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
 
         $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
@@ -223,7 +223,7 @@ class SecurityManagerTest extends TestCase
         // arrange
         $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
-        $this->user->method('isIdentified')->willReturn(true);
+        $this->user->method('getForceIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
         $this->roleConfig->method('getResultantRole')->willReturn([
             'PageA' => [
@@ -246,7 +246,7 @@ class SecurityManagerTest extends TestCase
         // arrange
         $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
-        $this->user->method('isIdentified')->willReturn(true);
+        $this->user->method('getForceIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
         $this->roleConfig->method('getResultantRole')->willReturn([
             'PageA' => [
@@ -269,7 +269,7 @@ class SecurityManagerTest extends TestCase
         // arrange
         $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
-        $this->user->method('isIdentified')->willReturn(true);
+        $this->user->method('getForceIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
         $this->roleConfig->method('getResultantRole')->willReturn([
             'PageA' => [
@@ -292,7 +292,7 @@ class SecurityManagerTest extends TestCase
         // arrange
         $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
-        $this->user->method('isIdentified')->willReturn(true);
+        $this->user->method('getForceIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
         $this->roleConfig->method('getResultantRole')->willReturn([
             'PageA' => [
@@ -314,7 +314,7 @@ class SecurityManagerTest extends TestCase
         // arrange
         $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
-        $this->user->method('isIdentified')->willReturn(false);
+        $this->user->method('getForceIdentified')->willReturn(false);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
         $this->roleConfig->method('getResultantRole')->willReturnOnConsecutiveCalls(
             [
@@ -344,7 +344,7 @@ class SecurityManagerTest extends TestCase
         // arrange
         $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
-        $this->user->method('isIdentified')->willReturn(true);
+        $this->user->method('getForceIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
         $this->roleConfig->method('getResultantRole')->willReturnOnConsecutiveCalls(
             [
@@ -370,7 +370,7 @@ class SecurityManagerTest extends TestCase
         // arrange
         $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
-        $this->user->method('isIdentified')->willReturn(true);
+        $this->user->method('getForceIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
         $this->roleConfig->method('getResultantRole')->willReturnOnConsecutiveCalls(
             [
@@ -396,7 +396,7 @@ class SecurityManagerTest extends TestCase
         // arrange
         $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
         $this->user->method('isActive')->willReturn(true);
-        $this->user->method('isIdentified')->willReturn(true);
+        $this->user->method('getForceIdentified')->willReturn(true);
         $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
         $this->roleConfig->method('getResultantRole')->willReturnOnConsecutiveCalls(
             [
@@ -414,5 +414,84 @@ class SecurityManagerTest extends TestCase
         // assert
         // even though this action is unknown, allow it anyway because it's an allow on all.
         $this->assertEquals(ISecurityManager::ALLOWED, $result);
+    }
+
+    public function testForceIdentified() {
+        // arrange
+        $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
+        $this->user->method('isActive')->willReturn(true);
+        $this->user->method('getForceIdentified')->willReturn(true);
+        $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
+
+        $this->identificationVerifier->expects($this->never())->method('isUserIdentified');
+
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
+
+        // act
+        $secMan->getActiveRoles($this->user, $retrievedActiveRoles, $retrievedInactiveRoles);
+
+        // assert
+        $this->assertContains('user', $retrievedActiveRoles);
+        $this->assertNotContains('user', $retrievedInactiveRoles);
+    }
+
+    public function testForceNotIdentified() {
+        // arrange
+        $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
+        $this->user->method('isActive')->willReturn(true);
+        $this->user->method('getForceIdentified')->willReturn(false);
+        $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
+
+        $this->identificationVerifier->expects($this->never())->method('isUserIdentified');
+
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
+
+        // act
+        $secMan->getActiveRoles($this->user, $retrievedActiveRoles, $retrievedInactiveRoles);
+
+        // assert
+        $this->assertNotContains('user', $retrievedActiveRoles);
+        $this->assertContains('user', $retrievedInactiveRoles);
+    }
+
+
+    public function testLookupIdentified() {
+        // arrange
+        $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
+        $this->user->method('isActive')->willReturn(true);
+        $this->user->method('getOnWikiName')->willReturn('Alice');
+        $this->user->method('getForceIdentified')->willReturn(null);
+        $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
+
+        $this->identificationVerifier->expects($this->once())->method('isUserIdentified')->willReturn(true);
+
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
+
+        // act
+        $secMan->getActiveRoles($this->user, $retrievedActiveRoles, $retrievedInactiveRoles);
+
+        // assert
+        $this->assertContains('user', $retrievedActiveRoles);
+        $this->assertNotContains('user', $retrievedInactiveRoles);
+    }
+
+    public function testLookupNotIdentified() {
+        // arrange
+        $this->userAccessLoader->expects($this->once())->method('loadRolesForUser')->willReturn([]);
+        $this->user->method('isActive')->willReturn(true);
+        $this->user->method('getOnWikiName')->willReturn('Bob');
+        $this->user->method('getForceIdentified')->willReturn(null);
+        $this->roleConfig->method('roleNeedsIdentification')->will($this->returnCallback($this->needsIdCallback));
+
+        $this->identificationVerifier->expects($this->once())->method('isUserIdentified')->willReturn(false);
+
+        $secMan = new SecurityManager($this->identificationVerifier, $this->roleConfig, $this->userAccessLoader);
+
+        // act
+        $secMan->getActiveRoles($this->user, $retrievedActiveRoles, $retrievedInactiveRoles);
+
+        // assert
+        $this->assertNotContains('user', $retrievedActiveRoles);
+        $this->assertContains('user', $retrievedInactiveRoles);
     }
 }
