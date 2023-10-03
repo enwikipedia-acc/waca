@@ -86,7 +86,7 @@ final class SecurityManager implements ISecurityManager
                 // NOTE: public is still in this array.
                 $userRoles = array_merge($userRoles, $loadedRoles);
 
-                $identified = $user->isIdentified($this->identificationVerifier);
+                $identified = $this->userIsIdentified($user);
             }
         }
 
@@ -164,5 +164,21 @@ final class SecurityManager implements ISecurityManager
 
         // return indeterminate result
         return null;
+    }
+
+    private function userIsIdentified(User $user): bool
+    {
+        if ($user->getForceIdentified() === false) {
+            // User forced to be unidentified in the database.
+            return false;
+        }
+
+        if ($user->getForceIdentified() === true) {
+            // User forced to be identified in the database.
+            return true;
+        }
+
+        // User not forced to any particular identified status; consult IdentificationVerifier
+        return $this->identificationVerifier->isUserIdentified($user->getOnWikiName());
     }
 }
