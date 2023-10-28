@@ -231,6 +231,7 @@ class PageCloseRequest extends RequestActionBase
         $this->assign('emailSentOverride', WebRequest::postBoolean('emailSentOverride') ? 'true' : 'false');
         $this->assign('reserveOverride', WebRequest::postBoolean('reserveOverride') ? 'true' : 'false');
         $this->assign('createOverride', WebRequest::postBoolean('createOverride') ? 'true' : 'false');
+        $this->assign('skipAutoWelcome', webRequest::postBoolean('skipAutoWelcome') ? 'true' : 'false');
 
         $this->skipAlerts();
 
