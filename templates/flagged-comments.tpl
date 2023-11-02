@@ -6,6 +6,11 @@
                 <h1 class="h2">Flagged comments</h1>
             </div>
             <p>This page lists all comments which have been flagged for review. Please check each carefully and edit out any private data as required.</p>
+            <p>
+                If a request is still open, please be aware that the comment may contain information relevant to the 
+                handling of the request. It may be prudent to wait for a request to be closed before redacting the
+                comments for that request.
+            </p>
         </div>
     </div>
 
@@ -60,16 +65,29 @@
                             <td></td>
                         {else}
                             <td>{if $data.userid !== null}<a href="{$baseurl}/internal.php/statistics/users/detail?user={$data.userid|escape}">{$data.user|escape}</a>{/if}</td>
-                            <td><a href="{$baseurl}/internal.php/viewRequest?id={$data.requestid|escape}">{$data.request|escape}</a></td>
+                            <td>
+                                <a href="{$baseurl}/internal.php/viewRequest?id={$data.requestid|escape}">{$data.request|escape}</a>
+                                {if $data.requeststatus == Waca\RequestStatus::CLOSED}
+                                    <span class="badge badge-danger">Closed</span>
+                                {elseif $data.requeststatus == Waca\RequestStatus::OPEN}
+                                    <span class="badge badge-success">Open</span>
+                                {else}
+                                    <span class="badge badge-warning">{$data.requeststatus|escape}</span>
+                                {/if}
+                            </td>
                             <td data-value="{$data.time|date}" data-dateformat="YYYY-MM-DD hh:mm:ss" class="text-nowrap">
                                 {$data.time|date}&nbsp;<span class="text-muted">{$data.time|relativedate}</span>
                             </td>
-                            <td>{$data.comment|escape}</td>
+                            {if $data.hiddenText}
+                                <td class="text-muted"><del>(redacted)</del></td>
+                            {else}
+                                <td>{$data.comment|escape}</td>
+                            {/if}
                             <td class="table-button-cell text-right">
-                                {if $editComments && ($editOthersComments || $data.userid == $currentUser->getId())}
-                                    <a href="{$baseurl}/internal.php/editComment?id={$data.id}" class="btn btn-sm btn-secondary"><i class="fas fa-edit"></i>&nbsp;Edit</a>
+                                {if $editComments && !$data.hiddenText && ($editOthersComments || $data.userid == $currentUser->getId())}
+                                    <a href="{$baseurl}/internal.php/editComment?id={$data.id}&from=flagged" class="btn btn-sm btn-secondary"><i class="fas fa-edit"></i>&nbsp;Edit</a>
                                 {/if}
-                                {if $canUnflag}
+                                {if $canUnflag && !$data.hiddenText}
                                 <form action="{$baseurl}/internal.php/flagComment" method="post" class="d-inline-block">
                                     {include file="security/csrf.tpl"}
                                     <input type="hidden" name="comment" value="{$data.id}" />

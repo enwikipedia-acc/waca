@@ -42,21 +42,8 @@ class PageEditComment extends InternalPageBase
         }
 
         $currentUser = User::getCurrent($database);
-        if ($comment->getUser() !== $currentUser->getId() && !$this->barrierTest('editOthers', $currentUser)) {
-            throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
-        }
 
-        if ($comment->getVisibility() === 'admin'
-            && !$this->barrierTest('seeRestrictedComments', $currentUser, 'RequestData')
-            && $comment->getUser() !== $currentUser->getId()) {
-            throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
-        }
-
-        if ($comment->getVisibility() === 'checkuser'
-            && !$this->barrierTest('seeCheckuserComments', $currentUser, 'RequestData')
-            && $comment->getUser() !== $currentUser->getId()) {
-            throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
-        }
+        $this->checkCommentAccess($comment, $currentUser);
 
         /** @var Request|false $request */
         $request = Request::getById($comment->getRequest(), $database);
@@ -71,46 +58,49 @@ class PageEditComment extends InternalPageBase
             $this->validateCSRFToken();
             $newComment = WebRequest::postString('newcomment');
             $visibility = WebRequest::postString('visibility');
+            $doUnflag = WebRequest::postBoolean('unflag');
 
-            if ($newComment === null || $newComment === "") {
-                throw new ApplicationLogicException("Comment cannot be empty!");
+            if ($newComment === null || $newComment === '') {
+                throw new ApplicationLogicException('Comment cannot be empty!');
             }
 
-            if ($newComment === $comment->getComment() && ($comment->getVisibility() === 'requester' || $comment->getVisibility() === $visibility)) {
-                // Only save and log if the comment changed
-                $this->redirect('viewRequest', null, array('id' => $comment->getRequest()));
+            $commentDataUnchanged = $newComment === $comment->getComment()
+                && ($comment->getVisibility() === 'requester' || $comment->getVisibility() === $visibility);
+            $flagStatusUnchanged = (!$canUnflag || $comment->getFlagged() && !$doUnflag);
+
+            if ($commentDataUnchanged && $flagStatusUnchanged) {
+                // No change was made; redirect back.
+                $this->redirectBack($comment->getRequest());
+
                 return;
-            }
-
-            if ($comment->getVisibility() !== 'requester') {
-                if ($visibility !== 'user' && $visibility !== 'admin' && $visibility !== 'checkuser') {
-                    throw new ApplicationLogicException('Comment visibility is not valid');
-                }
-
-                $comment->setVisibility($visibility);
             }
 
             // optimistically lock from the load of the edit comment form
             $updateVersion = WebRequest::postInt('updateversion');
-            $comment->setUpdateVersion($updateVersion);
 
-            $comment->setComment($newComment);
+            // comment data has changed, update the object
+            if (!$commentDataUnchanged) {
+                $this->updateCommentData($comment, $visibility, $newComment);
+            }
 
-            if (WebRequest::postBoolean('unflag') && $canUnflag) {
+            if ($doUnflag && $canUnflag) {
                 $comment->setFlagged(false);
             }
 
-            $comment->touchEdited();
+            $comment->setUpdateVersion($updateVersion);
             $comment->save();
 
-            Logger::editComment($database, $comment, $request);
-            if (WebRequest::postBoolean('unflag') && $canUnflag) {
+            if (!$commentDataUnchanged) {
+                Logger::editComment($database, $comment, $request);
+                $this->getNotificationHelper()->commentEdited($comment, $request);
+            }
+
+            if ($doUnflag && $canUnflag) {
                 Logger::unflaggedComment($database, $comment, $request->getDomain());
             }
-            $this->getNotificationHelper()->commentEdited($comment, $request);
-            SessionAlert::success("Comment has been saved successfully");
 
-            $this->redirect('viewRequest', null, array('id' => $comment->getRequest()));
+            SessionAlert::success('Comment has been saved successfully');
+            $this->redirectBack($comment->getRequest());
         }
         else {
             $this->assignCSRFToken();
@@ -119,6 +109,71 @@ class PageEditComment extends InternalPageBase
             $this->assign('user', User::getById($comment->getUser(), $database));
             $this->assign('canUnflag', $canUnflag);
             $this->setTemplate('edit-comment.tpl');
+        }
+    }
+
+    /**
+     * @throws AccessDeniedException
+     */
+    private function checkCommentAccess(Comment $comment, User $currentUser): void
+    {
+        if ($comment->getUser() !== $currentUser->getId() && !$this->barrierTest('editOthers', $currentUser)) {
+            throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
+        }
+
+        $restrictedVisibility = $comment->getFlagged()
+            || $comment->getVisibility() === 'admin'
+            || $comment->getVisibility() === 'checkuser';
+
+        if ($restrictedVisibility && !$this->barrierTest('alwaysSeePrivateData', $currentUser, 'RequestData')) {
+            // Restricted visibility comments can only be seen if the user has a request reserved.
+            /** @var Request $request */
+            $request = Request::getById($comment->getRequest(), $comment->getDatabase());
+
+            if ($request->getReserved() !== $currentUser->getId()) {
+                throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
+            }
+        }
+
+        if ($comment->getVisibility() === 'admin'
+            && !$this->barrierTest('seeRestrictedComments', $currentUser, 'RequestData')
+            && $comment->getUser() !== $currentUser->getId()) {
+            throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
+        }
+
+        if ($comment->getVisibility() === 'checkuser'
+            && !$this->barrierTest('seeCheckuserComments', $currentUser, 'RequestData')
+            && $comment->getUser() !== $currentUser->getId()) {
+            throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
+        }
+    }
+
+    /**
+     * @throws ApplicationLogicException
+     */
+    private function updateCommentData(Comment $comment, ?string $visibility, string $newComment): void
+    {
+        if ($comment->getVisibility() !== 'requester') {
+            if ($visibility !== 'user' && $visibility !== 'admin' && $visibility !== 'checkuser') {
+                throw new ApplicationLogicException('Comment visibility is not valid');
+            }
+
+            $comment->setVisibility($visibility);
+        }
+
+        $comment->setComment($newComment);
+        $comment->touchEdited();
+    }
+
+    private function redirectBack(int $requestId): void
+    {
+        $source = WebRequest::getString('from');
+
+        if ($source == 'flagged') {
+            $this->redirect('flaggedComments');
+        }
+        else {
+            $this->redirect('viewRequest', null, array('id' => $requestId));
         }
     }
 }

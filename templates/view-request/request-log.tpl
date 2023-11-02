@@ -9,7 +9,7 @@
         <tbody>
         {if $requestLogs}
             {foreach from=$requestLogs item=zoomrow name=logloop}
-                    <tr class="{if $zoomrow.security == "admin"}table-danger{elseif $zoomrow.security == "checkuser"}table-visited{/if}">
+                    <tr class="{if $zoomrow.security == "admin"}table-danger{elseif $zoomrow.security == "checkuser"}table-visited{elseif $zoomrow.hidden}table-secondary{/if}" id="{if $zoomrow.type == "comment"}comment{else}log{/if}-{$zoomrow.id}">
                     <td class="text-nowrap">
                         {if $zoomrow.userid != null}
                             <a href='{$baseurl}/internal.php/statistics/users/detail?user={$zoomrow.userid}'>{$zoomrow.user|escape}</a>
@@ -70,7 +70,12 @@
                                 </a>
                             {/if}
 
-                            <div class="prewrap">{$zoomrow.comment|escape}</div>
+                            {if $zoomrow.hidden}
+                                <span class="text-muted">This comment has been hidden. Reserve the request to view it.</span>
+                            {else}
+                                <div class="prewrap">{$zoomrow.comment|escape}</div>
+                            {/if}
+
                         {/if}
                     </td>
                     <td class="text-nowrap">

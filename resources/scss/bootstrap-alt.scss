@@ -88,3 +88,8 @@ $close-color: $white;
     color: $white;
   }
 }
+
+// override .table-secondary.text-muted to have better contrast
+.table-secondary .text-muted {
+  color: $gray-500 !important;
+}

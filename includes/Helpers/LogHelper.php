@@ -435,7 +435,14 @@ HTML;
                 $formName = htmlentities($queue->getName(), ENT_COMPAT, 'UTF-8');
 
                 return "<a href=\"{$baseurl}/internal.php/requestFormManagement/edit?form={$objectId}\">{$formName}</a>";
+            case 'Comment':
+                /** @var Comment $comment */
+                $comment = Comment::getById($objectId, $database);
+                /** @var Request $request */
+                $request = Request::getById($comment->getRequest(), $database);
+                $requestName = htmlentities($request->getName(), ENT_COMPAT, 'UTF-8');
 
+                return "<a href=\"{$baseurl}/internal.php/editComment?id={$objectId}\">Comment {$objectId}</a> on request <a href=\"{$baseurl}/internal.php/viewRequest?id={$comment->getRequest()}#comment-{$objectId}\">#{$comment->getRequest()} ({$requestName})</a>";
             default:
                 return '[' . $objectType . " " . $objectId . ']';
         }

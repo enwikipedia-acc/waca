@@ -46,17 +46,27 @@ class PageFlagComment extends InternalPageBase
             throw new ApplicationLogicException('Unknown comment');
         }
 
-        if ($comment->getFlagged() && !$this->barrierTest('unflag', User::getCurrent($database))) {
+        $currentUser = User::getCurrent($database);
+
+        if ($comment->getFlagged() && !$this->barrierTest('unflag', $currentUser)) {
             // user isn't allowed to unflag comments
+            throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
+        }
+
+        /** @var Request $request */
+        $request = Request::getById($comment->getRequest(), $database);
+
+        if ($comment->getFlagged()
+            && !$this->barrierTest('alwaysSeePrivateData', $currentUser, 'RequestData')
+            && $request->getReserved() !== $currentUser->getId()
+        ) {
+            // can't unflag if you can't see it.
             throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
         }
 
         $comment->setFlagged($flagState == 1);
         $comment->setUpdateVersion($updateVersion);
         $comment->save();
-
-        /** @var Request $request */
-        $request = Request::getById($comment->getRequest(), $database);
 
         if ($flagState === 1) {
             Logger::flaggedComment($database, $comment, $request->getDomain());

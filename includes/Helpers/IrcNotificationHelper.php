@@ -486,6 +486,11 @@ TAG
         );
     }
 
+    public function alertFlaggedComments(int $count)
+    {
+        $this->send("There are ${count} flagged comments on closed requests currently awaiting redaction.");
+    }
+
     #endregion
 
     #region email management (close reasons)
