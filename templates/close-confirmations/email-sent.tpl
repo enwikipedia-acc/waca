@@ -27,6 +27,7 @@
 
                 <input type="hidden" name="reserveOverride" value="{$reserveOverride}"/>
                 <input type="hidden" name="createOverride" value="{$createOverride}"/>
+                <input type="hidden" name="skipAutoWelcome" value="{$skipAutoWelcome}" />
             </form>
         </div>
     </div>
