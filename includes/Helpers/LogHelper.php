@@ -31,16 +31,15 @@ use Waca\SiteConfiguration;
 class LogHelper
 {
     /**
-     * Summary of getRequestLogsWithComments
-     *
      * @param int             $requestId
-     * @param PdoDatabase     $db
-     * @param SecurityManager $securityManager
      *
      * @return DataObject[]
      */
-    public static function getRequestLogsWithComments($requestId, PdoDatabase $db, SecurityManager $securityManager)
-    {
+    public static function getRequestLogsWithComments(
+        $requestId,
+        PdoDatabase $db,
+        SecurityManager $securityManager
+    ): array {
         // FIXME: domains
         $logs = LogSearchHelper::get($db, 1)->byObjectType('Request')->byObjectId($requestId)->fetch();
 
@@ -52,12 +51,7 @@ class LogHelper
 
         $items = array_merge($logs, $comments);
 
-        /**
-         * @param DataObject $item
-         *
-         * @return int
-         */
-        $sortKey = function(DataObject $item) {
+        $sortKey = function(DataObject $item): int {
             if ($item instanceof Log) {
                 return $item->getTimestamp()->getTimestamp();
             }
@@ -91,14 +85,7 @@ class LogHelper
         return $items;
     }
 
-    /**
-     * Summary of getLogDescription
-     *
-     * @param Log $entry
-     *
-     * @return string
-     */
-    public static function getLogDescription(Log $entry)
+    public static function getLogDescription(Log $entry): string
     {
         $text = "Deferred to ";
         if (substr($entry->getAction(), 0, strlen($text)) == $text) {
@@ -129,11 +116,11 @@ class LogHelper
         if (substr($entry->getAction(), 0, strlen($text)) == $text) {
             // Closed with a reason - do a lookup here.
             $id = substr($entry->getAction(), strlen($text));
-            /** @var EmailTemplate $template */
+            /** @var EmailTemplate|false $template */
             $template = EmailTemplate::getById((int)$id, $entry->getDatabase());
 
-            if ($template != false) {
-                return "closed (" . $template->getName() . ")";
+            if ($template !== false) {
+                return 'closed (' . $template->getName() . ')';
             }
         }
 
@@ -193,12 +180,7 @@ class LogHelper
         return "performed an unknown action ({$entry->getAction()})";
     }
 
-    /**
-     * @param PdoDatabase $database
-     *
-     * @return array
-     */
-    public static function getLogActions(PdoDatabase $database)
+    public static function getLogActions(PdoDatabase $database): array
     {
         $lookup = array(
             "Requests" => [
@@ -283,7 +265,7 @@ SQL
         return $lookup;
     }
 
-    public static function getObjectTypes()
+    public static function getObjectTypes(): array
     {
         return array(
             'Ban'             => 'Ban',
@@ -301,14 +283,11 @@ SQL
     }
 
     /**
-     * This returns a HTML
+     * This returns an HTML representation of the object
      *
-     * @param string            $objectId
+     * @param int               $objectId
      * @param string            $objectType
-     * @param PdoDatabase       $database
-     * @param SiteConfiguration $configuration
      *
-     * @return null|string
      * @category Security-Critical
      */
     private static function getObjectDescription(
@@ -316,7 +295,7 @@ SQL
         $objectType,
         PdoDatabase $database,
         SiteConfiguration $configuration
-    ) {
+    ): ?string {
         if ($objectType == '') {
             return null;
         }
@@ -453,14 +432,11 @@ HTML;
     }
 
     /**
-     * @param Log[]             $logs
-     * @param PdoDatabase       $database
-     * @param SiteConfiguration $configuration
+     * @param Log[] $logs
      *
-     * @return array
      * @throws Exception
      */
-    public static function prepareLogsForTemplate($logs, PdoDatabase $database, SiteConfiguration $configuration)
+    public static function prepareLogsForTemplate(array $logs, PdoDatabase $database, SiteConfiguration $configuration): array
     {
         $userIds = array();
 

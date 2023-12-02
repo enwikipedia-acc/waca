@@ -18,14 +18,10 @@ final class SecurityManager
     const ALLOWED = 1;
     const ERROR_NOT_IDENTIFIED = 2;
     const ERROR_DENIED = 3;
-    /** @var IdentificationVerifier */
-    private $identificationVerifier;
-    /**
-     * @var RoleConfiguration
-     */
-    private $roleConfiguration;
+    private IdentificationVerifier $identificationVerifier;
+    private RoleConfiguration $roleConfiguration;
 
-    private $cache = [];
+    private array $cache = [];
 
     /**
      * SecurityManager constructor.
@@ -122,12 +118,8 @@ final class SecurityManager
 
     /**
      * Takes an array of roles and flattens the values to a single set.
-     *
-     * @param array $activeRoles
-     *
-     * @return array
      */
-    private function flattenRoles($activeRoles)
+    private function flattenRoles(array $activeRoles): array
     {
         $result = array();
 
@@ -162,12 +154,7 @@ final class SecurityManager
         return $result;
     }
 
-    /**
-     * @param User  $user
-     * @param array $activeRoles
-     * @param array $inactiveRoles
-     */
-    public function getActiveRoles(User $user, &$activeRoles, &$inactiveRoles)
+    public function getActiveRoles(User $user, ?array &$activeRoles, ?array &$inactiveRoles)
     {
         // Default to the community user here, because the main user is logged out
         $identified = false;
@@ -210,12 +197,7 @@ final class SecurityManager
         }
     }
 
-    /**
-     * @param User  $user
-     * @param array $activeRoles
-     * @param array $inactiveRoles
-     */
-    public function getCachedActiveRoles(User $user, &$activeRoles, &$inactiveRoles)
+    public function getCachedActiveRoles(User $user, ?array &$activeRoles, ?array &$inactiveRoles): void
     {
         if (!array_key_exists($user->getId(), $this->cache)) {
             $this->getActiveRoles($user, $retrievedActiveRoles, $retrievedInactiveRoles);

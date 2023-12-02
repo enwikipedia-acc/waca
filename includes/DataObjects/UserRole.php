@@ -19,7 +19,6 @@ class UserRole extends DataObject
     private $user;
     /** @var string */
     private $role;
-    /** @var int */
     private ?int $domain;
 
     /**
