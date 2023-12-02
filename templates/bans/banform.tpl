@@ -17,8 +17,12 @@
                 {if $replaceBanId !== null}
                     <input type="hidden" name="replaceBanId" value="{$replaceBanId}">
                     <input type="hidden" name="replaceBanUpdateVersion" value="{$replaceBanUpdateVersion}">
-                    {include file="alert.tpl" alerttype="alert-warning" alertheader="Replacing ban {$replaceBanId}"
-                        alertmessage="By submitting this form, you will unban ban {$replaceBanId} and replace it with a new ban as configured below. The form below is pre-filled with the old ban's details."}
+
+                    <div class="alert alert-warning">
+                        <h4>Replacing ban {$replaceBanId}</h4>
+                        By submitting this form, you will unban ban {$replaceBanId} and replace it with a new ban as
+                        configured below. The form below is pre-filled with the old ban's details.
+                    </div>
                 {/if}
 
                 <div class="row">
@@ -176,7 +180,9 @@
                                 <div class="form-group row">
                                     <div class="offset-sm-4 col-sm-8 offset-md-3 col-md-5 offset-lg-4 col-lg-8 offset-xl-3 col-xl-6">
                                         <div class="custom-control custom-switch">
-                                            <input class="custom-control-input" type="checkbox" id="banGlobal" name="banGlobal" {if $banGlobal}checked{/if}>
+                                            <input class="custom-control-input" type="checkbox" id="banGlobal" name="banGlobal"
+                                                   {if $banGlobal}checked{/if}
+                                                   {if $banAction === Waca\DataObjects\Ban::ACTION_DEFER}disabled{/if}>
                                             <label class="custom-control-label" for="banGlobal">Apply ban across all domains</label>
                                         </div>
                                     </div>

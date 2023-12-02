@@ -28,7 +28,7 @@ class Log extends DataObject
     private $timestamp;
     /** @var string|null */
     private $comment;
-    /** @var int */
+    /** @var int|null */
     private $domain;
 
     /**

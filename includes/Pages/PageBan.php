@@ -410,6 +410,22 @@ class PageBan extends InternalPageBase
         $this->assign('maxIpRange', $this->getSiteConfiguration()->getBanMaxIpRange());
         $this->assign('maxIpBlockRange', $this->getSiteConfiguration()->getBanMaxIpBlockRange());
 
+        $this->assign('banVisibility', 'user');
+        $this->assign('banGlobal', false);
+        $this->assign('banQueue', false);
+        $this->assign('banAction', Ban::ACTION_BLOCK);
+        $this->assign('banDuration', '');
+        $this->assign('banReason', '');
+
+        $this->assign('banEmail', '');
+        $this->assign('banIP', '');
+        $this->assign('banName', '');
+        $this->assign('banUseragent', '');
+
+        $this->assign('replaceBanId', null);
+
+
+
         $database = $this->getDatabase();
 
         $user = User::getCurrent($database);
