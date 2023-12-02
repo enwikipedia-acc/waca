@@ -91,8 +91,7 @@ class Logger
     #region Users
 
     /**
-     * @param PdoDatabase $database
-     * @param User        $user
+     * @throws Exception
      */
     public static function newUser(PdoDatabase $database, User $user)
     {
@@ -100,8 +99,7 @@ class Logger
     }
 
     /**
-     * @param PdoDatabase $database
-     * @param User        $object
+     * @throws Exception
      */
     public static function approvedUser(PdoDatabase $database, User $object)
     {
@@ -109,57 +107,31 @@ class Logger
     }
 
     /**
-     * @param PdoDatabase $database
-     * @param User        $object
-     * @param string      $comment
+     * @throws Exception
      */
-    public static function declinedUser(PdoDatabase $database, User $object, $comment)
+    public static function declinedUser(PdoDatabase $database, User $object, string $comment)
     {
         self::createLogEntry($database, $object, "Declined", $comment);
     }
 
     /**
-     * @param PdoDatabase $database
-     * @param User        $object
-     * @param string      $comment
+     * @throws Exception
      */
-    public static function suspendedUser(PdoDatabase $database, User $object, $comment)
+    public static function suspendedUser(PdoDatabase $database, User $object, string $comment)
     {
         self::createLogEntry($database, $object, "Suspended", $comment);
     }
 
     /**
-     * @param PdoDatabase $database
-     * @param User        $object
-     * @param string      $comment
+     * @throws Exception
      */
-    public static function demotedUser(PdoDatabase $database, User $object, $comment)
-    {
-        self::createLogEntry($database, $object, "Demoted", $comment);
-    }
-
-    /**
-     * @param PdoDatabase $database
-     * @param User        $object
-     */
-    public static function promotedUser(PdoDatabase $database, User $object)
-    {
-        self::createLogEntry($database, $object, "Promoted");
-    }
-
-    /**
-     * @param PdoDatabase $database
-     * @param User        $object
-     * @param string      $comment
-     */
-    public static function renamedUser(PdoDatabase $database, User $object, $comment)
+    public static function renamedUser(PdoDatabase $database, User $object, string $comment)
     {
         self::createLogEntry($database, $object, "Renamed", $comment);
     }
 
     /**
-     * @param PdoDatabase $database
-     * @param User        $object
+     * @throws Exception
      */
     public static function userPreferencesChange(PdoDatabase $database, User $object)
     {
@@ -167,17 +139,16 @@ class Logger
     }
 
     /**
-     * @param PdoDatabase $database
-     * @param User        $object
-     * @param string      $reason
-     * @param array       $added
-     * @param array       $removed
-     * @param int         $domain
-     *
      * @throws Exception
      */
-    public static function userRolesEdited(PdoDatabase $database, User $object, $reason, $added, $removed, int $domain)
-    {
+    public static function userRolesEdited(
+        PdoDatabase $database,
+        User $object,
+        string $reason,
+        array $added,
+        array $removed,
+        int $domain
+    ) {
         $logData = serialize(array(
             'added'   => $added,
             'removed' => $removed,
@@ -187,12 +158,20 @@ class Logger
         self::createLogEntry($database, $object, "RoleChange", $logData, null, $domain);
     }
 
-    public static function userGlobalRolesEdited(PdoDatabase $database, User $object, $reason, $added, $removed)
-    {
+    /**
+     * @throws Exception
+     */
+    public static function userGlobalRolesEdited(
+        PdoDatabase $database,
+        User $object,
+        string $reason,
+        array $added,
+        array $removed
+    ): void {
         $logData = serialize(array(
-            'added'   => $added,
+            'added' => $added,
             'removed' => $removed,
-            'reason'  => $reason,
+            'reason' => $reason,
         ));
 
         self::createLogEntry($database, $object, "GlobalRoleChange", $logData);
