@@ -465,9 +465,18 @@ class IrcNotificationHelper
     public function commentCreated(Comment $comment, Request $request)
     {
         $username = $this->currentUser->getUsername();
-        $visibility = ($comment->getVisibility() == "admin" ? "private " : "");
+        switch ($comment->getVisibility()) {
+            case 'admin':
+                $visibility = " with visibility 'admin'";
+                break;
+            case 'checkuser':
+                $visibility = " with visibility 'checkuser'";
+                break;
+            default:
+                break;
+        }
 
-        $this->send("{$username} posted a {$visibility}comment on request {$request->getId()} ({$request->getName()})");
+        $this->send("{$username} posted a comment on request {$request->getId()} ({$request->getName()}){$visibility}");
     }
 
     /**
