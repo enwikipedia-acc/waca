@@ -473,6 +473,7 @@ class IrcNotificationHelper
                 $visibility = " with visibility 'checkuser'";
                 break;
             default:
+                $visibility = ""
                 break;
         }
 
