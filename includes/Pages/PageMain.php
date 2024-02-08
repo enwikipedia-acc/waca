@@ -58,7 +58,7 @@ class PageMain extends InternalPageBase
             $this->setupHospitalQueue($database, $config, $requestSectionData);
             $this->setupJobQueue($database, $config, $requestSectionData);
         }
-        $this->setupLastFiveClosedData($database, $seeAllRequests);
+        $this->setupLastFiveClosedData($database, $config, $seeAllRequests);
 
         // Assign data to template
         $this->assign('requestSectionData', $requestSectionData);
@@ -68,15 +68,21 @@ class PageMain extends InternalPageBase
 
     /**
      * @param PdoDatabase $database
+     * @param SiteConfiguration $config
      * @param bool        $seeAllRequests
      *
      * @internal param User $currentUser
      */
-    private function setupLastFiveClosedData(PdoDatabase $database, $seeAllRequests)
+    private function setupLastFiveClosedData(PdoDatabase $database, SiteConfiguration $config, $seeAllRequests)
     {
         $this->assign('showLastFive', $seeAllRequests);
         if (!$seeAllRequests) {
             return;
+        }
+
+        $queryExcludeDropped = "";
+        if($config->getEmailConfirmationEnabled()) {
+            $queryExcludeDropped = "AND request.emailConfirm = 'Confirmed'";
         }
 
         $query = <<<SQL
@@ -84,6 +90,7 @@ class PageMain extends InternalPageBase
 		FROM request /* PageMain::main() */
 		JOIN log ON log.objectid = request.id AND log.objecttype = 'Request'
 		WHERE log.action LIKE 'Closed%'
+		$queryExcludeDropped
 		ORDER BY log.timestamp DESC
 		LIMIT 5;
 SQL;
