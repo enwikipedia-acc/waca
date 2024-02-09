@@ -58,7 +58,7 @@ class PageMain extends InternalPageBase
             $this->setupHospitalQueue($database, $config, $requestSectionData);
             $this->setupJobQueue($database, $config, $requestSectionData);
         }
-        $this->setupLastFiveClosedData($database, $config, $seeAllRequests);
+        $this->setupLastFiveClosedData($database, $seeAllRequests);
 
         // Assign data to template
         $this->assign('requestSectionData', $requestSectionData);
@@ -73,15 +73,16 @@ class PageMain extends InternalPageBase
      *
      * @internal param User $currentUser
      */
-    private function setupLastFiveClosedData(PdoDatabase $database, SiteConfiguration $config, $seeAllRequests)
+    private function setupLastFiveClosedData(PdoDatabase $database, $seeAllRequests)
     {
+        $config = $this->getSiteConfiguration();
         $this->assign('showLastFive', $seeAllRequests);
         if (!$seeAllRequests) {
             return;
         }
 
         $queryExcludeDropped = "";
-        if($config->getEmailConfirmationEnabled()) {
+        if ($config->getEmailConfirmationEnabled()) {
             $queryExcludeDropped = "AND request.emailConfirm = 'Confirmed'";
         }
 
