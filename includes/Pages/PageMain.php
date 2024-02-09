@@ -68,7 +68,6 @@ class PageMain extends InternalPageBase
 
     /**
      * @param PdoDatabase $database
-     * @param SiteConfiguration $config
      * @param bool        $seeAllRequests
      *
      * @internal param User $currentUser
