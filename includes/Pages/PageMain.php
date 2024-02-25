@@ -74,9 +74,15 @@ class PageMain extends InternalPageBase
      */
     private function setupLastFiveClosedData(PdoDatabase $database, $seeAllRequests)
     {
+        $config = $this->getSiteConfiguration();
         $this->assign('showLastFive', $seeAllRequests);
         if (!$seeAllRequests) {
             return;
+        }
+
+        $queryExcludeDropped = "";
+        if ($config->getEmailConfirmationEnabled()) {
+            $queryExcludeDropped = "AND request.emailConfirm = 'Confirmed'";
         }
 
         $query = <<<SQL
@@ -84,6 +90,7 @@ class PageMain extends InternalPageBase
 		FROM request /* PageMain::main() */
 		JOIN log ON log.objectid = request.id AND log.objecttype = 'Request'
 		WHERE log.action LIKE 'Closed%'
+		$queryExcludeDropped
 		ORDER BY log.timestamp DESC
 		LIMIT 5;
 SQL;
