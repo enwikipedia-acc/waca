@@ -11,7 +11,7 @@ CREATE OR REPLACE VIEW schemacheck_pk_on_id AS
 WITH col_data AS (
     SELECT table_name, index_name, group_concat(column_name ORDER BY seq_in_index SEPARATOR '_') columns
     FROM information_schema.STATISTICS
-    WHERE table_schema = 'waca' AND index_name = 'PRIMARY'
+    WHERE table_schema = DATABASE() AND index_name = 'PRIMARY'
     GROUP BY table_name, index_name
 )
 SELECT col_data.*,
