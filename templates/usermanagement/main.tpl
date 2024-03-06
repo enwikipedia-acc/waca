@@ -95,6 +95,19 @@
                     </div>
                 </div>
 
+                <div class="card">
+                    <div class="card-header position-relative py-0">
+                        <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#userListAccordion" data-target="#collapseStewards">
+                            Stewards
+                        </button>
+                    </div>
+                    <div id="collapseStewards" class="collapse" data-parent="#userListAccordion">
+                        <div class="card-body">
+                            {include file='usermanagement/userlist.tpl' userlist=$stewards}
+                        </div>
+                    </div>
+                </div>
+
                 {if $showAll == true}
                     <div class="card">
                         <div class="card-header position-relative py-0">
