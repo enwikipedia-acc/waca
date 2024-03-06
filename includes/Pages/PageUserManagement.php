@@ -79,11 +79,13 @@ class PageUserManagement extends InternalPageBase
         $normalUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('user')->fetch();
         $adminUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('admin')->fetch();
         $checkUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('checkuser')->fetch();
+        $stewards = UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('steward')->fetch();
         $toolRoots = UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('toolRoot')->fetch();
         $this->assign('newUsers', $newUsers);
         $this->assign('normalUsers', $normalUsers);
         $this->assign('adminUsers', $adminUsers);
         $this->assign('checkUsers', $checkUsers);
+        $this->assign('stewards', $stewards);
         $this->assign('toolRoots', $toolRoots);
 
         $this->assign('roles', $roleMap);
