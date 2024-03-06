@@ -36,7 +36,7 @@ class StatsInactiveUsers extends InternalPageBase
             $this->barrierTest('suspend', User::getCurrent($this->getDatabase()), PageUserManagement::class));
 
         $immuneUsers = $this->getDatabase()
-            ->query("SELECT user FROM userrole WHERE role IN ('toolRoot', 'checkuser') GROUP BY user;")
+            ->query("SELECT user FROM userrole WHERE role IN ('toolRoot', 'checkuser', 'steward') GROUP BY user;")
             ->fetchAll(PDO::FETCH_COLUMN);
         
         $this->assign('immune', array_fill_keys($immuneUsers, true));
