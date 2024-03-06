@@ -37,11 +37,13 @@ SELECT
     , CASE WHEN ru.role IS NOT NULL THEN 'Yes' ELSE 'No' END tooluser
     , CASE WHEN ra.role IS NOT NULL THEN 'Yes' ELSE 'No' END tooladmin
     , CASE WHEN rc.role IS NOT NULL THEN 'Yes' ELSE 'No' END checkuser
+    , CASE WHEN rs.role IS NOT NULL THEN 'Yes' ELSE 'No' END steward
     , CASE WHEN rr.role IS NOT NULL THEN 'Yes' ELSE 'No' END toolroot
 FROM user u
     LEFT JOIN userrole ru ON ru.user = u.id AND ru.role = 'user'
     LEFT JOIN userrole ra ON ra.user = u.id AND ra.role = 'admin'
     LEFT JOIN userrole rc ON rc.user = u.id AND rc.role = 'checkuser'
+    LEFT JOIN userrole rs ON rs.user = u.id AND rs.role = 'steward'
     LEFT JOIN userrole rr ON rr.user = u.id AND rr.role = 'toolRoot'
 WHERE u.status = 'Active'
 SQL;
