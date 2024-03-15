@@ -20,7 +20,7 @@ use Waca\Providers\Interfaces\ILocationProvider;
 use Waca\Providers\Interfaces\IRDnsProvider;
 use Waca\Providers\Interfaces\IXffTrustProvider;
 use Waca\RequestStatus;
-use Waca\Security\SecurityManager;
+use Waca\Security\ISecurityManager;
 use Waca\SiteConfiguration;
 use Waca\WebRequest;
 
@@ -120,8 +120,7 @@ trait RequestData
      */
     abstract protected function getRouteName();
 
-    /** @return SecurityManager */
-    abstract protected function getSecurityManager();
+    abstract protected function getSecurityManager(): ISecurityManager;
 
     /**
      * Sets the name of the template this page should display.
