@@ -75,20 +75,22 @@ SQL
         $unconfirmedStatement->closeCursor();
         $this->assign('statsUnconfirmed', $unconfirmed);
 
-        $userStatusStatement = $database->prepare('SELECT COUNT(*) FROM user WHERE status = :status;');
+        $userRoleStatement = $database->prepare('SELECT COUNT(*) FROM user INNER JOIN userrole ON user.id = userrole.user WHERE role = :role;');
 
         // Admin users
-        $userStatusStatement->execute(array(':status' => 'Admin'));
-        $adminUsers = $userStatusStatement->fetchColumn();
-        $userStatusStatement->closeCursor();
+        $userRoleStatement->execute(array(':role' => 'admin'));
+        $adminUsers = $userRoleStatement->fetchColumn();
+        $userRoleStatement->closeCursor();
         $this->assign('statsAdminUsers', $adminUsers);
 
         // Users
-        $userStatusStatement->execute(array(':status' => 'User'));
-        $users = $userStatusStatement->fetchColumn();
-        $userStatusStatement->closeCursor();
+        $userRoleStatement->execute(array(':role' => 'user'));
+        $users = $userRoleStatement->fetchColumn();
+        $userRoleStatement->closeCursor();
         $this->assign('statsUsers', $users);
 
+        $userStatusStatement = $database->prepare('SELECT COUNT(*) FROM user WHERE status = :status;');
+        
         // Suspended users
         $userStatusStatement->execute(array(':status' => 'Suspended'));
         $suspendedUsers = $userStatusStatement->fetchColumn();
