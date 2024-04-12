@@ -75,7 +75,7 @@ SQL
         $unconfirmedStatement->closeCursor();
         $this->assign('statsUnconfirmed', $unconfirmed);
 
-        $userRoleStatement = $database->prepare('SELECT COUNT(*) FROM user INNER JOIN userrole ON user.id = userrole.user WHERE role = :role;');
+        $userRoleStatement = $database->prepare('SELECT COUNT(*) FROM user INNER JOIN userrole ON user.id = userrole.user WHERE userrole.role = :role AND user.status = "Active";');
 
         // Admin users
         $userRoleStatement->execute(array(':role' => 'admin'));
