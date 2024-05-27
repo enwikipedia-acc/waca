@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Le styles -->
-    <link href="{$baseurl}/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{$baseurl}/resources/public.css" rel="stylesheet"/>
-
+    <link href="{$baseurl}/resources/generated/public.css" rel="stylesheet"/>
 </head>
 
 <body>
@@ -41,14 +39,18 @@
     <hr/>
 
     <footer class="row">
-        <p class="col-md-12">
-            <small>
+        <div class="col-md-12">
+            <p>
                 Account Creation Assistance Manager
                 (<a href="https://github.com/enwikipedia-acc/waca/tree/{$toolversion}">version {$toolversion}</a>)
                 by <a href="{$baseurl}/internal.php/team">The ACC development team</a>
                 (<a href="https://github.com/enwikipedia-acc/waca/issues">Bug reports</a>)
-            </small>
-        </p>
+            </p>
+            <ul>
+                <li><a href="{$baseurl}/index.php/privacy">Privacy Statement</a></li>
+                <li><a href="https://wikitech.wikimedia.org/wiki/Wikitech:Cloud_Services_End_User_Terms_of_use">Wikimedia Cloud Services End User Terms of Use</a></li>
+            </ul>
+        </div>
     </footer>
     {/block}
 

@@ -82,6 +82,7 @@ class SiteConfiguration
         'username' => 'waca',
         'password' => 'waca'
     ];
+    private string $privacyStatementPath = '';
 
     /**
      * Gets the base URL of the tool
@@ -1114,5 +1115,17 @@ class SiteConfiguration
     public function getDatabaseConfig(): array
     {
         return $this->databaseConfig;
+    }
+
+    public function getPrivacyStatementPath(): string
+    {
+        return $this->privacyStatementPath;
+    }
+
+    public function setPrivacyStatementPath(string $privacyStatementPath): SiteConfiguration
+    {
+        $this->privacyStatementPath = $privacyStatementPath;
+
+        return $this;
     }
 }

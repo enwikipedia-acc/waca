@@ -138,6 +138,16 @@
 
                 <div class="form-group row">
                     <div class="offset-sm-4 offset-md-5 col-sm-8 col-md-5 col-xl-4">
+                        <p class="legal-info">
+                            By submitting this form, you agree to your information being held by this tool to facilitate
+                            your use of this tool in accordance with our <a href="{$baseurl}/internal.php/privacy">Privacy Statement</a>
+                            and the <a href="https://wikitech.wikimedia.org/wiki/Wikitech:Cloud_Services_End_User_Terms_of_use">Wikimedia Cloud Services Terms of Use</a>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="offset-sm-4 offset-md-5 col-sm-8 col-md-5 col-xl-4">
                         <button type="submit" class="btn btn-primary btn-block">Signup</button>
                     </div>
                 </div>

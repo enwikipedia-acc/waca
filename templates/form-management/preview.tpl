@@ -27,6 +27,7 @@
                     <textarea class="form-control col-md-8" id="inputComments" rows="4" name="comments" disabled></textarea>
                     <small class="form-text text-muted offset-md-4 col-md-8">{$comment}</small>
                 </div>
+                {include file="request/legal-info.tpl"}
                 <div class="row">
                     <div class="offset-md-4 col-md-8 btn btn-primary btn-block disabled">Send request</div>
                 </div>
