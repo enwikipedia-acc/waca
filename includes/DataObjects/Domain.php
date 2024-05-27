@@ -101,32 +101,6 @@ SQL
         return $resultObject;
     }
 
-    public static function getDomainByUser(PdoDatabase $database, User $user, ?bool $enabled = null)
-    {
-        $statement = $database->prepare(<<<'SQL'
-            SELECT d.* 
-            FROM domain d
-            INNER JOIN userdomain ud on d.id = ud.domain
-            WHERE ud.user = :user
-            AND (:filterEnabled = 0 OR d.enabled = :enabled)
-SQL
-);
-        $statement->execute([
-            ':user' => $user->getId(),
-            ':filterEnabled' => ($enabled === null) ? 0 : 1,
-            ':enabled' => ($enabled) ? 1 : 0
-        ]);
-
-        $resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
-
-        /** @var Domain $t */
-        foreach ($resultObject as $t) {
-            $t->setDatabase($database);
-        }
-
-        return $resultObject;
-    }
-
     public function save()
     {
         if ($this->isNew()) {

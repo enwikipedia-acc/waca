@@ -10,7 +10,7 @@
 namespace Waca\DataObjects;
 
 use DateTime;
-use Waca\IdentificationVerifier;
+use Waca\IIdentificationVerifier;
 
 /**
  * User data object
@@ -109,11 +109,6 @@ class CommunityUser extends User
     #endregion
 
     #region user access checks
-
-    public function isIdentified(IdentificationVerifier $iv)
-    {
-        return false;
-    }
 
     public function isSuspended()
     {

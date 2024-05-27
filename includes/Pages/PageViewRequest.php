@@ -26,7 +26,7 @@ use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\PreferenceManager;
 use Waca\Pages\RequestAction\PageManuallyConfirm;
 use Waca\PdoDatabase;
-use Waca\Security\RoleConfiguration;
+use Waca\Security\RoleConfigurationBase;
 use Waca\RequestStatus;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -62,7 +62,7 @@ class PageViewRequest extends InternalPageBase
         // Shows a page if the email is not confirmed.
         if ($request->getEmailConfirm() !== 'Confirmed') {
             // Show a banner if the user can manually confirm the request
-            $viewConfirm = $this->barrierTest(RoleConfiguration::MAIN, $currentUser, PageManuallyConfirm::class);
+            $viewConfirm = $this->barrierTest(RoleConfigurationBase::MAIN, $currentUser, PageManuallyConfirm::class);
 
             // If the request is purged, there's nothing to confirm!
             if ($request->getEmail() === $this->getSiteConfiguration()->getDataClearEmail()) {
@@ -233,7 +233,7 @@ class PageViewRequest extends InternalPageBase
 
         $editableComments = $this->barrierTest('editOthers', $currentUser, PageEditComment::class);
 
-        $canFlag = $this->barrierTest(RoleConfiguration::MAIN, $currentUser, PageFlagComment::class);
+        $canFlag = $this->barrierTest(RoleConfigurationBase::MAIN, $currentUser, PageFlagComment::class);
         $canUnflag = $this->barrierTest('unflag', $currentUser, PageFlagComment::class);
 
         /** @var Log|Comment $entry */

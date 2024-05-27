@@ -18,8 +18,8 @@ use Waca\Exceptions\NotIdentifiedException;
 use Waca\Fragments\NavigationMenuAccessControl;
 use Waca\Helpers\Interfaces\IBlacklistHelper;
 use Waca\Helpers\Interfaces\ITypeAheadHelper;
-use Waca\Security\DomainAccessManager;
-use Waca\Security\SecurityManager;
+use Waca\Security\IDomainAccessManager;
+use Waca\Security\ISecurityManager;
 use Waca\WebRequest;
 
 abstract class InternalPageBase extends PageBase
@@ -28,12 +28,11 @@ abstract class InternalPageBase extends PageBase
 
     /** @var ITypeAheadHelper */
     private $typeAheadHelper;
-    /** @var SecurityManager */
-    private $securityManager;
+    private ISecurityManager $securityManager;
     /** @var IBlacklistHelper */
     private $blacklistHelper;
-    /** @var DomainAccessManager */
-    private $domainAccessManager;
+
+    private IDomainAccessManager $domainAccessManager;
 
     /**
      * @return ITypeAheadHelper
@@ -86,7 +85,7 @@ abstract class InternalPageBase extends PageBase
         // This code essentially doesn't care if the user is logged in or not, as the security manager hides all that
         // away for us
         $securityResult = $this->getSecurityManager()->allows(get_called_class(), $this->getRouteName(), $currentUser);
-        if ($securityResult === SecurityManager::ALLOWED) {
+        if ($securityResult === ISecurityManager::ALLOWED) {
             // We're allowed to run the page, so let's run it.
             $this->runPage();
         }
@@ -168,11 +167,11 @@ abstract class InternalPageBase extends PageBase
         else {
             // Decide whether this was a rights failure, or an identification failure.
 
-            if ($denyReason === SecurityManager::ERROR_NOT_IDENTIFIED) {
+            if ($denyReason === ISecurityManager::ERROR_NOT_IDENTIFIED) {
                 // Not identified
                 throw new NotIdentifiedException($this->getSecurityManager(), $this->getDomainAccessManager());
             }
-            elseif ($denyReason === SecurityManager::ERROR_DENIED) {
+            elseif ($denyReason === ISecurityManager::ERROR_DENIED) {
                 // Nope, plain old access denied
                 throw new AccessDeniedException($this->getSecurityManager(), $this->getDomainAccessManager());
             }
@@ -204,7 +203,7 @@ abstract class InternalPageBase extends PageBase
 
         $securityResult = $this->getSecurityManager()->allows($page, $action, $user);
 
-        return $securityResult === SecurityManager::ALLOWED;
+        return $securityResult === ISecurityManager::ALLOWED;
     }
 
     /**
@@ -218,18 +217,12 @@ abstract class InternalPageBase extends PageBase
         }
     }
 
-    /**
-     * @return SecurityManager
-     */
-    public function getSecurityManager()
+    public function getSecurityManager(): ISecurityManager
     {
         return $this->securityManager;
     }
 
-    /**
-     * @param SecurityManager $securityManager
-     */
-    public function setSecurityManager(SecurityManager $securityManager)
+    public function setSecurityManager(ISecurityManager $securityManager)
     {
         $this->securityManager = $securityManager;
     }
@@ -250,18 +243,12 @@ abstract class InternalPageBase extends PageBase
         $this->blacklistHelper = $blacklistHelper;
     }
 
-    /**
-     * @return DomainAccessManager
-     */
-    public function getDomainAccessManager(): DomainAccessManager
+    public function getDomainAccessManager(): IDomainAccessManager
     {
         return $this->domainAccessManager;
     }
 
-    /**
-     * @param DomainAccessManager $domainAccessManager
-     */
-    public function setDomainAccessManager(DomainAccessManager $domainAccessManager): void
+    public function setDomainAccessManager(IDomainAccessManager $domainAccessManager): void
     {
         $this->domainAccessManager = $domainAccessManager;
     }

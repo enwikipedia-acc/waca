@@ -12,23 +12,25 @@ namespace Waca\Security;
 use Waca\DataObject;
 use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
-use Waca\Exceptions\AccessDeniedException;
+use Waca\Exceptions\DomainSwitchNotAllowedException;
 use Waca\Helpers\PreferenceManager;
 use Waca\WebRequest;
 
-class DomainAccessManager
+class DomainAccessManager implements IDomainAccessManager
 {
-    /**
-     * @var SecurityManager
-     */
-    private $securityManager;
+    private IUserAccessLoader $userAccessLoader;
 
-    public function __construct(SecurityManager $securityManager)
+    public function __construct(IUserAccessLoader $userAccessLoader)
     {
-        $this->securityManager = $securityManager;
+        $this->userAccessLoader = $userAccessLoader;
     }
 
     /**
+     * Returns the domains the user is a member of.
+     *
+     * Note - this *does not* determine the access rights that a user has in any
+     * specific domain. Permissions checks still need to be performed.
+     *
      * @param User $user
      *
      * @return Domain[]
@@ -39,7 +41,7 @@ class DomainAccessManager
             return [];
         }
 
-        return Domain::getDomainByUser($user->getDatabase(), $user, true);
+        return $this->userAccessLoader->loadDomainsForUser($user);
     }
 
     public function switchDomain(User $user, Domain $newDomain): void
@@ -48,13 +50,13 @@ class DomainAccessManager
             return $object->getId();
         };
 
-        $allowed = in_array($newDomain->getId(), array_map($mapToId, self::getAllowedDomains($user)));
+        $allowed = in_array($newDomain->getId(), array_map($mapToId, $this->getAllowedDomains($user)));
 
         if ($allowed) {
             WebRequest::setActiveDomain($newDomain);
         }
         else {
-            throw new AccessDeniedException($this->securityManager, $this);
+            throw new DomainSwitchNotAllowedException();
         }
     }
 
