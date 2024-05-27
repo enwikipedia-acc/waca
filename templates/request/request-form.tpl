@@ -11,7 +11,8 @@
                 (please don't use temporary inboxes, or email aliasing, as this may cause your request to be rejected).
                 If you want to leave any comments, feel free to do so in the comments field below. Note that if you use
                 this form, your IP address will be recorded, and displayed to
-                <a href="{$baseurl}/internal.php/statistics/users">those who review account requests</a>.
+                <a href="{$baseurl}/internal.php/statistics/users">those who review account requests</a> in accordance
+                with our <a href="{$baseurl}/index.php/privacy">Privacy Statement</a>.
                 When you are done, click the "Submit" button.
             </p>
 
@@ -64,6 +65,7 @@
                             for a specific password. One will be randomly created for you.</strong>
                     </small>
                 </div>
+                {include file="request/legal-info.tpl"}
                 <div class="row">
                     <button type="submit" class="offset-md-4 col-md-8 btn btn-primary btn-block">Send request</button>
                 </div>

@@ -53,16 +53,20 @@
     <hr/>
 
     <footer class="row">
-        <p class="col-md-6">
-            <small>
+        <div class="col-md-6">
+            <p>
                 Account Creation Assistance Manager
                 (<a href="https://github.com/enwikipedia-acc/waca/tree/{$toolversion}">version {$toolversion}</a>)
                 by <a href="{$baseurl}/internal.php/team">The ACC development team</a>
                 (<a href="https://github.com/enwikipedia-acc/waca/issues">Bug reports</a>)
-            </small>
-        </p>
-        <p class="col-md-6 text-right">
-            <small>
+            </p>
+            <ul>
+                <li><a href="{$baseurl}/internal.php/privacy">Privacy Statement</a></li>
+                <li><a href="https://wikitech.wikimedia.org/wiki/Wikitech:Cloud_Services_End_User_Terms_of_use">Wikimedia Cloud Services End User Terms of Use</a></li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <p class="text-right">
                 {if count($onlineusers) > 0}
                     {count($onlineusers)} Account Creator{if count($onlineusers) !== 1}s{/if} currently online (past 5 minutes):
                     {foreach from=$onlineusers item=userObject name=onlineUserLoop}
@@ -70,8 +74,8 @@
                         {$userObject->getUsername()|escape}</a>{if !$smarty.foreach.onlineUserLoop.last}, {/if}
                     {/foreach}
                 {/if}
-            </small>
-        </p>
+            </p>
+        </div>
     </footer>
 </div><!--/.fluid-container-->
 

@@ -21,6 +21,7 @@ use Waca\Pages\PageExpandedRequestList;
 use Waca\Pages\PageFlagComment;
 use Waca\Pages\PageJobQueue;
 use Waca\Pages\PageListFlaggedComments;
+use Waca\Pages\PagePrivacy;
 use Waca\Pages\PageQueueManagement;
 use Waca\Pages\PageRequestFormManagement;
 use Waca\Pages\PageXffDemo;
@@ -400,6 +401,11 @@ class RequestRouter implements IRequestRouter
             array(
                 'class'   => PageErrorLogViewer::class,
                 'actions' => array('remove', 'view'),
+            ),
+        'privacy'                     =>
+            array(
+                'class'   => PagePrivacy::class,
+                'actions' => array(),
             ),
     );
 
