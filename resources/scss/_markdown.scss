@@ -5,17 +5,9 @@
 // This is free and unencumbered software released into the public domain.     *
 // Please see LICENSE.md for the full licencing statement.                     *
 //******************************************************************************
-/*!
- * Wikipedia Account Creation Assistance tool
- * Styles based on Bootstrap
- */
 
-@import "../../node_modules/bootstrap/scss/bootstrap.scss";
-
-@import "_footer.scss";
-@import "_markdown.scss";
-
-body {
-  padding-top: 2rem;
+div.markdown-table {
+  table {
+    @extend .table, .table-bordered, .table-striped;
+  }
 }
-
