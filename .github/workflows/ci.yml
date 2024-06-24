@@ -72,7 +72,7 @@ jobs:
       run: "[ $(docker ps -q | wc -l) -gt 0 ] && docker stop $(docker ps -q) || true"
       
     - name: Start up MariaDB
-      uses: getong/mariadb-action@v1.1
+      uses: getong/mariadb-action@v1.11
       with:
         mariadb version: '10.11'
         mysql database: 'waca'
