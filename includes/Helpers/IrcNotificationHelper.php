@@ -99,7 +99,7 @@ class IrcNotificationHelper
         $domain = Domain::getById(1, $this->primaryDatabase);
 
         try {
-            $amqpSiteConfig = $this->siteConfiguration->getamqpSiteConfiguration();
+            $amqpSiteConfig = $this->siteConfiguration->getAmqpConfiguration();
 
             $amqpConnectionConfig = new AMQPConnectionConfig();
             $amqpConnectionConfig->setHost($amqpSiteConfig['host']);
