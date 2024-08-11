@@ -10,8 +10,8 @@
 namespace Waca\Helpers;
 
 use Exception;
-use PhpAmqpLib\Connection\AMQPSSLConnection;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Connection\AMQPConnectionConfig;
+use PhpAmqpLib\Connection\AMQPConnectionFactory;
 use PhpAmqpLib\Message\AMQPMessage;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Comment;
@@ -99,20 +99,31 @@ class IrcNotificationHelper
         $domain = Domain::getById(1, $this->primaryDatabase);
 
         try {
-            $amqpConfig = $this->siteConfiguration->getAmqpConfiguration();
-            if ($amqpConfig['tls']) {
-                $connection = new AMQPSSLConnection($amqpConfig['host'], $amqpConfig['port'], $amqpConfig['user'], $amqpConfig['password'], $amqpConfig['vhost'], ['verify_peer' => true]);
+            $amqpSiteConfig = $this->siteConfiguration->getamqpSiteConfiguration();
+
+            $amqpConnectionConfig = new AMQPConnectionConfig();
+            $amqpConnectionConfig->setHost($amqpSiteConfig['host']);
+            $amqpConnectionConfig->setPort($amqpSiteConfig['port']);
+            $amqpConnectionConfig->setUser($amqpSiteConfig['user']);
+            $amqpConnectionConfig->setPassword($amqpSiteConfig['password']);
+            $amqpConnectionConfig->setVhost($amqpSiteConfig['vhost']);
+
+            if ($amqpSiteConfig['tls']) {
+                $amqpConnectionConfig->setIsSecure(true);
+                $amqpConnectionConfig->setSslVerify(true);
             }
             else {
-                $connection = new AMQPStreamConnection($amqpConfig['host'], $amqpConfig['port'], $amqpConfig['user'], $amqpConfig['password'], $amqpConfig['vhost']);
+                $amqpConnectionConfig->setIsSecure(false);
             }
+            $connection = AMQPConnectionFactory::create($amqpConnectionConfig);
+
             $channel = $connection->channel();
 
             $msg = new AMQPMessage(substr($msg, 0, 512));
-            $msg->set('user_id', $amqpConfig['user']);
+            $msg->set('user_id', $amqpSiteConfig['user']);
             $msg->set('app_id', $this->siteConfiguration->getUserAgent());
             $msg->set('content_type', 'text/plain');
-            $channel->basic_publish($msg, $amqpConfig['exchange'], $domain->getNotificationTarget());
+            $channel->basic_publish($msg, $amqpSiteConfig['exchange'], $domain->getNotificationTarget());
             $channel->close();
         }
         catch (Exception $ex) {
