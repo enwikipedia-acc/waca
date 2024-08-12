@@ -34,6 +34,7 @@
                         {$formCommentsHelp}
                     </small>
                 </div>
+                {include file="request/legal-info.tpl"}
                 <div class="row">
                     <button type="submit" class="offset-md-4 col-md-8 btn btn-primary btn-block">Send request</button>
                 </div>

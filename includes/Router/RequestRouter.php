@@ -1,9 +1,10 @@
 <?php
 /******************************************************************************
  * Wikipedia Account Creation Assistance tool                                 *
+ * ACC Development Team. Please see team.json for a list of contributors.     *
  *                                                                            *
- * All code in this file is released into the public domain by the ACC        *
- * Development Team. Please see team.json for a list of contributors.         *
+ * This is free and unencumbered software released into the public domain.    *
+ * Please see LICENSE.md for the full licencing statement.                    *
  ******************************************************************************/
 
 namespace Waca\Router;
@@ -20,6 +21,7 @@ use Waca\Pages\PageExpandedRequestList;
 use Waca\Pages\PageFlagComment;
 use Waca\Pages\PageJobQueue;
 use Waca\Pages\PageListFlaggedComments;
+use Waca\Pages\PagePrivacy;
 use Waca\Pages\PageQueueManagement;
 use Waca\Pages\PageRequestFormManagement;
 use Waca\Pages\PageXffDemo;
@@ -399,6 +401,11 @@ class RequestRouter implements IRequestRouter
             array(
                 'class'   => PageErrorLogViewer::class,
                 'actions' => array('remove', 'view'),
+            ),
+        'privacy'                     =>
+            array(
+                'class'   => PagePrivacy::class,
+                'actions' => array(),
             ),
     );
 

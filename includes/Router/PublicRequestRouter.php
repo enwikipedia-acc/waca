@@ -1,13 +1,15 @@
 <?php
 /******************************************************************************
  * Wikipedia Account Creation Assistance tool                                 *
+ * ACC Development Team. Please see team.json for a list of contributors.     *
  *                                                                            *
- * All code in this file is released into the public domain by the ACC        *
- * Development Team. Please see team.json for a list of contributors.         *
+ * This is free and unencumbered software released into the public domain.    *
+ * Please see LICENSE.md for the full licencing statement.                    *
  ******************************************************************************/
 
 namespace Waca\Router;
 
+use Waca\Pages\PagePublicPrivacy;
 use Waca\Pages\Request\PageConfirmEmail;
 use Waca\Pages\Request\PageEmailConfirmationRequired;
 use Waca\Pages\Request\PageRequestAccount;
@@ -39,6 +41,12 @@ class PublicRequestRouter extends RequestRouter
             'confirmEmail'              =>
                 array(
                     'class'   => PageConfirmEmail::class,
+                    'actions' => array(),
+                ),
+            // Page showing the privacy statement
+            'privacy'                   =>
+                array(
+                    'class'   => PagePublicPrivacy::class,
                     'actions' => array(),
                 ),
         );
