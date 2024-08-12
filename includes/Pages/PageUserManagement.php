@@ -10,7 +10,6 @@
 namespace Waca\Pages;
 
 use Exception;
-use SmartyException;
 use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\DataObjects\UserRole;
@@ -114,7 +113,7 @@ class PageUserManagement extends InternalPageBase
      * Action target for editing the roles assigned to a user
      *
      * @throws ApplicationLogicException
-     * @throws SmartyException
+     * @throws Smarty\Exception
      * @throws OptimisticLockFailedException
      * @throws Exception
      */

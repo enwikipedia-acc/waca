@@ -10,7 +10,6 @@
 namespace Waca;
 
 use Smarty;
-use SmartyException;
 use Waca\DataObjects\User;
 
 /**
@@ -30,7 +29,7 @@ class Offline
     /**
      * Gets the offline message
      *
-     * @throws SmartyException
+     * @throws Smarty\Exception
      */
     public static function getOfflineMessage(bool $external, SiteConfiguration $configuration, ?string $message = null): string
     {

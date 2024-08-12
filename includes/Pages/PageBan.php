@@ -10,7 +10,6 @@
 namespace Waca\Pages;
 
 use Exception;
-use SmartyException;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Domain;
 use Waca\DataObjects\Request;
@@ -70,7 +69,7 @@ class PageBan extends InternalPageBase
 
     /**
      * Entry point for the ban set action
-     * @throws SmartyException
+     * @throws Smarty\Exception
      * @throws Exception
      */
     protected function set(): void
@@ -224,7 +223,7 @@ class PageBan extends InternalPageBase
      *
      * @throws AccessDeniedException
      * @throws ApplicationLogicException
-     * @throws SmartyException
+     * @throws Smarty\Exception
      */
     protected function remove(): void
     {
