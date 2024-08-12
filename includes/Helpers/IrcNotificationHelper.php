@@ -115,14 +115,15 @@ class IrcNotificationHelper
             else {
                 $amqpConnectionConfig->setIsSecure(false);
             }
-            $connection = AMQPConnectionFactory::create($amqpConnectionConfig);
 
+            $connection = AMQPConnectionFactory::create($amqpConnectionConfig);
             $channel = $connection->channel();
 
             $msg = new AMQPMessage(substr($msg, 0, 512));
             $msg->set('user_id', $amqpSiteConfig['user']);
             $msg->set('app_id', $this->siteConfiguration->getUserAgent());
             $msg->set('content_type', 'text/plain');
+            
             $channel->basic_publish($msg, $amqpSiteConfig['exchange'], $domain->getNotificationTarget());
             $channel->close();
         }
