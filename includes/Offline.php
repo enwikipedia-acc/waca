@@ -37,7 +37,7 @@ class Offline
         $culprit = $configuration->getOffline()['culprit'];
         $reason = $configuration->getOffline()['reason'];
 
-        $smarty = new Smarty();
+        $smarty = new Smarty\Smarty();
         $smarty->assign("baseurl", $baseurl);
         $smarty->assign("resourceCacheEpoch", 0);
         $smarty->assign("alerts", []);
