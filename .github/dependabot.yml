@@ -7,9 +7,13 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    reviewers:
+      - "@enwikipedia-acc/dependency-reviewers"
+    assignees:
+      - "@enwikipedia-acc/dependency-reviewers"
       
-  - package-ecosystem: "composer" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: "composer" # TODO: remove
+    directory: "/"
     schedule:
         interval: "weekly"
     target-branch: "php8"
@@ -18,8 +22,16 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    reviewers:
+      - "@enwikipedia-acc/dependency-reviewers"
+    assignees:
+      - "@enwikipedia-acc/dependency-reviewers"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    reviewers:
+      - "@enwikipedia-acc/dependency-reviewers"
+    assignees:
+      - "@enwikipedia-acc/dependency-reviewers"
