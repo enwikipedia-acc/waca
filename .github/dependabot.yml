@@ -11,12 +11,6 @@ updates:
       - "@enwikipedia-acc/dependency-reviewers"
     assignees:
       - "@enwikipedia-acc/dependency-reviewers"
-      
-  - package-ecosystem: "composer" # TODO: remove
-    directory: "/"
-    schedule:
-        interval: "weekly"
-    target-branch: "php8"
 
   - package-ecosystem: "npm"
     directory: "/"
