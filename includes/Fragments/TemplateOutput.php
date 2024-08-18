@@ -44,6 +44,7 @@ trait TemplateOutput
     {
         $this->smarty = new Smarty();
         $this->smarty->addPluginsDir($this->getSiteConfiguration()->getFilePath() . '/smarty-plugins');
+        $this->smarty->registerPlugin('modifier', 'implode', 'implode');
 
         $this->assign('currentUser', User::getCommunity());
         $this->assign('skin', 'auto');
