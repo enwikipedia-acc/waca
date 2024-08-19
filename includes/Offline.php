@@ -9,8 +9,8 @@
 
 namespace Waca;
 
-use Smarty;
-use SmartyException;
+use Smarty\Smarty;
+use Smarty\Exception as SmartyException;
 use Waca\DataObjects\User;
 
 /**
