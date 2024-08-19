@@ -2,7 +2,7 @@
     "description": "Wikipedia Account Creation Assistance Tool",
     "minimum-stability": "stable",
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.2",
         "smarty/smarty": "^v4.3.1",
         "twitter/typeahead.js": "^0.11.1",
         "fortawesome/font-awesome": "~6.6.0",
