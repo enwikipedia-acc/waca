@@ -10,7 +10,7 @@
 namespace Waca\Pages;
 
 use Exception;
-use SmartyException;
+use Smarty\Exception as SmartyException;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Domain;
 use Waca\DataObjects\Request;
