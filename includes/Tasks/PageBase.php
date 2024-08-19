@@ -10,6 +10,7 @@
 namespace Waca\Tasks;
 
 use Exception;
+use SmartyException;
 use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\ExceptionHandler;
@@ -345,7 +346,7 @@ abstract class PageBase extends TaskBase implements IRoutedTask
      *
      * @param string $title
      *
-     * @throws Smarty\Exception
+     * @throws SmartyException
      */
     final protected function setHtmlTitle($title)
     {

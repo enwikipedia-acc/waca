@@ -11,11 +11,11 @@
  * Sets up the cookie-based default sorting on request tables
  *
  * @param                          $params
- * @param Smarty\Template          $template
+ * @param Smarty_Internal_Template $template
  *
  * @return string
  */
-function smarty_function_defaultsort($params, Smarty\Template $template)
+function smarty_function_defaultsort($params, Smarty_Internal_Template $template)
 {
     if (empty($params['id'])) {
         return "";
