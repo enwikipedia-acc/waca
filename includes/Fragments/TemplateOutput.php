@@ -9,7 +9,7 @@
 
 namespace Waca\Fragments;
 
-use Smarty;
+use Smarty\Smarty;
 use Waca\DataObjects\User;
 use Waca\Environment;
 use Waca\SiteConfiguration;
