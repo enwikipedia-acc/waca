@@ -101,7 +101,7 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
                         <form action="{$baseurl}/internal.php/domainSwitch" method="post">
-                            <input type="hidden" name="referrer" value="{implode('/',\Waca\WebRequest::pathInfo())|escape}" />
+                            <input type="hidden" name="referrer" value="{Waca\WebRequest::pathInfo()|join:'/'|escape}" />
                             {foreach from=$nav__domainList item=domain}
                                 <button class="dropdown-item" type="submit" name="newdomain" value="{$domain->getId()|escape}">
                                     <i class="fas fa-globe-europe"></i>&nbsp;<code>{$domain->getShortName()|escape}</code>:&nbsp;{$domain->getLongName()|escape}
