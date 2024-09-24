@@ -9,6 +9,8 @@
 
 namespace Waca\Fragments;
 
+use DirectoryIterator;
+use Smarty\Exception;
 use Smarty\Smarty;
 use Waca\DataObjects\User;
 use Waca\Environment;
@@ -18,6 +20,39 @@ trait TemplateOutput
 {
     /** @var Smarty */
     private $smarty;
+
+    /**
+     * @param string $pluginsDir
+     *
+     * @return void
+     * @throws Exception
+     */
+    private function loadPlugins(string $pluginsDir): void
+    {
+        /** @var DirectoryIterator $file */
+        foreach (new DirectoryIterator($pluginsDir) as $file) {
+            if ($file->isDot()) {
+                continue;
+            }
+
+            if ($file->getExtension() !== 'php') {
+                continue;
+            }
+
+            require_once $file->getPathname();
+
+            list($type, $name) = explode('.', $file->getBasename('.php'), 2);
+
+            switch ($type) {
+                case 'modifier':
+                    $this->smarty->registerPlugin(Smarty::PLUGIN_MODIFIER, $name, 'smarty_modifier_' . $name);
+                    break;
+                case 'function':
+                    $this->smarty->registerPlugin(Smarty::PLUGIN_FUNCTION, $name, 'smarty_function_' . $name);
+                    break;
+            }
+        }
+    }
 
     /**
      * @return SiteConfiguration
@@ -39,11 +74,15 @@ trait TemplateOutput
      * Sets up the variables used by the main Smarty base template.
      *
      * This list is getting kinda long.
+     * @throws Exception
      */
     final protected function setUpSmarty()
     {
         $this->smarty = new Smarty();
-        $this->smarty->addPluginsDir($this->getSiteConfiguration()->getFilePath() . '/smarty-plugins');
+        $pluginsDir = $this->getSiteConfiguration()->getFilePath() . '/smarty-plugins';
+
+        // Dynamically load all plugins in the plugins directory
+        $this->loadPlugins($pluginsDir);
 
         $this->assign('currentUser', User::getCommunity());
         $this->assign('skin', 'auto');
@@ -98,6 +137,7 @@ trait TemplateOutput
      * @param $template string Template file path, relative to /templates/
      *
      * @return string Templated HTML
+     * @throws Exception
      */
     final protected function fetchTemplate($template)
     {
