@@ -90,7 +90,7 @@ class IdentificationVerifierTest extends TestCase
         $this->assertFalse($method->invoke($this->identificationVerifier, "Willie On Wheels"));
 
         // Some non-standard or non-Latin names to try out
-        $this->assertTrue($method->invoke($this->identificationVerifier, "-revi"));
+        $this->assertTrue($method->invoke($this->identificationVerifier, "-jem-"));
         $this->assertTrue($method->invoke($this->identificationVerifier, "Стефанко1982"));
         $this->assertTrue($method->invoke($this->identificationVerifier, "علاء"));
         $this->assertTrue($method->invoke($this->identificationVerifier, "이강철"));
