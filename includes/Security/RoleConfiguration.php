@@ -54,6 +54,7 @@ use Waca\Pages\Statistics\StatsReservedRequests;
 use Waca\Pages\Statistics\StatsTemplateStats;
 use Waca\Pages\Statistics\StatsTopCreators;
 use Waca\Pages\Statistics\StatsUsers;
+use Waca\Pages\UserAuth\PageUserReactivate;
 
 final class RoleConfiguration extends RoleConfigurationBase
 {
@@ -139,7 +140,10 @@ final class RoleConfiguration extends RoleConfigurationBase
             ),
             PageDomainSwitch::class   => array(
                 self::MAIN => self::ACCESS_ALLOW
-            )
+            ),
+            PageUserReactivate::class => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
         ),
         'user'              => array(
             /*
@@ -147,6 +151,10 @@ final class RoleConfiguration extends RoleConfigurationBase
              */
             '_childRoles'                        => array(
                 'internalStats',
+            ),
+            PageUserReactivate::class => array(
+                // only non-approved users should be able to access this
+                self::MAIN => self::ACCESS_DENY,
             ),
             PageMain::class                      => array(
                 self::MAIN => self::ACCESS_ALLOW,

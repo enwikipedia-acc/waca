@@ -118,6 +118,14 @@ class Logger
     /**
      * @throws Exception
      */
+    public static function requestedReactivation(PdoDatabase $database, User $object, string $comment)
+    {
+        self::createLogEntry($database, $object, 'RequestedReactivation', $comment);
+    }
+
+    /**
+     * @throws Exception
+     */
     public static function renamedUser(PdoDatabase $database, User $object, string $comment)
     {
         self::createLogEntry($database, $object, "Renamed", $comment);

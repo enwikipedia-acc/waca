@@ -10,11 +10,10 @@
 namespace Waca\Exceptions;
 
 use Waca\DataObjects\Domain;
-use Waca\DataObjects\Log;
 use Waca\DataObjects\User;
+use Waca\Fragments\LogEntryLookup;
 use Waca\Fragments\NavigationMenuAccessControl;
 use Waca\Helpers\PreferenceManager;
-use Waca\Helpers\SearchHelpers\LogSearchHelper;
 use Waca\PdoDatabase;
 use Waca\Security\IDomainAccessManager;
 use Waca\Security\ISecurityManager;
@@ -29,6 +28,7 @@ use Waca\Security\ISecurityManager;
 class AccessDeniedException extends ReadableException
 {
     use NavigationMenuAccessControl;
+    use LogEntryLookup;
 
     private ISecurityManager $securityManager;
     private IDomainAccessManager $domainAccessManager;
@@ -78,29 +78,7 @@ class AccessDeniedException extends ReadableException
         return $this->fetchTemplate("exception/access-denied.tpl");
     }
 
-    /**
-     * @param string      $action
-     * @param User        $user
-     * @param PdoDatabase $database
-     *
-     * @return null|string
-     */
-    private function getLogEntry($action, User $user, PdoDatabase $database)
-    {
-        /** @var Log[] $logs */
-        $logs = LogSearchHelper::get($database, null)
-            ->byAction($action)
-            ->byObjectType('User')
-            ->byObjectId($user->getId())
-            ->limit(1)
-            ->fetch();
 
-        if (count($logs) > 0) {
-            return $logs[0]->getComment();
-        }
-
-        return null;
-    }
 
     protected function getSecurityManager(): ISecurityManager
     {

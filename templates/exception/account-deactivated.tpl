@@ -8,7 +8,7 @@
             </p>
             <p class="card card-body prewrap">{$deactivationReason|escape}</p>
             <p>
-                If you wish to appeal this, please contact the tool admins.
+                If you wish to appeal this, please fill in <a href="{$baseurl}/internal.php/login/reactivate">this form</a>.
             </p>
         </div>
     </div>
