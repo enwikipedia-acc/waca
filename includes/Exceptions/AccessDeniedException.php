@@ -62,18 +62,11 @@ class AccessDeniedException extends ReadableException
 
         $this->setupNavMenuAccess($currentUser);
 
-        if ($currentUser->isDeclined()) {
-            $this->assign('htmlTitle', 'Account Declined');
-            $this->assign('declineReason', $this->getLogEntry('Declined', $currentUser, $database));
+        if ($currentUser->isDeactivated()) {
+            $this->assign('htmlTitle', 'Account Deactivated');
+            $this->assign('deactivationReason', $this->getLogEntry('DeactivatedUser', $currentUser, $database));
 
-            return $this->fetchTemplate("exception/account-declined.tpl");
-        }
-
-        if ($currentUser->isSuspended()) {
-            $this->assign('htmlTitle', 'Account Suspended');
-            $this->assign('suspendReason', $this->getLogEntry('Suspended', $currentUser, $database));
-
-            return $this->fetchTemplate("exception/account-suspended.tpl");
+            return $this->fetchTemplate("exception/account-deactivated.tpl");
         }
 
         if ($currentUser->isNewUser()) {

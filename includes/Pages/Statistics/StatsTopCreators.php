@@ -50,7 +50,7 @@ LEFT JOIN emailtemplate ON concat('Closed ', emailtemplate.id) = log.action
 INNER JOIN user ON user.id = log.user
 WHERE
 	(emailtemplate.defaultaction = :created OR log.action = 'Closed custom-y')
-    AND user.status != 'Suspended'
+    AND user.status != 'Deactivated'
 GROUP BY user.username, user.id
 ORDER BY COUNT(*) DESC;
 SQL;

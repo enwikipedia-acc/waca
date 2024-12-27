@@ -22,8 +22,8 @@
             <td>{$statsUsers|escape}</td>
         </tr>
         <tr>
-            <th>Tool suspended users</th>
-            <td>{$statsSuspendedUsers|escape}</td>
+            <th>Tool deactivated users</th>
+            <td>{$statsDeactivatedUsers|escape}</td>
         </tr>
         <tr>
             <th>New tool users</th>

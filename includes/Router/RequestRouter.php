@@ -182,10 +182,9 @@ class RequestRouter implements IRequestRouter
                 'class'   => PageUserManagement::class,
                 'actions' => array(
                     'approve',
-                    'decline',
+                    'deactivate',
                     'rename',
                     'editUser',
-                    'suspend',
                     'editRoles',
                 ),
             ),

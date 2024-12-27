@@ -23,8 +23,7 @@ use Waca\WebRequest;
 class User extends DataObject
 {
     const STATUS_ACTIVE = 'Active';
-    const STATUS_SUSPENDED = 'Suspended';
-    const STATUS_DECLINED = 'Declined';
+    const STATUS_DEACTIVATED = 'Deactivated';
     const STATUS_NEW = 'New';
 
     private static CommunityUser $community;
@@ -280,7 +279,7 @@ SQL
     }
 
     /**
-     * Gets the status (User, Admin, Suspended, etc - excludes checkuser) of the user.
+     * Gets the status (Active, New, Deactivated, etc) of the user.
      * @return string
      */
     public function getStatus()
@@ -396,16 +395,6 @@ SQL
     }
 
     /**
-     * Tests if the user is suspended
-     * @return bool
-     * @category Security-Critical
-     */
-    public function isSuspended()
-    {
-        return $this->status == self::STATUS_SUSPENDED;
-    }
-
-    /**
      * Tests if the user is new
      * @return bool
      * @category Security-Critical
@@ -416,13 +405,13 @@ SQL
     }
 
     /**
-     * Tests if the user has been declined access to the tool
+     * Tests if the user has been deactivated and is unable to access the tool
      * @return bool
      * @category Security-Critical
      */
-    public function isDeclined()
+    public function isDeactivated(): bool
     {
-        return $this->status == self::STATUS_DECLINED;
+        return $this->status == self::STATUS_DEACTIVATED;
     }
 
     /**

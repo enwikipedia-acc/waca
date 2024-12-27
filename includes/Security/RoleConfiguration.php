@@ -265,13 +265,12 @@ final class RoleConfiguration extends RoleConfigurationBase
                 self::MAIN => self::ACCESS_ALLOW,
             ),
             PageUserManagement::class            => array(
-                self::MAIN  => self::ACCESS_ALLOW,
-                'approve'   => self::ACCESS_ALLOW,
-                'decline'   => self::ACCESS_ALLOW,
-                'rename'    => self::ACCESS_ALLOW,
-                'editUser'  => self::ACCESS_ALLOW,
-                'suspend'   => self::ACCESS_ALLOW,
-                'editRoles' => self::ACCESS_ALLOW,
+                self::MAIN   => self::ACCESS_ALLOW,
+                'approve'    => self::ACCESS_ALLOW,
+                'deactivate' => self::ACCESS_ALLOW,
+                'rename'     => self::ACCESS_ALLOW,
+                'editUser'   => self::ACCESS_ALLOW,
+                'editRoles'  => self::ACCESS_ALLOW,
             ),
             PageSearch::class                    => array(
                 'byComment' => self::ACCESS_ALLOW,
@@ -313,9 +312,9 @@ final class RoleConfiguration extends RoleConfigurationBase
                 'requestAdminTools',
             ),
             PageUserManagement::class => array(
-                self::MAIN  => self::ACCESS_ALLOW,
-                'suspend'   => self::ACCESS_ALLOW,
-                'editRoles' => self::ACCESS_ALLOW,
+                self::MAIN   => self::ACCESS_ALLOW,
+                'deactivate' => self::ACCESS_ALLOW,
+                'editRoles'  => self::ACCESS_ALLOW,
             ),
             'RequestData'             => array(
                 'seeUserAgentData'      => self::ACCESS_ALLOW,
