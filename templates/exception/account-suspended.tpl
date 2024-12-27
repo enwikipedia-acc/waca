@@ -7,7 +7,7 @@
                 I'm sorry, but your tool account has been suspended by a tool administrator. The reason given is shown
                 below:
             </p>
-            <p class="card card-body prewrap">{$suspendReason}</p>
+            <p class="card card-body prewrap">{$suspendReason|escape}</p>
             <p>
                 If you wish to appeal this, please contact the tool admins.
             </p>

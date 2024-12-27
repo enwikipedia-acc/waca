@@ -7,7 +7,7 @@
                 You've requested an account for this tool successfully, but your account request has been declined by a
                 tool administrator. The reason given is shown below:
             </p>
-            <p class="card card-body prewrap">{$declineReason}</p>
+            <p class="card card-body prewrap">{$declineReason|escape}</p>
             <p>
                 If you wish to appeal this, please contact the tool admins.
             </p>
