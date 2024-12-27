@@ -62,6 +62,7 @@ use Waca\Pages\Statistics\StatsReservedRequests;
 use Waca\Pages\Statistics\StatsTemplateStats;
 use Waca\Pages\Statistics\StatsTopCreators;
 use Waca\Pages\Statistics\StatsUsers;
+use Waca\Pages\UserAuth\PageUserReactivate;
 use Waca\Tasks\IRoutedTask;
 use Waca\WebRequest;
 
@@ -154,6 +155,11 @@ class RequestRouter implements IRequestRouter
         'domainSwitch'                =>
             array(
                 'class'   => PageDomainSwitch::class,
+                'actions' => array(),
+            ),
+        'login/reactivate'            =>
+            array(
+                'class'   => PageUserReactivate::class,
                 'actions' => array(),
             ),
 

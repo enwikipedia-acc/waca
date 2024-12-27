@@ -135,6 +135,7 @@ class LogHelper
             'DeactivatedUser'     => 'deactivated user',
             'RoleChange'          => 'changed roles',
             'GlobalRoleChange'    => 'changed global roles',
+            'RequestedReactivation' => 'requested reactivation',
             'Banned'              => 'banned',
             'Edited'              => 'edited interface message',
             'EditComment-c'       => 'edited a comment',
@@ -210,6 +211,7 @@ class LogHelper
                 'Promoted'            => 'promoted to tool admin',
                 'Demoted'             => 'demoted from tool admin',
                 'Registered'          => 'registered a tool account',
+                'RequestedReactivation' => 'requested reactivation',
             ],
             "Bans" => [
                 'Banned'              => 'banned',
