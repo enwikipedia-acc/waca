@@ -492,6 +492,8 @@ class PageUserManagement extends InternalPageBase
 
             $prefs->setLocalPreference(PreferenceManager::PREF_CREATION_MODE, WebRequest::postInt('creationmode'));
 
+            $prefs->setLocalPreference(PreferenceManager::ADMIN_PREF_PREVENT_REACTIVATION, WebRequest::postBoolean('preventReactivation'));
+
             $user->setUpdateVersion(WebRequest::postInt('updateversion'));
 
             $user->save();
@@ -514,6 +516,8 @@ class PageUserManagement extends InternalPageBase
 
             $this->assign('preferredCreationMode', (int)$prefs->getPreference(PreferenceManager::PREF_CREATION_MODE));
             $this->assign('emailSignature', $prefs->getPreference(PreferenceManager::PREF_EMAIL_SIGNATURE));
+
+            $this->assign('preventReactivation', $prefs->getPreference(PreferenceManager::ADMIN_PREF_PREVENT_REACTIVATION) ?? false);
 
             $this->assign('canManualCreate',
                 $this->barrierTest(PreferenceManager::CREATION_MANUAL, $user, 'RequestCreation'));

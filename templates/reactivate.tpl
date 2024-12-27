@@ -14,6 +14,10 @@
                 </div>
             </div>
 
+            {if !$ableToAppeal}
+                {include file="alert.tpl" alertblock="true" alerttype="alert-danger" alertclosable=false alertmessage="Your account is unable to appeal through this interface."}
+            {/if}
+
             <form method="post">
                 {include file="security/csrf.tpl"}
 
@@ -22,7 +26,7 @@
                         <label class="col-form-label" for="reason">Please explain why you believe your account should be reactivated:</label>
                     </div>
                     <div class="col-12">
-                        <textarea required="required" class="form-control" rows="4" name="reason" id="reason" maxlength="65535"></textarea>
+                        <textarea required="required" class="form-control" rows="4" name="reason" id="reason" maxlength="65535" {if !$ableToAppeal}readonly{/if}></textarea>
                     </div>
                 </div>
 
@@ -30,7 +34,7 @@
 
                 <div class="form-group row">
                     <div class="col-md-4">
-                        <button type="submit" class="btn btn-block btn-primary">Request Reactivation</button>
+                        <button type="submit" class="btn btn-block btn-primary" {if !$ableToAppeal}disabled{/if}>Request Reactivation</button>
                     </div>
                 </div>
 

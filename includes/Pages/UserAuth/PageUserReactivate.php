@@ -10,10 +10,12 @@
 namespace Waca\Pages\UserAuth;
 
 use Exception;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\LogEntryLookup;
 use Waca\Helpers\Logger;
+use Waca\Helpers\PreferenceManager;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -38,11 +40,21 @@ class PageUserReactivate extends InternalPageBase
             return;
         }
 
+        $ableToAppeal = true;
+        $prefs = new PreferenceManager($db, $currentUser->getId(), Domain::getCurrent($db)->getId());
+        if ($prefs->getPreference(PreferenceManager::ADMIN_PREF_PREVENT_REACTIVATION) ?? false) {
+            $ableToAppeal = false;
+        }
+
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
 
             $reason = WebRequest::postString('reason');
             $updateVersion = WebRequest::postInt('updateVersion');
+
+            if (!$ableToAppeal) {
+                throw new ApplicationLogicException('Appeal is disabled');
+            }
 
             if ($reason === null || trim($reason) === '') {
                 throw new ApplicationLogicException('The reason field cannot be empty.');
@@ -60,6 +72,7 @@ class PageUserReactivate extends InternalPageBase
             $this->assignCSRFToken();
             $this->assign('deactivationReason', $this->getLogEntry('DeactivatedUser', $currentUser, $db));
             $this->assign('updateVersion', $currentUser->getUpdateVersion());
+            $this->assign('ableToAppeal', $ableToAppeal);
             $this->setTemplate('reactivate.tpl');
         }
     }
