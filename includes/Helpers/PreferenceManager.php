@@ -25,6 +25,9 @@ class PreferenceManager
     const PREF_SKIN = 'skin';
     const PREF_DEFAULT_DOMAIN = 'defaultDomain';
     const PREF_QUEUE_HELP = 'showQueueHelp';
+
+    const ADMIN_PREF_PREVENT_REACTIVATION = 'preventReactivation';
+
     const CREATION_MANUAL = 0;
     const CREATION_OAUTH = 1;
     const CREATION_BOT = 2;

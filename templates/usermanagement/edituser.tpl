@@ -102,6 +102,20 @@
             </div>
         </div>
 
+        <div class="form-group row">
+
+            <div class="offset-lg-2 col-md-3 col-lg-2">
+                <span class="col-form-label">Account reactivation</span>
+            </div>
+            <div class="col-md-9 col-lg-7 col-xl-6">
+                <div class="custom-control custom-switch">
+                    <input class="custom-control-input" type="checkbox" id="preventReactivation" name="preventReactivation"{if $preventReactivation} checked{/if}>
+                    <label class="custom-control-label" for="preventReactivation">Prevent this user from appealing deactivation</label>
+                </div>
+            </div>
+        </div>
+
+
 
         <input type="hidden" name="updateversion" value="{$user->getUpdateVersion()}"/>
 
