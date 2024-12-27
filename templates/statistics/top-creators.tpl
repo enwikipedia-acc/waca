@@ -17,7 +17,7 @@
 
             <ul class="unstyled">
                 <li><a href="#">Username</a> means an active account.</li>
-                <li><a class="text-muted" href="#">Username</a> means a suspended account.</li>
+                <li><a class="text-muted" href="#">Username</a> means a deactivated account.</li>
             </ul>
 
             <a id="alltimeactive"></a>
