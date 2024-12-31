@@ -180,7 +180,7 @@ class PageJobQueue extends PagedInternalPageBase
             $this->assign('log', array());
         }
         else {
-            list($users, $logData) = LogHelper::prepareLogsForTemplate($logs, $database, $this->getSiteConfiguration());
+            list($users, $logData) = LogHelper::prepareLogsForTemplate($logs, $database, $this->getSiteConfiguration(), $this->getSecurityManager());
 
             $this->assign("log", $logData);
             $this->assign("users", $users);

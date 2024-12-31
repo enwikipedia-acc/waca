@@ -144,6 +144,9 @@ final class RoleConfiguration extends RoleConfigurationBase
             PageUserReactivate::class => array(
                 self::MAIN => self::ACCESS_ALLOW,
             ),
+            'UserData'                => array(
+                'accountLogSelf' => self::ACCESS_ALLOW,
+            ),
         ),
         'user'              => array(
             /*
@@ -311,6 +314,9 @@ final class RoleConfiguration extends RoleConfigurationBase
             PageDomainManagement::class          => array(
                 'edit'     => self::ACCESS_ALLOW,
             ),
+            'UserData'                           => array(
+                'accountLog' => self::ACCESS_ALLOW,
+            ),
         ),
         'checkuser'         => array(
             '_description'            => 'A user with CheckUser access',
@@ -334,6 +340,9 @@ final class RoleConfiguration extends RoleConfigurationBase
             ),
             'BanVisibility'             => array(
                 'checkuser' => self::ACCESS_ALLOW,
+            ),
+            'UserData'                           => array(
+                'accountLog' => self::ACCESS_ALLOW,
             ),
         ),
         'steward'         => array(

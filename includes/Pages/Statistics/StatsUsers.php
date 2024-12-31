@@ -132,7 +132,7 @@ SQL
             $this->assign('accountlog', array());
         }
         else {
-            list($users, $logData) = LogHelper::prepareLogsForTemplate($logs, $database, $this->getSiteConfiguration());
+            list($users, $logData) = LogHelper::prepareLogsForTemplate($logs, $database, $this->getSiteConfiguration(), $this->getSecurityManager());
 
             $this->assign("accountlog", $logData);
             $this->assign("users", $users);
