@@ -278,7 +278,7 @@ class PageUserManagement extends InternalPageBase
             $user->save();
             Logger::deactivatedUser($database, $user, $reason);
 
-            $this->getNotificationHelper()->userDeactivated($user, $reason);
+            $this->getNotificationHelper()->userDeactivated($user);
             SessionAlert::quick('Deactivated user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
 
             // send email

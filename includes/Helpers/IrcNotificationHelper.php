@@ -163,11 +163,10 @@ class IrcNotificationHelper
      * send a deactivated notification
      *
      * @param User   $user
-     * @param string $reason The reason the user has been deactivated
      */
-    public function userDeactivated(User $user, $reason)
+    public function userDeactivated(User $user)
     {
-        $this->send("{$user->getUsername()} deactivated by " . $this->currentUser->getUsername() . " ($reason)");
+        $this->send("{$user->getUsername()} deactivated by " . $this->currentUser->getUsername());
     }
 
     /**
