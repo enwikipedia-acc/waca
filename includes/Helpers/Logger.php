@@ -110,17 +110,17 @@ class Logger
     /**
      * @throws Exception
      */
-    public static function declinedUser(PdoDatabase $database, User $object, string $comment)
+    public static function deactivatedUser(PdoDatabase $database, User $object, string $comment)
     {
-        self::createLogEntry($database, $object, "Declined", $comment);
+        self::createLogEntry($database, $object, 'DeactivatedUser', $comment);
     }
 
     /**
      * @throws Exception
      */
-    public static function suspendedUser(PdoDatabase $database, User $object, string $comment)
+    public static function requestedReactivation(PdoDatabase $database, User $object, string $comment)
     {
-        self::createLogEntry($database, $object, "Suspended", $comment);
+        self::createLogEntry($database, $object, 'RequestedReactivation', $comment);
     }
 
     /**

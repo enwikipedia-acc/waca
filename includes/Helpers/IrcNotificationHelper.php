@@ -160,25 +160,13 @@ class IrcNotificationHelper
     }
 
     /**
-     * send a declined notification
+     * send a deactivated notification
      *
      * @param User   $user
-     * @param string $reason the reason the user was declined
      */
-    public function userDeclined(User $user, $reason)
+    public function userDeactivated(User $user)
     {
-        $this->send("{$user->getUsername()} declined by " . $this->currentUser->getUsername() . " ($reason)");
-    }
-
-    /**
-     * send a suspended notification
-     *
-     * @param User   $user
-     * @param string $reason The reason the user has been suspended
-     */
-    public function userSuspended(User $user, $reason)
-    {
-        $this->send("{$user->getUsername()} suspended by " . $this->currentUser->getUsername() . " ($reason)");
+        $this->send("{$user->getUsername()} deactivated by " . $this->currentUser->getUsername());
     }
 
     /**

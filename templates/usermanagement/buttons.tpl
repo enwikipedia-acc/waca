@@ -1,5 +1,5 @@
 ﻿<div class="btn-group">
-    {if ($canApprove || $canDecline) && ($user->isSuspended() || $user->isNewUser() || $user->isDeclined())}
+    {if ($canApprove || $canDeactivate) && ($user->isDeactivated() || $user->isNewUser())}
         <a class="btn btn-outline-secondary btn-sm" href="{$mediawikiScriptPath}?diff={$user->getConfirmationDiff()|escape:'url'}">
             <i class="fas fa-edit"></i>
             <span class="d-none d-lg-inline">&nbsp;Diff</span>
@@ -15,22 +15,16 @@
     {/if}
 </div>
 <div class="btn-group">
-    {if $canApprove && ($user->isSuspended() || $user->isNewUser() || $user->isDeclined())}
+    {if $canApprove && ($user->isDeactivated() || $user->isNewUser())}
         <a class="btn btn-success btn-sm" href="{$baseurl}/internal.php/userManagement/approve?user={$user->getId()}">
             <i class="fas fa-check"></i>
             <span class="d-none d-md-inline">&nbsp;Approve</span>
         </a>
     {/if}
-    {if $canDecline && $user->isNewUser()}
-        <a class="btn btn-danger btn-sm" href="{$baseurl}/internal.php/userManagement/decline?user={$user->getId()}">
+    {if $canDeactivate && ($user->isNewUser() || $user->isActive())}
+        <a class="btn btn-danger btn-sm" href="{$baseurl}/internal.php/userManagement/deactivate?user={$user->getId()}">
             <i class="fas fa-ban"></i>
-            <span class="d-none d-md-inline">&nbsp;Decline</span>
-        </a>
-    {/if}
-    {if $canSuspend && $user->isActive()}
-        <a class="btn btn-danger btn-sm" href="{$baseurl}/internal.php/userManagement/suspend?user={$user->getId()}">
-            <i class="fas fa-ban"></i>
-            <span class="d-none d-md-inline">&nbsp;Suspend</span>
+            <span class="d-none d-md-inline">&nbsp;Deactivate</span>
         </a>
     {/if}
 </div>
