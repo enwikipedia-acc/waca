@@ -132,7 +132,7 @@ SQL
             $this->assign('accountlog', array());
         }
         else {
-            list($users, $logData) = LogHelper::prepareLogsForTemplate($logs, $database, $this->getSiteConfiguration());
+            list($users, $logData) = LogHelper::prepareLogsForTemplate($logs, $database, $this->getSiteConfiguration(), $this->getSecurityManager());
 
             $this->assign("accountlog", $logData);
             $this->assign("users", $users);
@@ -140,10 +140,9 @@ SQL
 
         $currentUser = User::getCurrent($database);
         $this->assign('canApprove', $this->barrierTest('approve', $currentUser, PageUserManagement::class));
-        $this->assign('canDecline', $this->barrierTest('decline', $currentUser, PageUserManagement::class));
+        $this->assign('canDeactivate', $this->barrierTest('deactivate', $currentUser, PageUserManagement::class));
         $this->assign('canRename', $this->barrierTest('rename', $currentUser, PageUserManagement::class));
         $this->assign('canEditUser', $this->barrierTest('editUser', $currentUser, PageUserManagement::class));
-        $this->assign('canSuspend', $this->barrierTest('suspend', $currentUser, PageUserManagement::class));
         $this->assign('canEditRoles', $this->barrierTest('editRoles', $currentUser, PageUserManagement::class));
 
         $oauth = new OAuthUserHelper($user, $database, $this->getOAuthProtocolHelper(), $this->getSiteConfiguration());

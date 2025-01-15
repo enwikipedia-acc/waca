@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-md-12" >
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">User Management <small class="text-muted">Approve, suspend, promote, demote, etc.</small></h1>
+                <h1 class="h2">User Management <small class="text-muted">Approve, deactivate, promote, demote, etc.</small></h1>
             </div>
         </div>
     </div>
@@ -101,6 +101,20 @@
                 </div>
             </div>
         </div>
+
+        <div class="form-group row">
+
+            <div class="offset-lg-2 col-md-3 col-lg-2">
+                <span class="col-form-label">Account reactivation</span>
+            </div>
+            <div class="col-md-9 col-lg-7 col-xl-6">
+                <div class="custom-control custom-switch">
+                    <input class="custom-control-input" type="checkbox" id="preventReactivation" name="preventReactivation"{if $preventReactivation} checked{/if}>
+                    <label class="custom-control-label" for="preventReactivation">Prevent this user from appealing deactivation</label>
+                </div>
+            </div>
+        </div>
+
 
 
         <input type="hidden" name="updateversion" value="{$user->getUpdateVersion()}"/>
