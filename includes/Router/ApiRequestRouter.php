@@ -14,6 +14,7 @@ use Waca\API\Actions\CountAction;
 use Waca\API\Actions\HelpAction;
 use Waca\API\Actions\JsTemplateConfirmsAction;
 use Waca\API\Actions\JsUsersAction;
+use Waca\API\Actions\MetricsAction;
 use Waca\API\Actions\MonitorAction;
 use Waca\API\Actions\StatsAction;
 use Waca\API\Actions\StatusAction;
@@ -28,7 +29,7 @@ class ApiRequestRouter implements IRequestRouter
      */
     public static function getActionList()
     {
-        return array("count", "status", "stats", "help", "monitor");
+        return array('count', 'status', 'stats', 'help', 'monitor', 'metrics');
     }
 
     /**
@@ -60,6 +61,9 @@ class ApiRequestRouter implements IRequestRouter
                 break;
             case "templates":
                 $result = new JsTemplateConfirmsAction();
+                break;
+            case 'metrics':
+                $result = new MetricsAction();
                 break;
             default:
                 $result = new UnknownAction();
