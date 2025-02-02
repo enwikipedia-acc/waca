@@ -66,7 +66,7 @@ class PageLog extends PagedInternalPageBase
         /** @var Log[] $logs */
         $logs = $logSearch->getRecordCount($count)->fetch();
 
-        list($users, $logData) = LogHelper::prepareLogsForTemplate($logs, $database, $this->getSiteConfiguration());
+        list($users, $logData) = LogHelper::prepareLogsForTemplate($logs, $database, $this->getSiteConfiguration(), $this->getSecurityManager());
 
         $this->setupPageData($count, array('filterUser' => $filterUser, 'filterAction' => $filterAction, 'filterObjectType' => $filterObjectType, 'filterObjectId' => $filterObjectId));
 

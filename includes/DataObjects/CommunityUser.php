@@ -110,17 +110,12 @@ class CommunityUser extends User
 
     #region user access checks
 
-    public function isSuspended()
-    {
-        return false;
-    }
-
     public function isNewUser()
     {
         return false;
     }
 
-    public function isDeclined()
+    public function isDeactivated(): bool
     {
         return false;
     }

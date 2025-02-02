@@ -54,6 +54,7 @@ use Waca\Pages\Statistics\StatsReservedRequests;
 use Waca\Pages\Statistics\StatsTemplateStats;
 use Waca\Pages\Statistics\StatsTopCreators;
 use Waca\Pages\Statistics\StatsUsers;
+use Waca\Pages\UserAuth\PageUserReactivate;
 
 final class RoleConfiguration extends RoleConfigurationBase
 {
@@ -139,7 +140,13 @@ final class RoleConfiguration extends RoleConfigurationBase
             ),
             PageDomainSwitch::class   => array(
                 self::MAIN => self::ACCESS_ALLOW
-            )
+            ),
+            PageUserReactivate::class => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            'UserData'                => array(
+                'accountLogSelf' => self::ACCESS_ALLOW,
+            ),
         ),
         'user'              => array(
             /*
@@ -147,6 +154,10 @@ final class RoleConfiguration extends RoleConfigurationBase
              */
             '_childRoles'                        => array(
                 'internalStats',
+            ),
+            PageUserReactivate::class => array(
+                // only non-approved users should be able to access this
+                self::MAIN => self::ACCESS_DENY,
             ),
             PageMain::class                      => array(
                 self::MAIN => self::ACCESS_ALLOW,
@@ -265,13 +276,12 @@ final class RoleConfiguration extends RoleConfigurationBase
                 self::MAIN => self::ACCESS_ALLOW,
             ),
             PageUserManagement::class            => array(
-                self::MAIN  => self::ACCESS_ALLOW,
-                'approve'   => self::ACCESS_ALLOW,
-                'decline'   => self::ACCESS_ALLOW,
-                'rename'    => self::ACCESS_ALLOW,
-                'editUser'  => self::ACCESS_ALLOW,
-                'suspend'   => self::ACCESS_ALLOW,
-                'editRoles' => self::ACCESS_ALLOW,
+                self::MAIN   => self::ACCESS_ALLOW,
+                'approve'    => self::ACCESS_ALLOW,
+                'deactivate' => self::ACCESS_ALLOW,
+                'rename'     => self::ACCESS_ALLOW,
+                'editUser'   => self::ACCESS_ALLOW,
+                'editRoles'  => self::ACCESS_ALLOW,
             ),
             PageSearch::class                    => array(
                 'byComment' => self::ACCESS_ALLOW,
@@ -304,6 +314,9 @@ final class RoleConfiguration extends RoleConfigurationBase
             PageDomainManagement::class          => array(
                 'edit'     => self::ACCESS_ALLOW,
             ),
+            'UserData'                           => array(
+                'accountLog' => self::ACCESS_ALLOW,
+            ),
         ),
         'checkuser'         => array(
             '_description'            => 'A user with CheckUser access',
@@ -313,9 +326,9 @@ final class RoleConfiguration extends RoleConfigurationBase
                 'requestAdminTools',
             ),
             PageUserManagement::class => array(
-                self::MAIN  => self::ACCESS_ALLOW,
-                'suspend'   => self::ACCESS_ALLOW,
-                'editRoles' => self::ACCESS_ALLOW,
+                self::MAIN   => self::ACCESS_ALLOW,
+                'deactivate' => self::ACCESS_ALLOW,
+                'editRoles'  => self::ACCESS_ALLOW,
             ),
             'RequestData'             => array(
                 'seeUserAgentData'      => self::ACCESS_ALLOW,
@@ -327,6 +340,9 @@ final class RoleConfiguration extends RoleConfigurationBase
             ),
             'BanVisibility'             => array(
                 'checkuser' => self::ACCESS_ALLOW,
+            ),
+            'UserData'                           => array(
+                'accountLog' => self::ACCESS_ALLOW,
             ),
         ),
         'steward'         => array(

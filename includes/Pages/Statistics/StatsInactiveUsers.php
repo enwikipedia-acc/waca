@@ -33,8 +33,8 @@ class StatsInactiveUsers extends InternalPageBase
 
         $this->assign('inactiveUsers', $inactiveUsers);
         $this->assign('roles', $roleMap);
-        $this->assign('canSuspend',
-            $this->barrierTest('suspend', User::getCurrent($this->getDatabase()), PageUserManagement::class));
+        $this->assign('canDeactivate',
+            $this->barrierTest('deactivate', User::getCurrent($this->getDatabase()), PageUserManagement::class));
 
         $immuneUsers = $this->getDatabase()
             ->query("SELECT user FROM userrole WHERE role IN ('toolRoot', 'checkuser', 'steward') GROUP BY user;")

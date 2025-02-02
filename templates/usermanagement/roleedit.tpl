@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-md-12" >
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">User Management <small class="text-muted">Approve, suspend, promote, demote, etc.</small></h1>
+                <h1 class="h2">User Management <small class="text-muted">Approve, deactivate, promote, demote, etc.</small></h1>
             </div>
         </div>
     </div>
