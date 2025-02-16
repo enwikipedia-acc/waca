@@ -169,6 +169,11 @@ class PagePreferences extends InternalPageBase
         // or that they have kept from when they previously had certain access.
         // This setting is only settable locally, as ACLs may change between domains.
         $creationMode = WebRequest::postInt('creationMode');
+
+        if ($creationMode === null) {
+            return;
+        }
+
         if ($this->barrierTest($creationMode, $user, 'RequestCreation')) {
             $preferenceManager->setLocalPreference(PreferenceManager::PREF_CREATION_MODE, WebRequest::postString('creationMode'));
         }
