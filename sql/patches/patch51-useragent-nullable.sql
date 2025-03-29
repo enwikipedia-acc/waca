@@ -1,20 +1,3 @@
--- -----------------------------------------------------------------------------
--- Hey!
--- 
--- This is a new patch-creation script which SHOULD stop double-patching and
--- running patches out-of-order.
---
--- If you're running patches, please close this file, and run this from the 
--- command line:
---   $ mysql -u USERNAME -p SCHEMA < patchXX-this-file.sql
--- where:
---      USERNAME = a user with CREATE/ALTER access to the schema
---      SCHEMA = the schema to run the changes against
---      patch-XX-this-file.sql = this file
---
--- If you are writing patches, you need to copy this template to a numbered 
--- patch file, update the patchversion variable, and add the SQL code to upgrade
--- the database where indicated below.
 /******************************************************************************
  * Wikipedia Account Creation Assistance tool                                 *
  * ACC Development Team. Please see team.json for a list of contributors.     *
