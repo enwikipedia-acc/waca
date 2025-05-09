@@ -190,7 +190,7 @@ WHERE 1 = 1
     AND (duration > UNIX_TIMESTAMP() OR duration IS NULL)
     AND (b.domain IS NULL OR b.domain = :domain)
 SQL;
-
+die('..'.$query);
         $statement = $this->database->prepare($query);
         $trustedIp = $this->xffTrustProvider->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
         $isIPv6 = filter_var($trustedIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
