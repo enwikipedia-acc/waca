@@ -192,14 +192,15 @@ SQL;
 
         $statement = $this->database->prepare($query);
         $trustedIp = $this->xffTrustProvider->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
+        $isIPv6 = filter_var($trustedIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
 
         $statement->execute([
             ':name'      => $request->getName(),
             ':email'     => $request->getEmail(),
             ':useragent' => $request->getUserAgent(),
             ':domain'    => $request->getDomain(),
-            ':ip4'       => $trustedIp,
-            ':ip6'       => $trustedIp,
+            ':ip4'       => $isIPv6 ? null : $trustedIp,
+            ':ip6'       => $isIPv6 ? $trustedIp : null,
         ]);
 
         /** @var Ban[] $result */
