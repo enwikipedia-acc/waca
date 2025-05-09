@@ -200,8 +200,8 @@ SQL;
     ':email'     => $request->getEmail(),
     ':useragent' => $request->getUserAgent(),
     ':domain'    => $request->getDomain(),
-    ':ip4'       => $isIPv6 ? null : $trustedIp,
-    ':ip6'       => $isIPv6 ? $trustedIp : null,
+    ':ip4'       => $isIPv6 ? '' : $trustedIp,
+    ':ip6'       => $isIPv6 ? $trustedIp : '',
 ];
         die(print_r($params, true);
         $statement->execute($params);
