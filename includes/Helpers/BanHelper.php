@@ -178,13 +178,14 @@ WHERE 1 = 1
     AND COALESCE(:name RLIKE name, TRUE)
     AND COALESCE(:email RLIKE email, TRUE)
     AND COALESCE(:useragent RLIKE useragent, TRUE)
-    AND CASE
-        WHEN INET6_ATON(b.ip) IS NOT NULL THEN
+    AND (
+        (INET6_ATON(b.ip) IS NOT NULL AND
             (CONV(LEFT(HEX(INET6_ATON(b.ip)), 16), 16, 10) & n.maskh) = (CONV(LEFT(HEX(INET6_ATON(:ip6)), 16), 16, 10) & n.maskh)
-            AND (CONV(RIGHT(HEX(INET6_ATON(b.ip)), 16), 16, 10) & n.maskl) = (CONV(RIGHT(HEX(INET6_ATON(:ip6)), 16), 16, 10) & n.maskl)
-        ELSE
-            (CONV(HEX(INET6_ATON(b.ip)), 16, 10) & n.maskl) = (CONV(HEX(INET6_ATON(:ip4)), 16, 10) & n.maskl)
-    END
+            AND (CONV(RIGHT(HEX(INET6_ATON(b.ip)), 16), 16, 10) & n.maskl) = (CONV(RIGHT(HEX(INET6_ATON(:ip6)), 16), 16, 10) & n.maskl))
+        OR
+        (INET6_ATON(b.ip) IS NULL AND
+            (CONV(HEX(INET6_ATON(b.ip)), 16, 10) & n.maskl) = (CONV(HEX(INET6_ATON(:ip4)), 16, 10) & n.maskl))
+    )
     AND active = 1
     AND (duration > UNIX_TIMESTAMP() OR duration IS NULL)
     AND (b.domain IS NULL OR b.domain = :domain)
@@ -194,18 +195,14 @@ SQL;
         $trustedIp = $this->xffTrustProvider->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
         $isIPv6 = filter_var($trustedIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
 
-        $params = [
-        ':name'      => $request->getName(),
-        ':email'     => $request->getEmail(),
-        ':useragent' => $request->getUserAgent(),
-        ':domain'    => $request->getDomain(),
-        ':ip4'       => $isIPv6 ? null : $trustedIp,
-        ':ip6'       => $isIPv6 ? $trustedIp : null,
-        ];
-        
-        die(print_r($params, true));
-        
-        $statement->execute($params);
+        $statement->execute([
+            ':name'      => $request->getName(),
+            ':email'     => $request->getEmail(),
+            ':useragent' => $request->getUserAgent(),
+            ':domain'    => $request->getDomain(),
+            ':ip4'       => $isIPv6 ? null : $trustedIp,
+            ':ip6'       => $isIPv6 ? $trustedIp : null,
+        ]);
 
         /** @var Ban[] $result */
         $result = [];
