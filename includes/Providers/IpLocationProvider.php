@@ -90,7 +90,7 @@ class IpLocationProvider implements ILocationProvider
     private function getResult($ip)
     {
         try {
-            if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            if (filter_var($ip, FILTER_VALIDATE_IP)) {
                 $xml = $this->httpHelper->get($this->getApiBase(), array(
                     'key'    => $this->apiKey,
                     'ip'     => $ip,

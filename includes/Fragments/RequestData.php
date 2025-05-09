@@ -42,6 +42,15 @@ trait RequestData
     );
 
     /**
+     * @var array Array of IPv6 address ranges classed as 'private' or reserved.
+     */
+    protected static $rfc4193ips = array(
+        "fc00::" => "fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+        "fe80::" => "febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+        "::1"    => "::1",
+    );
+
+    /**
      * Gets a request object
      *
      * @param PdoDatabase $database  The database connection
@@ -321,8 +330,8 @@ trait RequestData
                 // get data on this IP.
                 $thisProxyIsTrusted = $this->getXffTrustProvider()->isTrusted($proxyAddress);
 
-                $proxyIsInPrivateRange = $this->getXffTrustProvider()
-                    ->ipInRange(self::$rfc1918ips, $proxyAddress);
+                $proxyIsInPrivateRange = $this->getXffTrustProvider()->ipInRange(self::$rfc1918ips, $proxyAddress) 
+                || $this->getXffTrustProvider()->ipInRange(self::$rfc4193ips, $proxyAddress);
 
                 if (!$proxyIsInPrivateRange) {
                     $proxyReverseDns = $this->getRdnsProvider()->getReverseDNS($proxyAddress);
