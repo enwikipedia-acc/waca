@@ -203,7 +203,7 @@ SQL;
     ':ip4'       => $isIPv6 ? '' : $trustedIp,
     ':ip6'       => $isIPv6 ? $trustedIp : '',
 ];
-        die(print_r($params, true));
+
         $statement->execute($params);
 
         /** @var Ban[] $result */
