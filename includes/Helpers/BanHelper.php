@@ -173,18 +173,17 @@ SQL;
 SELECT b.* FROM ban b
 LEFT JOIN netmask n ON 1 = 1
     AND n.cidr = b.ipmask
-    AND n.protocol = CASE LENGTH(b.ip) WHEN 4 THEN 4 WHEN 16 THEN 6 END
+    AND n.protocol = CASE WHEN INET6_ATON(b.ip) IS NOT NULL THEN 6 ELSE 4 END
 WHERE 1 = 1
     AND COALESCE(:name RLIKE name, TRUE)
     AND COALESCE(:email RLIKE email, TRUE)
     AND COALESCE(:useragent RLIKE useragent, TRUE)
     AND CASE
-        WHEN LENGTH(b.ip) = 4 THEN
-          (CONV(HEX(b.ip), 16, 10) & n.maskl) = (CONV(HEX(INET6_ATON(:ip4)), 16, 10) & n.maskl)
-        WHEN LENGTH(b.ip) = 16 THEN
-            (CONV(LEFT(HEX(b.ip), 16), 16, 10) & n.maskh) = (CONV(LEFT(HEX(INET6_ATON(:ip6h)), 16), 16, 10) & n.maskh)
-            AND (CONV(RIGHT(HEX(b.ip), 16), 16, 10) & n.maskl) = (CONV(RIGHT(HEX(INET6_ATON(:ip6l)), 16), 16, 10) & n.maskl)
-        WHEN LENGTH(b.ip) IS NULL THEN TRUE
+        WHEN INET6_ATON(b.ip) IS NOT NULL THEN
+            (CONV(LEFT(HEX(INET6_ATON(b.ip)), 16), 16, 10) & n.maskh) = (CONV(LEFT(HEX(INET6_ATON(:ip6)), 16), 16, 10) & n.maskh)
+            AND (CONV(RIGHT(HEX(INET6_ATON(b.ip)), 16), 16, 10) & n.maskl) = (CONV(RIGHT(HEX(INET6_ATON(:ip6)), 16), 16, 10) & n.maskl)
+        ELSE
+            (CONV(HEX(INET6_ATON(b.ip)), 16, 10) & n.maskl) = (CONV(HEX(INET6_ATON(:ip4)), 16, 10) & n.maskl)
     END
     AND active = 1
     AND (duration > UNIX_TIMESTAMP() OR duration IS NULL)
@@ -200,8 +199,7 @@ SQL;
             ':useragent' => $request->getUserAgent(),
             ':domain'    => $request->getDomain(),
             ':ip4'       => $trustedIp,
-            ':ip6h'      => $trustedIp,
-            ':ip6l'      => $trustedIp,
+            ':ip6'       => $trustedIp,
         ]);
 
         /** @var Ban[] $result */

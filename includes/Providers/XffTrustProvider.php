@@ -125,6 +125,28 @@ class XffTrustProvider implements IXffTrustProvider
     }
 
     /**
+     * Checks if an IP address is in a range, supporting both IPv4 and IPv6.
+     *
+     * @param string $low  The lower bound of the range.
+     * @param string $high The upper bound of the range.
+     * @param string $ip   The IP address to check.
+     *
+     * @return bool True if the IP is in the range, false otherwise.
+     */
+    private function isIpInRange($low, $high, $ip)
+    {
+        $lowBinary = inet_pton($low);
+        $highBinary = inet_pton($high);
+        $ipBinary = inet_pton($ip);
+
+        if ($lowBinary === false || $highBinary === false || $ipBinary === false) {
+            return false; // Invalid IP address
+        }
+
+        return strcmp($lowBinary, $ipBinary) <= 0 && strcmp($highBinary, $ipBinary) >= 0;
+    }
+
+    /**
      * Takes an array( "low" => "high" ) values, and returns true if $needle is in at least one of them.
      *
      * @param array  $haystack
@@ -134,10 +156,8 @@ class XffTrustProvider implements IXffTrustProvider
      */
     public function ipInRange($haystack, $ip)
     {
-        $needle = ip2long($ip);
-
         foreach ($haystack as $low => $high) {
-            if (ip2long($low) <= $needle && ip2long($high) >= $needle) {
+            if ($this->isIpInRange($low, $high, $ip)) {
                 return true;
             }
         }
