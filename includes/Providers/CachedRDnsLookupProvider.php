@@ -43,9 +43,20 @@ class CachedRDnsLookupProvider implements IRDnsProvider
         }
 
         // OK, it's not there, let's do an rDNS lookup.
-        $result = @ gethostbyaddr($address);
+        $ptrAddress = inet_pton($address);
+        if ($ptrAddress === false) {
+            return null; // Invalid IP address
+        }
 
-        if ($result !== false) {
+        $reversePointer = implode('.', array_reverse(explode('.', inet_ntop($ptrAddress)))) . '.in-addr.arpa';
+        if (filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            $reversePointer = implode('.', array_reverse(str_split(bin2hex($ptrAddress)))) . '.ip6.arpa';
+        }
+
+        $dnsRecords = dns_get_record($reversePointer, DNS_PTR);
+        if (!empty($dnsRecords) && isset($dnsRecords[0]['target'])) {
+            $result = $dnsRecords[0]['target'];
+
             $rDns = new RDnsCache();
             $rDns->setDatabase($this->database);
             $rDns->setAddress($address);
