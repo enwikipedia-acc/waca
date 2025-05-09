@@ -190,19 +190,21 @@ WHERE 1 = 1
     AND (duration > UNIX_TIMESTAMP() OR duration IS NULL)
     AND (b.domain IS NULL OR b.domain = :domain)
 SQL;
-die('..'.$query);
+
         $statement = $this->database->prepare($query);
         $trustedIp = $this->xffTrustProvider->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
         $isIPv6 = filter_var($trustedIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
 
-        $statement->execute([
-            ':name'      => $request->getName(),
-            ':email'     => $request->getEmail(),
-            ':useragent' => $request->getUserAgent(),
-            ':domain'    => $request->getDomain(),
-            ':ip4'       => $isIPv6 ? '' : $trustedIp,
-            ':ip6'       => $isIPv6 ? $trustedIp : '',
-        ]);
+        $params = [
+    ':name'      => $request->getName(),
+    ':email'     => $request->getEmail(),
+    ':useragent' => $request->getUserAgent(),
+    ':domain'    => $request->getDomain(),
+    ':ip4'       => $isIPv6 ? null : $trustedIp,
+    ':ip6'       => $isIPv6 ? $trustedIp : null,
+];
+        die(print_r($params, true);
+        $statement->execute($params);
 
         /** @var Ban[] $result */
         $result = [];
