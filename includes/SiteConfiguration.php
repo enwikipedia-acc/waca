@@ -84,6 +84,8 @@ class SiteConfiguration
     ];
     private string $privacyStatementPath = '';
 
+    private array $globalDenyRole = [];
+
     /**
      * Gets the base URL of the tool
      *
@@ -1125,6 +1127,18 @@ class SiteConfiguration
     public function setPrivacyStatementPath(string $privacyStatementPath): SiteConfiguration
     {
         $this->privacyStatementPath = $privacyStatementPath;
+
+        return $this;
+    }
+
+    public function getGlobalDenyRole(): array
+    {
+        return $this->globalDenyRole;
+    }
+
+    public function setGlobalDenyRole(array $globalDenyRole): SiteConfiguration
+    {
+        $this->globalDenyRole = $globalDenyRole;
 
         return $this;
     }

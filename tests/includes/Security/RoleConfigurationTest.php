@@ -64,7 +64,7 @@ class RoleConfigurationTest extends TestCase
         $roleConfig = new class($roleConfig, $idExempt) extends RoleConfigurationBase {
             public function __construct($r, $i)
             {
-                parent::__construct($r, $i);
+                parent::__construct($r, $i, []);
             }
         };
 
@@ -92,7 +92,7 @@ class RoleConfigurationTest extends TestCase
         $roleConfig = new class($this->roleConfig, $idExempt) extends RoleConfigurationBase {
             public function __construct($r, $i)
             {
-                parent::__construct($r, $i);
+                parent::__construct($r, $i, []);
             }
         };
 
@@ -132,7 +132,7 @@ class RoleConfigurationTest extends TestCase
         $roleConfig = new class($roleConfig) extends RoleConfigurationBase {
             public function __construct($r)
             {
-                parent::__construct($r, []);
+                parent::__construct($r, [], []);
             }
         };
 
@@ -171,7 +171,7 @@ class RoleConfigurationTest extends TestCase
         $roleConfig = new class($roleConfig) extends RoleConfigurationBase {
             public function __construct($r)
             {
-                parent::__construct($r, []);
+                parent::__construct($r, [], []);
             }
         };
 
@@ -210,7 +210,7 @@ class RoleConfigurationTest extends TestCase
         $roleConfig = new class($roleConfig) extends RoleConfigurationBase {
             public function __construct($r)
             {
-                parent::__construct($r, []);
+                parent::__construct($r, [], []);
             }
         };
 
@@ -250,7 +250,7 @@ class RoleConfigurationTest extends TestCase
         $roleConfig = new class($roleConfig) extends RoleConfigurationBase {
             public function __construct($r)
             {
-                parent::__construct($r, []);
+                parent::__construct($r, [], []);
             }
         };
 
@@ -293,7 +293,7 @@ class RoleConfigurationTest extends TestCase
         $roleConfig = new class($roleConfig) extends RoleConfigurationBase {
             public function __construct($r)
             {
-                parent::__construct($r, []);
+                parent::__construct($r, [], []);
             }
         };
 
@@ -336,7 +336,7 @@ class RoleConfigurationTest extends TestCase
         $roleConfig = new class($roleConfig) extends RoleConfigurationBase {
             public function __construct($r)
             {
-                parent::__construct($r, []);
+                parent::__construct($r, [], []);
             }
         };
 
@@ -366,7 +366,7 @@ class RoleConfigurationTest extends TestCase
         $roleConfig = new class($roleConfig) extends RoleConfigurationBase {
             public function __construct($r)
             {
-                parent::__construct($r, []);
+                parent::__construct($r, [], []);
             }
         };
 
@@ -403,7 +403,7 @@ class RoleConfigurationTest extends TestCase
         $roleConfig = new class($roleConfig) extends RoleConfigurationBase {
             public function __construct($r)
             {
-                parent::__construct($r, []);
+                parent::__construct($r, [], []);
             }
         };
 
@@ -439,7 +439,7 @@ class RoleConfigurationTest extends TestCase
         $roleConfig = new class($roleConfig) extends RoleConfigurationBase {
             public function __construct($r)
             {
-                parent::__construct($r, []);
+                parent::__construct($r, [], []);
             }
         };
 
@@ -454,4 +454,73 @@ class RoleConfigurationTest extends TestCase
         $this->assertEquals(RoleConfigurationBase::ACCESS_ALLOW, $resultantRole['PageA']['edit']);
         $this->assertEquals(RoleConfigurationBase::ACCESS_ALLOW, $resultantRole['PageA']['delete']);
     }
+
+    public function testConstructDenyRole()
+    {
+        // arrange
+        $role = [
+            '_description' => 'example role',
+            '_editableBy'  => [],
+            '_hidden'      => true,
+            '_childRoles'  => ['example'],
+            'PageAdmin'    => [
+                'main' => RoleConfigurationBase::ACCESS_ALLOW,
+            ],
+            'PageFlagged'    => [
+                'main' => RoleConfigurationBase::ACCESS_DENY,
+                'other' => RoleConfigurationBase::ACCESS_ALLOW,
+            ],
+            'PageUnknown'    => [
+                'main' => RoleConfigurationBase::ACCESS_DEFAULT,
+            ],
+        ];
+
+        // act
+        $resultantRole = RoleConfigurationBase::constructDenyOnlyRole($role);
+
+        // assert
+        $this->assertArrayHasKey('PageFlagged', $resultantRole);
+        $this->assertArrayNotHasKey('PageAdmin', $resultantRole);
+        $this->assertArrayNotHasKey('PageUnknown', $resultantRole);
+
+        $this->assertArrayNotHasKey('other', $resultantRole['PageFlagged']);
+        $this->assertArrayHasKey('main', $resultantRole['PageFlagged']);
+
+        $this->assertEquals(RoleConfigurationBase::ACCESS_DENY, $resultantRole['PageFlagged']['main']);
+    }
+
+
+    public function testApplyDenyRole()
+    {
+        // arrange
+        $roleConfig = $this->roleConfig;
+
+        $denyRole = [
+            'PageA'    => [
+                'main' => RoleConfigurationBase::ACCESS_DENY,
+            ],
+        ];
+
+        // act
+        $roleConfig = new class($roleConfig, $denyRole) extends RoleConfigurationBase {
+            public function __construct($r, $d)
+            {
+                parent::__construct($r, [], $d);
+            }
+        };
+
+        $resultantRole = $roleConfig->getResultantRole(['public']);
+
+        // assert
+        $this->assertArrayHasKey('PageA', $resultantRole);
+        $this->assertArrayNotHasKey('PageB', $resultantRole);
+        $this->assertArrayNotHasKey('PageC', $resultantRole);
+        $this->assertArrayNotHasKey('PageAdmin', $resultantRole);
+        $this->assertArrayNotHasKey('PageHidden', $resultantRole);
+
+        $this->assertArrayHasKey('main', $resultantRole['PageA']);
+
+        $this->assertEquals(RoleConfigurationBase::ACCESS_DENY, $resultantRole['PageA']['main']);
+    }
+
 }

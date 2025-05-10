@@ -473,8 +473,8 @@ final class RoleConfiguration extends RoleConfigurationBase
      */
     private static array $productionIdentificationExempt = array('public', 'loggedIn');
 
-    public function __construct()
+    public function __construct(array $globalDenyRole = [])
     {
-        parent::__construct(self::$productionRoleConfig, self::$productionIdentificationExempt);
+        parent::__construct(self::$productionRoleConfig, self::$productionIdentificationExempt, $globalDenyRole);
     }
 }
