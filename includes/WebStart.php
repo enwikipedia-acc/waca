@@ -86,7 +86,8 @@ class WebStart extends ApplicationBase
 
                 $identificationVerifier = new IdentificationVerifier($httpHelper, $siteConfiguration, $database);
 
-                $page->setSecurityManager(new SecurityManager($identificationVerifier, new RoleConfiguration(), $userAccessLoader));
+                $roleConfiguration = new RoleConfiguration($siteConfiguration->getGlobalDenyRole());
+                $page->setSecurityManager(new SecurityManager($identificationVerifier, $roleConfiguration, $userAccessLoader));
                 $page->setDomainAccessManager($domainAccessManager);
 
                 if ($siteConfiguration->getTitleBlacklistEnabled()) {

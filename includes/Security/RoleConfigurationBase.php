@@ -18,11 +18,14 @@ abstract class RoleConfigurationBase
 
     protected array $roleConfig;
     protected array $identificationExempt;
+    private array $globallyDenied;
 
-    protected function __construct(array $roleConfig, array $identificationExempt)
+    protected function __construct(array $roleConfig, array $identificationExempt, array $globallyDenied)
     {
         $this->roleConfig = $roleConfig;
         $this->identificationExempt = $identificationExempt;
+
+        $this->globallyDenied = self::constructDenyOnlyRole($globallyDenied);
     }
 
     /**
@@ -115,7 +118,9 @@ abstract class RoleConfigurationBase
      */
     private function getApplicableRoles(array $roles): array
     {
-        $available = array();
+        $available = [];
+
+        $available['_GLOBAL_DENY'] = $this->globallyDenied;
 
         foreach ($roles as $role) {
             if (!isset($this->roleConfig[$role])) {
@@ -140,5 +145,34 @@ abstract class RoleConfigurationBase
         }
 
         return $available;
+    }
+
+    /**
+     * Takes a role definition and filters it to just the deny actions.
+     *
+     * @param array $globallyDenied
+     * @return array
+     */
+    public static function constructDenyOnlyRole(array $globallyDenied): array
+    {
+        $result = [];
+
+        foreach ($globallyDenied as $page => $pageRights) {
+            if (in_array($page, ['_hidden', '_editableBy', '_description', '_globalOnly', '_childRoles'])) {
+                continue;
+            }
+
+            foreach ($pageRights as $action => $permission) {
+                if ($permission === RoleConfigurationBase::ACCESS_DENY) {
+                    if (!array_key_exists($page, $result)) {
+                        $result[$page] = [];
+                    }
+
+                    $result[$page][$action] = RoleConfigurationBase::ACCESS_DENY;
+                }
+            }
+        }
+
+        return $result;
     }
 }
