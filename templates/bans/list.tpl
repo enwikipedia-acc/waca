@@ -36,7 +36,7 @@
             <td class="text-nowrap">
                 {if $ban->getDuration() === null}Indefinite{else}{date("Y-m-d H:i:s", $ban->getDuration())}{/if}
                 {if $ban->isActive() === false}<span class="badge badge-info">Unbanned</span>{/if}
-                {if $ban->getDuration() < time() && $ban->getDuration() !== null}<span class="badge badge-warning">Expired</span>{/if}
+                {if $ban->getDuration() < $currentUnixTime && $ban->getDuration() !== null}<span class="badge badge-warning">Expired</span>{/if}
             </td>
 
             {if $canRemove}

@@ -42,6 +42,7 @@ class PageBan extends InternalPageBase
         $this->setupBanList($bans);
 
         $this->assign('isFiltered', false);
+        $this->assign('currentUnixTime', time());
         $this->setTemplate('bans/main.tpl');
     }
 
@@ -65,6 +66,7 @@ class PageBan extends InternalPageBase
 
         $this->setupBanList($bans);
         $this->assign('isFiltered', true);
+        $this->assign('currentUnixTime', time());
         $this->setTemplate('bans/main.tpl');
     }
 
