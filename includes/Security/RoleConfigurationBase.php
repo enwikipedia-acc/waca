@@ -132,7 +132,7 @@ abstract class RoleConfigurationBase
                 unset($available[$role]['_childRoles']);
             }
 
-            foreach (array('_hidden', '_editableBy', '_description') as $item) {
+            foreach (array('_hidden', '_editableBy', '_description', '_globalOnly') as $item) {
                 if (isset($available[$role][$item])) {
                     unset($available[$role][$item]);
                 }

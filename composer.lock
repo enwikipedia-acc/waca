@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "84c3f44af739217ac8beb8bd0a3388e1",
+    "content-hash": "788d1ea47f3f54cf35a0e21bd7c975a4",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1170,35 +1170,39 @@
         },
         {
             "name": "smarty/smarty",
-            "version": "v4.5.5",
+            "version": "v5.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/smarty-php/smarty.git",
-                "reference": "c4851c12e34ff80073ddeb7d98b059d57dea9de2"
+                "reference": "372f7cf41a6e2a9ca2e7253bc5f5c4f38df25a63"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/smarty-php/smarty/zipball/c4851c12e34ff80073ddeb7d98b059d57dea9de2",
-                "reference": "c4851c12e34ff80073ddeb7d98b059d57dea9de2",
+                "url": "https://api.github.com/repos/smarty-php/smarty/zipball/372f7cf41a6e2a9ca2e7253bc5f5c4f38df25a63",
+                "reference": "372f7cf41a6e2a9ca2e7253bc5f5c4f38df25a63",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1 || ^8.0"
+                "php": "^7.2 || ^8.0",
+                "symfony/polyfill-mbstring": "^1.27"
             },
             "require-dev": {
                 "phpunit/phpunit": "^8.5 || ^7.5",
-                "smarty/smarty-lexer": "^3.1"
+                "smarty/smarty-lexer": "^4.0.2"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.0.x-dev"
+                    "dev-master": "5.0.x-dev"
                 }
             },
             "autoload": {
-                "classmap": [
-                    "libs/"
-                ]
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "Smarty\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -1230,9 +1234,15 @@
             "support": {
                 "forum": "https://github.com/smarty-php/smarty/discussions",
                 "issues": "https://github.com/smarty-php/smarty/issues",
-                "source": "https://github.com/smarty-php/smarty/tree/v4.5.5"
+                "source": "https://github.com/smarty-php/smarty/tree/v5.5.0"
             },
-            "time": "2024-11-21T22:06:22+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/wisskid",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-05-03T21:36:46+00:00"
         },
         {
             "name": "spomky-labs/otphp",
@@ -4387,7 +4397,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
@@ -4400,6 +4410,6 @@
         "ext-mbstring": "*",
         "ext-simplexml": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

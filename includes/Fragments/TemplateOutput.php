@@ -9,15 +9,51 @@
 
 namespace Waca\Fragments;
 
-use Smarty;
+use DirectoryIterator;
+use Smarty\Exception;
+use Smarty\Smarty;
 use Waca\DataObjects\User;
 use Waca\Environment;
 use Waca\SiteConfiguration;
+use Waca\WebRequest;
 
 trait TemplateOutput
 {
     /** @var Smarty */
     private $smarty;
+
+    /**
+     * @param string $pluginsDir
+     *
+     * @return void
+     * @throws Exception
+     */
+    private function loadPlugins(string $pluginsDir): void
+    {
+        /** @var DirectoryIterator $file */
+        foreach (new DirectoryIterator($pluginsDir) as $file) {
+            if ($file->isDot()) {
+                continue;
+            }
+
+            if ($file->getExtension() != 'php') {
+                continue;
+            }
+
+            require_once $file->getPathname();
+
+            list($type, $name) = explode('.', $file->getBasename('.php'), 2);
+
+            switch ($type) {
+                case 'modifier':
+                    $this->smarty->registerPlugin(Smarty::PLUGIN_MODIFIER, $name, 'smarty_modifier_' . $name);
+                    break;
+                case 'function':
+                    $this->smarty->registerPlugin(Smarty::PLUGIN_FUNCTION, $name, 'smarty_function_' . $name);
+                    break;
+            }
+        }
+    }
 
     /**
      * @return SiteConfiguration
@@ -39,12 +75,15 @@ trait TemplateOutput
      * Sets up the variables used by the main Smarty base template.
      *
      * This list is getting kinda long.
+     * @throws Exception
      */
     final protected function setUpSmarty()
     {
         $this->smarty = new Smarty();
-        $this->smarty->addPluginsDir($this->getSiteConfiguration()->getFilePath() . '/smarty-plugins');
-        $this->smarty->registerPlugin('modifier', 'implode', 'implode');
+        $pluginsDir = $this->getSiteConfiguration()->getFilePath() . '/smarty-plugins';
+
+        // Dynamically load all plugins in the plugins directory
+        $this->loadPlugins($pluginsDir);
 
         $this->assign('currentUser', User::getCommunity());
         $this->assign('skin', 'auto');
@@ -52,6 +91,7 @@ trait TemplateOutput
         $this->assign('loggedIn', false);
         $this->assign('baseurl', $this->getSiteConfiguration()->getBaseUrl());
         $this->assign('resourceCacheEpoch', $this->getSiteConfiguration()->getResourceCacheEpoch());
+        $this->assign('serverPathInfo', WebRequest::pathInfo());
 
         $this->assign('siteNoticeText', '');
         $this->assign('siteNoticeVersion', 0);
@@ -99,6 +139,7 @@ trait TemplateOutput
      * @param $template string Template file path, relative to /templates/
      *
      * @return string Templated HTML
+     * @throws Exception
      */
     final protected function fetchTemplate($template)
     {

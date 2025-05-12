@@ -4,7 +4,7 @@
   </td>
   <td>
     <a href="//en.wikipedia.org/wiki/User:{$user->getOnWikiName()|escape:'url'}">{$user->getOnWikiName()|escape}</a>
-    {if Waca\Helpers\OAuthUserHelper::userIsFullyLinked($user) || Waca\Helpers\OAuthUserHelper::userIsPartiallyLinked($user) }<span class="badge {if Waca\Helpers\OAuthUserHelper::userIsPartiallyLinked($user)}badge-danger{else}badge-success{/if}">OAuth</span>{/if}
+    {if $oauthStatusMap[$user->getId()] !== 'none'}<span class="badge {if $oauthStatusMap[$user->getId()] === 'partial'}badge-danger{else}badge-success{/if}">OAuth</span>{/if}
   </td>
   <td>
     {$roles[$user->getId()]|escape}

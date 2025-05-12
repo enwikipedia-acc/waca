@@ -7,15 +7,17 @@
  * Please see LICENSE.md for the full licencing statement.                    *
  ******************************************************************************/
 
+use Smarty\Template;
+
 /**
  * Sets up the cookie-based default sorting on request tables
  *
  * @param                          $params
- * @param Smarty_Internal_Template $template
+ * @param Template $template
  *
  * @return string
  */
-function smarty_function_defaultsort($params, Smarty_Internal_Template $template)
+function smarty_function_defaultsort($params, Template $template)
 {
     if (empty($params['id'])) {
         return "";
