@@ -190,6 +190,7 @@ trait RequestData
 
         $trustedIp = $xffProvider->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
         $this->assign('requestTrustedIp', $trustedIp);
+        $this->assign('requestTrustedIpProtocol', $this->getIpProtocol($trustedIp));
         $this->assign('requestRealIp', $request->getIp());
         $this->assign('requestForwardedIp', $request->getForwardedIp());
 
@@ -317,6 +318,7 @@ trait RequestData
             foreach ($proxies as $index => $proxyData) {
                 $proxyAddress = trim($proxyData);
                 $requestProxyData[$proxyIndex]['ip'] = $proxyAddress;
+                $requestProxyData[$proxyIndex]['protocol'] = $this->getIpProtocol($proxyAddress);
 
                 // get data on this IP.
                 $thisProxyIsTrusted = $this->getXffTrustProvider()->isTrusted($proxyAddress);
@@ -372,5 +374,17 @@ trait RequestData
 
             $this->assign("requestProxyData", $requestProxyData);
         }
+    }
+
+    private function getIpProtocol(string $ip): ?int
+    {
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            return 4;
+        }
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            return 6;
+        }
+
+        return null;
     }
 }
