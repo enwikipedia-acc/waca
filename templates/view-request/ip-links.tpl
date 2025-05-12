@@ -50,7 +50,7 @@
         Project Honeypot
     </a>
     <a id="IPStopForumSpam-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
-       href="{$baseurl}/redir.php?tool=stopforumspam&amp;data={$ipaddress}">
+       href="{$baseurl}/redir.php?tool=stopforumspam&amp;data={$ipaddress|cidr:null}">
         StopForumSpam
     </a>
     <a id="IPAbuseLog-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
@@ -69,10 +69,17 @@
        href="{$baseurl}/redir.php?tool=bullseye&amp;data={$ipaddress}">
         Bullseye
     </a>
-    <a id="IPalyzer-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
-       href="{$baseurl}/redir.php?tool=ipalyzer&amp;data={$ipaddress}">
-        IPalyzer
-    </a> 
+    {if $protocol == 6}
+        <div id="IPalyzer-{$index}" class="btn btn-sm btn-outline-secondary disabled" data-toggle="tooltip" data-placement="bottom"
+             title="This tool does not support IPv6 addresses.">
+            IPalyzer
+        </div>
+    {else}
+        <a id="IPalyzer-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+           href="{$baseurl}/redir.php?tool=ipalyzer&amp;data={$ipaddress}">
+            IPalyzer
+        </a>
+    {/if}
     <a id="IPBGPView-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
        href="{$baseurl}/redir.php?tool=bgpview&amp;data={$ipaddress}">
         BGP Prefixes
