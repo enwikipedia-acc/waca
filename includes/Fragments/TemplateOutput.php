@@ -15,6 +15,7 @@ use Smarty\Smarty;
 use Waca\DataObjects\User;
 use Waca\Environment;
 use Waca\SiteConfiguration;
+use Waca\WebRequest;
 
 trait TemplateOutput
 {
@@ -90,6 +91,7 @@ trait TemplateOutput
         $this->assign('loggedIn', false);
         $this->assign('baseurl', $this->getSiteConfiguration()->getBaseUrl());
         $this->assign('resourceCacheEpoch', $this->getSiteConfiguration()->getResourceCacheEpoch());
+        $this->assign('serverPathInfo', WebRequest::pathInfo());
 
         $this->assign('siteNoticeText', '');
         $this->assign('siteNoticeVersion', 0);
