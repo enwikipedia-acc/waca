@@ -93,7 +93,7 @@ SQL
         return $user;
     }
 
-    public static function userIsFullyLinked(User $user, PdoDatabase $database = null)
+    private static function userIsFullyLinked(User $user, PdoDatabase $database = null)
     {
         if (self::$tokenCountStatement === null && $database === null) {
             throw new ApplicationLogicException('Static link request without initialised statement');
@@ -102,7 +102,7 @@ SQL
         return self::runTokenCount($user->getId(), $database, self::TOKEN_ACCESS);
     }
 
-    public static function userIsPartiallyLinked(User $user, PdoDatabase $database = null)
+    private static function userIsPartiallyLinked(User $user, PdoDatabase $database = null)
     {
         if (self::$tokenCountStatement === null && $database === null) {
             throw new ApplicationLogicException('Static link request without initialised statement');
@@ -119,7 +119,7 @@ SQL
     /**
      * @param PdoDatabase $database
      */
-    public static function prepareTokenCountStatement(PdoDatabase $database)
+    private static function prepareTokenCountStatement(PdoDatabase $database)
     {
         if (self::$tokenCountStatement === null) {
             self::$tokenCountStatement = $database->prepare('SELECT COUNT(*) FROM oauthtoken WHERE user = :user AND type = :type');
