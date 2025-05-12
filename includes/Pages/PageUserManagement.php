@@ -10,6 +10,7 @@
 namespace Waca\Pages;
 
 use Exception;
+use PDO;
 use Smarty\Exception as SmartyException;
 use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
@@ -20,6 +21,7 @@ use Waca\Helpers\Logger;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\PreferenceManager;
 use Waca\Helpers\SearchHelpers\UserSearchHelper;
+use Waca\PdoDatabase;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -30,9 +32,46 @@ use Waca\WebRequest;
  */
 class PageUserManagement extends InternalPageBase
 {
+    const OAUTH_STATE_NONE = 'none';
+    const OAUTH_STATE_PARTIAL = 'partial';
+    const OAUTH_STATE_FULL = 'full';
+
     // FIXME: domains
     /** @var string */
     private $adminMailingList = 'enwiki-acc-admins@googlegroups.com';
+
+    private function getOAuthStatusMap(PdoDatabase $database): array
+    {
+        $oauthStatusQuery = $database->prepare(
+            <<<SQL
+    SELECT u.id,
+           CASE
+               WHEN SUM(IF(ot.type = :access, 1, 0)) OVER (PARTITION BY ot.user) > 0 THEN :full
+               WHEN SUM(IF(ot.type = :request, 1, 0)) OVER (PARTITION BY ot.user) > 0 THEN :partial
+               ELSE :none
+           END AS status
+    FROM user u 
+    LEFT JOIN oauthtoken ot ON u.id = ot.user;
+SQL
+        );
+
+        $oauthStatusQuery->execute([
+            ':access' => OAuthUserHelper::TOKEN_ACCESS,
+            ':request' => OAuthUserHelper::TOKEN_REQUEST,
+            ':full' => self::OAUTH_STATE_FULL,
+            ':partial' => self::OAUTH_STATE_PARTIAL,
+            ':none' => self::OAUTH_STATE_NONE,
+        ]);
+        $oauthStatusRawData = $oauthStatusQuery->fetchAll(PDO::FETCH_ASSOC);
+        $oauthStatusQuery->closeCursor();
+        $oauthStatusMap = [];
+
+        foreach ($oauthStatusRawData as $row) {
+            $oauthStatusMap[(int)$row['id']] = $row['status'];
+        }
+
+        return $oauthStatusMap;
+    }
 
     /**
      * Main function for this page, when no specific actions are called.
@@ -53,9 +92,7 @@ class PageUserManagement extends InternalPageBase
             }
         }
 
-        // A bit hacky, but it's better than my last solution of creating an object for each user and passing that to
-        // the template. I still don't have a particularly good way of handling this.
-        OAuthUserHelper::prepareTokenCountStatement($database);
+        $this->assign('oauthStatusMap', $this->getOAuthStatusMap($database));
 
         if (WebRequest::getBoolean("showAll")) {
             $this->assign("showAll", true);
