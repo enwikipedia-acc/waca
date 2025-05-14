@@ -171,8 +171,7 @@ SQL;
         /** @noinspection SqlConstantCondition - included for clarity of code */
         $query = <<<SQL
 SELECT b.* FROM ban b
-LEFT JOIN netmask n ON 1 = 1
-    AND n.cidr = b.ipmask
+LEFT JOIN netmask n ON n.cidr = b.ipmask
     AND n.protocol = CASE WHEN INET6_ATON(b.ip) IS NOT NULL THEN 6 ELSE 4 END
 WHERE 1 = 1
     AND COALESCE(:name RLIKE name, TRUE)
@@ -180,12 +179,10 @@ WHERE 1 = 1
     AND COALESCE(:useragent RLIKE useragent, TRUE)
     AND (
         (INET6_ATON(b.ip) IS NOT NULL AND
-            (CONV(LEFT(HEX(INET6_ATON(b.ip)), 16), 16, 10) & n.maskh) = (CONV(LEFT(HEX(INET6_ATON(:ip6)), 16), 16, 10) & n.maskh)
-            AND (CONV(RIGHT(HEX(INET6_ATON(b.ip)), 16), 16, 10) & n.maskl) = (CONV(RIGHT(HEX(INET6_ATON(:ip6)), 16), 16, 10) & n.maskl))
-        OR
-        (INET6_ATON(b.ip) IS NULL AND
-            (CONV(HEX(INET6_ATON(b.ip)), 16, 10) & n.maskl) = (CONV(HEX(INET6_ATON(:ip4)), 16, 10) & n.maskl))
-    )
+            (CONV(LEFT(HEX(INET6_ATON(b.ip)), 16), 16, 10) & n.maskh) = (CONV(LEFT(HEX(INET6_ATON(:ip)), 16), 16, 10) & n.maskh)
+            AND (CONV(RIGHT(HEX(INET6_ATON(b.ip)), 16), 16, 10) & n.maskl) = (CONV(RIGHT(HEX(INET6_ATON(:ip)), 16), 16, 10) & n.maskl)
+        )
+        )
     AND active = 1
     AND (duration > UNIX_TIMESTAMP() OR duration IS NULL)
     AND (b.domain IS NULL OR b.domain = :domain)
@@ -193,16 +190,14 @@ SQL;
 
         $statement = $this->database->prepare($query);
         $trustedIp = $this->xffTrustProvider->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
-        $isIPv6 = filter_var($trustedIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
 
         $params = [
-    ':name'      => $request->getName(),
-    ':email'     => $request->getEmail(),
-    ':useragent' => $request->getUserAgent(),
-    ':domain'    => $request->getDomain(),
-    ':ip4'       => $isIPv6 ? '' : $trustedIp,
-    ':ip6'       => $isIPv6 ? $trustedIp : '',
-];
+            ':name'      => $request->getName(),
+            ':email'     => $request->getEmail(),
+            ':useragent' => $request->getUserAgent(),
+            ':domain'    => $request->getDomain(),
+            ':ip'        => $trustedIp,
+        ];
 
         $statement->execute($params);
 
