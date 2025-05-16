@@ -264,11 +264,11 @@ class PageViewRequest extends InternalPageBase
                 // Flagging/unflagging can only be done if you can see the comment
                 $canFlagThisComment = $canFlag
                     && (
-                        (!$entry->getFlagged() && !$commentIsRestricted)
+                        (!$entry->getFlagged() && !$canSeeRestrictedComments && !$canSeeCheckUserComments)
                         || ($entry->getFlagged() && $canUnflag && $commentIsEditable)
                     );
                     
-                $commentText = (($entry->getVisibility() == 'admin' && !$canSeeRestrictedComments) || ($entry->getVisibility() == 'checkuser' && !$canSeeCheckUserComments)) ? 'Comment is restricted' : $entry->getComment();
+                $commentText = (($entry->getVisibility() == 'admin' && !$canSeeRestrictedComments) || ($entry->getVisibility() == 'checkuser' && !$canSeeCheckUserComments)) ? 'Comment is restricted to users with the ' . $entry->getVisibility() . ' role' : $entry->getComment();
 
                 $requestLogs[] = array(
                     'type'          => 'comment',
