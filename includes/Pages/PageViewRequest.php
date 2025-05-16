@@ -266,7 +266,7 @@ class PageViewRequest extends InternalPageBase
                 // Flagging/unflagging can only be done if you can see the comment
                 $canFlagThisComment = $canFlag
                     && (
-                        (!$entry->getFlagged() && !$canSeeRestrictedComments && !$canSeeCheckUserComments)
+                        (!$entry->getFlagged() && !$commentIsRestricted)
                         || ($entry->getFlagged() && $canUnflag && $commentIsEditable)
                     );
                     
