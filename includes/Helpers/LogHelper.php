@@ -45,10 +45,11 @@ class LogHelper
         $logs = LogSearchHelper::get($db, 1)->byObjectType('Request')->byObjectId($requestId)->fetch();
 
         $currentUser = User::getCurrent($db);
-        $showRestrictedComments = $securityManager->allows('RequestData', 'seeRestrictedComments', $currentUser) === ISecurityManager::ALLOWED;
-        $showCheckuserComments = $securityManager->allows('RequestData', 'seeCheckuserComments', $currentUser) === ISecurityManager::ALLOWED;
+        #$showRestrictedComments = $securityManager->allows('RequestData', 'seeRestrictedComments', $currentUser) === ISecurityManager::ALLOWED;
+        #$showCheckuserComments = $securityManager->allows('RequestData', 'seeCheckuserComments', $currentUser) === ISecurityManager::ALLOWED;
 
-        $comments = Comment::getForRequest($requestId, $db, $showRestrictedComments, $showCheckuserComments, $currentUser->getId());
+        //$comments = Comment::getForRequest($requestId, $db, $showRestrictedComments, $showCheckuserComments, $currentUser->getId());
+        $comments = Comment::getForRequest($requestId, $db, true, true, $currentUser->getId());
 
         $items = array_merge($logs, $comments);
 

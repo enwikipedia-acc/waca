@@ -235,6 +235,9 @@ class PageViewRequest extends InternalPageBase
 
         $canFlag = $this->barrierTest(RoleConfigurationBase::MAIN, $currentUser, PageFlagComment::class);
         $canUnflag = $this->barrierTest('unflag', $currentUser, PageFlagComment::class);
+        
+        $canSeeRestrictedComments = $this->barrierTest('seeRestrictedComments', $currentUser, 'RequestData');
+        $canSeeCheckUserComments = $this->barrierTest('seeCheckuserComments', $currentUser, 'RequestData');
 
         /** @var Log|Comment $entry */
         foreach ($logs as $entry) {
@@ -252,7 +255,7 @@ class PageViewRequest extends InternalPageBase
                     ($entry->getFlagged()
                         || $entry->getVisibility() == 'admin' || $entry->getVisibility() == 'checkuser')
                     && !$allowedPrivateData;
-
+                
                 // Only allow comment editing if the user is able to edit comments or this is the user's own comment,
                 // but only when they're allowed to see the comment itself.
                 $commentIsEditable = ($editableComments || $entry->getUser() == $currentUser->getId())
@@ -264,6 +267,8 @@ class PageViewRequest extends InternalPageBase
                         (!$entry->getFlagged() && !$commentIsRestricted)
                         || ($entry->getFlagged() && $canUnflag && $commentIsEditable)
                     );
+                    
+                $commentText = (($entry->getVisibility() == 'admin' && !$canSeeRestrictedComments) || ($entry->getVisibility() == 'checkuser' && !$canSeeCheckUserComments)) ? 'Comment is restricted' : $entry->getComment();
 
                 $requestLogs[] = array(
                     'type'          => 'comment',
@@ -274,7 +279,7 @@ class PageViewRequest extends InternalPageBase
                     'time'          => $entry->getTime(),
                     'canedit'       => $commentIsEditable,
                     'id'            => $entry->getId(),
-                    'comment'       => $entry->getComment(),
+                    'comment'       => $commentText,
                     'flagged'       => $entry->getFlagged(),
                     'canflag'       => $canFlagThisComment,
                     'updateversion' => $entry->getUpdateVersion(),
