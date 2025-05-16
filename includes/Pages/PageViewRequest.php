@@ -253,7 +253,9 @@ class PageViewRequest extends InternalPageBase
                 // to see private data
                 $commentIsRestricted =
                     ($entry->getFlagged()
-                        || $entry->getVisibility() == 'admin' || $entry->getVisibility() == 'checkuser')
+                        || ($entry->getVisibility() == 'admin' && !$canSeeRestrictedComments) 
+                        || ($entry->getVisibility() == 'checkuser' && !$canSeeCheckUserComments)
+                    )
                     && !$allowedPrivateData;
                 
                 // Only allow comment editing if the user is able to edit comments or this is the user's own comment,
