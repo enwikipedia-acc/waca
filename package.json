@@ -7,7 +7,8 @@
     "test": "tests"
   },
   "dependencies": {
-    "bootstrap": "^4.6.2",
+    "bootstrap4": "npm:bootstrap@^4.6.2",
+    "bootstrap5": "npm:bootstrap@^5.3.6",
     "jquery": "^3.7.1",
     "popper.js": "^1.16.1",
     "sass": "^1.87.0"
