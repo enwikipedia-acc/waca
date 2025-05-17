@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- bootstrap styles -->
-    <link href="{$baseurl}/resources/generated/bootstrap-{$skin|escape|default:'auto'}.css?{$resourceCacheEpoch}" rel="stylesheet"/>
+    <link href="{$baseurl}/resources/generated/bootstrap{$skinBaseline|default:'4'}-{$skin|escape|default:'auto'}.css?{$resourceCacheEpoch}" rel="stylesheet"/>
 
     <!-- fontawesome -->
     <link href="{$baseurl}/vendor/fortawesome/font-awesome/css/all.min.css" rel="stylesheet"/>
@@ -84,7 +84,7 @@
     <script src="{$baseurl}/node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script>
     <script src="{$baseurl}/vendor/fortawesome/font-awesome/js/all.min.js" data-auto-add-css="false" type="text/javascript"></script>
     <script src="{$baseurl}/node_modules/popper.js/dist/umd/popper.min.js" type="text/javascript"></script>
-    <script src="{$baseurl}/node_modules/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="{$baseurl}/node_modules/bootstrap{$skinBaseline|default:'4'}/dist/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="{$baseurl}/vendor/twitter/typeahead.js/dist/typeahead.bundle.min.js"></script>
     <script src="{$baseurl}/vendor/drvic10k/bootstrap-sortable/Scripts/bootstrap-sortable.js"></script>
     <script src="{$baseurl}/vendor/drvic10k/bootstrap-sortable/Scripts/moment.min.js"></script>
