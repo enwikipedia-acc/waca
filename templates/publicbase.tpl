@@ -16,6 +16,11 @@
     {block name="publicheader"}
     <div class="masthead">
         <ul class="nav nav-pills float-right">
+            {if $showDebugCssBreakpoints}
+                <li class="nav-item">
+                    {include file="breakpoints.tpl"}
+                </li>
+            {/if}
             <li class="nav-item"><a class="nav-link" href="//en.wikipedia.org/wiki/Main_Page">Back to Wikipedia</a></li>
         </ul>
         <h4 class="text-muted">Wikipedia - Request an Account</h4>
