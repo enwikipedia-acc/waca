@@ -113,7 +113,7 @@ jobs:
 
       - name: Check generated files
         run: |
-          if [[ $(find resources/generated -type f -name *.css | wc -l) -ne 4 ]]; then
+          if [[ $(find resources/generated -type f -name *.css | wc -l) -ne 5 ]]; then
             echo "Wrong number of generated files found!"
             ls -l resources/generated/*.css
             exit 1
