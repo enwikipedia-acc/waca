@@ -10,7 +10,7 @@
     "bootstrap": "^4.6.2",
     "jquery": "^3.7.1",
     "popper.js": "^1.16.1",
-    "sass": "^1.87.0"
+    "sass": "^1.89.0"
   },
   "scripts": {
     "build-scss": "./node_modules/.bin/sass --style=compressed resources/scss/bootstrap-alt.scss:resources/generated/bootstrap-alt.css resources/scss/bootstrap-main.scss:resources/generated/bootstrap-main.css resources/scss/bootstrap-auto.scss:resources/generated/bootstrap-auto.css resources/scss/public.scss:resources/generated/public.css"
