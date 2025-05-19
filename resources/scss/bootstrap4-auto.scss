@@ -9,4 +9,10 @@
  * Wikipedia Account Creation Assistance tool
  * Styles based on Bootstrap
  */
-@import "common";
+
+//noinspection CssUnknownTarget
+@import "bootstrap4-main.css" screen and (prefers-color-scheme: light);
+//noinspection CssUnknownTarget
+@import "bootstrap4-alt.css" screen and (prefers-color-scheme: dark);
+
+

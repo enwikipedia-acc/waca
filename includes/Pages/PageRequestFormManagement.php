@@ -61,10 +61,12 @@ class PageRequestFormManagement extends InternalPageBase
         $previewContent = WebRequest::getSessionContext('preview');
 
         $renderer = new MarkdownRenderingHelper();
-        $this->assign('renderedContent', $renderer->doRender($previewContent['main']));
-        $this->assign('username', $renderer->doRenderInline($previewContent['username']));
-        $this->assign('email', $renderer->doRenderInline($previewContent['email']));
-        $this->assign('comment', $renderer->doRenderInline($previewContent['comment']));
+        $this->assign('formPreamble', $renderer->doRender($previewContent['main']));
+        $this->assign('formUsernameHelp', $renderer->doRenderInline($previewContent['username']));
+        $this->assign('formEmailHelp', $renderer->doRenderInline($previewContent['email']));
+        $this->assign('formCommentsHelp', $renderer->doRenderInline($previewContent['comment']));
+
+        $this->assign('formIsDisabled', true);
 
         $this->setTemplate('form-management/preview.tpl');
     }

@@ -9,13 +9,4 @@
  * Wikipedia Account Creation Assistance tool
  * Styles based on Bootstrap
  */
-
-@import "../../node_modules/bootstrap/scss/bootstrap.scss";
-
-@import "_footer.scss";
-@import "_markdown.scss";
-
-body {
-  padding-top: 2rem;
-}
-
+@import "common4";
