@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Le styles -->
-    <link href="{$baseurl}/resources/generated/public{$skinBaseline|default:'4'}.css" rel="stylesheet"/>
+    <link href="{$baseurl}/resources/generated/public{$skinBaseline|default:'5'}.css" rel="stylesheet"/>
 </head>
 
 <body>
@@ -63,7 +63,7 @@
 {block name="footerjs"}
     {* JS: Placed at the end of the document so the pages load faster *}
     <script src="{$baseurl}/node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script>
-    <script src="{$baseurl}/node_modules/bootstrap{$skinBaseline|default:'4'}/dist/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="{$baseurl}/node_modules/bootstrap{$skinBaseline|default:'5'}/dist/js/bootstrap.min.js" type="text/javascript"></script>
 {/block}
 </body>
 </html>

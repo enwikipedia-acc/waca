@@ -14,7 +14,7 @@
     "sass": "^1.87.0"
   },
   "scripts": {
-    "build-scss": "./node_modules/.bin/sass --style=compressed resources/scss/bootstrap4-alt.scss:resources/generated/bootstrap4-alt.css resources/scss/bootstrap4-main.scss:resources/generated/bootstrap4-main.css resources/scss/bootstrap4-auto.scss:resources/generated/bootstrap4-auto.css resources/scss/public4.scss:resources/generated/public4.css resources/scss/public5.scss:resources/generated/public5.css"
+    "build-scss": "./node_modules/.bin/sass --style=compressed resources/scss/bootstrap4-alt.scss:resources/generated/bootstrap4-alt.css resources/scss/bootstrap4-main.scss:resources/generated/bootstrap4-main.css resources/scss/bootstrap4-auto.scss:resources/generated/bootstrap4-auto.css resources/scss/public5.scss:resources/generated/public5.css"
   },
   "author": "",
   "license": "UNLICENCED"
