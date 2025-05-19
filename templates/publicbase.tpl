@@ -15,7 +15,7 @@
 
     {block name="publicheader"}
     <div class="masthead">
-        <ul class="nav nav-pills float-right">
+        <ul class="nav nav-pills float-end">
             {if $showDebugCssBreakpoints}
                 <li class="nav-item">
                     {include file="breakpoints.tpl"}
