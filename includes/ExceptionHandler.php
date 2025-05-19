@@ -35,7 +35,7 @@ class ExceptionHandler
 <meta charset="utf-8">
 <title>Oops! Something went wrong!</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="{$siteConfiguration->getBaseUrl()}/resources/generated/bootstrap4-main.css" rel="stylesheet">
+<link href="{$siteConfiguration->getBaseUrl()}/resources/generated/public5.css" rel="stylesheet">
 <style>
   body {
     padding-top: 60px;
