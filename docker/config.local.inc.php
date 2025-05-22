@@ -29,3 +29,5 @@ $enableEmailConfirm = 1; // Emails will be sent to the mailsink docker-compose s
 $useOauthSignup = false;
 $enforceOAuth = false;
 $forceIdentification = false;
+$enableErrorTrace = true;
+$enableCssBreakpoints = true;
