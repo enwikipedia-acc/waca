@@ -128,6 +128,8 @@ class PageViewRequest extends InternalPageBase
         $this->assign('requestEmailSent', $request->getEmailSent());
 
         if ($allowedPrivateData) {
+            $this->assign('manualCreationUrl', $this->getCreationUrl());
+
             $this->setTemplate('view-request/main-with-data.tpl');
             $this->setupPrivateData($request, $config);
             $this->assign('canSetBan', $this->barrierTest('set', $currentUser, PageBan::class));
@@ -397,5 +399,19 @@ class PageViewRequest extends InternalPageBase
         if ($canOauthCreate && !$oauth->canCreateAccount()) {
             $this->assign('oauthProblem', true);
         }
+    }
+
+    private function getCreationUrl(): string
+    {
+        $template = $this->getSiteConfiguration()->getCreateAccountLink();
+
+        // FIXME: domains!
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $this->getDatabase());
+
+        $template = str_replace('{articlePath}', $domain->getWikiArticlePath() , $template);
+        $template = str_replace('{wikiId}', $domain->getShortName() , $template);
+
+        return $template;
     }
 }
