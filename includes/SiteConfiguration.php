@@ -84,6 +84,8 @@ class SiteConfiguration
     ];
     private string $privacyStatementPath = '';
 
+    private string $createAccountLink = '{articlePath}/Special:CreateAccount';
+
     /**
      * Gets the base URL of the tool
      *
@@ -1125,6 +1127,18 @@ class SiteConfiguration
     public function setPrivacyStatementPath(string $privacyStatementPath): SiteConfiguration
     {
         $this->privacyStatementPath = $privacyStatementPath;
+
+        return $this;
+    }
+
+    public function getCreateAccountLink(): string
+    {
+        return $this->createAccountLink;
+    }
+
+    public function setCreateAccountLink(string $createAccountLink): SiteConfiguration
+    {
+        $this->createAccountLink = $createAccountLink;
 
         return $this;
     }
