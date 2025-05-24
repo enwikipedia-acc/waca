@@ -54,9 +54,8 @@ class PageViewRequest extends InternalPageBase
         $config = $this->getSiteConfiguration();
         $currentUser = User::getCurrent($database);
 
-        // FIXME: domains!
         /** @var Domain $domain */
-        $domain = Domain::getById(1, $this->getDatabase());
+        $domain = Domain::getById($request->getDomain(), $this->getDatabase());
         $this->assign('mediawikiScriptPath', $domain->getWikiArticlePath());
 
         // Shows a page if the email is not confirmed.
@@ -128,6 +127,8 @@ class PageViewRequest extends InternalPageBase
         $this->assign('requestEmailSent', $request->getEmailSent());
 
         if ($allowedPrivateData) {
+            $this->assign('manualCreationUrl', $this->getCreationUrl($domain));
+
             $this->setTemplate('view-request/main-with-data.tpl');
             $this->setupPrivateData($request, $config);
             $this->assign('canSetBan', $this->barrierTest('set', $currentUser, PageBan::class));
@@ -397,5 +398,15 @@ class PageViewRequest extends InternalPageBase
         if ($canOauthCreate && !$oauth->canCreateAccount()) {
             $this->assign('oauthProblem', true);
         }
+    }
+
+    private function getCreationUrl(Domain $domain): string
+    {
+        $template = $this->getSiteConfiguration()->getCreateAccountLink();
+
+        $template = str_replace('{articlePath}', $domain->getWikiArticlePath(), $template);
+        $template = str_replace('{wikiId}', $domain->getShortName(), $template);
+
+        return $template;
     }
 }
