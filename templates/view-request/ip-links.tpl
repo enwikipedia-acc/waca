@@ -3,10 +3,18 @@
        href="https://en.wikipedia.org/wiki/User_talk:{$ipaddress}">
         Talk page
     </a>
-    <a id="IPLocalContribs-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
-       href="https://en.wikipedia.org/wiki/Special:Contributions/{$ipaddress}">
-        Local Contributions
-    </a>
+    <div class="btn-group">
+        <a id="IPLocalContribs-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+           href="https://en.wikipedia.org/wiki/Special:Contributions/{$ipaddress}">
+            Local Contributions
+        </a>
+        {if $protocol == 6}
+            <a id="IPLocalContribs64-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+               href="https://en.wikipedia.org/wiki/Special:Contributions/{$ipaddress|cidr:64}/64">
+                /64
+            </a>
+        {/if}
+    </div>
     <a id="IPDelEdits-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
        href="{$baseurl}/redir.php?tool=tparis-pcount&amp;data={$ipaddress}">
         Deleted Edits
