@@ -45,6 +45,10 @@ if (isset($_GET['round2'])) {
             die();
         }
     }
+    elseif (filter_var($data, FILTER_VALIDATE_IP) !== false) {
+        // IP address, we don't need to encode it.
+        // It *should* already be safe.
+    }
     else {
         $data = urlencode($data);
     }

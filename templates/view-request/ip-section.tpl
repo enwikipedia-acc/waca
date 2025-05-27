@@ -55,7 +55,7 @@
                 </td>
                 <td>
                     {if $proxy.showlinks}
-                        {include file="view-request/ip-links.tpl" ipaddress="{$proxy.ip}" index="{$proxy@iteration}"}
+                        {include file="view-request/ip-links.tpl" ipaddress="{$proxy.ip}" protocol="{$proxy.protocol}" index="{$proxy@iteration}"}
                     {/if}
                 </td>
             </tr>
@@ -63,5 +63,5 @@
     </table>
 {else}
     <h3>IP Address links:</h3>
-    {include file="view-request/ip-links.tpl" ipaddress="{$requestTrustedIp}" index="0"}
+    {include file="view-request/ip-links.tpl" ipaddress="{$requestTrustedIp}" protocol="{$requestTrustedIpProtocol}" index="0"}
 {/if}
