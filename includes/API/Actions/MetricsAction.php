@@ -99,7 +99,7 @@ class MetricsAction extends TextApiPageBase implements IApiAction
         $statement = $this->getDatabase()->query('
             SELECT r.status, d.shortname, rq.header, COUNT(1) as count FROM request r
             INNER JOIN domain d on r.domain = d.id
-            LEFT JOIN waca.requestqueue rq ON r.queue = rq.id
+            LEFT JOIN requestqueue rq ON r.queue = rq.id
             WHERE r.status <> \'Closed\' AND r.emailconfirm = \'Confirmed\'
             GROUP BY r.status, d.shortname, rq.header;');
 
