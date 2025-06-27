@@ -21,11 +21,11 @@ interface IIdentificationVerifier
     /**
      * Checks if the given user is identified to the Wikimedia Foundation.
      *
-     * @param string $onWikiName The Wikipedia username of the user
+     * @param ?string $onWikiName The Wikipedia username of the user
      *
      * @return bool
      * @throws EnvironmentException
      * @category Security-Critical
      */
-    public function isUserIdentified(string $onWikiName): bool;
+    public function isUserIdentified(?string $onWikiName): bool;
 }
