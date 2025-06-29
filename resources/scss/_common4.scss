@@ -20,7 +20,7 @@ $font-size-base: 0.9rem;
 $overflows: auto, hidden, visible;
 $displays: none, inline, inline-block, block, table, table-row, table-cell, flex, inline-flex, list-item;
 
-@import "../../node_modules/bootstrap/scss/bootstrap.scss";
+@import "../../node_modules/bootstrap4/scss/bootstrap.scss";
 
 $sortabletable-marker: $gray-600 !default;
 $sortabletable-hover: $gray-200 !default;
@@ -59,6 +59,7 @@ span.twitter-typeahead {
 }
 
 .w-fit-content {
+    //noinspection CssInvalidPropertyValue
     width: -moz-fit-content !important;
     width: fit-content !important;
 }
