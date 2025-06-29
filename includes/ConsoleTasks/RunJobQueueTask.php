@@ -106,13 +106,19 @@ class RunJobQueueTask extends ConsoleTaskBase
                 $database->rollBack();
                 try {
                     $database->beginTransaction();
-
+                    
                     /** @var JobQueue $job */
                     $job = JobQueue::getById($job->getId(), $database);
                     $job->setDatabase($database);
-                    $job->setStatus(JobQueue::STATUS_FAILED);
-                    $job->setError($ex->getMessage());
-                    $job->setAcknowledged(0);
+                    if (str_contains($ex->getMessage, 'mwoauth-invalid-authorization')) {
+                        $job->setAcknowledged(1);
+                        $job->setError('Receieved error with authorization headers. Will retry');
+                        $job->setStatus(JobQueue::STATUS_READY);
+                    } else {
+                        $job->setStatus(JobQueue::STATUS_FAILED);
+                        $job->setError($ex->getMessage());
+                        $job->setAcknowledged(0);
+                    }
                     $job->save();
 
                     Logger::backgroundJobIssue($this->getDatabase(), $job);
