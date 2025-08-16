@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Le styles -->
-    <link href="{$baseurl}/resources/generated/public.css" rel="stylesheet"/>
+    <link href="{$baseurl}/resources/generated/public{$skinBaseline|default:'5'}.css" rel="stylesheet"/>
 </head>
 
 <body>
@@ -15,7 +15,12 @@
 
     {block name="publicheader"}
     <div class="masthead">
-        <ul class="nav nav-pills float-right">
+        <ul class="nav nav-pills float-end">
+            {if $showDebugCssBreakpoints}
+                <li class="nav-item">
+                    {include file="breakpoints.tpl"}
+                </li>
+            {/if}
             <li class="nav-item"><a class="nav-link" href="//en.wikipedia.org/wiki/Main_Page">Back to Wikipedia</a></li>
         </ul>
         <h4 class="text-muted">Wikipedia - Request an Account</h4>
@@ -58,7 +63,7 @@
 {block name="footerjs"}
     {* JS: Placed at the end of the document so the pages load faster *}
     <script src="{$baseurl}/node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script>
-    <script src="{$baseurl}/node_modules/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="{$baseurl}/node_modules/bootstrap{$skinBaseline|default:'5'}/dist/js/bootstrap.min.js" type="text/javascript"></script>
 {/block}
 </body>
 </html>
