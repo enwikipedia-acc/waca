@@ -24,7 +24,7 @@ jobs:
         fetch-depth: 10
     
     - name: Setup PHP Action
-      uses: shivammathur/setup-php@2.35.3
+      uses: shivammathur/setup-php@2.35.4
       with:
         php-version: ${{ matrix.php-version }}
         extensions: runkit7
