@@ -89,6 +89,8 @@ class PageRequestAccount extends PublicInterfacePageBase
             $this->assign('formEmailHelp', $renderer->doRenderInline($form->getEmailHelp()));
             $this->assign('formCommentsHelp', $renderer->doRenderInline($form->getCommentHelp()));
 
+            $this->assign('formIsDisabled', false);
+
             $this->setTemplate('request/request-form-dynamic.tpl');
         }
     }

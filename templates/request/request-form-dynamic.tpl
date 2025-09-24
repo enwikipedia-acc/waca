@@ -5,40 +5,56 @@
             {$formPreamble}
         </div>
     </div>
+    <form method="post">
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <form method="post">
-                <div class="form-group row">
-                    <label for="inputUsername" class="col-md-4 col-form-label">Username</label>
-                    <input class="form-control col-md-8" type="text" id="inputUsername" placeholder="Username" name="name" required="required" value="{$username|default:''|escape}">
-                    <small class="form-text text-muted offset-md-4 col-md-8">
-                        {$formUsernameHelp}
-                    </small>
+            <div class="container-fluid g-0">
+                <div class="row mb-3">
+                    <label for="inputUsername" class="form-label col-md-4">Username</label>
+                    <div class="col-md-8">
+                        <input class="form-control" type="text" id="inputUsername" placeholder="Username" name="name"
+                               required="required" value="{$username|default:''|escape}" {if $formIsDisabled}disabled{/if}>
+                        <small class="form-text text-muted">
+                            {$formUsernameHelp}
+                        </small>
+                    </div>
                 </div>
-                <div class="form-group row">
-                    <label for="inputEmail" class="col-md-4 col-form-label">Email</label>
-                    <input class="form-control col-md-8" type="email" id="inputEmail" placeholder="Email" name="email" required="required" value="{$email|default:''|escape}">
+                <div class="row mb-3">
+                    <label for="inputEmail" class="col-md-4 form-label">Email</label>
+                    <div class="col-md-8">
+                        <input class="form-control" type="email" id="inputEmail" placeholder="Email" name="email"
+                               required="required" value="{$email|default:''|escape}" {if $formIsDisabled}disabled{/if}>
+                    </div>
                 </div>
-                <div class="form-group row">
-                    <label for="inputEmailConfirm" class="col-md-4 col-form-label">Confirm Email</label>
-                    <input class="form-control col-md-8" type="email" id="inputEmailConfirm" placeholder="Confirm Email" name="emailconfirm"
-                           required="required">
-                    <small class="form-text text-muted offset-md-4 col-md-8">
-                        {$formEmailHelp}
-                    </small>
+                <div class="row mb-3">
+                    <label for="inputEmailConfirm" class="col-md-4 form-label">Confirm Email</label>
+                    <div class="col-md-8">
+                        <input class="form-control" type="email" id="inputEmailConfirm" placeholder="Confirm Email"
+                               name="emailconfirm" required="required" {if $formIsDisabled}disabled{/if}>
+                        <small class="form-text text-muted">
+                            {$formEmailHelp}
+                        </small>
+                    </div>
                 </div>
-                <div class="form-group row">
-                    <label for="inputComments" class="col-md-4 col-form-label">Comments</label>
-                    <textarea class="form-control col-md-8" id="inputComments" rows="4" name="comments">{$comments|default:''|escape}</textarea>
-                    <small class="form-text text-muted offset-md-4 col-md-8">
-                        {$formCommentsHelp}
-                    </small>
+                <div class="row mb-3">
+                    <label for="inputComments" class="col-md-4 form-label">Comments</label>
+                    <div class="col-md-8">
+                        <textarea class="form-control" id="inputComments" rows="4" name="comments" {if $formIsDisabled}disabled{/if}>{$comments|default:''|escape}</textarea>
+                        <small class="form-text text-muted">
+                            {$formCommentsHelp}
+                        </small>
+                    </div>
                 </div>
-                {include file="request/legal-info.tpl"}
-                <div class="row">
-                    <button type="submit" class="offset-md-4 col-md-8 btn btn-primary btn-block">Send request</button>
+                <div class="row mb-3">
+                    {include file="request/legal-info.tpl"}
                 </div>
-            </form>
+                <div class="row mb-3">
+                    <{if $formIsDisabled}div{else}button type="submit"{/if} class="offset-md-4 col-md-8 btn btn-primary btn-block {if $formIsDisabled}disabled{/if}">
+                        Send request
+                    </{if $formIsDisabled}div{else}button{/if}>
+                </div>
+            </div>
         </div>
     </div>
+    </form>
 {/block}

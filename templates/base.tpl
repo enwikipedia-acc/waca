@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- bootstrap styles -->
-    <link href="{$baseurl}/resources/generated/bootstrap-{$skin|escape|default:'auto'}.css?{$resourceCacheEpoch}" rel="stylesheet"/>
+    <link href="{$baseurl}/resources/generated/bootstrap{$skinBaseline|default:'4'}-{$skin|escape|default:'auto'}.css?{$resourceCacheEpoch}" rel="stylesheet"/>
 
     <!-- fontawesome -->
     <link href="{$baseurl}/vendor/fortawesome/font-awesome/css/all.min.css" rel="stylesheet"/>
@@ -20,11 +20,7 @@
     <a class="navbar-brand" href="{$baseurl}/internal.php">Account Creation Interface</a>
 
     {if $showDebugCssBreakpoints}
-        <span class="badge badge-visited d-inline d-sm-none">xs</span>
-        <span class="badge badge-primary d-none d-sm-inline d-md-none">sm</span>
-        <span class="badge badge-success d-none d-md-inline d-lg-none">md</span>
-        <span class="badge badge-warning d-none d-lg-inline d-xl-none">lg</span>
-        <span class="badge badge-danger d-none d-xl-inline">xl</span>
+        {include file="breakpoints.tpl"}
     {/if}
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls=".navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +80,7 @@
     <script src="{$baseurl}/node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script>
     <script src="{$baseurl}/vendor/fortawesome/font-awesome/js/all.min.js" data-auto-add-css="false" type="text/javascript"></script>
     <script src="{$baseurl}/node_modules/popper.js/dist/umd/popper.min.js" type="text/javascript"></script>
-    <script src="{$baseurl}/node_modules/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="{$baseurl}/node_modules/bootstrap{$skinBaseline|default:'4'}/dist/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="{$baseurl}/vendor/twitter/typeahead.js/dist/typeahead.bundle.min.js"></script>
     <script src="{$baseurl}/vendor/drvic10k/bootstrap-sortable/Scripts/bootstrap-sortable.js"></script>
     <script src="{$baseurl}/vendor/drvic10k/bootstrap-sortable/Scripts/moment.min.js"></script>
