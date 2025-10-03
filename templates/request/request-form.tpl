@@ -21,7 +21,7 @@
                 We do not have access to existing account data. If you have lost your password, please reset it using
                 <a href="https://en.wikipedia.org/wiki/Special:PasswordReset">this form</a> at wikipedia.org. If you are
                 trying to 'take over' an account that already exists, please use
-                <a href="http://en.wikipedia.org/wiki/WP:CHU/U">"Changing usernames/Usurpation"</a> at wikipedia.org. We
+                <a href="https://meta.wikimedia.org/wiki/USURP">"Changing usernames/Usurpation"</a> at meta.wikimedia.org. We
                 cannot do either of these things for you.
             </div>
             <p>
