@@ -66,13 +66,17 @@ class IdentificationVerifier implements IIdentificationVerifier
     /**
      * Checks if the given user is identified to the Wikimedia Foundation.
      *
-     * @param string $onWikiName The Wikipedia username of the user
+     * @param ?string $onWikiName The Wikipedia username of the user
      *
      * @category Security-Critical
      * @throws EnvironmentException
      */
-    public function isUserIdentified(string $onWikiName): bool
+    public function isUserIdentified(?string $onWikiName): bool
     {
+        if ($onWikiName === null || $onWikiName === '') {
+            return false;
+        }
+
         if ($this->checkIdentificationCache($onWikiName)) {
             return true;
         }

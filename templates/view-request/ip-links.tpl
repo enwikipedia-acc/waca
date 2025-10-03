@@ -3,10 +3,18 @@
        href="https://en.wikipedia.org/wiki/User_talk:{$ipaddress}">
         Talk page
     </a>
-    <a id="IPLocalContribs-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
-       href="https://en.wikipedia.org/wiki/Special:Contributions/{$ipaddress}">
-        Local Contributions
-    </a>
+    <div class="btn-group">
+        <a id="IPLocalContribs-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+           href="https://en.wikipedia.org/wiki/Special:Contributions/{$ipaddress}">
+            Local Contributions
+        </a>
+        {if $protocol == 6}
+            <a id="IPLocalContribs64-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+               href="https://en.wikipedia.org/wiki/Special:Contributions/{$ipaddress|cidr:64}/64">
+                /64
+            </a>
+        {/if}
+    </div>
     <a id="IPDelEdits-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
        href="{$baseurl}/redir.php?tool=tparis-pcount&amp;data={$ipaddress}">
         Deleted Edits
@@ -50,7 +58,7 @@
         Project Honeypot
     </a>
     <a id="IPStopForumSpam-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
-       href="{$baseurl}/redir.php?tool=stopforumspam&amp;data={$ipaddress}">
+       href="{$baseurl}/redir.php?tool=stopforumspam&amp;data={$ipaddress|cidr:null}">
         StopForumSpam
     </a>
     <a id="IPAbuseLog-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
@@ -69,10 +77,17 @@
        href="{$baseurl}/redir.php?tool=bullseye&amp;data={$ipaddress}">
         Bullseye
     </a>
-    <a id="IPalyzer-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
-       href="{$baseurl}/redir.php?tool=ipalyzer&amp;data={$ipaddress}">
-        IPalyzer
-    </a> 
+    {if $protocol == 6}
+        <div id="IPalyzer-{$index}" class="btn btn-sm btn-outline-secondary disabled" data-toggle="tooltip" data-placement="bottom"
+             title="This tool does not support IPv6 addresses.">
+            IPalyzer
+        </div>
+    {else}
+        <a id="IPalyzer-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+           href="{$baseurl}/redir.php?tool=ipalyzer&amp;data={$ipaddress}">
+            IPalyzer
+        </a>
+    {/if}
     <a id="IPBGPView-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
        href="{$baseurl}/redir.php?tool=bgpview&amp;data={$ipaddress}">
         BGP Prefixes

@@ -51,6 +51,8 @@ HTML;
 
         list($errorData, $errorId) = self::logExceptionToDisk($exception, $siteConfiguration, true);
 
+        error_log('Unhandled ' . get_class($exception) . ': ' . $exception->getMessage());
+
         // clear and discard any content that's been saved to the output buffer
         if (ob_get_level() > 0) {
             ob_end_clean();

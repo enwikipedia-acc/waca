@@ -14,7 +14,7 @@ $toolList = array(
     'tl-whois'           => 'https://tools.wmflabs.org/whois/gateway.py?lookup=true&ip=%DATA%',
     'honeypot'           => 'https://www.projecthoneypot.org/ip_%DATA%',
     'stopforumspam'      => 'https://www.stopforumspam.com/ipcheck/%DATA%',
-    'spur'               => 'https://app.spur.us/context?q=%DATA%',
+    'spur'               => 'https://spur.us/context/%DATA%',
     'google'             => 'https://www.google.com/search?q=%DATA%',
     'domain'             => 'https://%DATA%/',
     'rangefinder'        => 'https://tools.wmflabs.org/rangeblockfinder/?ip=%DATA%',
@@ -44,6 +44,10 @@ if (isset($_GET['round2'])) {
             echo 'Error resolving hostname, it doesn\'t look like this domain exists.';
             die();
         }
+    }
+    elseif (filter_var($data, FILTER_VALIDATE_IP) !== false) {
+        // IP address, we don't need to encode it.
+        // It *should* already be safe.
     }
     else {
         $data = urlencode($data);
