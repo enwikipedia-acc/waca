@@ -133,7 +133,10 @@
                                             Block submission of the request
                                         </option>
                                         <option value="{Waca\DataObjects\Ban::ACTION_DROP}" {if $banAction === Waca\DataObjects\Ban::ACTION_DROP}selected{/if}>
-                                            Drop the request silently
+                                            Drop the request silently, but still send a request for email confirmation
+                                        </option>
+                                        <option value="{Waca\DataObjects\Ban::ACTION_DROP_PRECONFIRM}" {if $banAction === Waca\DataObjects\Ban::ACTION_DROP_PRECONFIRM}selected{/if}>
+                                            Drop the request silently without sending a request for email confirmation
                                         </option>
                                         <option value="{Waca\DataObjects\Ban::ACTION_DEFER}" {if $banAction === Waca\DataObjects\Ban::ACTION_DEFER}selected{/if}>
                                             Defer the request to the specified queue

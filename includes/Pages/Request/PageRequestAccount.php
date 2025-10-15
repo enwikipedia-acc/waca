@@ -197,11 +197,14 @@ class PageRequestAccount extends PublicInterfacePageBase
         // FIXME: domains
         /** @var Domain $domain */
         $domain = Domain::getById(1, $this->getDatabase());
-        $this->getEmailHelper()->sendMail(
-            $domain->getEmailReplyAddress(),
-            $request->getEmail(),
-            "[ACC #{$request->getId()}] English Wikipedia Account Request",
-            $this->fetchTemplate('request/confirmation-mail.tpl'));
+
+        if ($this->getRequestValidationHelper()->preEmailConfirmationValidations($request)) {
+            $this->getEmailHelper()->sendMail(
+                $domain->getEmailReplyAddress(),
+                $request->getEmail(),
+                "[ACC #{$request->getId()}] English Wikipedia Account Request",
+                $this->fetchTemplate('request/confirmation-mail.tpl'));
+        }
 
         $this->redirect('emailConfirmationRequired');
     }
