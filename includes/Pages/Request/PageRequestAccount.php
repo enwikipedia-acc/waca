@@ -28,6 +28,7 @@ use Waca\WebRequest;
 
 class PageRequestAccount extends PublicInterfacePageBase
 {
+    const CSRF_TOKEN_CONTEXT = 'requestFormSubmission';
     /** @var RequestValidationHelper do not use directly. */
     private $validationHelper;
 
@@ -71,10 +72,13 @@ class PageRequestAccount extends PublicInterfacePageBase
 
         // dual mode page
         if (WebRequest::wasPosted()) {
+            // validate CSRF token
+            $csrfTokenMinimumLifetime = $this->getSiteConfiguration()->getRequestMinimumTokenAge();
             try {
-                $this->validateCSRFToken();
+                $this->validateCSRFToken(self::CSRF_TOKEN_CONTEXT, $csrfTokenMinimumLifetime);
             } catch (ApplicationLogicException $e) {
                 SessionAlert::error('Please try submitting the form again.', 'Oops! Something went wrong');
+                $this->preserveSessionFormData();
                 $this->redirect();
                 return;
             }
@@ -83,7 +87,7 @@ class PageRequestAccount extends PublicInterfacePageBase
             $this->handleFormPost($request);
         }
         else {
-            $this->assignCSRFToken();
+            $this->assignCSRFToken(self::CSRF_TOKEN_CONTEXT);
             $this->requestClientHints();
             $this->handleFormRefilling();
 
@@ -275,13 +279,7 @@ class PageRequestAccount extends PublicInterfacePageBase
             }
 
             // Preserve the data after an error
-            WebRequest::setSessionContext('accountReq',
-                array(
-                    'username' => WebRequest::postString('name'),
-                    'email'    => WebRequest::postEmail('email'),
-                    'comments' => WebRequest::postString('comments'),
-                )
-            );
+            $this->preserveSessionFormData();
 
             // Validation error, bomb out early.
             $this->redirect();
@@ -346,5 +344,20 @@ class PageRequestAccount extends PublicInterfacePageBase
 
             $d->save();
         }
+    }
+
+    /**
+     * @return void
+     */
+    protected function preserveSessionFormData(): void
+    {
+        WebRequest::setSessionContext(
+            'accountReq',
+            array(
+                'username' => WebRequest::postString('name'),
+                'email'    => WebRequest::postEmail('email'),
+                'comments' => WebRequest::postString('comments'),
+            )
+        );
     }
 }

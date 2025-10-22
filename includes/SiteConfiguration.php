@@ -90,6 +90,8 @@ class SiteConfiguration
 
     private int $defaultRequestForm = 1;
 
+    private int $requestMinimumTokenAge = 0;
+
     /**
      * Gets the base URL of the tool
      *
@@ -1169,5 +1171,17 @@ class SiteConfiguration
     public function getDefaultRequestForm(): int
     {
         return $this->defaultRequestForm;
+    }
+
+    public function setRequestMinimumTokenAge(int $requestMinimumTokenAge): SiteConfiguration
+    {
+        $this->requestMinimumTokenAge = $requestMinimumTokenAge;
+
+        return $this;
+    }
+
+    public function getRequestMinimumTokenAge(): int
+    {
+        return $this->requestMinimumTokenAge;
     }
 }
