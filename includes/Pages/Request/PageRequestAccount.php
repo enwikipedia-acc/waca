@@ -71,10 +71,19 @@ class PageRequestAccount extends PublicInterfacePageBase
 
         // dual mode page
         if (WebRequest::wasPosted()) {
+            try {
+                $this->validateCSRFToken();
+            } catch (ApplicationLogicException $e) {
+                SessionAlert::error('Please try submitting the form again.', 'Oops! Something went wrong');
+                $this->redirect();
+                return;
+            }
+
             $request = $this->createNewRequest($form);
             $this->handleFormPost($request);
         }
         else {
+            $this->assignCSRFToken();
             $this->requestClientHints();
             $this->handleFormRefilling();
 
