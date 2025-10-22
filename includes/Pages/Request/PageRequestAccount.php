@@ -39,17 +39,12 @@ class PageRequestAccount extends PublicInterfacePageBase
      */
     protected function main()
     {
-        // dual mode page
-        if (WebRequest::wasPosted()) {
-            $request = $this->createNewRequest(null);
-            $this->handleFormPost($request);
-        }
-        else {
-            $this->requestClientHints();
-            $this->handleFormRefilling();
+        $database = $this->getDatabase();
 
-            $this->setTemplate('request/request-form.tpl');
-        }
+        /** @var RequestForm $defaultForm */
+        $defaultForm = RequestForm::getById($this->getSiteConfiguration()->getDefaultRequestForm(), $database);
+
+        $this->redirect('r', $defaultForm->getDomainObject()->getShortName() . '/' . $defaultForm->getPublicEndpoint());
     }
 
     /**

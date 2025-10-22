@@ -88,6 +88,8 @@ class SiteConfiguration
 
     private array $globalDenyRole = [];
 
+    private int $defaultRequestForm = 1;
+
     /**
      * Gets the base URL of the tool
      *
@@ -1155,5 +1157,17 @@ class SiteConfiguration
         $this->globalDenyRole = $globalDenyRole;
 
         return $this;
+    }
+
+    public function setDefaultRequestForm(int $defaultRequestForm): SiteConfiguration
+    {
+        $this->defaultRequestForm = $defaultRequestForm;
+
+        return $this;
+    }
+
+    public function getDefaultRequestForm(): int
+    {
+        return $this->defaultRequestForm;
     }
 }
