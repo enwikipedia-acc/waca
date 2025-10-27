@@ -326,23 +326,19 @@ class PageRequestAccount extends PublicInterfacePageBase
 
     private function savePrivateData(Request $request)
     {
+        RequestData::saveForRequest(
+            $request, RequestData::TYPE_USERAGENT, WebRequest::userAgent());
+
         foreach ($this->getSiteConfiguration()->getAcceptClientHints() as $header)
         {
             $value = WebRequest::httpHeader($header);
 
-            if($value === null){
+            if ($value === null) {
                 continue;
             }
 
-            $d = new RequestData();
-            $d->setDatabase($request->getDatabase());
-            $d->setRequest($request->getId());
-
-            $d->setType(RequestData::TYPE_CLIENTHINT);
-            $d->setName($header);
-            $d->setValue(WebRequest::httpHeader($header));
-
-            $d->save();
+            RequestData::saveForRequest($request,
+                RequestData::TYPE_CLIENTHINT, $value, $header);
         }
     }
 
