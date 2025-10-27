@@ -43,7 +43,10 @@
         <h3>SERVER parameters</h3>
         <table class="table table-sm">
             {foreach from=$server key=key item=value}
-                <tr><th>{$key|escape}</th><td>{$value|escape}</td></tr>
+                <tr>
+                    <th>{$key|escape}</th>
+                    <td>{if is_array($value)}{$value|debug_print_var}{else}{$value|escape}{/if}</td>
+                </tr>
                 {foreachelse}
                 <tr><td colspan="2"><i class="text-muted">None.</i></td></tr>
             {/foreach}
