@@ -76,7 +76,8 @@ class PageRequestAccount extends PublicInterfacePageBase
             $csrfTokenMinimumLifetime = $this->getSiteConfiguration()->getRequestMinimumTokenAge();
             try {
                 $this->validateCSRFToken(self::CSRF_TOKEN_CONTEXT, $csrfTokenMinimumLifetime);
-            } catch (ApplicationLogicException $e) {
+            }
+            catch (ApplicationLogicException $e) {
                 SessionAlert::error('Please try submitting the form again.', 'Oops! Something went wrong');
                 $this->preserveSessionFormData();
                 $this->redirect();
@@ -326,11 +327,13 @@ class PageRequestAccount extends PublicInterfacePageBase
 
     private function savePrivateData(Request $request)
     {
-        RequestData::saveForRequest(
-            $request, RequestData::TYPE_USERAGENT, WebRequest::userAgent());
+        $userAgent = WebRequest::userAgent();
+        if ($userAgent !== null) {
+            RequestData::saveForRequest(
+                $request, RequestData::TYPE_USERAGENT, $userAgent);
+        }
 
-        foreach ($this->getSiteConfiguration()->getAcceptClientHints() as $header)
-        {
+        foreach ($this->getSiteConfiguration()->getAcceptClientHints() as $header) {
             $value = WebRequest::httpHeader($header);
 
             if ($value === null) {

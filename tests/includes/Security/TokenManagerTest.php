@@ -14,7 +14,7 @@ use Waca\Security\TokenManager;
 use Waca\Providers\GlobalState\FakeGlobalStateProvider;
 use Waca\WebRequest;
 
-class TokenManagerTests extends TestCase
+class TokenManagerTest extends TestCase
 {
     /** @var TokenManager */
     private $tokenManager;

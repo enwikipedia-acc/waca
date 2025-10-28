@@ -85,8 +85,10 @@ class PageConfirmEmail extends PublicInterfacePageBase
             $this->getNotificationHelper()->requestReceived($request);
         }
 
-        RequestData::saveForRequest($request,
-            RequestData::TYPE_CONFIRM_USERAGENT, WebRequest::userAgent());
+        $userAgent = WebRequest::userAgent();
+        if ($userAgent !== null) {
+            RequestData::saveForRequest($request, RequestData::TYPE_CONFIRM_USERAGENT, $userAgent);
+        }
 
         $xffProvider = $this->getXffTrustProvider();
         $trustedIp = $xffProvider->getTrustedClientIp(WebRequest::remoteAddress(), WebRequest::forwardedAddress());
@@ -98,8 +100,7 @@ class PageConfirmEmail extends PublicInterfacePageBase
             RequestData::saveForRequest($request, RequestData::TYPE_CONFIRM_IPV6, $trustedIp);
         }
 
-        foreach ($this->getSiteConfiguration()->getAcceptClientHints() as $header)
-        {
+        foreach ($this->getSiteConfiguration()->getAcceptClientHints() as $header) {
             $value = WebRequest::httpHeader($header);
 
             if ($value === null) {
