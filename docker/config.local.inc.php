@@ -24,3 +24,10 @@ $cookiepath = '/';
 $amqpConfiguration = ['host' => 'msgbroker', 'port' => 5672, 'user' => 'guest', 'password' => 'guest', 'vhost' => '/', 'exchange' => 'main', 'tls' => false];
 
 $enableEmailConfirm = 1; // Emails will be sent to the mailsink docker-compose service
+
+//sane defaults for Docker instances
+$useOauthSignup = false;
+$enforceOAuth = false;
+$forceIdentification = false;
+$enableErrorTrace = true;
+$enableCssBreakpoints = true;

@@ -9,7 +9,7 @@
         <tbody>
         {if $requestLogs}
             {foreach from=$requestLogs item=zoomrow name=logloop}
-                    <tr class="{if $zoomrow.security == "admin"}table-danger{elseif $zoomrow.security == "checkuser"}table-visited{elseif $zoomrow.hidden}table-secondary{/if}" id="{if $zoomrow.type == "comment"}comment{else}log{/if}-{$zoomrow.id}">
+                    <tr class="{if $zoomrow.security == "admin"}table-danger{elseif $zoomrow.security == "checkuser"}table-visited{elseif $zoomrow.type == "comment" && $zoomrow.hidden}table-secondary{/if}" id="{if $zoomrow.type == "comment"}comment{else}log{/if}-{$zoomrow.id}">
                     <td class="text-nowrap">
                         {if $zoomrow.userid != null}
                             <a href='{$baseurl}/internal.php/statistics/users/detail?user={$zoomrow.userid}'>{$zoomrow.user|escape}</a>
@@ -81,10 +81,12 @@
                     <td class="text-nowrap">
                         <span title="{$zoomrow.time|date}" data-toggle="tooltip" data-placement="top"
                            id="#log{$smarty.foreach.logloop.index}">{$zoomrow.time|relativedate}</span>
-                        {if $zoomrow.edited !== null}
-                            <span class="small" data-toggle="tooltip" data-placement="left" title="Edited {$zoomrow.edited|relativedate} at {$zoomrow.edited|date}">
-                                <i class="fas fa-star-of-life fa-w-16"></i></span>
-                            {*<span class="badge badge-pill badge-dark px-0" data-toggle="tooltip" data-placement="left" title="Edited "></span>*}
+                        {if $zoomrow.type == "comment"}
+                            {if $zoomrow.edited !== null}
+                                <span class="small" data-toggle="tooltip" data-placement="left" title="Edited {$zoomrow.edited|relativedate} at {$zoomrow.edited|date}">
+                                    <i class="fas fa-star-of-life fa-w-16"></i></span>
+                                {*<span class="badge badge-pill badge-dark px-0" data-toggle="tooltip" data-placement="left" title="Edited "></span>*}
+                            {/if}
                         {/if}
                     </td>
                 </tr>

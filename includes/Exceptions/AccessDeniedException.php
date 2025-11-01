@@ -10,14 +10,13 @@
 namespace Waca\Exceptions;
 
 use Waca\DataObjects\Domain;
-use Waca\DataObjects\Log;
 use Waca\DataObjects\User;
+use Waca\Fragments\LogEntryLookup;
 use Waca\Fragments\NavigationMenuAccessControl;
 use Waca\Helpers\PreferenceManager;
-use Waca\Helpers\SearchHelpers\LogSearchHelper;
 use Waca\PdoDatabase;
-use Waca\Security\DomainAccessManager;
-use Waca\Security\SecurityManager;
+use Waca\Security\IDomainAccessManager;
+use Waca\Security\ISecurityManager;
 
 /**
  * Class AccessDeniedException
@@ -29,19 +28,18 @@ use Waca\Security\SecurityManager;
 class AccessDeniedException extends ReadableException
 {
     use NavigationMenuAccessControl;
+    use LogEntryLookup;
 
-    /** @var SecurityManager */
-    private $securityManager;
-    /** @var DomainAccessManager */
-    private $domainAccessManager;
+    private ISecurityManager $securityManager;
+    private IDomainAccessManager $domainAccessManager;
 
     /**
      * AccessDeniedException constructor.
      *
-     * @param SecurityManager     $securityManager
-     * @param DomainAccessManager $domainAccessManager
+     * @param ISecurityManager     $securityManager
+     * @param IDomainAccessManager $domainAccessManager
      */
-    public function __construct(SecurityManager $securityManager, DomainAccessManager $domainAccessManager)
+    public function __construct(ISecurityManager $securityManager, IDomainAccessManager $domainAccessManager)
     {
         $this->securityManager = $securityManager;
         $this->domainAccessManager = $domainAccessManager;
@@ -62,22 +60,13 @@ class AccessDeniedException extends ReadableException
         $this->assign('currentUser', $currentUser);
         $this->assign('currentDomain', Domain::getCurrent($database));
 
-        if ($this->securityManager !== null) {
-            $this->setupNavMenuAccess($currentUser);
-        }
+        $this->setupNavMenuAccess($currentUser);
 
-        if ($currentUser->isDeclined()) {
-            $this->assign('htmlTitle', 'Account Declined');
-            $this->assign('declineReason', $this->getLogEntry('Declined', $currentUser, $database));
+        if ($currentUser->isDeactivated()) {
+            $this->assign('htmlTitle', 'Account Deactivated');
+            $this->assign('deactivationReason', $this->getLogEntry('DeactivatedUser', $currentUser, $database));
 
-            return $this->fetchTemplate("exception/account-declined.tpl");
-        }
-
-        if ($currentUser->isSuspended()) {
-            $this->assign('htmlTitle', 'Account Suspended');
-            $this->assign('suspendReason', $this->getLogEntry('Suspended', $currentUser, $database));
-
-            return $this->fetchTemplate("exception/account-suspended.tpl");
+            return $this->fetchTemplate("exception/account-deactivated.tpl");
         }
 
         if ($currentUser->isNewUser()) {
@@ -89,32 +78,14 @@ class AccessDeniedException extends ReadableException
         return $this->fetchTemplate("exception/access-denied.tpl");
     }
 
-    /**
-     * @param string      $action
-     * @param User        $user
-     * @param PdoDatabase $database
-     *
-     * @return null|string
-     */
-    private function getLogEntry($action, User $user, PdoDatabase $database)
-    {
-        /** @var Log[] $logs */
-        $logs = LogSearchHelper::get($database, null)
-            ->byAction($action)
-            ->byObjectType('User')
-            ->byObjectId($user->getId())
-            ->limit(1)
-            ->fetch();
 
-        return $logs[0]->getComment();
-    }
 
-    protected function getSecurityManager(): SecurityManager
+    protected function getSecurityManager(): ISecurityManager
     {
         return $this->securityManager;
     }
 
-    public function getDomainAccessManager(): DomainAccessManager
+    public function getDomainAccessManager(): IDomainAccessManager
     {
         return $this->domainAccessManager;
     }

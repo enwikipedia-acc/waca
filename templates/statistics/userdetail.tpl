@@ -19,7 +19,7 @@
                     {/if}
                 </div>
             </div>
-            {if ($canApprove || $canDecline || $canSuspend || $canEditRoles || $canRename)}
+            {if ($canApprove || $canDeactivate || $canEditRoles || $canRename)}
                 <div class="row">
                     <div class="col-md-4"><strong>Identity:</strong></div>
                     <div class="col-md-8">

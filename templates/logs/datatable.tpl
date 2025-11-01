@@ -34,7 +34,7 @@
                 <td>{$entry.objectdescription}</td>
             {/if}
             {if $showComments}
-                <td>{$entry.comment}</td>
+                <td>{$entry.comment|escape}</td>
             {/if}
         </tr>
     {foreachelse}

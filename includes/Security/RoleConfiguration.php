@@ -54,15 +54,10 @@ use Waca\Pages\Statistics\StatsReservedRequests;
 use Waca\Pages\Statistics\StatsTemplateStats;
 use Waca\Pages\Statistics\StatsTopCreators;
 use Waca\Pages\Statistics\StatsUsers;
+use Waca\Pages\UserAuth\PageUserReactivate;
 
-class RoleConfiguration
+final class RoleConfiguration extends RoleConfigurationBase
 {
-    const ACCESS_ALLOW = 1;
-    const ACCESS_DENY = -1;
-    const ACCESS_DEFAULT = 0;
-    const MAIN = 'main';
-    const ALL = '*';
-
     /**
      * A map of roles to rights
      *
@@ -90,8 +85,9 @@ class RoleConfiguration
      * The public role is special, and is applied to all users automatically. Avoid using deny on this role.
      *
      * @var array
+     * @category Security-Critical
      */
-    private array $roleConfig = array(
+    private static array $productionRoleConfig = array(
         'public'            => array(
             /*
              * THIS ROLE IS GRANTED TO ALL LOGGED *OUT* USERS IMPLICITLY.
@@ -144,13 +140,24 @@ class RoleConfiguration
             ),
             PageDomainSwitch::class   => array(
                 self::MAIN => self::ACCESS_ALLOW
-            )
+            ),
+            PageUserReactivate::class => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            'UserData'                => array(
+                'accountLogSelf' => self::ACCESS_ALLOW,
+            ),
         ),
         'user'              => array(
-            '_description'                       => 'A standard tool user.',
-            '_editableBy'                        => array('admin', 'toolRoot'),
+            /*
+             * THIS ROLE IS GRANTED TO APPROVED AND IDENTIFIED LOGGED-IN USERS IMPLICITLY.
+             */
             '_childRoles'                        => array(
                 'internalStats',
+            ),
+            PageUserReactivate::class => array(
+                // only non-approved users should be able to access this
+                self::MAIN => self::ACCESS_DENY,
             ),
             PageMain::class                      => array(
                 self::MAIN => self::ACCESS_ALLOW,
@@ -269,13 +276,12 @@ class RoleConfiguration
                 self::MAIN => self::ACCESS_ALLOW,
             ),
             PageUserManagement::class            => array(
-                self::MAIN  => self::ACCESS_ALLOW,
-                'approve'   => self::ACCESS_ALLOW,
-                'decline'   => self::ACCESS_ALLOW,
-                'rename'    => self::ACCESS_ALLOW,
-                'editUser'  => self::ACCESS_ALLOW,
-                'suspend'   => self::ACCESS_ALLOW,
-                'editRoles' => self::ACCESS_ALLOW,
+                self::MAIN   => self::ACCESS_ALLOW,
+                'approve'    => self::ACCESS_ALLOW,
+                'deactivate' => self::ACCESS_ALLOW,
+                'rename'     => self::ACCESS_ALLOW,
+                'editUser'   => self::ACCESS_ALLOW,
+                'editRoles'  => self::ACCESS_ALLOW,
             ),
             PageSearch::class                    => array(
                 'byComment' => self::ACCESS_ALLOW,
@@ -308,6 +314,9 @@ class RoleConfiguration
             PageDomainManagement::class          => array(
                 'edit'     => self::ACCESS_ALLOW,
             ),
+            'UserData'                           => array(
+                'accountLog' => self::ACCESS_ALLOW,
+            ),
         ),
         'checkuser'         => array(
             '_description'            => 'A user with CheckUser access',
@@ -317,9 +326,9 @@ class RoleConfiguration
                 'requestAdminTools',
             ),
             PageUserManagement::class => array(
-                self::MAIN  => self::ACCESS_ALLOW,
-                'suspend'   => self::ACCESS_ALLOW,
-                'editRoles' => self::ACCESS_ALLOW,
+                self::MAIN   => self::ACCESS_ALLOW,
+                'deactivate' => self::ACCESS_ALLOW,
+                'editRoles'  => self::ACCESS_ALLOW,
             ),
             'RequestData'             => array(
                 'seeUserAgentData'      => self::ACCESS_ALLOW,
@@ -331,6 +340,9 @@ class RoleConfiguration
             ),
             'BanVisibility'             => array(
                 'checkuser' => self::ACCESS_ALLOW,
+            ),
+            'UserData'                           => array(
+                'accountLog' => self::ACCESS_ALLOW,
             ),
         ),
         'steward'         => array(
@@ -459,82 +471,10 @@ class RoleConfiguration
      *
      * @category Security-Critical
      */
-    private array $identificationExempt = array('public', 'loggedIn');
+    private static array $productionIdentificationExempt = array('public', 'loggedIn');
 
-    /**
-     * RoleConfiguration constructor.
-     *
-     * @param ?array $roleConfig           Set to non-null to override the default configuration.
-     * @param ?array $identificationExempt Set to non-null to override the default configuration.
-     */
-    public function __construct(array $roleConfig = null, array $identificationExempt = null)
+    public function __construct(array $globalDenyRole = [])
     {
-        if ($roleConfig !== null) {
-            $this->roleConfig = $roleConfig;
-        }
-
-        if ($identificationExempt !== null) {
-            $this->identificationExempt = $identificationExempt;
-        }
-    }
-
-    /**
-     * @param array $roles The roles to check
-     */
-    public function getApplicableRoles(array $roles): array
-    {
-        $available = array();
-
-        foreach ($roles as $role) {
-            if (!isset($this->roleConfig[$role])) {
-                // wat
-                continue;
-            }
-
-            $available[$role] = $this->roleConfig[$role];
-
-            if (isset($available[$role]['_childRoles'])) {
-                $childRoles = $this->getApplicableRoles($available[$role]['_childRoles']);
-                $available = array_merge($available, $childRoles);
-
-                unset($available[$role]['_childRoles']);
-            }
-
-            foreach (array('_hidden', '_editableBy', '_description') as $item) {
-                if (isset($available[$role][$item])) {
-                    unset($available[$role][$item]);
-                }
-            }
-        }
-
-        return $available;
-    }
-
-    public function getAvailableRoles(): array
-    {
-        $possible = array_diff(array_keys($this->roleConfig), array('public', 'loggedIn'));
-
-        $actual = array();
-
-        foreach ($possible as $role) {
-            if (!isset($this->roleConfig[$role]['_hidden'])) {
-                $actual[$role] = array(
-                    'description' => $this->roleConfig[$role]['_description'],
-                    'editableBy'  => $this->roleConfig[$role]['_editableBy'],
-                    'globalOnly'  => isset($this->roleConfig[$role]['_globalOnly']) && $this->roleConfig[$role]['_globalOnly'],
-                );
-            }
-        }
-
-        return $actual;
-    }
-
-    public function roleNeedsIdentification(string $role): bool
-    {
-        if (in_array($role, $this->identificationExempt)) {
-            return false;
-        }
-
-        return true;
+        parent::__construct(self::$productionRoleConfig, self::$productionIdentificationExempt, $globalDenyRole);
     }
 }

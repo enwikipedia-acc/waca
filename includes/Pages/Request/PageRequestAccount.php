@@ -28,6 +28,7 @@ use Waca\WebRequest;
 
 class PageRequestAccount extends PublicInterfacePageBase
 {
+    const CSRF_TOKEN_CONTEXT = 'requestFormSubmission';
     /** @var RequestValidationHelper do not use directly. */
     private $validationHelper;
 
@@ -39,17 +40,12 @@ class PageRequestAccount extends PublicInterfacePageBase
      */
     protected function main()
     {
-        // dual mode page
-        if (WebRequest::wasPosted()) {
-            $request = $this->createNewRequest(null);
-            $this->handleFormPost($request);
-        }
-        else {
-            $this->requestClientHints();
-            $this->handleFormRefilling();
+        $database = $this->getDatabase();
 
-            $this->setTemplate('request/request-form.tpl');
-        }
+        /** @var RequestForm $defaultForm */
+        $defaultForm = RequestForm::getById($this->getSiteConfiguration()->getDefaultRequestForm(), $database);
+
+        $this->redirect('r', $defaultForm->getDomainObject()->getShortName() . '/' . $defaultForm->getPublicEndpoint());
     }
 
     /**
@@ -76,10 +72,23 @@ class PageRequestAccount extends PublicInterfacePageBase
 
         // dual mode page
         if (WebRequest::wasPosted()) {
+            // validate CSRF token
+            $csrfTokenMinimumLifetime = $this->getSiteConfiguration()->getRequestMinimumTokenAge();
+            try {
+                $this->validateCSRFToken(self::CSRF_TOKEN_CONTEXT, $csrfTokenMinimumLifetime);
+            }
+            catch (ApplicationLogicException $e) {
+                SessionAlert::error('Please try submitting the form again.', 'Oops! Something went wrong');
+                $this->preserveSessionFormData();
+                $this->redirect();
+                return;
+            }
+
             $request = $this->createNewRequest($form);
             $this->handleFormPost($request);
         }
         else {
+            $this->assignCSRFToken(self::CSRF_TOKEN_CONTEXT);
             $this->requestClientHints();
             $this->handleFormRefilling();
 
@@ -197,11 +206,14 @@ class PageRequestAccount extends PublicInterfacePageBase
         // FIXME: domains
         /** @var Domain $domain */
         $domain = Domain::getById(1, $this->getDatabase());
-        $this->getEmailHelper()->sendMail(
-            $domain->getEmailReplyAddress(),
-            $request->getEmail(),
-            "[ACC #{$request->getId()}] English Wikipedia Account Request",
-            $this->fetchTemplate('request/confirmation-mail.tpl'));
+
+        if ($this->getRequestValidationHelper()->preEmailConfirmationValidations($request)) {
+            $this->getEmailHelper()->sendMail(
+                $domain->getEmailReplyAddress(),
+                $request->getEmail(),
+                "[ACC #{$request->getId()}] English Wikipedia Account Request",
+                $this->fetchTemplate('request/confirmation-mail.tpl'));
+        }
 
         $this->redirect('emailConfirmationRequired');
     }
@@ -268,13 +280,7 @@ class PageRequestAccount extends PublicInterfacePageBase
             }
 
             // Preserve the data after an error
-            WebRequest::setSessionContext('accountReq',
-                array(
-                    'username' => WebRequest::postString('name'),
-                    'email'    => WebRequest::postEmail('email'),
-                    'comments' => WebRequest::postString('comments'),
-                )
-            );
+            $this->preserveSessionFormData();
 
             // Validation error, bomb out early.
             $this->redirect();
@@ -321,23 +327,36 @@ class PageRequestAccount extends PublicInterfacePageBase
 
     private function savePrivateData(Request $request)
     {
-        foreach ($this->getSiteConfiguration()->getAcceptClientHints() as $header)
-        {
+        $userAgent = WebRequest::userAgent();
+        if ($userAgent !== null) {
+            RequestData::saveForRequest(
+                $request, RequestData::TYPE_USERAGENT, $userAgent);
+        }
+
+        foreach ($this->getSiteConfiguration()->getAcceptClientHints() as $header) {
             $value = WebRequest::httpHeader($header);
 
-            if($value === null){
+            if ($value === null) {
                 continue;
             }
 
-            $d = new RequestData();
-            $d->setDatabase($request->getDatabase());
-            $d->setRequest($request->getId());
-
-            $d->setType(RequestData::TYPE_CLIENTHINT);
-            $d->setName($header);
-            $d->setValue(WebRequest::httpHeader($header));
-
-            $d->save();
+            RequestData::saveForRequest($request,
+                RequestData::TYPE_CLIENTHINT, $value, $header);
         }
+    }
+
+    /**
+     * @return void
+     */
+    protected function preserveSessionFormData(): void
+    {
+        WebRequest::setSessionContext(
+            'accountReq',
+            array(
+                'username' => WebRequest::postString('name'),
+                'email'    => WebRequest::postEmail('email'),
+                'comments' => WebRequest::postString('comments'),
+            )
+        );
     }
 }

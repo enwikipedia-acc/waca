@@ -19,10 +19,11 @@ class TokenManager
      *
      * @param string      $data    The token data string itself
      * @param string|null $context Token context for extra validation
+     * @param int         $minimumLifetime The minimum lifetime (in seconds) the token must have had to be valid
      *
      * @return bool
      */
-    public function validateToken($data, $context = null)
+    public function validateToken($data, $context = null, $minimumLifetime = 0)
     {
         if (!is_string($data) || strlen($data) === 0) {
             // Nothing to validate
@@ -49,6 +50,13 @@ class TokenManager
 
         if ($token->isUsed()) {
             return false;
+        }
+
+        if ($minimumLifetime > 0) {
+            $age = time() - $token->getGenerationTimestamp()->getTimestamp();
+            if ($age < $minimumLifetime) {
+                return false;
+            }
         }
 
         // mark the token as used, and save it back to the session

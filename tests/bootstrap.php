@@ -26,6 +26,7 @@ require_once __DIR__ . '/../includes/SiteConfiguration.php';
 require_once __DIR__ . '/../includes/Startup.php';
 require_once __DIR__ . '/../includes/PdoDatabase.php';
 require_once __DIR__ . '/../smarty-plugins/modifier.timespan.php';
+require_once __DIR__ . '/../smarty-plugins/modifier.cidr.php';
 
 require_once __DIR__ . '/utility/MockFunction.php';
 require_once __DIR__ . '/utility/MockStaticMethod.php';

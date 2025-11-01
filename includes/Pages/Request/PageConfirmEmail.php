@@ -11,6 +11,7 @@ namespace Waca\Pages\Request;
 
 use Exception;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\RequestData;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Helpers\Logger;
@@ -82,6 +83,32 @@ class PageConfirmEmail extends PublicInterfacePageBase
 
         if ($request->getStatus() != RequestStatus::CLOSED) {
             $this->getNotificationHelper()->requestReceived($request);
+        }
+
+        $userAgent = WebRequest::userAgent();
+        if ($userAgent !== null) {
+            RequestData::saveForRequest($request, RequestData::TYPE_CONFIRM_USERAGENT, $userAgent);
+        }
+
+        $xffProvider = $this->getXffTrustProvider();
+        $trustedIp = $xffProvider->getTrustedClientIp(WebRequest::remoteAddress(), WebRequest::forwardedAddress());
+
+        if (filter_var($trustedIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            RequestData::saveForRequest($request, RequestData::TYPE_CONFIRM_IPV4, $trustedIp);
+        }
+        elseif (filter_var($trustedIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            RequestData::saveForRequest($request, RequestData::TYPE_CONFIRM_IPV6, $trustedIp);
+        }
+
+        foreach ($this->getSiteConfiguration()->getAcceptClientHints() as $header) {
+            $value = WebRequest::httpHeader($header);
+
+            if ($value === null) {
+                continue;
+            }
+
+            RequestData::saveForRequest($request,
+                RequestData::TYPE_CONFIRM_CLIENTHINT, $value, $header);
         }
 
         $this->redirect('requestSubmitted');

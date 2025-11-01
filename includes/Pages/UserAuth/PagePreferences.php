@@ -14,7 +14,7 @@ use Waca\DataObjects\User;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\PreferenceManager;
 use Waca\Pages\PageMain;
-use Waca\Security\RoleConfiguration;
+use Waca\Security\RoleConfigurationBase;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -53,7 +53,7 @@ class PagePreferences extends InternalPageBase
             $user->save();
             SessionAlert::success("Preferences updated!");
 
-            if ($this->barrierTest(RoleConfiguration::MAIN, $user, PageMain::class)) {
+            if ($this->barrierTest(RoleConfigurationBase::MAIN, $user, PageMain::class)) {
                 $this->redirect('');
             }
             else {
@@ -169,6 +169,11 @@ class PagePreferences extends InternalPageBase
         // or that they have kept from when they previously had certain access.
         // This setting is only settable locally, as ACLs may change between domains.
         $creationMode = WebRequest::postInt('creationMode');
+
+        if ($creationMode === null) {
+            return;
+        }
+
         if ($this->barrierTest($creationMode, $user, 'RequestCreation')) {
             $preferenceManager->setLocalPreference(PreferenceManager::PREF_CREATION_MODE, WebRequest::postString('creationMode'));
         }

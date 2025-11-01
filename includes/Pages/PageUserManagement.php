@@ -10,7 +10,8 @@
 namespace Waca\Pages;
 
 use Exception;
-use SmartyException;
+use PDO;
+use Smarty\Exception as SmartyException;
 use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\DataObjects\UserRole;
@@ -20,6 +21,7 @@ use Waca\Helpers\Logger;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\PreferenceManager;
 use Waca\Helpers\SearchHelpers\UserSearchHelper;
+use Waca\PdoDatabase;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -30,9 +32,46 @@ use Waca\WebRequest;
  */
 class PageUserManagement extends InternalPageBase
 {
+    const OAUTH_STATE_NONE = 'none';
+    const OAUTH_STATE_PARTIAL = 'partial';
+    const OAUTH_STATE_FULL = 'full';
+
     // FIXME: domains
     /** @var string */
     private $adminMailingList = 'enwiki-acc-admins@googlegroups.com';
+
+    private function getOAuthStatusMap(PdoDatabase $database): array
+    {
+        $oauthStatusQuery = $database->prepare(
+            <<<SQL
+    SELECT u.id,
+           CASE
+               WHEN SUM(IF(ot.type = :access, 1, 0)) OVER (PARTITION BY ot.user) > 0 THEN :full
+               WHEN SUM(IF(ot.type = :request, 1, 0)) OVER (PARTITION BY ot.user) > 0 THEN :partial
+               ELSE :none
+           END AS status
+    FROM user u 
+    LEFT JOIN oauthtoken ot ON u.id = ot.user;
+SQL
+        );
+
+        $oauthStatusQuery->execute([
+            ':access' => OAuthUserHelper::TOKEN_ACCESS,
+            ':request' => OAuthUserHelper::TOKEN_REQUEST,
+            ':full' => self::OAUTH_STATE_FULL,
+            ':partial' => self::OAUTH_STATE_PARTIAL,
+            ':none' => self::OAUTH_STATE_NONE,
+        ]);
+        $oauthStatusRawData = $oauthStatusQuery->fetchAll(PDO::FETCH_ASSOC);
+        $oauthStatusQuery->closeCursor();
+        $oauthStatusMap = [];
+
+        foreach ($oauthStatusRawData as $row) {
+            $oauthStatusMap[(int)$row['id']] = $row['status'];
+        }
+
+        return $oauthStatusMap;
+    }
 
     /**
      * Main function for this page, when no specific actions are called.
@@ -53,25 +92,19 @@ class PageUserManagement extends InternalPageBase
             }
         }
 
-        // A bit hacky, but it's better than my last solution of creating an object for each user and passing that to
-        // the template. I still don't have a particularly good way of handling this.
-        OAuthUserHelper::prepareTokenCountStatement($database);
+        $this->assign('oauthStatusMap', $this->getOAuthStatusMap($database));
 
         if (WebRequest::getBoolean("showAll")) {
             $this->assign("showAll", true);
 
-            $suspendedUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_SUSPENDED)->fetch();
-            $this->assign("suspendedUsers", $suspendedUsers);
-
-            $declinedUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_DECLINED)->fetch();
-            $this->assign("declinedUsers", $declinedUsers);
+            $deactivatedUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_DEACTIVATED)->fetch();
+            $this->assign('deactivatedUsers', $deactivatedUsers);
 
             UserSearchHelper::get($database)->getRoleMap($roleMap);
         }
         else {
             $this->assign("showAll", false);
-            $this->assign("suspendedUsers", array());
-            $this->assign("declinedUsers", array());
+            $this->assign('deactivatedUsers', array());
 
             UserSearchHelper::get($database)->statusIn(array('New', 'Active'))->getRoleMap($roleMap);
         }
@@ -94,10 +127,9 @@ class PageUserManagement extends InternalPageBase
         $this->addJs("/api.php?action=users&all=true&targetVariable=typeaheaddata");
 
         $this->assign('canApprove', $this->barrierTest('approve', $currentUser));
-        $this->assign('canDecline', $this->barrierTest('decline', $currentUser));
+        $this->assign('canDeactivate', $this->barrierTest('deactivate', $currentUser));
         $this->assign('canRename', $this->barrierTest('rename', $currentUser));
         $this->assign('canEditUser', $this->barrierTest('editUser', $currentUser));
-        $this->assign('canSuspend', $this->barrierTest('suspend', $currentUser));
         $this->assign('canEditRoles', $this->barrierTest('editRoles', $currentUser));
 
         // FIXME: domains!
@@ -246,11 +278,11 @@ class PageUserManagement extends InternalPageBase
     }
 
     /**
-     * Action target for suspending users
+     * Action target for deactivating users
      *
      * @throws ApplicationLogicException
      */
-    protected function suspend()
+    protected function deactivate()
     {
         $this->setHtmlTitle('User Management');
 
@@ -262,11 +294,11 @@ class PageUserManagement extends InternalPageBase
         $user = User::getById($userId, $database);
 
         if ($user === false || $user->isCommunityUser()) {
-            throw new ApplicationLogicException('Sorry, the user you are trying to suspend could not be found.');
+            throw new ApplicationLogicException('Sorry, the user you are trying to deactivate could not be found.');
         }
 
-        if ($user->isSuspended()) {
-            throw new ApplicationLogicException('Sorry, the user you are trying to suspend is already suspended.');
+        if ($user->isDeactivated()) {
+            throw new ApplicationLogicException('Sorry, the user you are trying to deactivate is already deactivated.');
         }
 
         // Dual-mode action
@@ -274,22 +306,22 @@ class PageUserManagement extends InternalPageBase
             $this->validateCSRFToken();
             $reason = WebRequest::postString('reason');
 
-            if ($reason === null || trim($reason) === "") {
+            if ($reason === null || trim($reason) === '') {
                 throw new ApplicationLogicException('No reason provided');
             }
 
-            $user->setStatus(User::STATUS_SUSPENDED);
+            $user->setStatus(User::STATUS_DEACTIVATED);
             $user->setUpdateVersion(WebRequest::postInt('updateversion'));
             $user->save();
-            Logger::suspendedUser($database, $user, $reason);
+            Logger::deactivatedUser($database, $user, $reason);
 
-            $this->getNotificationHelper()->userSuspended($user, $reason);
-            SessionAlert::quick('Suspended user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
+            $this->getNotificationHelper()->userDeactivated($user);
+            SessionAlert::quick('Deactivated user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
 
             // send email
             $this->sendStatusChangeEmail(
-                'Your WP:ACC account has been suspended',
-                'usermanagement/emails/suspended.tpl',
+                'Your WP:ACC account has been deactivated',
+                'usermanagement/emails/deactivated.tpl',
                 $reason,
                 $user,
                 User::getCurrent($database)->getUsername()
@@ -303,73 +335,12 @@ class PageUserManagement extends InternalPageBase
             $this->assignCSRFToken();
             $this->setTemplate('usermanagement/changelevel-reason.tpl');
             $this->assign('user', $user);
-            $this->assign('status', 'Suspended');
+            $this->assign('status', User::STATUS_DEACTIVATED);
             $this->assign("showReason", true);
 
             if (WebRequest::getString('preload')) {
                 $this->assign('preload', WebRequest::getString('preload'));
             }
-        }
-    }
-
-    /**
-     * Entry point for the decline action
-     *
-     * @throws ApplicationLogicException
-     */
-    protected function decline()
-    {
-        $this->setHtmlTitle('User Management');
-
-        $database = $this->getDatabase();
-
-        $userId = WebRequest::getInt('user');
-        $user = User::getById($userId, $database);
-
-        if ($user === false || $user->isCommunityUser()) {
-            throw new ApplicationLogicException('Sorry, the user you are trying to decline could not be found.');
-        }
-
-        if (!$user->isNewUser()) {
-            throw new ApplicationLogicException('Sorry, the user you are trying to decline is not new.');
-        }
-
-        // Dual-mode action
-        if (WebRequest::wasPosted()) {
-            $this->validateCSRFToken();
-            $reason = WebRequest::postString('reason');
-
-            if ($reason === null || trim($reason) === "") {
-                throw new ApplicationLogicException('No reason provided');
-            }
-
-            $user->setStatus(User::STATUS_DECLINED);
-            $user->setUpdateVersion(WebRequest::postInt('updateversion'));
-            $user->save();
-            Logger::declinedUser($database, $user, $reason);
-
-            $this->getNotificationHelper()->userDeclined($user, $reason);
-            SessionAlert::quick('Declined user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
-
-            // send email
-            $this->sendStatusChangeEmail(
-                'Your WP:ACC account has been declined',
-                'usermanagement/emails/declined.tpl',
-                $reason,
-                $user,
-                User::getCurrent($database)->getUsername()
-            );
-
-            $this->redirect('userManagement');
-
-            return;
-        }
-        else {
-            $this->assignCSRFToken();
-            $this->setTemplate('usermanagement/changelevel-reason.tpl');
-            $this->assign('user', $user);
-            $this->assign('status', 'Declined');
-            $this->assign("showReason", true);
         }
     }
 
@@ -558,6 +529,8 @@ class PageUserManagement extends InternalPageBase
 
             $prefs->setLocalPreference(PreferenceManager::PREF_CREATION_MODE, WebRequest::postInt('creationmode'));
 
+            $prefs->setLocalPreference(PreferenceManager::ADMIN_PREF_PREVENT_REACTIVATION, WebRequest::postBoolean('preventReactivation'));
+
             $user->setUpdateVersion(WebRequest::postInt('updateversion'));
 
             $user->save();
@@ -580,6 +553,8 @@ class PageUserManagement extends InternalPageBase
 
             $this->assign('preferredCreationMode', (int)$prefs->getPreference(PreferenceManager::PREF_CREATION_MODE));
             $this->assign('emailSignature', $prefs->getPreference(PreferenceManager::PREF_EMAIL_SIGNATURE));
+
+            $this->assign('preventReactivation', $prefs->getPreference(PreferenceManager::ADMIN_PREF_PREVENT_REACTIVATION) ?? false);
 
             $this->assign('canManualCreate',
                 $this->barrierTest(PreferenceManager::CREATION_MANUAL, $user, 'RequestCreation'));
@@ -636,7 +611,7 @@ class PageUserManagement extends InternalPageBase
      */
     private function getRoleData($activeRoles)
     {
-        $availableRoles = $this->getSecurityManager()->getRoleConfiguration()->getAvailableRoles();
+        $availableRoles = $this->getSecurityManager()->getAvailableRoles();
 
         $currentUser = User::getCurrent($this->getDatabase());
         $this->getSecurityManager()->getActiveRoles($currentUser, $userRoles, $inactiveRoles);

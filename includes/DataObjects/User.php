@@ -13,7 +13,7 @@ use DateTime;
 use Exception;
 use Waca\DataObject;
 use Waca\Exceptions\OptimisticLockFailedException;
-use Waca\IdentificationVerifier;
+use Waca\IIdentificationVerifier;
 use Waca\PdoDatabase;
 use Waca\WebRequest;
 
@@ -23,8 +23,7 @@ use Waca\WebRequest;
 class User extends DataObject
 {
     const STATUS_ACTIVE = 'Active';
-    const STATUS_SUSPENDED = 'Suspended';
-    const STATUS_DECLINED = 'Declined';
+    const STATUS_DEACTIVATED = 'Deactivated';
     const STATUS_NEW = 'New';
 
     private static CommunityUser $community;
@@ -176,7 +175,7 @@ class User extends DataObject
 					confirmationdiff
 				) VALUES (
 					:username, :email, :status, :onwikiname,
-					:lastactive, :forcelogout, :forceidentified,
+					:lastactive, :forcelogout, null,
 					:confirmationdiff
 				);
 SQL
@@ -187,7 +186,6 @@ SQL
             $statement->bindValue(":onwikiname", $this->onwikiname);
             $statement->bindValue(":lastactive", $this->lastactive);
             $statement->bindValue(":forcelogout", $this->forcelogout);
-            $statement->bindValue(":forceidentified", $this->forceidentified);
             $statement->bindValue(":confirmationdiff", $this->confirmationdiff);
 
             if ($statement->execute()) {
@@ -206,13 +204,11 @@ SQL
 					onwikiname = :onwikiname, 
 					lastactive = :lastactive,
 					forcelogout = :forcelogout, 
-					forceidentified = :forceidentified,
 					confirmationdiff = :confirmationdiff,
                     updateversion = updateversion + 1
 				WHERE id = :id AND updateversion = :updateversion;
 SQL
             );
-            $statement->bindValue(":forceidentified", $this->forceidentified);
 
             $statement->bindValue(':id', $this->id);
             $statement->bindValue(':updateversion', $this->updateversion);
@@ -223,7 +219,6 @@ SQL
             $statement->bindValue(':onwikiname', $this->onwikiname);
             $statement->bindValue(':lastactive', $this->lastactive);
             $statement->bindValue(':forcelogout', $this->forcelogout);
-            $statement->bindValue(':forceidentified', $this->forceidentified);
             $statement->bindValue(':confirmationdiff', $this->confirmationdiff);
 
             if (!$statement->execute()) {
@@ -284,7 +279,7 @@ SQL
     }
 
     /**
-     * Gets the status (User, Admin, Suspended, etc - excludes checkuser) of the user.
+     * Gets the status (Active, New, Deactivated, etc) of the user.
      * @return string
      */
     public function getStatus()
@@ -381,50 +376,22 @@ SQL
     }
 
     /**
-     * Tests if the user is identified
-     *
-     * @param IdentificationVerifier $iv
-     *
-     * @return bool
-     * @todo     Figure out what on earth is going on with PDO's typecasting here.  Apparently, it returns string("0") for
-     *       the force-unidentified case, and int(1) for the identified case?!  This is quite ugly, but probably needed
-     *       to play it safe for now.
-     * @category Security-Critical
-     */
-    public function isIdentified(IdentificationVerifier $iv)
-    {
-        if ($this->forceidentified === 0 || $this->forceidentified === "0") {
-            // User forced to unidentified in the database.
-            return false;
-        }
-        elseif ($this->forceidentified === 1 || $this->forceidentified === "1") {
-            // User forced to identified in the database.
-            return true;
-        }
-        else {
-            // User not forced to any particular identified status; consult IdentificationVerifier
-            return $iv->isUserIdentified($this->getOnWikiName());
-        }
-    }
-
-    /**
      * DO NOT USE FOR TESTING IDENTIFICATION STATUS.
      *
-     * @return bool|null
+     * This only returns any overrides in the database for identification status,
+     * and is thus not suitable on its own to determine if a user is identified.
+     *
+     * Most (all?) users should have a null value here; this is only here as an
+     * emergency override in case things go horribly, horribly wrong. For
+     * example, when WMF completely change the layout of the ID noticeboard.
      */
-    public function getForceIdentified()
+    public function getForceIdentified(): ?bool
     {
-        return $this->forceidentified;
-    }
+        if ($this->forceidentified === null) {
+            return null;
+        }
 
-    /**
-     * Tests if the user is suspended
-     * @return bool
-     * @category Security-Critical
-     */
-    public function isSuspended()
-    {
-        return $this->status == self::STATUS_SUSPENDED;
+        return $this->forceidentified === 1;
     }
 
     /**
@@ -438,13 +405,13 @@ SQL
     }
 
     /**
-     * Tests if the user has been declined access to the tool
+     * Tests if the user has been deactivated and is unable to access the tool
      * @return bool
      * @category Security-Critical
      */
-    public function isDeclined()
+    public function isDeactivated(): bool
     {
-        return $this->status == self::STATUS_DECLINED;
+        return $this->status == self::STATUS_DEACTIVATED;
     }
 
     /**

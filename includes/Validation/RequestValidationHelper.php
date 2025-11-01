@@ -232,7 +232,7 @@ class RequestValidationHelper
         $bans = $this->banHelper->getBans($request);
 
         foreach ($bans as $ban) {
-            if ($ban->getAction() == Ban::ACTION_DROP) {
+            if ($ban->getAction() == Ban::ACTION_DROP || $ban->getAction() == Ban::ACTION_DROP_PRECONFIRM) {
                 $request->setStatus(RequestStatus::CLOSED);
                 $request->save();
 
@@ -267,6 +267,27 @@ class RequestValidationHelper
                 }
             }
         }
+    }
+
+    /**
+     * Pre-email confirmation validations - these are checks that should be done before the user is sent a link that
+     * confirms their email address, and that should block the request from proceeding if they fail.
+     *
+     * @param Request $request
+     *
+     * @return bool
+     */
+    public function preEmailConfirmationValidations(Request $request): bool
+    {
+        $bans = $this->banHelper->getBans($request);
+
+        foreach ($bans as $ban) {
+            if ($ban->getAction() == Ban::ACTION_DROP_PRECONFIRM) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function checkAntiSpoof(Request $request)

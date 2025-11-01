@@ -14,7 +14,7 @@ use Waca\Security\TokenManager;
 use Waca\Providers\GlobalState\FakeGlobalStateProvider;
 use Waca\WebRequest;
 
-class TokenManagerTests extends TestCase
+class TokenManagerTest extends TestCase
 {
     /** @var TokenManager */
     private $tokenManager;
@@ -68,5 +68,31 @@ class TokenManagerTests extends TestCase
         $this->assertFalse($this->tokenManager->validateToken(null));
         $this->assertFalse($this->tokenManager->validateToken(false));
         $this->assertFalse($this->tokenManager->validateToken(''));
+    }
+
+    public function testTokenNoLifetime()
+    {
+        $token = $this->tokenManager->getNewToken();
+
+        // should validate...
+        $this->assertTrue($this->tokenManager->validateToken($token->getTokenData(), null, 0));
+    }
+
+    public function testTokenLifetimeRequired()
+    {
+        $token = $this->tokenManager->getNewToken();
+
+        // should fail because we require a lifetime but the token is new
+        $this->assertFalse($this->tokenManager->validateToken($token->getTokenData(), null, 1));
+    }
+
+    public function testTokenLifetimeValid()
+    {
+        $token = $this->tokenManager->getNewToken();
+
+        sleep(1);
+
+        // should pass because we require a lifetime, and the token is at least that old
+        $this->assertTrue($this->tokenManager->validateToken($token->getTokenData(), null, 1));
     }
 }

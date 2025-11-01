@@ -26,7 +26,7 @@ use Waca\DataObjects\WelcomeTemplate;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
 use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\PdoDatabase;
-use Waca\Security\SecurityManager;
+use Waca\Security\ISecurityManager;
 use Waca\SiteConfiguration;
 
 class LogHelper
@@ -39,14 +39,14 @@ class LogHelper
     public static function getRequestLogsWithComments(
         $requestId,
         PdoDatabase $db,
-        SecurityManager $securityManager
+        ISecurityManager $securityManager
     ): array {
         // FIXME: domains
         $logs = LogSearchHelper::get($db, 1)->byObjectType('Request')->byObjectId($requestId)->fetch();
 
         $currentUser = User::getCurrent($db);
-        $showRestrictedComments = $securityManager->allows('RequestData', 'seeRestrictedComments', $currentUser) === SecurityManager::ALLOWED;
-        $showCheckuserComments = $securityManager->allows('RequestData', 'seeCheckuserComments', $currentUser) === SecurityManager::ALLOWED;
+        $showRestrictedComments = $securityManager->allows('RequestData', 'seeRestrictedComments', $currentUser) === ISecurityManager::ALLOWED;
+        $showCheckuserComments = $securityManager->allows('RequestData', 'seeCheckuserComments', $currentUser) === ISecurityManager::ALLOWED;
 
         $comments = Comment::getForRequest($requestId, $db, $showRestrictedComments, $showCheckuserComments, $currentUser->getId());
 
@@ -132,12 +132,12 @@ class LogHelper
             'Manually Confirmed'  => 'manually confirmed the request',
             'Unreserved'          => 'unreserved',
             'Approved'            => 'approved',
-            'Suspended'           => 'suspended',
+            'DeactivatedUser'     => 'deactivated user',
             'RoleChange'          => 'changed roles',
             'GlobalRoleChange'    => 'changed global roles',
+            'RequestedReactivation' => 'requested reactivation',
             'Banned'              => 'banned',
             'Edited'              => 'edited interface message',
-            'Declined'            => 'declined',
             'EditComment-c'       => 'edited a comment',
             'EditComment-r'       => 'edited a comment',
             'FlaggedComment'      => 'flagged a comment',
@@ -203,15 +203,15 @@ class LogHelper
             ],
             'Users' => [
                 'Approved'            => 'approved',
-                'Suspended'           => 'suspended',
+                'DeactivatedUser'     => 'deactivated user',
                 'RoleChange'          => 'changed roles',
                 'GlobalRoleChange'    => 'changed global roles',
-                'Declined'            => 'declined',
                 'Prefchange'          => 'changed user preferences',
                 'Renamed'             => 'renamed',
                 'Promoted'            => 'promoted to tool admin',
                 'Demoted'             => 'demoted from tool admin',
                 'Registered'          => 'registered a tool account',
+                'RequestedReactivation' => 'requested reactivation',
             ],
             "Bans" => [
                 'Banned'              => 'banned',
@@ -434,10 +434,11 @@ HTML;
 
     /**
      * @param Log[] $logs
-     *
      * @throws Exception
+     *
+     * @returns User[]
      */
-    public static function prepareLogsForTemplate(array $logs, PdoDatabase $database, SiteConfiguration $configuration): array
+    private static function loadUsersFromLogs(array $logs, PdoDatabase $database): array
     {
         $userIds = array();
 
@@ -460,8 +461,32 @@ HTML;
         $users = UserSearchHelper::get($database)->inIds($userIds)->fetchMap('username');
         $users[-1] = User::getCommunity()->getUsername();
 
-        $logData = array();
+        return $users;
+    }
 
+    /**
+     * @param Log[] $logs
+     *
+     * @throws Exception
+     */
+    public static function prepareLogsForTemplate(
+        array $logs,
+        PdoDatabase $database,
+        SiteConfiguration $configuration,
+        ISecurityManager $securityManager
+    ): array {
+        $users = self::loadUsersFromLogs($logs, $database);
+        $currentUser = User::getCurrent($database);
+
+        $allowAccountLogSelf = $securityManager->allows('UserData', 'accountLogSelf', $currentUser) === ISecurityManager::ALLOWED;
+        $allowAccountLog = $securityManager->allows('UserData', 'accountLog', $currentUser) === ISecurityManager::ALLOWED;
+
+        $protectedLogActions = [
+            'RequestedReactivation',
+            'DeactivatedUser',
+        ];
+
+        $logData = array();
         foreach ($logs as $logEntry) {
             $objectDescription = self::getObjectDescription($logEntry->getObjectId(), $logEntry->getObjectType(),
                 $database, $configuration);
@@ -515,9 +540,22 @@ HTML;
 
                 case 'JobCompleted':
                     break;
+
                 default:
                     $comment = $logEntry->getComment();
                     break;
+            }
+
+            if (in_array($logEntry->getAction(), $protectedLogActions) && $logEntry->getObjectType() === 'User') {
+                if ($allowAccountLog) {
+                    // do nothing, allowed to see all account logs
+                }
+                else if ($allowAccountLogSelf && $currentUser->getId() === $logEntry->getObjectId()) {
+                    // do nothing, allowed to see own account log
+                }
+                else {
+                    $comment = null;
+                }
             }
 
             $logData[] = array(

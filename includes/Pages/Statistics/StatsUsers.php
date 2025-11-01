@@ -35,13 +35,11 @@ class StatsUsers extends InternalPageBase
 SELECT
     u.id
     , u.username
-    , CASE WHEN ru.role IS NOT NULL THEN 'Yes' ELSE 'No' END tooluser
     , CASE WHEN ra.role IS NOT NULL THEN 'Yes' ELSE 'No' END tooladmin
     , CASE WHEN rc.role IS NOT NULL THEN 'Yes' ELSE 'No' END checkuser
     , CASE WHEN rs.role IS NOT NULL THEN 'Yes' ELSE 'No' END steward
     , CASE WHEN rr.role IS NOT NULL THEN 'Yes' ELSE 'No' END toolroot
 FROM user u
-    LEFT JOIN userrole ru ON ru.user = u.id AND ru.role = 'user'
     LEFT JOIN userrole ra ON ra.user = u.id AND ra.role = 'admin'
     LEFT JOIN userrole rc ON rc.user = u.id AND rc.role = 'checkuser'
     LEFT JOIN userrole rs ON rs.user = u.id AND rs.role = 'steward'
@@ -134,7 +132,7 @@ SQL
             $this->assign('accountlog', array());
         }
         else {
-            list($users, $logData) = LogHelper::prepareLogsForTemplate($logs, $database, $this->getSiteConfiguration());
+            list($users, $logData) = LogHelper::prepareLogsForTemplate($logs, $database, $this->getSiteConfiguration(), $this->getSecurityManager());
 
             $this->assign("accountlog", $logData);
             $this->assign("users", $users);
@@ -142,10 +140,9 @@ SQL
 
         $currentUser = User::getCurrent($database);
         $this->assign('canApprove', $this->barrierTest('approve', $currentUser, PageUserManagement::class));
-        $this->assign('canDecline', $this->barrierTest('decline', $currentUser, PageUserManagement::class));
+        $this->assign('canDeactivate', $this->barrierTest('deactivate', $currentUser, PageUserManagement::class));
         $this->assign('canRename', $this->barrierTest('rename', $currentUser, PageUserManagement::class));
         $this->assign('canEditUser', $this->barrierTest('editUser', $currentUser, PageUserManagement::class));
-        $this->assign('canSuspend', $this->barrierTest('suspend', $currentUser, PageUserManagement::class));
         $this->assign('canEditRoles', $this->barrierTest('editRoles', $currentUser, PageUserManagement::class));
 
         $oauth = new OAuthUserHelper($user, $database, $this->getOAuthProtocolHelper(), $this->getSiteConfiguration());

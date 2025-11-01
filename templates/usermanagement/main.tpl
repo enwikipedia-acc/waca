@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-md-12" >
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">User Management <small class="text-muted">Approve, suspend, promote, demote, etc.</small></h1>
+                <h1 class="h2">User Management <small class="text-muted">Approve, deactivate, promote, demote, etc.</small></h1>
                 {if $showAll == false}
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <a class="btn btn-sm btn-outline-secondary" href="?showAll"><i class="fas fa-eye"></i>&nbsp;Show all</a>
@@ -46,7 +46,7 @@
                 <div class="card">
                     <div class="card-header position-relative py-0">
                         <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#userListAccordion" data-target="#collapseUsers">
-                            Users
+                            All users
                         </button>
                     </div>
                     <div id="collapseUsers" class="collapse" data-parent="#userListAccordion">
@@ -111,25 +111,13 @@
                 {if $showAll == true}
                     <div class="card">
                         <div class="card-header position-relative py-0">
-                            <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#userListAccordion" data-target="#collapseSuspended">
-                                Suspended accounts
+                            <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#userListAccordion" data-target="#collapseDeactivated">
+                                Deactivated accounts
                             </button>
                         </div>
-                        <div id="collapseSuspended" class="collapse" data-parent="#userListAccordion">
+                        <div id="collapseDeactivated" class="collapse" data-parent="#userListAccordion">
                             <div class="card-body">
-                                {include file='usermanagement/userlist.tpl' userlist=$suspendedUsers}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header position-relative py-0">
-                            <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#userListAccordion" data-target="#collapseDeclined">
-                                Declined accounts
-                            </button>
-                        </div>
-                        <div id="collapseDeclined" class="collapse" data-parent="#userListAccordion">
-                            <div class="card-body">
-                                {include file='usermanagement/userlist.tpl' userlist=$declinedUsers}
+                                {include file='usermanagement/userlist.tpl' userlist=$deactivatedUsers}
                             </div>
                         </div>
                     </div>

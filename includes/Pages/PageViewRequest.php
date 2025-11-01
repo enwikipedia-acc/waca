@@ -26,7 +26,7 @@ use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\PreferenceManager;
 use Waca\Pages\RequestAction\PageManuallyConfirm;
 use Waca\PdoDatabase;
-use Waca\Security\RoleConfiguration;
+use Waca\Security\RoleConfigurationBase;
 use Waca\RequestStatus;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -54,15 +54,14 @@ class PageViewRequest extends InternalPageBase
         $config = $this->getSiteConfiguration();
         $currentUser = User::getCurrent($database);
 
-        // FIXME: domains!
         /** @var Domain $domain */
-        $domain = Domain::getById(1, $this->getDatabase());
+        $domain = Domain::getById($request->getDomain(), $this->getDatabase());
         $this->assign('mediawikiScriptPath', $domain->getWikiArticlePath());
 
         // Shows a page if the email is not confirmed.
         if ($request->getEmailConfirm() !== 'Confirmed') {
             // Show a banner if the user can manually confirm the request
-            $viewConfirm = $this->barrierTest(RoleConfiguration::MAIN, $currentUser, PageManuallyConfirm::class);
+            $viewConfirm = $this->barrierTest(RoleConfigurationBase::MAIN, $currentUser, PageManuallyConfirm::class);
 
             // If the request is purged, there's nothing to confirm!
             if ($request->getEmail() === $this->getSiteConfiguration()->getDataClearEmail()) {
@@ -128,6 +127,8 @@ class PageViewRequest extends InternalPageBase
         $this->assign('requestEmailSent', $request->getEmailSent());
 
         if ($allowedPrivateData) {
+            $this->assign('manualCreationUrl', $this->getCreationUrl($domain));
+
             $this->setTemplate('view-request/main-with-data.tpl');
             $this->setupPrivateData($request, $config);
             $this->assign('canSetBan', $this->barrierTest('set', $currentUser, PageBan::class));
@@ -233,7 +234,7 @@ class PageViewRequest extends InternalPageBase
 
         $editableComments = $this->barrierTest('editOthers', $currentUser, PageEditComment::class);
 
-        $canFlag = $this->barrierTest(RoleConfiguration::MAIN, $currentUser, PageFlagComment::class);
+        $canFlag = $this->barrierTest(RoleConfigurationBase::MAIN, $currentUser, PageFlagComment::class);
         $canUnflag = $this->barrierTest('unflag', $currentUser, PageFlagComment::class);
 
         /** @var Log|Comment $entry */
@@ -397,5 +398,15 @@ class PageViewRequest extends InternalPageBase
         if ($canOauthCreate && !$oauth->canCreateAccount()) {
             $this->assign('oauthProblem', true);
         }
+    }
+
+    private function getCreationUrl(Domain $domain): string
+    {
+        $template = $this->getSiteConfiguration()->getCreateAccountLink();
+
+        $template = str_replace('{articlePath}', $domain->getWikiArticlePath(), $template);
+        $template = str_replace('{wikiId}', $domain->getShortName(), $template);
+
+        return $template;
     }
 }

@@ -20,7 +20,8 @@
             <td class="text-nowrap">{$usernames[$ban->getUser()]|escape}</td>
             <td>
                 {if $ban->getAction() == $ban::ACTION_BLOCK}<abbr title="Blocks the user from submitting the request" data-toggle="tooltip">Block</abbr>{/if}
-                {if $ban->getAction() == $ban::ACTION_DROP}<abbr title="Accepts the request for processing, but immediately drops it." data-toggle="tooltip">Drop</abbr>{/if}
+                {if $ban->getAction() == $ban::ACTION_DROP}<abbr title="Accepts the request for processing, but immediately drops it after sending an email confirmation request." data-toggle="tooltip">Drop</abbr>{/if}
+                {if $ban->getAction() == $ban::ACTION_DROP_PRECONFIRM}<abbr title="Accepts the request for processing, but immediately drops it before sending an email confirmation request." data-toggle="tooltip">Pre-drop</abbr>{/if}
                 {if $ban->getAction() == $ban::ACTION_DEFER}<abbr title="Defers the request into the specified queue" data-toggle="tooltip">Defer</abbr> to {$ban->getTargetQueueObject()->getDisplayName()|escape}{/if}
                 {if $ban->getAction() == $ban::ACTION_NONE}<abbr title="Does nothing but flag the request." data-toggle="tooltip">Report only</abbr>{/if}
             </td>
@@ -36,7 +37,7 @@
             <td class="text-nowrap">
                 {if $ban->getDuration() === null}Indefinite{else}{date("Y-m-d H:i:s", $ban->getDuration())}{/if}
                 {if $ban->isActive() === false}<span class="badge badge-info">Unbanned</span>{/if}
-                {if $ban->getDuration() < time() && $ban->getDuration() !== null}<span class="badge badge-warning">Expired</span>{/if}
+                {if $ban->getDuration() < $currentUnixTime && $ban->getDuration() !== null}<span class="badge badge-warning">Expired</span>{/if}
             </td>
 
             {if $canRemove}

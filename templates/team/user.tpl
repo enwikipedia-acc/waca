@@ -61,7 +61,7 @@
                         <div class="col-4 pr-0 pl-1"><i class="fas fa-user-tag"></i> Roles:</div>
                         <div class="col-8">
                             <ul class="mb-1 pl-0">
-                                <li>{'</li><li>'|implode:$infoContent}</li>
+                                <li>{$infoContent|join:'</li><li>'}</li>
                             </ul>
                         </div>
                     </div>
@@ -71,7 +71,7 @@
                         <div class="col-4 pr-0 pl-1"><i class="fas fa-user-tag"></i> Former roles:</div>
                         <div class="col-8">
                             <ul class="mb-1 pl-0">
-                                <li>{'</li><li>'|implode:$infoContent}</li>
+                                <li>{$infoContent|join:'</li><li>'}</li>
                             </ul>
                         </div>
                     </div>
@@ -81,7 +81,7 @@
                         <div class="col-4 pr-0 pl-1"><i class="fas fa-lock-open"></i> Access:</div>
                         <div class="col-8">
                             <ul class="mb-1 pl-0">
-                                <li>{'</li><li>'|implode:$infoContent}</li>
+                                <li>{$infoContent|join:'</li><li>'}</li>
                             </ul>
                         </div>
                     </div>

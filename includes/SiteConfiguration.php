@@ -20,7 +20,7 @@ class SiteConfiguration
 {
     private $baseUrl = 'https://accounts.wmflabs.org';
     private $filePath = __DIR__ . '/..';
-    private $schemaVersion = 49;
+    private $schemaVersion = 52;
     private $debuggingTraceEnabled = false;
     private $debuggingCssBreakpointsEnabled = false;
     private $dataClearIp = '127.0.0.1';
@@ -83,6 +83,14 @@ class SiteConfiguration
         'password' => 'waca'
     ];
     private string $privacyStatementPath = '';
+
+    private string $createAccountLink = '{articlePath}/Special:CreateAccount';
+
+    private array $globalDenyRole = [];
+
+    private int $defaultRequestForm = 1;
+
+    private int $requestMinimumTokenAge = 0;
 
     /**
      * Gets the base URL of the tool
@@ -1127,5 +1135,53 @@ class SiteConfiguration
         $this->privacyStatementPath = $privacyStatementPath;
 
         return $this;
+    }
+
+    public function getCreateAccountLink(): string
+    {
+        return $this->createAccountLink;
+    }
+
+    public function setCreateAccountLink(string $createAccountLink): SiteConfiguration
+    {
+        $this->createAccountLink = $createAccountLink;
+
+        return $this;
+    }
+
+    public function getGlobalDenyRole(): array
+    {
+        return $this->globalDenyRole;
+    }
+
+    public function setGlobalDenyRole(array $globalDenyRole): SiteConfiguration
+    {
+        $this->globalDenyRole = $globalDenyRole;
+
+        return $this;
+    }
+
+    public function setDefaultRequestForm(int $defaultRequestForm): SiteConfiguration
+    {
+        $this->defaultRequestForm = $defaultRequestForm;
+
+        return $this;
+    }
+
+    public function getDefaultRequestForm(): int
+    {
+        return $this->defaultRequestForm;
+    }
+
+    public function setRequestMinimumTokenAge(int $requestMinimumTokenAge): SiteConfiguration
+    {
+        $this->requestMinimumTokenAge = $requestMinimumTokenAge;
+
+        return $this;
+    }
+
+    public function getRequestMinimumTokenAge(): int
+    {
+        return $this->requestMinimumTokenAge;
     }
 }

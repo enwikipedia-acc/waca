@@ -12,7 +12,7 @@
             <td>{$smarty.foreach.topcreators.iteration}</td>
             <td>{$row.count}</td>
             <td>
-                <a href="{$baseurl}/internal.php/statistics/users/detail?user={$row.userid|escape}" {if $row.status == 'Suspended'}class="text-muted"{/if}> {$row.username|escape}</a>
+                <a href="{$baseurl}/internal.php/statistics/users/detail?user={$row.userid|escape}" {if $row.status == 'Deactivated'}class="text-muted"{/if}> {$row.username|escape}</a>
             </td>
         </tr>
     {/foreach}

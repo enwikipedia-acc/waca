@@ -9,8 +9,8 @@
 
 namespace Waca;
 
-use Smarty;
-use SmartyException;
+use Smarty\Smarty;
+use Smarty\Exception as SmartyException;
 use Waca\DataObjects\User;
 
 /**
@@ -43,6 +43,7 @@ class Offline
         $smarty->assign("resourceCacheEpoch", 0);
         $smarty->assign("alerts", []);
         $smarty->assign("toolversion", Environment::getToolVersion());
+        $smarty->assign("onlineusers", []);
 
         if (!headers_sent()) {
             header("HTTP/1.1 503 Service Unavailable");
