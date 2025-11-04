@@ -283,6 +283,12 @@ trait RequestData
         $this->assign('requestIsClosed', $isClosed);
 		$isHospital = $request->getStatus() === RequestStatus::HOSPITAL;
 		$this->assign('requestIsHospital', $isHospital);
+
+        $requestId = $request->getId();
+        $this->assign(
+            'createAccountReason',
+            "Requested account at [[WP:ACC]], request #[[ACC:$requestId|$requestId]]"
+        );
     }
 
     /**

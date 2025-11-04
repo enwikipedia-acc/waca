@@ -2,7 +2,7 @@
 <form method="post" action="{$baseurl}/internal.php/viewRequest/close" class="row">
     <div class="col-md-6">
         <a class="btn btn-primary btn-block jsconfirm" target="_blank"
-           href="{$manualCreationUrl}?usesul3=1&amp;wpName={$requestName|escape:'url'}&amp;email={$requestEmail|escape:'url'}&amp;reason={$createAccountReason|escape:'url'}[[ACC:{$requestId}|{$requestId}]]&amp;wpCreateaccountMail=true"
+           href="{$manualCreationUrl}?usesul3=1&amp;wpName={$requestName|escape:'url'}&amp;email={$requestEmail|escape:'url'}&amp;reason={$createAccountReason|escape:'url'}&amp;wpCreateaccountMail=true"
                 {if !$skipJsAborts && $createdHasJsQuestion}
                     data-template="{$createdId}"
                 {/if}>
