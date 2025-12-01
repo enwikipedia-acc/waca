@@ -95,7 +95,7 @@
     {if $canSeeCheckuserData}
         <div class="btn-group">
             <a id="IPCU-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
-               href="https://en.wikipedia.org/w/index.php?title=Special:CheckUser&amp;ip={$ipaddress}&amp;reason=%5B%5BWP:ACC%5D%5D%20request%20%23{$requestId}">
+               href="https://en.wikipedia.org/w/index.php?title=Special:CheckUser&amp;ip={$ipaddress}&amp;reason=%5B%5BWP:ACC%5D%5D%20request%20%23%5B%5BACC%3A{$requestId}%7C{$requestId}%5D%5D">
                 CheckUser
             </a>
             <a id="IPCULog-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
@@ -103,13 +103,13 @@
                 Log
             </a>
             <a id="IPCUI-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
-               href="https://en.wikipedia.org/w/index.php?title=Special:Investigate&amp;targets={$ipaddress}&amp;reason=%5B%5BWP:ACC%5D%5D%20request%20%23{$requestId}">
+               href="https://en.wikipedia.org/w/index.php?title=Special:Investigate&amp;targets={$ipaddress}&amp;reason=%5B%5BWP:ACC%5D%5D%20request%20%23%5B%5BACC%3A{$requestId}%7C{$requestId}%5D%5D">
                 Investigate
             </a>
         </div>
         <div class="btn-group">
             <a id="IPLWCU-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
-               href="https://login.wikimedia.org/w/index.php?title=Special:CheckUser&amp;ip={$ipaddress}&amp;reason=%5B%5B:en:WP:ACC%5D%5D%20request%20%23{$requestId}">
+               href="https://login.wikimedia.org/w/index.php?title=Special:CheckUser&amp;ip={$ipaddress}&amp;reason=%5B%5B:en:WP:ACC%5D%5D%20request%20%23%5B%5BACC%3A{$requestId}%7C{$requestId}%5D%5D">
                 LW CU
             </a>
             <a id="IPLWCULog-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"

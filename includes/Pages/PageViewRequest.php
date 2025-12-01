@@ -169,8 +169,6 @@ class PageViewRequest extends InternalPageBase
      */
     protected function setupGeneralData(PdoDatabase $database)
     {
-        $this->assign('createAccountReason', 'Requested account at [[WP:ACC]], request #');
-
         // FIXME: domains
         /** @var Domain $domain */
         $domain = Domain::getById(1, $database);
