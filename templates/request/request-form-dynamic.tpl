@@ -8,6 +8,8 @@
     <div class="row">
         <div class="col-md-8 offset-md-2">
             <form method="post">
+                {include file="security/csrf.tpl"}
+
                 <div class="form-group row">
                     <label for="inputUsername" class="col-md-4 col-form-label">Username</label>
                     <input class="form-control col-md-8" type="text" id="inputUsername" placeholder="Username" name="name" required="required" value="{$username|default:''|escape}">

@@ -512,7 +512,7 @@ class PageBan extends InternalPageBase
             //  * the user isn't allowed to set large bans, AND
             //  * the ban is a drop or a block (preventing human review of the request), AND
             //  * the mask is too wide-reaching
-            if (!$canLargeIpBan && ($action == Ban::ACTION_BLOCK || $action == Ban::ACTION_DROP) && $targetMask < $maxIpBlockRange[6]) {
+            if (!$canLargeIpBan && ($action == Ban::ACTION_BLOCK || $action == Ban::ACTION_DROP || $action == Ban::ACTION_DROP_PRECONFIRM) && $targetMask < $maxIpBlockRange[6]) {
                 throw new ApplicationLogicException("The requested IP range for this ban is too wide for the block/drop action.");
             }
 
@@ -526,7 +526,7 @@ class PageBan extends InternalPageBase
                 throw new ApplicationLogicException("CIDR mask out of range for IPv4");
             }
 
-            if (!$canLargeIpBan && ($action == Ban::ACTION_BLOCK || $action == Ban::ACTION_DROP) && $targetMask < $maxIpBlockRange[4]) {
+            if (!$canLargeIpBan && ($action == Ban::ACTION_BLOCK || $action == Ban::ACTION_DROP || $action == Ban::ACTION_DROP_PRECONFIRM) && $targetMask < $maxIpBlockRange[4]) {
                 throw new ApplicationLogicException("The IP range for this ban is too wide for the block/drop action.");
             }
 

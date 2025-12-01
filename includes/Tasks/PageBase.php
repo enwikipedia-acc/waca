@@ -368,15 +368,15 @@ abstract class PageBase extends TaskBase implements IRoutedTask
         $this->runPage();
     }
 
-    public function assignCSRFToken()
+    public function assignCSRFToken(?string $context = null)
     {
-        $token = $this->tokenManager->getNewToken();
+        $token = $this->tokenManager->getNewToken($context);
         $this->assign('csrfTokenData', $token->getTokenData());
     }
 
-    public function validateCSRFToken()
+    public function validateCSRFToken(?string $context = null, int $minimumLifetime = 0)
     {
-        if (!$this->tokenManager->validateToken(WebRequest::postString('csrfTokenData'))) {
+        if (!$this->tokenManager->validateToken(WebRequest::postString('csrfTokenData'), $context, $minimumLifetime)) {
             throw new ApplicationLogicException('Form token is not valid, please reload and try again');
         }
     }

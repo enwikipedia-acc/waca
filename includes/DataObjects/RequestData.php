@@ -23,9 +23,13 @@ class RequestData extends DataObject
 {
     const TYPE_IPV4 = 'ipv4';
     const TYPE_IPV6 = 'ipv6';
+    const TYPE_CONFIRM_IPV4 = 'confirm-ipv4';
+    const TYPE_CONFIRM_IPV6 = 'confirm-ipv6';
     const TYPE_EMAIL = 'email';
     const TYPE_USERAGENT = 'useragent';
+    const TYPE_CONFIRM_USERAGENT = 'confirm-useragent';
     const TYPE_CLIENTHINT = 'clienthint';
+    const TYPE_CONFIRM_CLIENTHINT = 'confirm-clienthint';
 
     /** @var int */
     private $request;
@@ -35,6 +39,19 @@ class RequestData extends DataObject
     private $name;
     /** @var string */
     private $value;
+
+    public static function saveForRequest(Request $request, string $type, string $value, ?string $name = null): void
+    {
+        $requestData = new RequestData();
+        $requestData->setDatabase($request->getDatabase());
+        $requestData->setRequest($request->getId());
+
+        $requestData->setType($type);
+        $requestData->setValue($value);
+        $requestData->setName($name);
+
+        $requestData->save();
+    }
 
     public static function getForRequest(int $requestId, PdoDatabase $database, ?string $type = null)
     {
