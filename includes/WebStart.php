@@ -45,6 +45,8 @@ class WebStart extends ApplicationBase
      */
     private bool $isPublic = false;
 
+    private ContentSecurityPolicyManager $cspManager;
+
     /**
      * WebStart constructor.
      *
@@ -56,6 +58,7 @@ class WebStart extends ApplicationBase
         parent::__construct($configuration);
 
         $this->requestRouter = $router;
+        $this->cspManager = new ContentSecurityPolicyManager($configuration);
     }
 
     /**
@@ -74,7 +77,7 @@ class WebStart extends ApplicationBase
 
         if ($page instanceof PageBase) {
             $page->setTokenManager(new TokenManager());
-            $page->setCspManager(new ContentSecurityPolicyManager($siteConfiguration));
+            $page->setCspManager($this->cspManager);
 
             if ($page instanceof InternalPageBase) {
                 $page->setTypeAheadHelper(new TypeAheadHelper());
@@ -114,11 +117,21 @@ class WebStart extends ApplicationBase
         }
         catch (EnvironmentException $ex) {
             ob_end_clean();
+
+            if (!headers_sent()) {
+                header($this->cspManager->getHeader());
+            }
+
             print Offline::getOfflineMessage($this->isPublic(), $this->getConfiguration(), $ex->getMessage());
         }
-            /** @noinspection PhpRedundantCatchClauseInspection */
+        /** @noinspection PhpRedundantCatchClauseInspection */
         catch (ReadableException $ex) {
             ob_end_clean();
+
+            if (!headers_sent()) {
+                header($this->cspManager->getHeader());
+            }
+
             print $ex->getReadableError();
         }
         finally {
