@@ -82,7 +82,6 @@ class Foo
 * The ternary (`?:`) operator should only be used where appropriate - short expressions only please!
 * Heredoc/Nowdoc should not be used for output - use templates. Extended SQL statements are OK, but please use appropriate boundary markers, such as `SQL`;
 
-* 
 ## How-tos
 
 Some how-tos for some of the technologies and libraries we use.

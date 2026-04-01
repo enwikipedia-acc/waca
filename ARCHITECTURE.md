@@ -2,18 +2,9 @@
 
 ## Entry points
 * `internal.php` - the web-based entry point for all non-request-form web GUI access.
-
-### Legacy entry points
 * `api.php` - the web-based API. Access to unauthenticated data only.
 * `index.php` - the request form. Allows submission of data only.
 * `redir.php` - performs redirects. No known security impact. 
-
-### Deprecated entry points
-* `acc.php` - Deleted
-* `search.php` - Deleted
-* `statistics.php` - Deleted
-* `team.php` - Deleted
-* `users.php` - Deleted
 
 ## Web request routing
 
@@ -27,9 +18,6 @@
 
 The root namespace for all classes should be `\Waca`, which maps to `includes/`. The namespace structure should exactly 
 match the folder structure.
-
-Note: There are a bunch of older classes in the `includes/` folder which are in the global namespace. As time permits,
-these should be moved to a real namespace, or deprecated and replaced.
 
 Tests follow a similar architecture, and should be placed in their corresponding folder under `tests/`, whose root 
 namespace is `\Waca\Tests`. Thus, for a class `\Waca\WebRequest` at the file path `includes/WebRequest.php` would have a 
