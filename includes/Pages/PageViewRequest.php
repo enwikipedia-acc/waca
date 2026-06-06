@@ -380,7 +380,7 @@ class PageViewRequest extends InternalPageBase
 
         $creationModePreference = $preferenceManager->getPreference(PreferenceManager::PREF_CREATION_MODE);
         if (($creationModePreference === null) || (!$this->barrierTest($creationModePreference, $user, 'RequestCreation')) {
-            // user is not allowed to use their default. Force a choice.
+            // user is not allowed to use their default, or does not have one. Force a choice.
             $creationHasChoice = true;
         }
 
