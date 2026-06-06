@@ -334,8 +334,10 @@ class PageViewRequest extends InternalPageBase
         $blacklistData = $this->getBlacklistHelper()->isBlacklisted($request->getName());
 
         if (($blacklistData !== false && $blacklistData !== '') {
-            $this->assign('requestIsBlacklisted', $blacklistData !== false);
+            $this->assign('requestIsBlacklisted', true);
             $this->assign('requestBlacklist', $blacklistData);
+        } else {
+            $this->assign('requestIsBlacklisted', false);
         }
 
         try {
