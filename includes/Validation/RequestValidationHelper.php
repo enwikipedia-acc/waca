@@ -338,13 +338,13 @@ class RequestValidationHelper
                         'tbtitle'      => $request->getName(),
                         'tbaction'     => 'new-account',
                         'tbnooverride' => true,
-                        'format'       => 'php',
+                        'format'       => 'json',
                     ),
                     [],
                     $this->validationRemoteTimeout
                 );
 
-                $data = unserialize($apiResult);
+                $data = json_decode($apiResult, true);
 
                 $requestIsOk = $data['titleblacklist']['result'] == "ok";
             }
@@ -374,13 +374,13 @@ class RequestValidationHelper
                     'action'  => 'query',
                     'list'    => 'users',
                     'ususers' => $request->getName(),
-                    'format'  => 'php',
+                    'format'  => 'json',
                 ),
                 [],
                 $this->validationRemoteTimeout
             );
 
-            $ue = unserialize($userExists);
+            $ue = json_decode($userExists, true);
             if (!isset ($ue['query']['users']['0']['missing']) && isset ($ue['query']['users']['0']['userid'])) {
                 return true;
             }
@@ -406,13 +406,13 @@ class RequestValidationHelper
                     'action'  => 'query',
                     'meta'    => 'globaluserinfo',
                     'guiuser' => $requestName,
-                    'format'  => 'php',
+                    'format'  => 'json',
                 ),
                 [],
                 $this->validationRemoteTimeout
             );
 
-            $ue = unserialize($userExists);
+            $ue = json_decode($userExists, true);
             if (isset ($ue['query']['globaluserinfo']['id'])) {
                 return true;
             }

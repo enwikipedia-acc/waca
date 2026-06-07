@@ -103,7 +103,7 @@ class BlacklistHelper implements IBlacklistHelper
 
         $parameters = array(
             'action'       => 'titleblacklist',
-            'format'       => 'php',
+            'format'       => 'json',
             'tbtitle'      => $username,
             'tbaction'     => 'new-account',
             'tbnooverride' => true,
@@ -111,7 +111,7 @@ class BlacklistHelper implements IBlacklistHelper
 
         $apiResult = $this->httpHelper->get($endpoint, $parameters);
 
-        $data = unserialize($apiResult);
+        $data = json_decode($apiResult, true);
 
         return $data['titleblacklist'];
     }

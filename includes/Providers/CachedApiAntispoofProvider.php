@@ -52,7 +52,7 @@ class CachedApiAntispoofProvider implements IAntiSpoofProvider
             // get the data from the API
             $data = $this->httpHelper->get($domain->getWikiApiPath(), array(
                 'action'   => 'antispoof',
-                'format'   => 'php',
+                'format'   => 'json',
                 'username' => $username,
             ));
 
@@ -68,7 +68,7 @@ class CachedApiAntispoofProvider implements IAntiSpoofProvider
             $data = $cacheResult->getData();
         }
 
-        $result = unserialize($data);
+        $result = json_decode($data, true);
 
         if (!isset($result['antispoof']) || !isset($result['antispoof']['result'])) {
             $cacheResult->delete();

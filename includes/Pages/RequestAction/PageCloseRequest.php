@@ -171,7 +171,7 @@ class PageCloseRequest extends RequestActionBase
             $parameters = array(
                 'action'  => 'query',
                 'list'    => 'users',
-                'format'  => 'php',
+                'format'  => 'json',
                 'ususers' => $request->getName(),
             );
 
@@ -181,7 +181,7 @@ class PageCloseRequest extends RequestActionBase
 
             $content = $this->getHttpHelper()->get($domain->getWikiApiPath(), $parameters);
 
-            $apiResult = unserialize($content);
+            $apiResult = json_decode($content, true);
             $exists = !isset($apiResult['query']['users']['0']['missing']);
 
             if (!$exists) {

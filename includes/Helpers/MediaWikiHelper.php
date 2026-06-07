@@ -247,11 +247,11 @@ class MediaWikiHelper
         $parameters = array(
             'action'  => 'query',
             'list'    => 'users',
-            'format'  => 'php',
+            'format'  => 'json',
             'ususers' => $username,
         );
 
-        $apiResult = $this->mediaWikiClient->doApiCall($parameters, 'GET');
+        $apiResult = json_decode($this->mediaWikiClient->doApiCall($parameters, 'GET'));
 
         $entry = $apiResult->query->users[0];
         $exists = !isset($entry->missing);
