@@ -10,6 +10,7 @@
 namespace Waca\Providers;
 
 use Exception;
+use SimpleXMLElement;
 use Waca\DataObjects\GeoLocation;
 use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Helpers\HttpHelper;
@@ -90,17 +91,13 @@ class IpLocationProvider implements ILocationProvider
     {
         try {
             if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-                $json = $this->httpHelper->get($this->getApiBase(), array(
+                $xml = $this->httpHelper->get($this->getApiBase(), array(
                     'key'    => $this->apiKey,
                     'ip'     => $ip,
-                    'format' => 'json',
+                    'format' => 'xml',
                 ));
 
-                $response = json_decode($json, true);
-
-                if (!is_array($response)) {
-                    return null;
-                }
+                $response = @new SimpleXMLElement($xml);
 
                 $result = array();
 
