@@ -63,14 +63,6 @@ class BlacklistHelper implements IBlacklistHelper
             ExceptionHandler::logExceptionToDisk($ex, $this->siteConfiguration);
             return false;
         }
-        
-        if (!isset($result['result'])) {
-            if (isset($result['error']['info'])) {
-                throw new Exception("Unrecognised API response to blacklist query: " . $result['error']['info']);
-            }
-            
-            throw new Exception("Unrecognised API response to blacklist query.");
-        }
 
         if ($result['result'] === 'ok') {
             // not blacklisted
