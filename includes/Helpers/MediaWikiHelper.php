@@ -251,7 +251,7 @@ class MediaWikiHelper
             'ususers' => $username,
         );
 
-        $apiResult = json_decode($this->mediaWikiClient->doApiCall($parameters, 'GET'));
+        $apiResult = $this->mediaWikiClient->doApiCall($parameters, 'GET');
 
         $entry = $apiResult->query->users[0];
         $exists = !isset($entry->missing);
