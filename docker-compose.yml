@@ -1,17 +1,25 @@
 services:
-  application:
+  php-fpm:
     build:
       context: .
       dockerfile: Dockerfile
+      target: development
     volumes:
       # - composer-vendor:/var/www/html/vendor  # Uncomment if experiencing font-awesome issues. See docker/README.md.
       - .:/var/www/html/
-    ports:
-      - "8080:80"
     depends_on:
       - database
       - msgbroker
       - mailsink
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - .:/var/www/html/:ro
+      - ./docker/nginx-waca.conf.template:/etc/nginx/templates/waca.conf.template:ro
+    ports:
+      - "8080:80"
+    depends_on:
+      - php-fpm
   database:
     image: mariadb:10.11.3
     ports:

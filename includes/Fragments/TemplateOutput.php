@@ -80,6 +80,9 @@ trait TemplateOutput
     final protected function setUpSmarty()
     {
         $this->smarty = new Smarty();
+        if (getenv('SMARTY_COMPILE_CHECK') === 'off') {
+            $this->smarty->setCompileCheck(\Smarty\Smarty::COMPILECHECK_OFF);
+        }
         $pluginsDir = $this->getSiteConfiguration()->getFilePath() . '/smarty-plugins';
 
         // Dynamically load all plugins in the plugins directory

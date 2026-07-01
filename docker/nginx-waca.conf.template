@@ -1,0 +1,23 @@
+server {
+    listen 8080 default_server;
+    root /var/www/html;
+
+    # PHP requests. Regex location takes priority over the prefix match below.
+    # The named capture strips the subpath so SCRIPT_FILENAME resolves against
+    # /var/www/html directly instead of a non-existent subpath subdirectory.
+    location ~ ^/${SUBPATH}(?<phpfile>.+\.php)(?<pathinfo>/.*)?$ {
+        fastcgi_pass 127.0.0.1:9000;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root/$phpfile;
+        fastcgi_param SCRIPT_NAME /${SUBPATH}$phpfile;
+        fastcgi_param PATH_INFO $pathinfo;
+    }
+
+    # Static files with front-controller fallback.
+    # The rewrite strips the subpath internally so try_files resolves under
+    # /var/www/html rather than /var/www/html/${SUBPATH}/.
+    location /${SUBPATH} {
+        rewrite ^/${SUBPATH}(.*) /$1 break;
+        try_files $uri /${SUBPATH}index.php$is_args$args;
+    }
+}
