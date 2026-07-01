@@ -1,4 +1,5 @@
-#!/bin/bash -ex
+#!/bin/bash
+set -e
 
 #*******************************************************************************
 # Wikipedia Account Creation Assistance tool                                   *
@@ -8,19 +9,44 @@
 # Please see LICENSE.md for the full licencing statement.                      *
 #*******************************************************************************
 
-cd /var/www/html
-git config --global --replace-all safe.directory /var/www/html
-cp ~/.gitconfig /etc/gitconfig
+if [ -n "${DEVELOPMENT_MODE}" ]; then
+    set -x
+    cd /var/www/html
+    git config --global --replace-all safe.directory /var/www/html
+    cp ~/.gitconfig /etc/gitconfig
 
-if [[ ! -f config.local.inc.php ]]; then
-    cp docker/config.local.inc.php config.local.inc.php
+    if [[ ! -f config.local.inc.php ]]; then
+        cp docker/config.local.inc.php config.local.inc.php
+    fi
+
+    php /opt/composer.phar install --no-progress
+    npm install
+
+    chown -R www-data templates_c errorlog
+
+    npm run build-scss
+
+    exec php-fpm
 fi
 
-php /opt/composer.phar install --no-progress
-npm install
+# Configure msmtp to relay through the MX_TARGET if that environment variable is set.
+if [ -n "${MX_TARGET}" ]; then
+    cat > /tmp/msmtprc << EOF
+defaults
+auth           off
+tls            off
+tls_starttls   off
 
-chown -R www-data templates_c errorlog
+account        default
+host           ${MX_TARGET}
+port           25
+from           accounts@wmflabs.org
+EOF
+    chmod 600 /tmp/msmtprc
+fi
 
-npm run build-scss
-
-exec apache2-foreground
+if [ $# -gt 0 ]; then
+    exec "$@"
+else
+    exec php-fpm
+fi
