@@ -51,27 +51,18 @@ it's not known if anyone's actually tried it yet.
 
 You'll need to import the database, and create a config.local.inc.php file (see below). The database schema files can be found in the sql/ subdirectory, or a single-file dump can be found here: https://jenkins.stwalkerster.co.uk/job/waca-database-build/
 
-# XAMPP setup
+# Basic setup
 
-**Please note, XAMPP is not required. Any webserver properly configured will do. This is just a quick-start method if you want it.**
+These steps assume you are comfortable with git, configuring a basic webserver with PHP support, managing a MariaDB database.
 
-This was written using Windows 10.
-
-1. Install Git (or Git Extensions! It's awesome. https://code.google.com/p/gitextensions/ )
-2. Install XAMPP (https://www.apachefriends.org/index.html)
-  * This was tested using XAMPP 5.6.3
-  * You don't need to install anything other than Apache, PHP, MySQL, and PHPMyAdmin (technically, PHPMyAdmin is optional)
-  * This also assumes you're installing it under C:\xampp\.
-3. Start Apache and MySQL from the XAMPP control panel
-4. Clone the ACC repo to C:\xampp\htdocs\waca\
-5. Browse to http://localhost/phpmyadmin/ and create a new database called "waca".
-6. Run `composer install` (https://getcomposer.org)
-7. Run `npm install`
-8. Generate the stylesheets:
+1. Clone this repo to your webserver's document root. You can put it in a subfolder if you wish.
+2. Configure a new MariaDB database (eg `waca`) and a MariaDB user (eg `waca` / `waca`) with full permissions over that database
+3. Run `npm install`
+4. Generate the stylesheets:
   * `npm run build-scss`
-8. run the database setup scripts (you'll be prompted for a password):
+5. run the database setup scripts (you'll be prompted for a password):
   * `./test_db.sh --create --host localhost --schema <dbname> --user <user>`
-9. Create the configuration file (see below).
+6. Create the configuration file (see below).
 
 # Configuration File
 Create a new PHP file called config.local.inc.php, and fill it with the following:
@@ -79,33 +70,34 @@ Create a new PHP file called config.local.inc.php, and fill it with the followin
 <?php
 
 // Database configuration settings
-$toolserver_username = "root";
-$toolserver_password = "";
+$toolserver_username = "waca";
+$toolserver_password = "waca";
 $toolserver_host = "localhost";
 $toolserver_database = "waca";
 
 // Disconnect from IRC notifications and the wiki database.
 $ircBotNotificationsEnabled = 0;
-$dontUseWikiDb = 1;
 
 // Paths and stuff
-$baseurl = "http://localhost/waca";
+$baseurl = "http://localhost/waca"; // assuming install in a subfolder
 $cookiepath = '/waca/';
 
 $whichami = "MyName";
 
 // these turn off features which you probably want off for ease of development.
 $enableEmailConfirm = 0;
-$locationProviderClass = "FakeLocationProvider";
-$antispoofProviderClass = "FakeAntiSpoofProvider";
-$rdnsProviderClass = "FakeRDnsLookupProvider";
 
 $useOauthSignup = false;
 $enforceOAuth = false;
+$forceIdentification = false;
+$toolUserAgent = "SomethingIdentifyingYou (+mailto:contactdetailshere)";
+
 
 ```
 
 This will become your personal config file. Any settings you define here will override those in config.inc.php.
+
+NOTE: You should review config.inc.php in its entirety as it will likely contain other settings you are interested in.
 
 Most settings are flags to turn on and off features for development systems which may or may not have the necessary tools or access keys to do stuff. Feel free to switch any of these on if you know what you're doing.
 
@@ -120,19 +112,21 @@ Note that this user account is configured to skip the standard checks that the u
 OK, so this is a tricky one, but worth doing so your environment is the same as the production one.
 
 1. Get an account on https://accounts-oauth.wmflabs.org/ - you'll need to ask someone who's already got an account to create you one.
-2. Go to `Special:OAuthConsumerRegistration`, and request a token for a new consumer. The OAuth "callback" URL field needs to point to /oauth/callback.php (or wherever that script is located on your webserver). Importantly, this must be how *you* see it - it's fine to put a localhost url in here. It's used as the target of a redirect, so as long as your browser can see it, it should be fine. At the moment, we only need basic rights, but that may change in the future. Ignore the usage restrictions and RSA key - we don't use those.
+2. Go to `Special:OAuthConsumerRegistration`, and request a token for a new consumer. The OAuth "callback" URL field needs to point to /internal.php/oauth/callback/authorise (or wherever that script is located on your webserver). Importantly, this must be how *you* see it - it's fine to put a localhost url in here. It's used as the target of a redirect, so as long as your browser can see it, it should be fine. At the moment, we only need basic rights, but that may change in the future. Ignore the usage restrictions and RSA key - we don't use those.
 3. You'll get two hexadecimal strings - **don't lose these** - put them in your config.local.inc.php file as `$oauthConsumerToken` and `$oauthSecretToken`
 4. Go to `Special:OAuthManageConsumers/proposed`, click review/manage on your consumer and approve it.
-5. Set up a few more properties in config.local.inc.php:
+5. In the tool, go to Domain Management and modify the connected wiki article and API paths to point to the equivalents for https://accounts-oauth.wmflabs.org/
+6. Set up a few more properties in config.local.inc.php:
 
 ```php
-$oauthBaseUrl = "https://accounts-oauth.wmflabs.org/w/index.php?title=Special:OAuth";
-$oauthBaseUrlInternal = $oauthBaseUrl;
 $oauthMediaWikiCanonicalServer = "http://accounts-oauth.wmflabs.org";
 
+// optional
 $useOauthSignup = true;
 $enforceOAuth = true;
 ```
+
+
 
 You should now be able to use OAuth!
 
