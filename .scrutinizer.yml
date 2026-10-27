@@ -2,7 +2,7 @@ inherit: true
 
 build:
   environment:
-    php: "7.4"
+    php: 8.2.22
   nodes:
     analysis:
       tests:
