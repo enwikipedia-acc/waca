@@ -13,16 +13,21 @@ jobs:
     name: "Unit tests (PHP ${{ matrix.php-version }})"
     runs-on: ubuntu-latest
 
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       matrix:
-        php-version: [7.4, 8.2]
+        php-version: ['8.3', '8.4', '8.5']
+        experimental: [true]
+        include:
+          - php-version: '8.2'
+            experimental: false
 
     steps:
     - uses: actions/checkout@v7
       with:
         # Bump depth for Scrutinizer
         fetch-depth: 10
-    
+
     - name: Setup PHP Action
       uses: shivammathur/setup-php@2.40.0
       with:
@@ -30,7 +35,7 @@ jobs:
         extensions: runkit7
         tools: phpunit, composer
         ini-values: runkit.internal_override=1
-        
+
     - name: Validate composer.json and composer.lock
       run: composer validate --no-check-publish
 
@@ -45,12 +50,12 @@ jobs:
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
-          
+
     - name: Run PHP linting
       run: bash .github/scripts/lint.sh
-  
+
     - name: Run test suite
-      run: php vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
+      run: php vendor/bin/phpunit --coverage-clover=coverage.xml
 
     - name: Upload Scrutinizer coverage
       uses: sudo-bot/action-scrutinizer@latest
@@ -70,7 +75,7 @@ jobs:
 
     - name: Shut down old dbs
       run: "[ $(docker ps -q | wc -l) -gt 0 ] && docker stop $(docker ps -q) || true"
-      
+
     - name: Start up MariaDB
       uses: getong/mariadb-action@v1.11
       with:
@@ -88,7 +93,7 @@ jobs:
         while ! mysqladmin ping -h127.0.0.1 --silent; do
           sleep 1
         done
-    
+
     - name: Test database build
       run: |
         sql/test_db.sh --ci

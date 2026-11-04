@@ -1,4 +1,4 @@
-FROM php:8.2-fpm-bookworm AS base
+FROM php:8.2.35-fpm-trixie AS base
 
 ENV DEBIAN_FRONTEND="noninteractive"
 
@@ -11,7 +11,7 @@ RUN apt-get update \
 # redirect writable paths to a single location for a readonly container image.
 RUN ln -sf /tmp/msmtprc /etc/msmtprc
 
-ADD https://github.com/mlocati/docker-php-extension-installer/releases/download/2.11.12/install-php-extensions /usr/local/bin/
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/download/2.13.2/install-php-extensions /usr/local/bin/
 RUN chmod +x /usr/local/bin/install-php-extensions \
     && install-php-extensions pdo_mysql sockets \
     && docker-php-ext-enable opcache
@@ -19,7 +19,7 @@ RUN chmod +x /usr/local/bin/install-php-extensions \
 WORKDIR /var/www/html
 
 ###############################################################################
-FROM node:20-bookworm-slim AS js-builder
+FROM node:26-trixie-slim AS js-builder
 
 WORKDIR /var/www/html
 COPY package*.json ./
