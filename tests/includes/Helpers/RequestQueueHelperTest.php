@@ -9,15 +9,14 @@
 
 namespace includes\Helpers;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Waca\DataObjects\RequestQueue;
 use Waca\Helpers\RequestQueueHelper;
 
 class RequestQueueHelperTest extends TestCase
 {
-    /**
-     * @dataProvider dataProvider
-     */
+    #[DataProvider('dataProvider')]
     public function testConfigureDefaults(
         bool $oldEnabled,
         bool $newEnabled,
@@ -51,7 +50,7 @@ class RequestQueueHelperTest extends TestCase
         $this->assertEquals($expectedTitleBlacklist, $queue->isDefaultTitleBlacklist());
     }
 
-    public function dataProvider() {
+    public static function dataProvider() {
         // excel is thy friend.
         // this covers every single possible value for these flags.
         // column headers match the method parameters for the testConfigureDefault() method.

@@ -50,7 +50,7 @@ class WebStartTest extends TestCase
 
         // ob_end_clean makes this a risky test.  We have to mock it to prevent closing of the wrong output buffers
         $wsMock = $this->getMockBuilder(WebStart::class)
-            ->setMethods(["ob_end_clean"])
+            ->onlyMethods(["ob_end_clean"])
             ->disableOriginalConstructor()
             ->getMock();
         $wsMock->method('ob_end_clean')->willReturn(null);

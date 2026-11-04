@@ -10,16 +10,15 @@
 namespace Waca\Tests\Helpers;
 
 use PHPUnit_Extensions_MockFunction;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\TestCase;
 use Waca\Helpers\EmailHelper;
 
-/**
- * @requires extension runkit7
- */
+#[RequiresPhpExtension('runkit7')]
 class EmailHelperTest extends TestCase
 {
     /** @var PHPUnit_Extensions_MockFunction */
-    private $mailMock;
+    private $mailMock = null;
     /** @var EmailHelper */
     private $emailHelper;
 
@@ -61,7 +60,7 @@ class EmailHelperTest extends TestCase
 
     public function tearDown() : void
     {
-        if (extension_loaded('runkit7')) {
+        if ($this->mailMock !== null && extension_loaded('runkit7')) {
             // restore functionality
             $this->mailMock->restore();
         }

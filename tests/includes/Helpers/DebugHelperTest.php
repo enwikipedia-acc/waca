@@ -20,7 +20,7 @@ class DebugHelperTest extends TestCase
 
     public function setUp() : void
     {
-        $this->dbh = $this->getMockBuilder(DebugHelper::class)->setMethods(["get_debug_backtrace"])->getMock();
+        $this->dbh = $this->getMockBuilder(DebugHelper::class)->onlyMethods(["get_debug_backtrace"])->getMock();
         $this->dbh->method('get_debug_backtrace')->willReturn(
             array(
                 array(
