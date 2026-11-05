@@ -90,7 +90,8 @@ RUN install-php-extensions xdebug
 # Composer placed at the path the dev entrypoint expects
 COPY --from=composer:2 /usr/bin/composer /opt/composer.phar
 
-COPY docker/msmtprc /tmp/msmtprc
+# Owned by www-data so php-fpm workers (which invoke sendmail) can read it
+COPY --chown=www-data:www-data docker/msmtprc /tmp/msmtprc
 RUN chmod 600 /tmp/msmtprc
 
 ENV XDEBUG_CONFIG="client_host=host.docker.internal client_port=9003 discover_client_host=false"

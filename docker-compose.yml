@@ -17,9 +17,12 @@ services:
       - .:/var/www/html/:ro
       - ./docker/nginx-waca.conf.template:/etc/nginx/templates/waca.conf.template:ro
     ports:
-      - "8080:80"
+      - "8080:8080"
     depends_on:
       - php-fpm
+    environment:
+      SUBPATH: ""
+      PHP_FPM_ADDR: php-fpm:9000
   database:
     image: mariadb:10.11.3
     ports:
