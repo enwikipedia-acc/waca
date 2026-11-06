@@ -1,4 +1,4 @@
-FROM php:8.2.35-fpm-trixie AS base
+FROM php:8.5.11-fpm-trixie AS base
 
 ENV DEBIAN_FRONTEND="noninteractive"
 
