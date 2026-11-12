@@ -80,7 +80,7 @@ class MediaWikiHelper
         $createParams = array_fill_keys($requiredFields, '') + $apiCallData;
 
         $createParams['username'] = $username;
-        $createParams['mailpassword'] = true;
+        $createParams['mailpassword'] = '1';
         $createParams['email'] = $emailAddress;
         $createParams['reason'] = $reason;
 
@@ -147,7 +147,7 @@ class MediaWikiHelper
         );
 
         if ($createOnly) {
-            $editParameters['createonly'] = true;
+            $editParameters['createonly'] = '1';
         }
 
         $response = $this->mediaWikiClient->doApiCall($editParameters, 'POST');
