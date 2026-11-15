@@ -14,6 +14,7 @@ use MediaWiki\OAuthClient\ClientConfig;
 use MediaWiki\OAuthClient\Consumer;
 use MediaWiki\OAuthClient\Token;
 use Waca\DataObjects\Domain;
+use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\CurlException;
 use Waca\PdoDatabase;
 
@@ -40,8 +41,8 @@ class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
     /**
      * OAuthHelper constructor.
      *
-     * @param string     $consumerKey
-     * @param string     $consumerSecret
+     * @param string      $consumerKey
+     * @param string      $consumerSecret
      * @param PdoDatabase $database
      * @param string      $userAgent
      */
@@ -70,6 +71,7 @@ class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
 
         list($authUrl, $requestToken) = $this->getClient($domain)->initiate();
         $this->authUrl = $authUrl;
+
         return $requestToken;
     }
 
@@ -114,11 +116,11 @@ class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
     {
         $userToken = new Token($accessToken, $accessSecret);
 
-        $apiParams['format'] = 'json';
-
         if ($apiParams === null || !is_array($apiParams)) {
             throw new CurlException("Invalid API call");
         }
+
+        $apiParams['format'] = 'json';
 
         // FIXME: domains!
         /** @var Domain $domain */
@@ -132,6 +134,13 @@ class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
             $url .= '?' . $query;
             $apiParams = null;
         }
+        else {
+            foreach ($apiParams as $k => $v) {
+                if (!is_string($v)) {
+                    throw new ApplicationLogicException("Invalid API parameter type: $k => " . gettype($v));
+                }
+            }
+        }
 
         $data = $this->getClient($domain)->makeOAuthCall($userToken, $url, $isPost, $apiParams);
 
@@ -143,11 +152,12 @@ class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
      *
      * @return Client
      */
-    protected function getClient(Domain $domain) : Client
+    protected function getClient(Domain $domain): Client
     {
         $oauthClientConfig = new ClientConfig($domain->getWikiArticlePath() . "?title=Special:OAuth");
         $oauthClientConfig->setConsumer(new Consumer($this->consumerKey, $this->consumerSecret));
         $oauthClientConfig->setUserAgent($this->userAgent);
+
         return new Client($oauthClientConfig);
     }
 }

@@ -46,3 +46,4 @@ sonar-project.properties
 node_modules/
 .phpunit.result.cache
 /sql/database.sql
+/VERSION

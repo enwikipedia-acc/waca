@@ -80,14 +80,14 @@ class MediaWikiHelper
         $createParams = array_fill_keys($requiredFields, '') + $apiCallData;
 
         $createParams['username'] = $username;
-        $createParams['mailpassword'] = true;
+        $createParams['mailpassword'] = '1';
         $createParams['email'] = $emailAddress;
         $createParams['reason'] = $reason;
 
         $createResponse = $this->mediaWikiClient->doApiCall($createParams, 'POST');
 
         if (isset($createResponse->error)) {
-            throw new MediaWikiApiException($response->error->code . ': ' . $response->error->info);
+            throw new MediaWikiApiException($createResponse->error->code . ': ' . $createResponse->error->info);
         }
 
         if (!isset($createResponse->createaccount) || !isset($createResponse->createaccount->status)) {
@@ -147,7 +147,7 @@ class MediaWikiHelper
         );
 
         if ($createOnly) {
-            $editParameters['createonly'] = true;
+            $editParameters['createonly'] = '1';
         }
 
         $response = $this->mediaWikiClient->doApiCall($editParameters, 'POST');
@@ -251,7 +251,7 @@ class MediaWikiHelper
             'ususers' => $username,
         );
 
-        $apiResult = json_decode($this->mediaWikiClient->doApiCall($parameters, 'GET'));
+        $apiResult = $this->mediaWikiClient->doApiCall($parameters, 'GET');
 
         $entry = $apiResult->query->users[0];
         $exists = !isset($entry->missing);

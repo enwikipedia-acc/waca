@@ -26,7 +26,14 @@ class Environment
     public static function getToolVersion()
     {
         if (self::$toolVersion === null) {
-            self::$toolVersion = exec("git describe --always --dirty");
+            $versionFile = __DIR__ . '/../VERSION';
+            $version = is_readable($versionFile) ? trim(file_get_contents($versionFile)) : '';
+
+            if ($version === '') {
+                $version = exec("git describe --always --dirty");
+            }
+
+            self::$toolVersion = $version;
         }
 
         return self::$toolVersion;

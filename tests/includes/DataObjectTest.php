@@ -18,10 +18,13 @@ class DataObjectTest extends TestCase
 
     public function setUp(): void
     {
-        $this->do = $this->getMockForAbstractClass("\Waca\DataObject");
+        $this->do = new class extends \Waca\DataObject {
+            public function save()
+            {
+            }
+        };
 
         $this->dbh = $this->getMockBuilder('\Waca\PdoDatabase')
-            ->setMockClassName('PdoDatabase')
             ->disableOriginalConstructor()
             ->getMock();
     }

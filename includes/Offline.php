@@ -39,6 +39,9 @@ class Offline
         $reason = $configuration->getOffline()['reason'];
 
         $smarty = new Smarty();
+        if (getenv('SMARTY_COMPILE_CHECK') === 'off') {
+            $smarty->setCompileCheck(\Smarty\Smarty::COMPILECHECK_OFF);
+        }
         $smarty->assign("baseurl", $baseurl);
         $smarty->assign("resourceCacheEpoch", 0);
         $smarty->assign("alerts", []);

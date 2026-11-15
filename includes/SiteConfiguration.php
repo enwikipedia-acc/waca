@@ -20,7 +20,7 @@ class SiteConfiguration
 {
     private $baseUrl = 'https://accounts.wmflabs.org';
     private $filePath = __DIR__ . '/..';
-    private $schemaVersion = 52;
+    private $schemaVersion = 53;
     private $debuggingTraceEnabled = false;
     private $debuggingCssBreakpointsEnabled = false;
     private $dataClearIp = '127.0.0.1';

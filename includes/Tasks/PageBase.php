@@ -263,7 +263,7 @@ abstract class PageBase extends TaskBase implements IRoutedTask
         $currentScriptName = WebRequest::scriptName();
 
         // Are we changing script?
-        if ($script === null || substr($currentScriptName, -1 * count($script)) === $script) {
+        if ($script === null || basename($currentScriptName) === $script) {
             $targetScriptName = $currentScriptName;
         }
         else {

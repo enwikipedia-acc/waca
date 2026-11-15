@@ -7,7 +7,7 @@ like to use that instead for essentially one-click ACC setup, please see [here](
 
 * Web server
 * MariaDB 10.11.3 (or equivalent)
-* PHP 7.4+
+* PHP 8.2+
 
 The webserver must be configured to pre-process *.php files through the PHP engine before sending them to a client.
 
@@ -42,10 +42,7 @@ it's not known if anyone's actually tried it yet.
 ### Production
 
 * MariaDB 10.11.3
-* PHP 7.4.30
-* Apache 2.4.54 (Debian)
-* Debian Bullseye (Application; Wikimedia Cloud VPS)
-* Debian Bookworm (Database; Wikimedia Cloud VPS)
+* Dockerfile "production" target; as of writing that's PHP 8.2.35
 
 # Basic information
 

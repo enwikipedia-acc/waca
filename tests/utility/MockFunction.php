@@ -114,7 +114,7 @@ class PHPUnit_Extensions_MockFunction
                 'Mock_' . str_replace('::', '__', $this->function_name) . '_' . $this->id
             )
                 ->disableAutoload()
-                ->setMethods(array('invoked'))
+                ->addMethods(array('invoked'))
                 ->getMock();
 
         ++self::$next_id;
