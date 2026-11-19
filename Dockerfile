@@ -1,4 +1,4 @@
-FROM php:8.2.35-fpm-trixie AS base
+FROM php:8.2.36-fpm-trixie@sha256:a462ef0a159dd469f546238d14f1a06f00d5bd1b4678c8cf3989c88d6a229024 AS base
 
 ENV DEBIAN_FRONTEND="noninteractive"
 
