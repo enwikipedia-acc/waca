@@ -425,5 +425,20 @@
         "Role": ["Developer"],
         "Retired": [],
         "Access": []
-    }
+    },
+    "Oshwah": {
+        "IRC": "Oshwah",
+        "ToolID": "969",
+        "wiki": "Oshwah",
+        "GitHub": "Oshwah",
+        "WWW": "https://oshwah.com/",
+        "Name": "Oshwah",
+        "Role": ["Developer"],
+        "Retired": [],
+        "Access": [
+            "GitHub",
+            "Mailing list admin"
+        ],
+        "Cloak": "*!*@wikipedia/Oshwah",
+        "Other": null
 }
